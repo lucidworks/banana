@@ -1,4 +1,4 @@
-# Kibana
+# Banaana
 
 __NOTE__: You have reached the Kibana 3 repository. 
 Kibana 3 is completely new version of Kibana written entirely in HTML and Javascript. You can find 
