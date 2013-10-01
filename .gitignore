@@ -1,1 +1,7 @@
+<<<<<<< .merge_file_60cyyM
 node_modules
+=======
+node_modules
+.aws-config.json
+dist
+>>>>>>> .merge_file_JKIAyi

@@ -1,4 +1,5 @@
 {
+<<<<<<< .merge_file_Iz1H6s
     "jquery": true,
     "browser": true,
 
@@ -37,4 +38,37 @@
       "config": false,
       "moment": false
     }
+=======
+  "browser": true,
+
+  "bitwise":false,
+  "curly": true,
+  "eqnull": true,
+  "globalstrict": true,
+  "devel": true,
+  "eqeqeq": true,
+  "forin": false,
+  "immed": true,
+  "supernew": true,
+  "expr": true,
+  "indent": 2,
+  "latedef": true,
+  "newcap": true,
+  "noarg": true,
+  "noempty": true,
+  "undef": true,
+  "boss": true,
+  "trailing": false,
+  "laxbreak": true,
+  "laxcomma": true,
+  "sub": true,
+  "unused": true,
+
+  "maxlen": 140,
+
+  "globals": {
+    "define": true,
+    "require": true
+  }
+>>>>>>> .merge_file_U7hEA1
 }

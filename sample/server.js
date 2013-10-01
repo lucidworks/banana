@@ -87,7 +87,11 @@ StaticServlet.MimeMap = {
 
 StaticServlet.prototype.handleRequest = function(req, res) {
   var self = this;
+<<<<<<< .merge_file_h5fVck
   var path = ('./' + req.url.pathname).replace('//','/').replace(/%(..)/g, function(match, hex){
+=======
+  var path = ('../src/' + req.url.pathname).replace('//','/').replace(/%(..)/g, function(match, hex){
+>>>>>>> .merge_file_bPGsSu
     return String.fromCharCode(parseInt(hex, 16));
   });
   var parts = path.split('/');
