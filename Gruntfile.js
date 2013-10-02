@@ -1,16 +1,8 @@
 /* jshint node:true */
 'use strict';
-
 module.exports = function (grunt) {
 
-<<<<<<< .merge_file_9M8CEP
-  var post = ['src/client.js','src/post.js'];
-
-  // Project configuration.
-  grunt.initConfig({
-=======
   var config = {
->>>>>>> .merge_file_AADt2l
     pkg: grunt.file.readJSON('package.json'),
     srcDir: 'src',
     destDir: 'dist',
@@ -22,23 +14,6 @@ module.exports = function (grunt) {
         ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
         ' Licensed <%= pkg.license %> */\n\n'
     },
-<<<<<<< .merge_file_9M8CEP
-    jshint: {
-      files: ['Gruntfile.js', 'js/*.js', 'panels/*/*.js', 'dashboards/*.js' ],
-      options: {
-        jshintrc: '.jshintrc'
-      }
-    },
-    less: {
-      production: {
-        options: {
-          paths: ["vendor/bootstrap/less"],
-          yuicompress:true
-        },
-        files: {
-          "common/css/bootstrap.dark.min.css": "vendor/bootstrap/less/bootstrap.dark.less",
-          "common/css/bootstrap.light.min.css": "vendor/bootstrap/less/bootstrap.light.less"
-=======
     clean: {
       on_start: ['<%= destDir %>', '<%= tempDir %>'],
       temp: ['<%= tempDir %>'],
@@ -62,7 +37,6 @@ module.exports = function (grunt) {
         files: {
           "<%= srcDir %>/css/bootstrap.dark.min.css": "<%= srcDir %>/vendor/bootstrap/less/bootstrap.dark.less",
           "<%= srcDir %>/css/bootstrap.light.min.css": "<%= srcDir %>/vendor/bootstrap/less/bootstrap.light.less"
->>>>>>> .merge_file_AADt2l
         }
       }
     },
@@ -349,14 +323,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-git-describe');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-<<<<<<< .merge_file_9M8CEP
-  grunt.loadNpmTasks('assemble-less');
-
-
-
-  // Default task.
-  grunt.registerTask('default', ['jshint','less']);
-=======
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-string-replace');
@@ -367,6 +333,5 @@ module.exports = function (grunt) {
 
   // pass the config to grunt
   grunt.initConfig(config);
->>>>>>> .merge_file_AADt2l
 
 };
