@@ -5,7 +5,19 @@ The Banana project is a fork of Kibana 3, which can be found at [http://three.ki
 The goal is to port the code to work with Apache Solr as a backend storage.
 
 ### Important!
- 
+The dashboard storage format has changed in Kibana 3 milestone 3. Existing dashboards are unfortunately not backward compatible. However there are some great new features:
+* Every panel supports multi-query
+* Customizable query colors and labels
+* Queries, labels and colors are synced across panels at all times
+* Queries can be assigned explicitly to panels, they can also be pinned and unpinned
+* New filtering functionality
+* Filters can be toggled, removed and edited
+* Drill down won't overwrite your queries, labels or colors
+* Confusing group functionality has been removed
+* Index configuration has been moved from the timepicker, to the main dashboard editor
+* The stringquery panel has been replaced with a more polished 'query' panel
+
+More information about Kibana 3 can be found at [http://www.elasticsearch.org/overview/kibana/](http://www.elasticsearch.org/overview/kibana/)
 
 ## Overview
 

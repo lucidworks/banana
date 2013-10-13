@@ -3,8 +3,10 @@ define([
   './arrayJoin',
   './dashUpload',
   './kibanaPanel',
+  './kibanaSimplePanel',
   './ngBlur',
   './ngModelOnBlur',
   './tip',
-  './confirmClick'
+  './confirmClick',
+  './esVersion'
 ], function () {});

@@ -27,22 +27,26 @@ function (angular, app, _) {
     };
     _.defaults($scope.panel,_d);
 
+    $scope.$on('filter', function() {
+      $scope.row.notice = true;
+    });
+
     $scope.init = function() {
       $scope.filterSrv = filterSrv;
     };
 
     $scope.remove = function(id) {
       filterSrv.remove(id);
-      dashboard.refresh();
     };
 
+    // This function should be moved to the service
     $scope.toggle = function(id) {
       filterSrv.list[id].active = !filterSrv.list[id].active;
       dashboard.refresh();
     };
 
     $scope.refresh = function() {
-      $rootScope.$broadcast('refresh');
+      dashboard.refresh();
     };
 
     $scope.render = function() {
