@@ -39,6 +39,13 @@ require.config({
 
     modernizr:                '../vendor/modernizr-2.6.1',
     elasticjs:                '../vendor/elasticjs/elastic-angular-client',
+
+    'ajax-solr.Core':            '../vendor/ajax-solr/core/Core',
+    'ajax-solr.AbstractManager': '../vendor/ajax-solr/core/AbstractManager',
+    'ajax-solr.Parameter':       '../vendor/ajax-solr/core/Parameter',
+    'ajax-solr.ParameterStore':  '../vendor/ajax-solr/core/ParameterStore',
+    'ajax-solr.Manager':         '../vendor/ajax-solr/managers/Manager.jquery'
+
   },
   shim: {
     underscore: {
@@ -61,6 +68,11 @@ require.config({
     jquery: {
       exports: 'jQuery'
     },
+
+    'ajax-solr.AbstractManager': ['ajax-solr.Core'],
+    'ajax-solr.Parameter':       ['ajax-solr.Core'],
+    'ajax-solr.ParameterStore':  ['ajax-solr.Core', 'ajax-solr.Parameter'],
+    'ajax-solr.Manager':         ['ajax-solr.AbstractManager'],
 
     // simple dependency declaration
     'jquery-ui':            ['jquery'],

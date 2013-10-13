@@ -42,6 +42,7 @@ function (angular, _, config) {
       return fields;
     };
 
+    // TODO: add solr support
     this.map = function(indices) {
       var request = $http({
         url: config.elasticsearch + "/" + indices.join(',') + "/_mapping",

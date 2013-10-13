@@ -18,13 +18,17 @@ function (Settings) {
      * elasticsearch host
      * @type {String}
      */
-    elasticsearch: "http://"+window.location.hostname+":9200",
+    //elasticsearch: "http://"+window.location.hostname+":9200",
+    // TODO:
+//    elasticsearch: "http://localhost:8983/solr/",
+    elasticsearch: "http://localhost:9200",
 
     /**
      * The default ES index to use for storing Kibana specific object
      * such as stored dashboards
      * @type {String}
      */
+     // TODO:
     kibana_index: "kibana-int",
 
     /**

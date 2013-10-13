@@ -37,6 +37,7 @@ function (angular, config, _) {
       $scope.fields = fields;
       $scope.reset_row();
 
+      // TODO: add solr resource
       $scope.ejs = ejsResource(config.elasticsearch);
     };
 

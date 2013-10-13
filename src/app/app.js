@@ -80,6 +80,7 @@ function (angular, $, _, appLevelRequire) {
     register_fns.filter     = $filterProvider.register;
   });
 
+  // TODO: add ajax-solr ?
   var apps_deps = [
     'elasticjs.service',
     '$strap.directives',

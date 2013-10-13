@@ -25,6 +25,7 @@ function (angular, _, config) {
       type: 'lucene'
     };
 
+    // TODO: add solr support
     // For convenience
     var ejs = ejsResource(config.elasticsearch);
     var _q = dashboard.current.services.query;

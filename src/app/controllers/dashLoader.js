@@ -46,6 +46,7 @@ function (angular, _) {
       }
     };
 
+    // TODO: add solr support
     $scope.elasticsearch_save = function(type,ttl) {
       dashboard.elasticsearch_save(
         type,

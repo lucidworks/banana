@@ -7,7 +7,7 @@
   "version": "3.0.0m3pre",
   "devDependencies": {
     "rjs-build-analysis": "0.0.3",
-    "grunt": "~0.4.0",
+    "grunt": "~0.4.1",
     "grunt-s3": "~0.2.0-alpha.2",
     "grunt-ngmin": "0.0.3",
     "grunt-contrib": "~0.7.0",

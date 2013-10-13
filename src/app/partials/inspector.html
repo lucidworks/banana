@@ -5,6 +5,7 @@
 <div class="modal-body">
 
   <div>
+      <!-- TODO: add solr support -->
     <pre>curl -XGET '{{config.elasticsearch}}/{{dashboard.indices|stringify}}/_search?pretty' -d '{{inspector}}'
     </pre>
   </div>

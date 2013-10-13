@@ -18,6 +18,7 @@ define([
       ids : []
     };
 
+    // TODO: add solr support
     // For convenience
     var ejs = ejsResource(config.elasticsearch);
     var _f = dashboard.current.services.filter;

@@ -47,6 +47,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       },
     };
 
+    // TODO: add solr
     // An elasticJS client to use
     var ejs = ejsResource(config.elasticsearch);
     var gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;
@@ -265,6 +266,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       });
     };
 
+    // TODO: add solr support
     this.elasticsearch_load = function(type,id) {
       return $http({
         url: config.elasticsearch + "/" + config.kibana_index + "/"+type+"/"+id,
@@ -309,6 +311,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       });
     };
 
+    // TODO: add solr support
     this.elasticsearch_save = function(type,title,ttl) {
       // Clone object so we can modify it without influencing the existing obejct
       var save = _.clone(self.current);
@@ -344,6 +347,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       );
     };
 
+    // TODO: add solr support
     this.elasticsearch_delete = function(id) {
       return ejs.Document(config.kibana_index,'dashboard',id).doDelete(
         // Success
@@ -357,6 +361,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       );
     };
 
+    // TODO: add solr support
     this.elasticsearch_list = function(query,count) {
       var request = ejs.Request().indices(config.kibana_index).types('dashboard');
       return request.query(

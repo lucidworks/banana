@@ -9,6 +9,8 @@ function (angular, _, config, moment) {
 
   var module = angular.module('kibana.services');
 
+  // TODO: add solr support to query indices
+
   module.service('kbnIndex', function($http, alertSrv) {
     // returns a promise containing an array of all indices matching the index
     // pattern that exist in a given range
