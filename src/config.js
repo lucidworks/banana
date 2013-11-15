@@ -20,8 +20,10 @@ function (Settings) {
      */
     //elasticsearch: "http://"+window.location.hostname+":9200",
     // TODO:
-//    elasticsearch: "http://localhost:8983/solr/",
     elasticsearch: "http://localhost:9200",
+
+    // Which Solr's core store the logstash output?
+    solr: "http://localhost:8983/solr/logstash_logs",
 
     /**
      * The default ES index to use for storing Kibana specific object
@@ -30,7 +32,7 @@ function (Settings) {
      */
      // TODO:
     kibana_index: "kibana-int",
-
+//    kibana_index: "banana-int",
     /**
      * Panel modules available. Panels will only be loaded when they are defined in the
      * dashboard, but this list is used in the "add panel" interface.

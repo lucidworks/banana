@@ -10,7 +10,9 @@ function (_) {
      * @type {Object}
      */
     var defaults = {
+      // TODO: add solr support
       elasticsearch : "http://"+window.location.hostname+":9200",
+      solr: "http://"+window.location.hostname+":8983/solr",
       panel_names   : [],
       kibana_index  : 'kibana-int'
     };

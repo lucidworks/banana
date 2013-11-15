@@ -10,7 +10,7 @@ function (angular, config, _) {
   var module = angular.module('kibana.controllers');
 
   module.controller('DashCtrl', function(
-    $scope, $route, ejsResource, fields, dashboard, alertSrv, panelMove) {
+    $scope, $route, ejsResource, sjsResource, fields, dashboard, alertSrv, panelMove) {
     $scope.editor = {
       index: 0
     };
@@ -39,6 +39,7 @@ function (angular, config, _) {
 
       // TODO: add solr resource
       $scope.ejs = ejsResource(config.elasticsearch);
+      $scope.sjs = sjsResource(config.solr);
     };
 
     $scope.isPanel = function(obj) {

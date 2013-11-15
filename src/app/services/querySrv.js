@@ -8,7 +8,7 @@ function (angular, _, config) {
 
   var module = angular.module('kibana.services');
 
-  module.service('querySrv', function(dashboard, ejsResource) {
+  module.service('querySrv', function(dashboard, ejsResource, sjsResource) {
     // Create an object to hold our service state on the dashboard
     dashboard.current.services.query = dashboard.current.services.query || {};
     _.defaults(dashboard.current.services.query,{
@@ -19,7 +19,8 @@ function (angular, _, config) {
 
     // Defaults for query objects
     var _query = {
-      query: '*',
+      // query: '*',
+      query: '*:*',
       alias: '',
       pin: false,
       type: 'lucene'
@@ -28,6 +29,7 @@ function (angular, _, config) {
     // TODO: add solr support
     // For convenience
     var ejs = ejsResource(config.elasticsearch);
+    var sjs = sjsResource(config.solr);
     var _q = dashboard.current.services.query;
 
     this.colors = [
@@ -39,7 +41,6 @@ function (angular, _, config) {
       "#3F6833","#967302","#2F575E","#99440A","#58140C","#052B51","#511749","#3F2B5B", //6
       "#E0F9D7","#FCEACA","#CFFAFF","#F9E2D2","#FCE2DE","#BADFF4","#F9D9F9","#DEDAF7"  //7
     ];
-
 
     // Save a reference to this
     var self = this;
@@ -104,9 +105,13 @@ function (angular, _, config) {
       switch(q.type)
       {
       case 'lucene':
-        return ejs.QueryStringQuery(q.query || '*');
+        // return ejs.QueryStringQuery(q.query || '*');
+        return ejs.QueryStringQuery(q.query || '*:*');
+        // return (q.query || '*:*'); // ERROR: CANNOT return like this
       default:
-        return _.isUndefined(q.query) ? false : ejs.QueryStringQuery(q.query || '*');
+        // return _.isUndefined(q.query) ? false : ejs.QueryStringQuery(q.query || '*');
+        return _.isUndefined(q.query) ? false : ejs.QueryStringQuery(q.query || '*:*');
+        // return _.isUndefined(q.query) ? false : (q.query || '*:*'); // ERROR: CANNOT return like this
       }
     };
 

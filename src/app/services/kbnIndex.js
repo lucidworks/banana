@@ -31,14 +31,31 @@ function (angular, _, config, moment) {
     // cluster
     function all_indices() {
       var something = $http({
-        url: config.elasticsearch + "/_aliases",
+        // Query ES to get all indices (e.g. "kibana-int", "logstash-2013.10.07", and etc.)
+        // {
+        //   "logstash-2013.10.07" : {
+        //     "aliases" : { }
+        //   },
+        //   "logstash-2013.10.08" : {
+        //     "aliases" : { }
+        //   },
+        //   "kibana-int" : {
+        //     "aliases" : { }
+        //   }
+        // }
+
+        // TODO: Solr has no concept of indices, instead it uses Core to store data.
+        // How I gonna implement this?
+        // url: config.elasticsearch + "/_aliases",
+        url: config.solr + "/schema/fields",
+
         method: "GET"
       }).error(function(data, status) {
         if(status === 0) {
-          alertSrv.set('Error',"Could not contact Elasticsearch at "+config.elasticsearch+
-            ". Please ensure that Elasticsearch is reachable from your system." ,'error');
+          alertSrv.set('Error',"**** Could not contact Solr at "+config.solr+
+            ". Please ensure that Solr is reachable from your system." ,'error');
         } else {
-          alertSrv.set('Error',"Could not reach "+config.elasticsearch+"/_aliases. If you"+
+          alertSrv.set('Error',"**** Could not reach "+config.solr+"/_aliases. If you"+
           " are using a proxy, ensure it is configured correctly",'error');
         }
       });
@@ -52,6 +69,10 @@ function (angular, _, config, moment) {
             indices.push(k);
           });
         });
+
+        // TODO: REMOVE this harded code later
+        indices = ['logstash-2013.11.12'];
+
         return indices;
       });
     }

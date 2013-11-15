@@ -29,6 +29,10 @@ function (angular, _, config) {
         } else {
           self.list = mapFields(_.pick(self.mapping,n));
         }
+        // DEBUG
+        // console.log("indices: "+indices.toString());
+        // console.log("mapping:");console.log(self.mapping);
+        // console.log("list:"); console.log(self.list);
       }
     });
 
@@ -43,33 +47,97 @@ function (angular, _, config) {
     };
 
     // TODO: add solr support
+    // Make a request to the server to get indices and fields
+    // For example (logstash response):
+    //   mapping = {
+    //     "logstash-2013.10.07": {
+    //       "logs": {
+    //         "properties": {        
+    //           "@timestamp": {
+    //             "format": "dateOptionalTime"
+    //             "type": "date"
+    //           },
+    //           "@version": {
+    //             "type": "string"
+    //           },
+    //           "host": {
+    //             "type": "string"
+    //           },
+    //           "message": {
+    //             "type": "string"
+    //           },
+    //           "path": {
+    //             "type": "string"
+    //           },
+    //           "type": {
+    //             "type": "string"
+    //           }
+    //         }
+    //       }
+    //   }
+
     this.map = function(indices) {
+      // delete $http.defaults.headers.common['X-Requested-With'];
+
       var request = $http({
-        url: config.elasticsearch + "/" + indices.join(',') + "/_mapping",
+        // Query ES to get mapping fields
+        // url: config.elasticsearch + "/" + indices.join(',') + "/_mapping",
+        url: config.solr + "/schema/fields",
         method: "GET"
       }).error(function(data, status) {
         if(status === 0) {
-          alertSrv.set('Error',"Could not contact Elasticsearch at "+config.elasticsearch+
-            ". Please ensure that Elasticsearch is reachable from your system." ,'error');
+          alertSrv.set('Error',"Could not contact Solr at "+config.solr+
+            ". Please ensure that Solr is reachable from your system." ,'error');
         } else {
-          alertSrv.set('Error',"No index found at "+config.elasticsearch+"/" +
-            indices.join(',')+"/_mapping. Please create at least one index."  +
+          alertSrv.set('Error',"No index found at "+config.solr+
+            ". Please create at least one index."+
             "If you're using a proxy ensure it is configured correctly.",'error');
         }
       });
 
       return request.then(function(p) {
         var mapping = {};
-        _.each(p.data, function(v,k) {
-          mapping[k] = {};
-          _.each(v, function (v,f) {
-            mapping[k][f] = flatten(v);
-          });
+
+        // TODO: This hard coded value is just a place holder for extracting fields for the filter list
+        var log_index = 'logstash-2099.12.31';
+
+        var logs = 'logs';
+        mapping[log_index] = {};
+        mapping[log_index][logs] = {};
+        
+        // TODO: For Solr, need to implement new mapping
+
+        // _.each(p.data, function(v,k) {
+        //   mapping[k] = {};
+        //   _.each(v, function (v,f) {
+        //     mapping[k][f] = flatten(v);
+        //   });
+        // });
+        
+        // mapping = {
+        //   'collection1': { => have to be in format: 'logstash-YYYY-MM-DD'
+        //     'logs': {
+        //       '_version_': {
+        //         'type': 'long',
+        //       },
+        //       'allText': {
+        //         'type': 'text_general'
+        //       }
+        //     }
+        //   }
+        // };
+        _.each(p.data.fields, function(v,k) {
+          // Exclude fields: id and _version, from the filter
+          if (! _.contains(['id', '_version_'], v.name)) {
+            mapping[log_index][logs][v.name] = { 'type':v.type };
+          }
         });
+
         return mapping;
       });
     };
 
+    // I don't use this function for Solr.
     var flatten = function(obj,prefix) {
       var propName = (prefix) ? prefix :  '',
         dot = (prefix) ? '.':'',

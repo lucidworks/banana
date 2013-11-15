@@ -36,7 +36,7 @@
       </div>
       <table class="table-hover table table-condensed" ng-style="panel.style">
         <thead ng-show="panel.header">
-          <th ng-show="panel.fields.length<1">_source (select columns from the list to the left)</th>
+          <th ng-show="panel.fields.length<1">message (select columns from the list to the left)</th>
           <th style="white-space:nowrap" ng-repeat="field in panel.fields">
             <i ng-show="!$first" class="pointer link icon-caret-left" ng-click="_.move(panel.fields,$index,$index-1)"></i>
 
@@ -51,7 +51,7 @@
         </thead>
         <tbody ng-repeat="event in data | slice:panel.offset:panel.offset+panel.size" ng-class-odd="'odd'">
           <tr ng-click="toggle_details(event)" class="pointer">
-            <td ng-show="panel.fields.length<1">{{event._source|stringify|tableTruncate:panel.trimFactor:1}}</td>
+            <td ng-show="panel.fields.length<1">{{event.kibana._source|stringify|tableTruncate:panel.trimFactor:1}}</td>
             <td ng-show="panel.fields.length>0" ng-repeat="field in panel.fields" ng-bind-html-unsafe="(event.kibana.highlight[field]||event.kibana._source[field]) |tableHighlight | tableTruncate:panel.trimFactor:panel.fields.length"></td>
           </tr>
           <tr ng-show="event.kibana.details">

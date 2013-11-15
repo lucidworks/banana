@@ -14,10 +14,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
   var module = angular.module('kibana.services');
 
   module.service('dashboard', function($routeParams, $http, $rootScope, $injector, $location,
-    ejsResource, timer, kbnIndex, alertSrv
+    ejsResource, sjsResource, timer, kbnIndex, alertSrv
   ) {
     // A hash of defaults to use when loading a dashboard
-
     var _dash = {
       title: "",
       style: "dark",
@@ -28,7 +27,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       services: {},
       loader: {
         save_gist: false,
-        save_elasticsearch: true,
+        save_elasticsearch: true,  // TODO: Remove it
         save_local: true,
         save_default: true,
         save_temp: true,
@@ -42,7 +41,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       },
       index: {
         interval: 'none',
-        pattern: '_all',
+        pattern: '_all',  // TODO: Remove it
         default: 'INDEX_MISSING'
       },
     };
@@ -50,6 +49,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     // TODO: add solr
     // An elasticJS client to use
     var ejs = ejsResource(config.elasticsearch);
+    var sjs = sjsResource(config.solr);
+
     var gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;
 
     // Store a reference to this
@@ -73,7 +74,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         var _id = $routeParams.kbnId;
 
         switch(_type) {
-        case ('elasticsearch'):
+        case ('elasticsearch'): // TODO: Maybe I can add _type = solr here?
           self.elasticsearch_load('dashboard',_id);
           break;
         case ('temp'):
@@ -269,17 +270,21 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     // TODO: add solr support
     this.elasticsearch_load = function(type,id) {
       return $http({
-        url: config.elasticsearch + "/" + config.kibana_index + "/"+type+"/"+id,
+
+        // url: config.elasticsearch + "/" + config.kibana_index + "/"+type+"/"+id,
+        url: config.solr + "/schema/fields",
+
         method: "GET",
+        // TODO:
         transformResponse: function(response) {
           return renderTemplate(angular.fromJson(response)._source.dashboard, $routeParams);
         }
       }).error(function(data, status) {
         if(status === 0) {
-          alertSrv.set('Error',"Could not contact Elasticsearch at "+config.elasticsearch+
+          alertSrv.set('Error',"!!!!  Could not contact Elasticsearch at "+config.solr+
             ". Please ensure that Elasticsearch is reachable from your system." ,'error');
         } else {
-          alertSrv.set('Error',"Could not find "+id+". If you"+
+          alertSrv.set('Error',"!!!! Could not find "+id+". If you"+
             " are using a proxy, ensure it is configured correctly",'error');
         }
         return false;
@@ -311,7 +316,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       });
     };
 
-    // TODO: add solr support
+    // TODO: Maybe I need to write a function like this for Solr
+    //       this.solr_save = function()
     this.elasticsearch_save = function(type,title,ttl) {
       // Clone object so we can modify it without influencing the existing obejct
       var save = _.clone(self.current);
@@ -323,6 +329,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       }
 
       // Create request with id as title. Rethink this.
+      // TODO:
       var request = ejs.Document(config.kibana_index,type,id).source({
         user: 'guest',
         group: 'guest',

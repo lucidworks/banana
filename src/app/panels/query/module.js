@@ -28,7 +28,8 @@ define([
 
     // Set and populate defaults
     var _d = {
-      query   : "*",
+      // query   : "*",
+      query   : "*:*",
       pinned  : true,
       history : [],
       remember: 10 // max: 100, angular strap can't take a variable for items param

@@ -23,16 +23,15 @@ define([
   'underscore',
   'kbn',
   'moment',
-
+  'config'
   // 'text!./pagination.html',
   // 'text!partials/querySelect.html'
 ],
-function (angular, app, _, kbn, moment) {
+function (angular, app, _, kbn, moment, config) {
   'use strict';
 
   var module = angular.module('kibana.panels.table', []);
   app.useModule(module);
-
   module.controller('table', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       modals : [
@@ -68,7 +67,9 @@ function (angular, app, _, kbn, moment) {
       size    : 100, // Per page
       pages   : 5,   // Pages available
       offset  : 0,
+      
       sort    : ['_score','desc'],
+
       group   : "default",
       style   : {'font-size': '9pt'},
       overflow: 'min-height',
@@ -86,6 +87,7 @@ function (angular, app, _, kbn, moment) {
 
     $scope.init = function () {
       $scope.Math = Math;
+      $scope.sjs = $scope.sjs || sjsResource(config.solr);
 
       $scope.$on('refresh',function(){$scope.get_data();});
 
@@ -153,24 +155,32 @@ function (angular, app, _, kbn, moment) {
       var query;
       // This needs to be abstracted somewhere
       if(_.isArray(value)) {
+        // TODO: I don't think Solr has "AND" operator in query.
         query = "(" + _.map(value,function(v){return angular.toJson(v);}).join(" AND ") + ")";
       } else if (_.isUndefined(value)) {
-        query = '*';
+        query = '*:*';
         negate = !negate;
       } else {
         query = angular.toJson(value);
       }
+      // TODO: Need to take a look here, not sure if need change.
       filterSrv.set({type:'field',field:field,query:query,mandate:(negate ? 'mustNot':'must')});
+
       $scope.panel.offset = 0;
       dashboard.refresh();
     };
 
     $scope.fieldExists = function(field,mandate) {
+      // TODO: Need to take a look here.
       filterSrv.set({type:'exists',field:field,mandate:mandate});
       dashboard.refresh();
     };
 
+    // TODO: add Solr support
     $scope.get_data = function(segment,query_id) {
+      console.log('Line 181: segment = ');console.log(segment);
+      console.log('Line 182: query_id = ');console.log(query_id);
+
       $scope.panel.error =  false;
 
       // Make sure we have everything for the request to complete
@@ -179,39 +189,59 @@ function (angular, app, _, kbn, moment) {
       }
 
       $scope.panelMeta.loading = true;
-
+      // TODO: Not sure here
+      console.log('table Line 193: $scope = ');console.log($scope);
+      console.log('table Line 194: $scope.panel = '+$scope.panel);console.log($scope.panel);
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
 
+      // What is segment is for? => to select which indices to query.
       var _segment = _.isUndefined(segment) ? 0 : segment;
       $scope.segment = _segment;
 
-      var request = $scope.ejs.Request().indices(dashboard.indices[_segment]);
+      // TODO: Need to modify ejs.Request() for Solr. ejs methods request ejsObj
+      //       isEJSObject() line 141 in elastic.js
+      //       I have to replace ejs.Request() with solr.Request().
+      //       The problem is I don't have Solr JS client lib to use one now.
 
-      var boolQuery = $scope.ejs.BoolQuery();
+      console.log('table Line 204: dashboard.indices[_segment] = ');console.log(dashboard.indices[_segment]);
+
+      // dashboard.indices[_segment] = "logstash-2013.10.21"
+      // var request = $scope.ejs.Request().indices(dashboard.indices[_segment]);
+      // var boolQuery = $scope.ejs.BoolQuery();
+      // console.log('Line 207: $scope = '+$scope);console.log($scope);
+      var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
+      var boolQuery = $scope.sjs.BoolQuery();
       _.each($scope.panel.queries.ids,function(id) {
         boolQuery = boolQuery.should(querySrv.getEjsObj(id));
       });
 
       request = request.query(
-        $scope.ejs.FilteredQuery(
+        $scope.sjs.FilteredQuery(
           boolQuery,
           filterSrv.getBoolFilter(filterSrv.ids)
         ))
         .highlight(
-          $scope.ejs.Highlight($scope.panel.highlight)
+          $scope.sjs.Highlight($scope.panel.highlight)
           .fragmentSize(2147483647) // Max size of a 32bit unsigned int
           .preTags('@start-highlight@')
           .postTags('@end-highlight@')
         )
-        .size($scope.panel.size*$scope.panel.pages)
+        .size($scope.panel.size*$scope.panel.pages) // to set the size of query result
         .sort($scope.panel.sort[0],$scope.panel.sort[1]);
 
       $scope.populate_modal(request);
+
+      // TODO: DEBUG
+      console.log('Line 234: request = '+request);console.log(request);
+      // Need to modify request.query with Solr's params
+      // request = request.query();
 
       var results = request.doSearch();
 
       // Populate scope when we have results
       results.then(function(results) {
+        // TODO: DEBUG
+        console.log('table Line 243: results = ');console.log(results);
         $scope.panelMeta.loading = false;
 
         if(_segment === 0) {
@@ -228,18 +258,37 @@ function (angular, app, _, kbn, moment) {
 
         // Check that we're still on the same query, if not stop
         if($scope.query_id === query_id) {
-          $scope.data= $scope.data.concat(_.map(results.hits.hits, function(hit) {
+          // $scope.data= $scope.data.concat(_.map(results.hits.hits, function(hit) {
+            $scope.data= $scope.data.concat(_.map(results.response.docs, function(hit) {
             var _h = _.clone(hit);
             //_h._source = kbn.flatten_json(hit._source);
             //_h.highlight = kbn.flatten_json(hit.highlight||{});
+
+            // TODO: Use for loop instead of hard code
+            // var concat_hit = hit.message
+            //                  .concat(hit.logstash_timestamp)
+            //                  .concat(hit.host)
+            //                  .concat(hit.path)
+            //                  .concat(hit.type)
+            //                  .concat(hit.logstash_version);
+            // console.log('table LINE 274: concat_hit = '+concat_hit);console.log(concat_hit);
+            // var hit_object = _.object(['message','logstash_timestamp','host','path','type','logstash_version'], concat_hit);
+            var hit_object = _.object(['message','logstash_timestamp','host','path','type','logstash_version'],
+                                      [hit.message,hit.logstash_timestamp,hit.host,hit.path,hit.type,hit.logstash_version]);
+            // console.log('table LINE 276: hit_object = '+hit_object);console.log(hit_object);
             _h.kibana = {
-              _source : kbn.flatten_json(hit._source),
+              // _source : kbn.flatten_json(hit._source),
+              // highlight : kbn.flatten_json(hit.highlight||{})
+              
+              // _source : kbn.flatten_json(hit.logstash_message),
+              _source : kbn.flatten_json(hit_object),
               highlight : kbn.flatten_json(hit.highlight||{})
             };
             return _h;
           }));
 
-          $scope.hits += results.hits.total;
+          // $scope.hits += results.hits.total;
+          $scope.hits += results.response.numFound;
 
           // Sort the data
           $scope.data = _.sortBy($scope.data, function(v){
@@ -255,9 +304,12 @@ function (angular, app, _, kbn, moment) {
             $scope.data.reverse();
           }
 
+          // console.log('table Line 303: Before .slice() $scope.data = ');console.log($scope.data);
+
           // Keep only what we need for the set
           $scope.data = $scope.data.slice(0,$scope.panel.size * $scope.panel.pages);
 
+          // console.log('table Line 308: After .slice() $scope.data = ');console.log($scope.data);
         } else {
           return;
         }

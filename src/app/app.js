@@ -8,6 +8,7 @@ define([
   'require',
 
   'elasticjs',
+  'solrjs',
   'bootstrap',
   'angular-sanitize',
   'angular-strap',
@@ -80,9 +81,19 @@ function (angular, $, _, appLevelRequire) {
     register_fns.filter     = $filterProvider.register;
   });
 
+  // $http requests in Angular 1.0.x include the 'X-Requested-With' header
+  // which triggers the preflight request in CORS. This does not work as
+  // Solr rejects the preflight request, so I have to remove the header.
+  // NOTE: The 'X-Requested-With' header has been removed in Angular 1.1.x
+  app.config(['$httpProvider', function($httpProvider) {
+    delete $httpProvider.defaults.headers.common["X-Requested-With"];
+  }]);
+  
+
   // TODO: add ajax-solr ?
   var apps_deps = [
     'elasticjs.service',
+    'solrjs.service',
     '$strap.directives',
     'ngSanitize',
     'ngDragDrop',

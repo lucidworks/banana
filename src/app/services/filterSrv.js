@@ -7,7 +7,7 @@ define([
 
   var module = angular.module('kibana.services');
 
-  module.service('filterSrv', function(dashboard, ejsResource) {
+  module.service('filterSrv', function(dashboard, ejsResource, sjsResource) {
     // Create an object to hold our service state on the dashboard
     dashboard.current.services.filter = dashboard.current.services.filter || {};
 
@@ -21,6 +21,8 @@ define([
     // TODO: add solr support
     // For convenience
     var ejs = ejsResource(config.elasticsearch);
+    var sjs = sjsResource(config.solr);
+    
     var _f = dashboard.current.services.filter;
 
     // Save a reference to this
@@ -75,6 +77,10 @@ define([
     this.getBoolFilter = function(ids) {
       // A default match all filter, just in case there are no other filters
       var bool = ejs.BoolFilter().must(ejs.MatchAllFilter());
+
+      // TODO:
+      console.log('this.getBoolFilter bool = '); console.log(bool);
+
       var either_bool = ejs.BoolFilter().must(ejs.MatchAllFilter());
       _.each(ids,function(id) {
         if(self.list[id].active) {
