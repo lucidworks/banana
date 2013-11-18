@@ -26,7 +26,6 @@ function (angular, _, config) {
       type: 'lucene'
     };
 
-    // TODO: add solr support
     // For convenience
     var ejs = ejsResource(config.elasticsearch);
     var sjs = sjsResource(config.solr);
@@ -106,11 +105,11 @@ function (angular, _, config) {
       {
       case 'lucene':
         // return ejs.QueryStringQuery(q.query || '*');
-        return ejs.QueryStringQuery(q.query || '*:*');
+        return sjs.QueryStringQuery(q.query || '*:*');
         // return (q.query || '*:*'); // ERROR: CANNOT return like this
       default:
         // return _.isUndefined(q.query) ? false : ejs.QueryStringQuery(q.query || '*');
-        return _.isUndefined(q.query) ? false : ejs.QueryStringQuery(q.query || '*:*');
+        return _.isUndefined(q.query) ? false : sjs.QueryStringQuery(q.query || '*:*');
         // return _.isUndefined(q.query) ? false : (q.query || '*:*'); // ERROR: CANNOT return like this
       }
     };

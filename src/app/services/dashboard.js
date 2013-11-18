@@ -46,7 +46,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       },
     };
 
-    // TODO: add solr
     // An elasticJS client to use
     var ejs = ejsResource(config.elasticsearch);
     var sjs = sjsResource(config.solr);

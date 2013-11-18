@@ -18,7 +18,6 @@ define([
       ids : []
     };
 
-    // TODO: add solr support
     // For convenience
     var ejs = ejsResource(config.elasticsearch);
     var sjs = sjsResource(config.solr);
@@ -77,9 +76,6 @@ define([
     this.getBoolFilter = function(ids) {
       // A default match all filter, just in case there are no other filters
       var bool = ejs.BoolFilter().must(ejs.MatchAllFilter());
-
-      // TODO:
-      console.log('this.getBoolFilter bool = '); console.log(bool);
 
       var either_bool = ejs.BoolFilter().must(ejs.MatchAllFilter());
       _.each(ids,function(id) {

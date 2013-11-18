@@ -1,5 +1,5 @@
 {
-  "title": "Logstash Search",
+  "title": "Logstash Solr Search",
   "services": {
     "query": {
       "idQueue": [
@@ -7,7 +7,7 @@
       ],
       "list": {
         "0": {
-          "query": "{{ARGS.query || '*'}}",
+          "query": "{{ARGS.query || '*:*'}}",
           "alias": "",
           "color": "#7EB26D",
           "id": 0
@@ -25,7 +25,7 @@
         "0": {
           "from": "2013-07-30T18:58:13.977Z",
           "to": "2013-07-30T19:58:13.977Z",
-          "field": "@timestamp",
+          "field": "logstash_timestamp",
           "type": "time",
           "mandate": "must",
           "active": true,
@@ -68,7 +68,7 @@
             "30d"
           ],
           "timespan": "{{ARGS.from || '1h'}}",
-          "timefield": "@timestamp",
+          "timefield": "logstash_timestamp",
           "timeformat": "",
           "refresh": {
             "enable": false,
@@ -100,7 +100,7 @@
           "history": [],
           "remember": 10,
           "pinned": true,
-          "query": "*"
+          "query": "*:*"
         }
       ]
     },
@@ -138,7 +138,7 @@
           ],
           "type": "histogram",
           "mode": "count",
-          "time_field": "@timestamp",
+          "time_field": "logstash_timestamp",
           "value_field": null,
           "auto_int": true,
           "resolution": 100,
@@ -183,11 +183,11 @@
             "default"
           ],
           "type": "table",
-          "size": 100,
-          "pages": 5,
+          "size": 50,
+          "pages": 10,
           "offset": 0,
           "sort": [
-            "@timestamp",
+            "logstash_timestamp",
             "desc"
           ],
           "style": {

@@ -23,8 +23,6 @@ function (angular, config, _) {
     $scope.panelMoveOver = panelMove.onOver;
     $scope.panelMoveOut = panelMove.onOut;
 
-
-
     $scope.init = function() {
       $scope.config = config;
       // Make underscore.js available to views

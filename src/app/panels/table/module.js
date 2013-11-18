@@ -178,9 +178,6 @@ function (angular, app, _, kbn, moment, config) {
 
     // TODO: add Solr support
     $scope.get_data = function(segment,query_id) {
-      console.log('Line 181: segment = ');console.log(segment);
-      console.log('Line 182: query_id = ');console.log(query_id);
-
       $scope.panel.error =  false;
 
       // Make sure we have everything for the request to complete
@@ -190,11 +187,13 @@ function (angular, app, _, kbn, moment, config) {
 
       $scope.panelMeta.loading = true;
       // TODO: Not sure here
-      console.log('table Line 193: $scope = ');console.log($scope);
-      console.log('table Line 194: $scope.panel = '+$scope.panel);console.log($scope.panel);
+      // DEBUG
+      console.log('table Line 190: $scope = ');console.log($scope);
+      console.log('table Line 191: $scope.panel = '+$scope.panel);console.log($scope.panel);
+
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
 
-      // What is segment is for? => to select which indices to query.
+      // What this segment is for? => to select which indices to query.
       var _segment = _.isUndefined(segment) ? 0 : segment;
       $scope.segment = _segment;
 
@@ -203,12 +202,9 @@ function (angular, app, _, kbn, moment, config) {
       //       I have to replace ejs.Request() with solr.Request().
       //       The problem is I don't have Solr JS client lib to use one now.
 
+      // DEBUG
       console.log('table Line 204: dashboard.indices[_segment] = ');console.log(dashboard.indices[_segment]);
 
-      // dashboard.indices[_segment] = "logstash-2013.10.21"
-      // var request = $scope.ejs.Request().indices(dashboard.indices[_segment]);
-      // var boolQuery = $scope.ejs.BoolQuery();
-      // console.log('Line 207: $scope = '+$scope);console.log($scope);
       var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
       var boolQuery = $scope.sjs.BoolQuery();
       _.each($scope.panel.queries.ids,function(id) {
@@ -231,8 +227,9 @@ function (angular, app, _, kbn, moment, config) {
 
       $scope.populate_modal(request);
 
-      // TODO: DEBUG
+      // DEBUG
       console.log('Line 234: request = '+request);console.log(request);
+
       // Need to modify request.query with Solr's params
       // request = request.query();
 
@@ -240,8 +237,9 @@ function (angular, app, _, kbn, moment, config) {
 
       // Populate scope when we have results
       results.then(function(results) {
-        // TODO: DEBUG
+        // DEBUG
         console.log('table Line 243: results = ');console.log(results);
+
         $scope.panelMeta.loading = false;
 
         if(_segment === 0) {
@@ -274,8 +272,8 @@ function (angular, app, _, kbn, moment, config) {
             // console.log('table LINE 274: concat_hit = '+concat_hit);console.log(concat_hit);
             // var hit_object = _.object(['message','logstash_timestamp','host','path','type','logstash_version'], concat_hit);
             var hit_object = _.object(['message','logstash_timestamp','host','path','type','logstash_version'],
-                                      [hit.message,hit.logstash_timestamp,hit.host,hit.path,hit.type,hit.logstash_version]);
-            // console.log('table LINE 276: hit_object = '+hit_object);console.log(hit_object);
+                                      [hit.message, hit.logstash_timestamp, hit.host, hit.path, hit.type, hit.logstash_version]);
+            
             _h.kibana = {
               // _source : kbn.flatten_json(hit._source),
               // highlight : kbn.flatten_json(hit.highlight||{})
@@ -303,13 +301,9 @@ function (angular, app, _, kbn, moment, config) {
           if($scope.panel.sort[1] === 'desc') {
             $scope.data.reverse();
           }
-
-          // console.log('table Line 303: Before .slice() $scope.data = ');console.log($scope.data);
-
+          
           // Keep only what we need for the set
           $scope.data = $scope.data.slice(0,$scope.panel.size * $scope.panel.pages);
-
-          // console.log('table Line 308: After .slice() $scope.data = ');console.log($scope.data);
         } else {
           return;
         }

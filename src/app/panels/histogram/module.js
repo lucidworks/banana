@@ -181,9 +181,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       }
       var _range = $scope.get_time_range();
       var _interval = $scope.get_interval(_range);
-      // DEBUG
-      // console.log('histogram LINE 185: _range = '+_range);console.log(_range);
-      // console.log('histogram LINE 186: _interval = '+_interval);console.log(_interval);
 
       if ($scope.panel.auto_int) {
         $scope.panel.interval = kbn.secondsToHms(
@@ -192,7 +189,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       $scope.panelMeta.loading = true;
 
-      // var request = $scope.ejs.Request().indices(dashboard.indices[segment]);
       var request = $scope.sjs.Request().indices(dashboard.indices[segment]);
 
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
@@ -205,7 +201,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
         var facet = $scope.sjs.DateHistogramFacet(id);
         // DEBUG
-        console.log('histogram LINE 208: facet = '+facet);console.log(facet);
+        console.log('histogram LINE 204: facet = '+facet);console.log(facet);
 
         if($scope.panel.mode === 'count') {
           facet = facet.field($scope.panel.time_field);
@@ -218,20 +214,20 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         }
         facet = facet.interval(_interval).facetFilter($scope.sjs.QueryFilter(query));
         // DEBUG
-        console.log('histogram LINE 221: facet = '+facet);console.log(facet);
+        console.log('histogram LINE 217: facet = '+facet);console.log(facet);
+
         request = request.facet(facet).size(0);
       });
 
       // Populate the inspector panel
       $scope.populate_modal(request);
-
       // Then run it
-      // TODO: I gonna have to feed facet params into request.doSearch for Solr
       var results = request.doSearch();
 
       // Populate scope when we have results
       results.then(function(results) {
-        console.log('histogram LINE 226: results = ');console.log(results);
+        // DEBUG
+        console.log('histogram LINE 230: results = ');console.log(results);
 
         $scope.panelMeta.loading = false;
         if(segment === 0) {
@@ -246,9 +242,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           return;
         }
 
-        // console.log('histogram LINE 248: _interval = '+_interval);console.log(_interval);
-        // console.log('histogram LINE 249: _range.from = '+_range.from);console.log(_range.from);
-
         // Convert facet ids to numbers
         // var facetIds = _.map(_.keys(results.facets),function(k){return parseInt(k, 10);});
         // TODO: change this, Solr do faceting differently
@@ -260,7 +253,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
         // Make sure we're still on the same query/queries
         if($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
-
           var i = 0,
             time_series,
             hits;
@@ -270,7 +262,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             // var query_results = results.facets[id];
             var query_results = results.facet_counts;
             // DEBUG
-            console.log('histogram LINE 258: query_results = '+query_results);console.log(query_results);
+            console.log('histogram LINE 265: query_results = '+query_results);console.log(query_results);
 
             // we need to initialize the data variable on the first run,
             // and when we are working on the first segment of the data.
@@ -287,7 +279,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               hits = $scope.data[i].hits;
             }
             // DEBUG
-            console.log('histogram LINE 290: time_series = '+time_series);console.log(time_series);
+            console.log('histogram LINE 282: time_series = '+time_series);console.log(time_series);
 
             // push each entry into the time series, while incrementing counters
             // _.each(query_results.entries, function(entry) {
@@ -295,20 +287,19 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             //   hits += entry.count; // The series level hits counter
             //   $scope.hits += entry.count; // Entire dataset level hits counter
             // });
-            // TODO
+            
             var entry = query_results.facet_ranges.logstash_timestamp.counts;
             for (var j = 0; j < entry.length; j++) {
               var entry_time = new Date(entry[j]).getTime(); // convert to millisec
               j++; // Solr facet counts response is in one big Array.
               var entry_count = entry[j];
-              // if (entry_count == 0) continue;
-              console.log('histogram LINE 302: entry_time = '+entry_time+'histogram LINE 302: entry_count = '+entry_count);
+              // DEBUG
+              // console.log('histogram LINE 302: entry_time = '+entry_time+'histogram LINE 302: entry_count = '+entry_count);
               time_series.addValue(entry_time, entry_count);
               hits += entry_count; // The series level hits counter
               $scope.hits += entry_count; // Entire dataset level hits counter
             };
-            // DEBUG
-            // console.log('histogram LINE 311: i = '+i);
+            
             $scope.data[i] = {
               info: querySrv.list[id],
               time_series: time_series,
@@ -318,7 +309,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             i++;
           });
           // DEBUG
-          console.log('histogram LINE 302: $scope.data = '+$scope.data);console.log($scope.data);
+          console.log('histogram LINE 312: $scope.data = '+$scope.data);console.log($scope.data);
+          console.log('histogram LINE 313: $scope = '+$scope);console.log($scope);
 
           // Tell the histogram directive to render.
           $scope.$emit('render');
@@ -487,12 +479,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               }), true);
             }
             // DEBUG
-            console.log('histogram LINE 485: required_times = '+required_times);console.log(required_times);
+            // console.log('histogram LINE 482: required_times = '+required_times);console.log(required_times);
 
             for (var i = 0; i < scope.data.length; i++) {
               scope.data[i].data = scope.data[i].time_series.getFlotPairs(required_times);
               // DEBUG
-              console.log('histogram LINE 489: scope.data[i].data = '+scope.data[i].data);console.log(scope.data[i].data);
+              // console.log('histogram LINE 487: scope.data[i].data = '+scope.data[i].data);console.log(scope.data[i].data);
             }
 
             scope.plot = $.plot(elem, scope.data, options);
