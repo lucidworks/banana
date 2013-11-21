@@ -47,7 +47,7 @@ function (angular, app, _, $, kbn) {
         mode        : 'all',
         ids         : []
       },
-      field   : '_type',
+      field   : 'type',
       exclude : [],
       missing : true,
       other   : true,
@@ -85,24 +85,24 @@ function (angular, app, _, $, kbn) {
         results,
         boolQuery;
 
-      request = $scope.ejs.Request().indices(dashboard.indices);
+      request = $scope.sjs.Request().indices(dashboard.indices);
 
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
       // This could probably be changed to a BoolFilter
-      boolQuery = $scope.ejs.BoolQuery();
+      boolQuery = $scope.sjs.BoolQuery();
       _.each($scope.panel.queries.ids,function(id) {
         boolQuery = boolQuery.should(querySrv.getEjsObj(id));
       });
 
       // Terms mode
       request = request
-        .facet($scope.ejs.TermsFacet('terms')
+        .facet($scope.sjs.TermsFacet('terms')
           .field($scope.panel.field)
           .size($scope.panel.size)
           .order($scope.panel.order)
           .exclude($scope.panel.exclude)
-          .facetFilter($scope.ejs.QueryFilter(
-            $scope.ejs.FilteredQuery(
+          .facetFilter($scope.sjs.QueryFilter(
+            $scope.sjs.FilteredQuery(
               boolQuery,
               filterSrv.getBoolFilter(filterSrv.ids)
               )))).size(0);
@@ -114,20 +114,41 @@ function (angular, app, _, $, kbn) {
 
       // Populate scope when we have results
       results.then(function(results) {
+        // DEBUG
+        console.log('terms LINE 118: results = '+results);console.log(results);
+
         var k = 0;
         $scope.panelMeta.loading = false;
-        $scope.hits = results.hits.total;
+        // $scope.hits = results.hits.total;
+        $scope.hits = results.response.numFound;
+
         $scope.data = [];
-        _.each(results.facets.terms.terms, function(v) {
-          var slice = { label : v.term, data : [[k,v.count]], actions: true};
-          $scope.data.push(slice);
-          k = k + 1;
+        // _.each(results.facets.terms.terms, function(v) {
+        //   var slice = { label : v.term, data : [[k,v.count]], actions: true};
+        //   $scope.data.push(slice);
+        //   k = k + 1;
+        // });
+        _.each(results.facet_counts.facet_fields, function(v) {
+          for (var i = 0; i < v.length; i++) {
+            var term = v[i];
+            i++;
+            var count = v[i];
+            var slice = { label : term, data : [[k,count]], actions: true};
+            $scope.data.push(slice);
+            k = k + 1;  
+          };
         });
 
         $scope.data.push({label:'Missing field',
-          data:[[k,results.facets.terms.missing]],meta:"missing",color:'#aaa',opacity:0});
+          // data:[[k,results.facets.terms.missing]],meta:"missing",color:'#aaa',opacity:0});
+
+          // TODO: Hard coded to 0 for now. Solr faceting does not provide 'missing' value.
+          data:[[k,0]],meta:"missing",color:'#aaa',opacity:0});
         $scope.data.push({label:'Other values',
-          data:[[k+1,results.facets.terms.other]],meta:"other",color:'#444'});
+          // data:[[k+1,results.facets.terms.other]],meta:"other",color:'#444'});
+
+          // TODO: Hard coded to 0 for now. Solr faceting does not provide 'other' value. 
+          data:[[k+1,0]],meta:"other",color:'#444'});
 
         $scope.$emit('render');
       });

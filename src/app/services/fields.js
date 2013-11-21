@@ -126,11 +126,13 @@ function (angular, _, config) {
         //     }
         //   }
         // };
+
         _.each(p.data.fields, function(v,k) {
           // Exclude fields: id and _version, from the filter
-          if (! _.contains(['id', '_version_'], v.name)) {
-            mapping[log_index][logs][v.name] = { 'type':v.type };
-          }
+          // if (! _.contains(['id', '_version_'], v.name)) {
+          //   mapping[log_index][logs][v.name] = { 'type':v.type };
+          // }
+          mapping[log_index][logs][v.name] = { 'type':v.type };
         });
 
         return mapping;

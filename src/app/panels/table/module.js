@@ -238,7 +238,7 @@ function (angular, app, _, kbn, moment, config) {
       // Populate scope when we have results
       results.then(function(results) {
         // DEBUG
-        console.log('table Line 243: results = ');console.log(results);
+        console.log('table LINE 241: results = ');console.log(results);
 
         $scope.panelMeta.loading = false;
 
@@ -271,15 +271,23 @@ function (angular, app, _, kbn, moment, config) {
             //                  .concat(hit.logstash_version);
             // console.log('table LINE 274: concat_hit = '+concat_hit);console.log(concat_hit);
             // var hit_object = _.object(['message','logstash_timestamp','host','path','type','logstash_version'], concat_hit);
-            var hit_object = _.object(['message','logstash_timestamp','host','path','type','logstash_version'],
-                                      [hit.message, hit.logstash_timestamp, hit.host, hit.path, hit.type, hit.logstash_version]);
-            
+
+            // TODO: Fix - Do not use hard coded fields. Change to getting fields from results obj. 
+            // var hit_object = _.object(['message','logstash_timestamp','host','path','type','logstash_version'],
+            //                           [hit.message, hit.logstash_timestamp, hit.host, hit.path, hit.type, hit.logstash_version]);
+            // var hit_object = _.object(hit);
+
+            // DEBUG
+            // console.log('table LINE 279: $scope = '+$scope);console.log($scope);
+            // console.log('table LINE 280: hit = '+hit);console.log(hit);
+            // console.log('table LINE 281: hit_object = '+hit_object);console.log(hit_object);
+
             _h.kibana = {
               // _source : kbn.flatten_json(hit._source),
               // highlight : kbn.flatten_json(hit.highlight||{})
               
-              // _source : kbn.flatten_json(hit.logstash_message),
-              _source : kbn.flatten_json(hit_object),
+              // _source : kbn.flatten_json(hit_object),
+              _source : kbn.flatten_json(hit),
               highlight : kbn.flatten_json(hit.highlight||{})
             };
             return _h;

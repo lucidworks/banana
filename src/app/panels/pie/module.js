@@ -51,6 +51,7 @@ define([
 
     // Set and populate defaults
     var _d = {
+      // TODO:
       query   : { field:"_type", goal: 100},
       queries     : {
         mode        : 'all',
@@ -106,11 +107,11 @@ define([
 
 
       $scope.panelMeta.loading = true;
-      var request = $scope.ejs.Request().indices(dashboard.indices);
+      var request = $scope.sjs.Request().indices(dashboard.indices);
 
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
       // This could probably be changed to a BoolFilter
-      var boolQuery = $scope.ejs.BoolQuery();
+      var boolQuery = $scope.sjs.BoolQuery();
       _.each($scope.panel.queries.ids,function(id) {
         boolQuery = boolQuery.should(querySrv.getEjsObj(id));
       });

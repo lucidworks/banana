@@ -18406,7 +18406,7 @@
         var wt_json = '&wt=json';
         // set the size of query result
         var rows_limit;
-        if (query.size !== undefined) {
+        if (query.size !== undefined && query.size !== 0) {
           rows_limit = '&rows=' + query.size;
         } else { // default to get 100 rows
           rows_limit = '&rows=100';
@@ -18421,18 +18421,38 @@
 
         if (query.query !== undefined) {
           queryData = 'q=' + query.query.filtered.query.bool.should[0].query_string.query + df + wt_json + rows_limit;
-        } else {
-          // For query.facets
+        } else if (query.facets[0] !== undefined) {
+          // For histogram module: query.facets[] array case
           var facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range.logstash_timestamp.from).toISOString();
           var facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range.logstash_timestamp.to).toISOString();
-          // TODO: need to format facet_gap for Solr
+          // TODO: need to format facet_gap for Solr dynamically, based on user's input from histogram
           // var facet_gap = query.facets.0.date_histogram.interval; 
           var facet_gap = '%2B1DAY'
-          var facet = '&facet=true&facet.range=logstash_timestamp' +
+          var facet = '&facet=true&' +
+                      'facet.range=logstash_timestamp' +
                       '&facet.range.start=' + facet_start +
                       '&facet.range.end=' + facet_end +
                       '&facet.range.gap=' + facet_gap;
-          queryData = 'q=' + query.facets[0].facet_filter.fquery.query.filtered.query.query_string.query + df + wt_json + rows_limit + facet;
+          var q_str = query.facets[0].facet_filter.fquery.query.filtered.query.query_string.query;
+          queryData = 'q=' + q_str + df + wt_json + rows_limit + facet;
+        } else if (query.facets !== undefined) {
+          // For terms module: query.facets object case (not array)
+          var facet_start = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range.logstash_timestamp.from).toISOString();
+          var facet_end = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range.logstash_timestamp.to).toISOString();
+          var q_str = query.facets.terms.facet_filter.fquery.query.filtered.query.bool.should[0].query_string.query;
+          // TODO: need to format facet_gap for Solr dynamically, based on user's input from histogram
+          // var facet_gap = query.facets.0.date_histogram.interval;
+          var facet_term = query.facets.terms.terms.field;
+          var facet_gap = '%2B1DAY'
+          var facet = '&facet=true' +
+                      '&facet.field=' + facet_term +
+                      '&facet.range=logstash_timestamp' +
+                      '&facet.range.start=' + facet_start +
+                      '&facet.range.end=' + facet_end +
+                      '&facet.range.gap=' + facet_gap;
+          queryData = 'q=' + q_str + df + wt_json + rows_limit + facet;
+        } else {
+          throw new Error("Unsupported Solr Query");
         }
 
         console.log('queryData = '+queryData);
