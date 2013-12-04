@@ -2,11 +2,12 @@
 <project name="Banana Project" basedir="." default="build-war">
     <property file="build.properties"/>
     <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
     <property name="name" value="banana"/>
 
     <buildnumber/>
     <target name="build-war" description="Build application as a WAR file">
-        <war destfile="${name}-${build.number}.war" webxml="${src.dir}/WEB-INF/web.xml">
+        <war destfile="${build.dir}/${name}-${build.number}.war" webxml="${src.dir}/WEB-INF/web.xml">
             <fileset dir="${src.dir}">
                 <include name="**/*.*"/>
             </fileset>
