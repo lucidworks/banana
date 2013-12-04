@@ -47,32 +47,45 @@ function (angular, _, config, moment) {
         // TODO: Solr has no concept of indices, instead it uses Core to store data.
         // How I gonna implement this?
         // url: config.elasticsearch + "/_aliases",
-        url: config.solr + "/schema/fields",
+        // url: config.solr + "/schema/fields",
+        // NOTE: Hard-coded to start -10YEARS from NOW
+        url: config.solr + "/select?q=*:*&wt=json&rows=0&omitHeader=true&facet=true&facet.range=logstash_timestamp&facet.range.start=NOW-10YEARS/DAY&facet.range.end=NOW&facet.range.gap=%2B1DAY&facet.mincount=1",
 
         method: "GET"
       }).error(function(data, status) {
         if(status === 0) {
-          alertSrv.set('Error',"**** Could not contact Solr at "+config.solr+
+          alertSrv.set('Error',"Could not contact Solr at "+config.solr+
             ". Please ensure that Solr is reachable from your system." ,'error');
         } else {
-          alertSrv.set('Error',"**** Could not reach "+config.solr+"/_aliases. If you"+
+          alertSrv.set('Error',"Could not reach "+config.solr+". If you"+
           " are using a proxy, ensure it is configured correctly",'error');
         }
       });
 
       return something.then(function(p) {
+        // DEBUG
+        console.log('kbnIndex LINE 67: p = '+p);console.log(p);
+
+        // var indices = [];
+        // _.each(p.data, function(v,k) {
+        //   indices.push(k);
+        //   // Also add the aliases. Could be expensive on systems with a lot of them
+        //   _.each(v.aliases, function(v, k) {
+        //     indices.push(k);
+        //   });
+        // });
         var indices = [];
-        _.each(p.data, function(v,k) {
-          indices.push(k);
-          // Also add the aliases. Could be expensive on systems with a lot of them
-          _.each(v.aliases, function(v, k) {
-            indices.push(k);
-          });
-        });
+        var timestamp_array = p.data.facet_counts.facet_ranges.logstash_timestamp.counts;
+        for (var i=0; i < timestamp_array.length; i=i+2) {
+          // extract and convert timestamp to YYYY.MM.DD
+          var t = timestamp_array[i].substr(0,10).replace(/-/g,'.');
+          indices.push('logstash-' + t);
+        };
 
-        // TODO: REMOVE this harded code later
-        indices = ['logstash-2013.11.12'];
-
+        // indices[] should be in this format
+        // indices = ['logstash-2013.11.25'];
+        // DEBUG
+        console.log('kbnIndex LINE 78: indices = '+indices);console.log(indices);
         return indices;
       });
     }
