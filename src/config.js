@@ -23,6 +23,7 @@ function (Settings) {
     elasticsearch: "http://localhost:9200",
 
     // Which Solr's core store the logstash output?
+    solr_server: "http://localhost:8983/solr/",
     solr: "http://localhost:8983/solr/logstash_logs",
 
     /**
@@ -32,6 +33,7 @@ function (Settings) {
      */
      // TODO:
     kibana_index: "kibana-int",
+
 //    kibana_index: "banana-int",
     /**
      * Panel modules available. Panels will only be loaded when they are defined in the

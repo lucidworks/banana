@@ -48,12 +48,36 @@ angular.module('solrjs.service', [])
         return this;
       },
       post: function (path, data, successcb, errorcb) {
-        path = url + path;
-        var config = {
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded'
-          }
-        };
+        var config = {};
+        var isUpdate = path.indexOf('/update');
+        // DEBUG
+        console.log('LINE 54: path = '+path);
+        console.log('LINE 55: isUpdate = '+isUpdate);
+
+        if (isUpdate !== -1) {
+          // update request, meaning to save a dashboard to kibana-int collection.
+          // Need to modify path accordingly.
+          // TODO: Find a better way to implement this.
+          path = url.substr(0, url.indexOf('logstash_logs')) + 'kibana-int' + path;
+          config = { headers: {'Content-type':'application/json'} };
+        } else {
+          path = url + path;
+          config = { headers: {'Content-type':'application/x-www-form-urlencoded'} };
+        }
+
+        // DEBUG
+        console.log('LINE 69: url = '+url);
+        console.log('LINE 70: path = '+path);
+        console.log('LINE 71: data = '+data);console.log(data);
+
+        // var config = {
+        //   headers: {
+        //     'Content-type': 'application/x-www-form-urlencoded'
+        //   }
+        // };
+        // For update JSON
+        // 'Content-type': 'application/json'
+
         // return promiseThen($http.post(path, data), successcb, errorcb);
         return promiseThen($http.post(path, data, config), successcb, errorcb);
       },
@@ -79,6 +103,39 @@ angular.module('solrjs.service', [])
           (errorcb || angular.noop)(undefined);
           return undefined;
         });
+      },
+      post_solr: function (path, data, successcb, errorcb) {
+        var config = {};
+        var isUpdate = path.indexOf('/update');
+        // DEBUG
+        console.log('LINE 110: path = '+path);
+        console.log('LINE 111: isUpdate = '+isUpdate);
+
+        if (isUpdate !== -1) {
+          // update request, meaning to save a dashboard to kibana-int collection.
+          // Need to modify path accordingly.
+          // TODO: Find a better way to implement this.
+          path = url.substr(0, url.indexOf('logstash_logs')) + 'kibana-int' + path;
+          config = { headers: {'Content-type':'application/json'} };
+        } else {
+          path = url + path;
+          config = { headers: {'Content-type':'application/x-www-form-urlencoded'} };
+        }
+
+        // DEBUG
+        console.log('LINE 66: path = '+path);
+        console.log('LINE 67: data = '+data);console.log(data);
+
+        // var config = {
+        //   headers: {
+        //     'Content-type': 'application/x-www-form-urlencoded'
+        //   }
+        // };
+        // For update JSON
+        // 'Content-type': 'application/json'
+
+        // return promiseThen($http.post(path, data), successcb, errorcb);
+        return promiseThen($http.post(path, data, config), successcb, errorcb);
       }
     };
   

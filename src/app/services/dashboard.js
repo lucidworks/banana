@@ -49,6 +49,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     // An elasticJS client to use
     var ejs = ejsResource(config.elasticsearch);
     var sjs = sjsResource(config.solr);
+    // var sjs = sjsResource(config.solr_server);
 
     var gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;
 
@@ -237,6 +238,10 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     var renderTemplate = function(json,params) {
       var _r;
       _.templateSettings = {interpolate : /\{\{(.+?)\}\}/g};
+
+      // DEBUG
+      console.log('renderTemplate json = ');console.log(json);
+
       var template = _.template(json);
       var rendered = template({ARGS:params});
       try {
@@ -269,19 +274,34 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     // TODO: add solr support
     this.elasticsearch_load = function(type,id) {
       return $http({
-
-        // url: config.elasticsearch + "/" + config.kibana_index + "/"+type+"/"+id,
-        url: config.solr + "/schema/fields",
-
-        method: "GET",
         // TODO:
+        // url: config.elasticsearch + "/" + config.kibana_index + "/"+type+"/"+id,
+        // url: config.solr + "/schema/fields",
+        url: config.solr_server + config.kibana_index + "/select?wt=json&q=title:" + id,
+        method: "GET",
         transformResponse: function(response) {
-          return renderTemplate(angular.fromJson(response)._source.dashboard, $routeParams);
+          // DEBUG
+          console.log('type = '+type);
+          console.log('id = '+id);
+
+          response = angular.fromJson(response);
+
+          console.log('response = ');console.log(response);
+          // console.log('_source = ' + response.response.docs[0]._source);
+
+          var parsed_source = response.response.docs[0]._source.replace(/"dashboard":"{/, '"dashboard":{');
+          parsed_source = parsed_source.replace(/}}"}$/, '}}}');
+          var source_json = angular.fromJson(parsed_source);
+
+          console.log('source_json = ');console.log(source_json);
+
+          // return renderTemplate(angular.fromJson(response)._source.dashboard, $routeParams);
+          return renderTemplate(JSON.stringify(source_json.dashboard), $routeParams);
         }
       }).error(function(data, status) {
         if(status === 0) {
-          alertSrv.set('Error',"!!!!  Could not contact Elasticsearch at "+config.solr+
-            ". Please ensure that Elasticsearch is reachable from your system." ,'error');
+          alertSrv.set('Error',"!!!!  Could not contact Solr at "+config.solr+
+            ". Please ensure that Solr is reachable from your system." ,'error');
         } else {
           alertSrv.set('Error',"!!!! Could not find "+id+". If you"+
             " are using a proxy, ensure it is configured correctly",'error');
@@ -315,8 +335,42 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       });
     };
 
-    // TODO: Maybe I need to write a function like this for Solr
-    //       this.solr_save = function()
+    // this.elasticsearch_save = function(type,title,ttl) {
+    //   // Clone object so we can modify it without influencing the existing obejct
+    //   var save = _.clone(self.current);
+    //   var id;
+
+    //   // Change title on object clone
+    //   if (type === 'dashboard') {
+    //     id = save.title = _.isUndefined(title) ? self.current.title : title;
+    //   }
+
+    //   // Create request with id as title. Rethink this.
+    //   // TODO:
+    //   var request = ejs.Document(config.kibana_index,type,id).source({
+    //     user: 'guest',
+    //     group: 'guest',
+    //     title: save.title,
+    //     dashboard: angular.toJson(save)
+    //   });
+
+    //   request = type === 'temp' && ttl ? request.ttl(ttl) : request;
+
+    //   return request.doIndex(
+    //     // Success
+    //     function(result) {
+    //       if(type === 'dashboard') {
+    //         $location.path('/dashboard/elasticsearch/'+title);
+    //       }
+    //       return result;
+    //     },
+    //     // Failure
+    //     function() {
+    //       return false;
+    //     }
+    //   );
+    // };
+    // TODO: Rename to solr_save
     this.elasticsearch_save = function(type,title,ttl) {
       // Clone object so we can modify it without influencing the existing obejct
       var save = _.clone(self.current);
@@ -329,7 +383,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
       // Create request with id as title. Rethink this.
       // TODO:
-      var request = ejs.Document(config.kibana_index,type,id).source({
+      var request = sjs.Document(config.kibana_index,type,id).source({
         user: 'guest',
         group: 'guest',
         title: save.title,
@@ -355,7 +409,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
     // TODO: add solr support
     this.elasticsearch_delete = function(id) {
-      return ejs.Document(config.kibana_index,'dashboard',id).doDelete(
+      return sjs.Document(config.kibana_index,'dashboard',id).doDelete(
         // Success
         function(result) {
           return result;
@@ -369,9 +423,15 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
     // TODO: add solr support
     this.elasticsearch_list = function(query,count) {
-      var request = ejs.Request().indices(config.kibana_index).types('dashboard');
+      // DEBUG
+      console.log('LINE 411: query = '+query);
+      console.log('LINE 412: count = '+count);
+
+      // set indices and type
+      sjs.client.server(config.solr_server + config.kibana_index);
+      var request = sjs.Request().indices(config.kibana_index).types('dashboard');
       return request.query(
-        ejs.QueryStringQuery(query || '*')
+        sjs.QueryStringQuery(query || '*:*')
         ).size(count).doSearch(
           // Success
           function(result) {
@@ -382,6 +442,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             return false;
           }
         );
+      // return request.query(
+      //   sjs.QueryStringQuery(query || '*:*')
+      //   ).size(count).doListDashboard();
     };
 
     this.save_gist = function(title,dashboard) {

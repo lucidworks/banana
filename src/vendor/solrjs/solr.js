@@ -8808,7 +8808,7 @@
             */
       doGet: function (successcb, errorcb) {
         // make sure the user has set a client
-        if (ejs.client == null) {
+        if (sjs.client == null) {
           throw new Error("No Client Set");
         }
         
@@ -8821,21 +8821,21 @@
         // params as the data
         var url = '/' + index + '/' + type + '/' + id;
         
-        return ejs.client.get(url, genClientParams(), successcb, errorcb);
+        return sjs.client.get(url, genClientParams(), successcb, errorcb);
       },
 
       /**
             <p>Stores a document in the given index and type.  If no id 
             is set, one is created during indexing.</p>
 
-            @member ejs.Document
+            @member sjs.Document
             @param {Function} successcb A callback function that handles the response.
             @param {Function} errorcb A callback function that handles errors.
             @returns {Object} The return value is dependent on client implementation.
             */
       doIndex: function (successcb, errorcb) {
         // make sure the user has set a client
-        if (ejs.client == null) {
+        if (sjs.client == null) {
           throw new Error("No Client Set");
         }
         
@@ -8847,26 +8847,38 @@
           throw new Error('No source document found');
         }
         
-        var url = '/' + index + '/' + type,
+        // var url = '/' + index + '/' + type,
+        //   data = JSON.stringify(params.source),
+        //   paramStr = genParamStr(),
+        //   response;
+        // DEBUG
+        console.log('solrjs LINE 8855: params.source = '+params.source);console.log(params.source);
+
+        var url = '/update?commit=true',
           data = JSON.stringify(params.source),
           paramStr = genParamStr(),
           response;
           
-        if (id != null) {
-          url = url + '/' + id;
-        }
+        // if (id != null) {
+        //   url = url + '/' + id;
+        // }
         
         if (paramStr !== '') {
           url = url + '?' + paramStr;
         }
         
-        // do post if id not set so one is created
-        if (id == null) {
-          response = ejs.client.post(url, data, successcb, errorcb);
-        } else {
-          // put when id is specified
-          response = ejs.client.put(url, data, successcb, errorcb);
-        }
+        // DEBUG
+        console.log('solrjs LINE 8870: url = '+url);
+        console.log('solrjs LINE 8871: data = '+data);
+
+        // // do post if id not set so one is created
+        // if (id == null) {
+        //   response = sjs.client.post(url, data, successcb, errorcb);
+        // } else {
+        //   // put when id is specified
+        //   response = sjs.client.put(url, data, successcb, errorcb);
+        // }
+        response = sjs.client.post(url, data, successcb, errorcb);
         
         return response;
       },
@@ -18398,6 +18410,7 @@
             @returns {Object} Returns a client specific object.
             */
       doSearch: function (successcb, errorcb) {
+        // DEBUG
         console.log('doSearch(): query = ');console.log(query);
         // TODO: Need to use "for loop" to construct query
         // TODO: Default searching fields should be defined in Solr instead of hard code here.
@@ -18419,19 +18432,38 @@
         
         var queryData = '';
 
-        if (query.query !== undefined) {
-          queryData = 'q=' + query.query.filtered.query.bool.should[0].query_string.query + df + wt_json + rows_limit;
-        } else if (query.facets[0] !== undefined) {
+        if (query.query !== undefined && query.query.filtered !== undefined) {
+          // For table module: we use fq to filter result set
+          var start_time = '';
+          var end_time = '';
+          if (query.query.filtered.filter.bool.must[1].range !== undefined) {
+            start_time = new Date(query.query.filtered.filter.bool.must[1].range.logstash_timestamp.from).toISOString();
+            end_time = new Date(query.query.filtered.filter.bool.must[1].range.logstash_timestamp.to).toISOString();
+          }
+          var fq = '&fq=logstash_timestamp:[' + start_time + '%20TO%20' + end_time + ']';
+          var q_str = query.query.filtered.query.bool.should[0].query_string.query;
+          queryData = 'q=' + q_str + df + wt_json + rows_limit + fq;
+        } else if (query.facets !== undefined && query.facets[0] !== undefined) {
           // For histogram module: query.facets[] array case
-          var facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range.logstash_timestamp.from).toISOString();
-          var facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range.logstash_timestamp.to).toISOString();
+          var facet_start = '';
+          var facet_end = '';
+          if (query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range !== undefined) {
+            facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range.logstash_timestamp.from).toISOString();
+            facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range.logstash_timestamp.to).toISOString();
+          } else if (query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range !== undefined) {
+            facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range.logstash_timestamp.from).toISOString();
+            facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range.logstash_timestamp.to).toISOString();
+          } else {
+            throw new Error("Time range undefined");
+          }
           // TODO: need to format facet_gap for Solr dynamically, based on user's input from histogram
           // var facet_gap = query.facets.0.date_histogram.interval; 
-          var facet_gap = '%2B1DAY'
-          var facet = '&facet=true&' +
-                      'facet.range=logstash_timestamp' +
-                      '&facet.range.start=' + facet_start +
-                      '&facet.range.end=' + facet_end +
+          // Need to add +1DAY to facet.range.end to be inclusive range search.
+          var facet_gap = '%2B1DAY';
+          var facet = '&facet=true' +
+                      '&facet.range=logstash_timestamp' +
+                      '&facet.range.start=' + facet_start + '/DAY' +
+                      '&facet.range.end=' + facet_end + '%2B1DAY/DAY' +
                       '&facet.range.gap=' + facet_gap;
           var q_str = query.facets[0].facet_filter.fquery.query.filtered.query.query_string.query;
           queryData = 'q=' + q_str + df + wt_json + rows_limit + facet;
@@ -18443,7 +18475,7 @@
           // TODO: need to format facet_gap for Solr dynamically, based on user's input from histogram
           // var facet_gap = query.facets.0.date_histogram.interval;
           var facet_term = query.facets.terms.terms.field;
-          var facet_gap = '%2B1DAY'
+          var facet_gap = '%2B1DAY';
           var facet = '&facet=true' +
                       '&facet.field=' + facet_term +
                       '&facet.range=logstash_timestamp' +
@@ -18451,6 +18483,9 @@
                       '&facet.range.end=' + facet_end +
                       '&facet.range.gap=' + facet_gap;
           queryData = 'q=' + q_str + df + wt_json + rows_limit + facet;
+        } else if (query.query.query_string !== undefined) {
+          // For loading dashboard from json files
+          queryData = 'q=' + query.query.query_string.query + wt_json;
         } else {
           throw new Error("Unsupported Solr Query");
         }

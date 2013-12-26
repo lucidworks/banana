@@ -201,7 +201,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
         var facet = $scope.sjs.DateHistogramFacet(id);
         // DEBUG
-        console.log('histogram LINE 204: facet = '+facet);console.log(facet);
+        // console.log('histogram LINE 204: facet = '+facet);console.log(facet);
 
         if($scope.panel.mode === 'count') {
           facet = facet.field($scope.panel.time_field);

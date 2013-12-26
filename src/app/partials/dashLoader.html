@@ -27,11 +27,11 @@
       </form>
     </li>
     <li ng-show='loader.load_elasticsearch'>
-      <h5>Elasticsearch</h5>
+      <h5>Solr</h5>
       <form>
         <input type="text" ng-model="elasticsearch.query" ng-change="elasticsearch_dblist('title:'+elasticsearch.query+'*')" placeholder="Type to filter"/>
       </form>
-      <h6 ng-show="elasticsearch.dashboards.length">Elasticsearch stored dashboards</h6>
+      <h6 ng-show="elasticsearch.dashboards.length">Solr stored dashboards</h6>
       <h6 ng-hide="elasticsearch.dashboards.length">No dashboards matching your query found</h6>
       <table class="table table-condensed table-striped">
         <tr ng-repeat="row in elasticsearch.dashboards | orderBy:['_id']">
@@ -65,7 +65,7 @@
       <small ng-show="gist.last">Last gist: <a target="_blank" href="{{gist.last}}">{{gist.last}}</a></small>
     </li>
     <li ng-show="loader.save_elasticsearch">
-      <h5>Elasticsearch</h5>
+      <h5>Solr</h5>
       <form class="input-append">
         <input class='input-medium' placeholder="{{dashboard.current.title}}" type="text" ng-model="elasticsearch.title"/>
         <button class="btn" ng-click="elasticsearch_save('dashboard')"><i class="icon-save"></i></button>

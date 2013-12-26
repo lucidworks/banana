@@ -118,10 +118,18 @@ function(angular, app, _) {
     $scope.elasticsearch_dblist = function(query) {
       dashboard.elasticsearch_list(query,$scope.panel.elasticsearch_size).then(
         function(result) {
-        if(!_.isUndefined(result.hits)) {
-          $scope.panel.error =  false;
-          $scope.hits = result.hits.total;
-          $scope.elasticsearch.dashboards = result.hits.hits;
+          // DEBUG
+          console.log("result = "+result);console.log(result);
+
+        // if(!_.isUndefined(result.hits)) {
+        //   $scope.panel.error =  false;
+        //   $scope.hits = result.hits.total;
+        //   $scope.elasticsearch.dashboards = result.hits.hits;
+        // }
+        if (!_.isUndefined(result.response.docs)) {
+          $scope.panel.error = false;
+          $scope.hits = result.response.numFound;
+          $scope.elasticsearch.dashboards = result.response.docs;
         }
       });
     };

@@ -14,7 +14,9 @@ function (angular, _) {
       $scope.gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;
       $scope.gist = $scope.gist || {};
       $scope.elasticsearch = $scope.elasticsearch || {};
-      $scope.solr = $scope.solr || {};
+      // $scope.elasticsearch is used throught out this file, dashLoader.html and others.
+      // So we'll keep using it for now before refactoring it to $scope.solr.
+      // $scope.solr = $scope.solr || {};
     };
 
     $scope.showDropdown = function(type) {
@@ -56,17 +58,18 @@ function (angular, _) {
       ).then(
         function(result) {
         if(!_.isUndefined(result._id)) {
-          alertSrv.set('Dashboard Saved','This dashboard has been saved to Elasticsearch as "' +
+          alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
             result._id + '"','success',5000);
           if(type === 'temp') {
             $scope.share = dashboard.share_link(dashboard.current.title,'temp',result._id);
           }
         } else {
-          alertSrv.set('Save failed','Dashboard could not be saved to Elasticsearch','error',5000);
+          alertSrv.set('Save failed','Dashboard could not be saved to Solr','error',5000);
         }
       });
     };
 
+    // TODO
     $scope.elasticsearch_delete = function(id) {
       dashboard.elasticsearch_delete(id).then(
         function(result) {
@@ -77,7 +80,7 @@ function (angular, _) {
               var toDelete = _.where($scope.elasticsearch.dashboards,{_id:id})[0];
               $scope.elasticsearch.dashboards = _.without($scope.elasticsearch.dashboards,toDelete);
             } else {
-              alertSrv.set('Dashboard Not Found','Could not find '+id+' in Elasticsearch','warning',5000);
+              alertSrv.set('Dashboard Not Found','Could not find '+id+' in Solr','warning',5000);
             }
           } else {
             alertSrv.set('Dashboard Not Deleted','An error occurred deleting the dashboard','error',5000);
@@ -86,12 +89,20 @@ function (angular, _) {
       );
     };
 
+    // TODO
     $scope.elasticsearch_dblist = function(query) {
       dashboard.elasticsearch_list(query,$scope.loader.load_elasticsearch_size).then(
         function(result) {
-        if(!_.isUndefined(result.hits)) {
-          $scope.hits = result.hits.total;
-          $scope.elasticsearch.dashboards = result.hits.hits;
+          // DEBUG
+          console.log("LINE 96: result = "+result);console.log(result);
+
+        // if(!_.isUndefined(result.hits)) {
+        //   $scope.hits = result.hits.total;
+        //   $scope.elasticsearch.dashboards = result.hits.hits;
+        // }
+        if (!_.isUndefined(result.response.docs)) {
+          $scope.hits = result.response.numFound;
+          $scope.elasticsearch.dashboards = result.response.docs;
         }
       });
     };
