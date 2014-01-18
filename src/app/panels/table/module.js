@@ -205,6 +205,11 @@ function (angular, app, _, kbn, moment, config) {
       // DEBUG
       console.log('table Line 204: dashboard.indices[_segment] = ');console.log(dashboard.indices[_segment]);
 
+      // set sjs to query 'logstash_logs' collection
+      $scope.sjs.client.server(config.solr);
+      // DEBUG
+      // console.log('config.solr = '+config.solr);
+
       var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
       var boolQuery = $scope.sjs.BoolQuery();
       _.each($scope.panel.queries.ids,function(id) {

@@ -57,11 +57,17 @@ function (angular, _) {
         ($scope.loader.save_temp_ttl_enable ? ttl : false)
       ).then(
         function(result) {
-        if(!_.isUndefined(result._id)) {
-          alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
-            result._id + '"','success',5000);
+        // DEBUG
+        console.log('result = ');console.log(result);
+
+        // if(!_.isUndefined(result._id)) {          
+        //   alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
+        //     result._id + '"','success',5000);
+        if(!_.isUndefined(result.response.docs[0]._id)) {
+        alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
+          result.response.docs[0]._id + '"','success',5000);
           if(type === 'temp') {
-            $scope.share = dashboard.share_link(dashboard.current.title,'temp',result._id);
+            $scope.share = dashboard.share_link(dashboard.current.title,'temp',result.response.docs[0]._id);
           }
         } else {
           alertSrv.set('Save failed','Dashboard could not be saved to Solr','error',5000);

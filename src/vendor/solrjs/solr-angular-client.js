@@ -51,6 +51,7 @@ angular.module('solrjs.service', [])
         var config = {};
         var isUpdate = path.indexOf('/update');
         // DEBUG
+        console.log('LINE 53: url = '+url);
         console.log('LINE 54: path = '+path);
         console.log('LINE 55: isUpdate = '+isUpdate);
 
@@ -58,17 +59,18 @@ angular.module('solrjs.service', [])
           // update request, meaning to save a dashboard to kibana-int collection.
           // Need to modify path accordingly.
           // TODO: Find a better way to implement this.
-          path = url.substr(0, url.indexOf('logstash_logs')) + 'kibana-int' + path;
+          // path = url.substr(0, url.indexOf('logstash_logs')) + 'kibana-int' + path;
           config = { headers: {'Content-type':'application/json'} };
         } else {
-          path = url + path;
+          // path = url + path;
           config = { headers: {'Content-type':'application/x-www-form-urlencoded'} };
         }
-
+        path = url + path;
+        
         // DEBUG
         console.log('LINE 69: url = '+url);
         console.log('LINE 70: path = '+path);
-        console.log('LINE 71: data = '+data);console.log(data);
+        console.log('LINE 71: data = ');console.log(data);
 
         // var config = {
         //   headers: {

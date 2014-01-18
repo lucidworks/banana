@@ -8851,6 +8851,11 @@
         //   data = JSON.stringify(params.source),
         //   paramStr = genParamStr(),
         //   response;
+
+        // Need to convert params.source to an array of a JSON obj, so it can be indexed by Solr.
+        // Otherwise, SolrException "Unknown Command" will occur.
+        params.source = [params.source];
+
         // DEBUG
         console.log('solrjs LINE 8855: params.source = '+params.source);console.log(params.source);
 
@@ -8878,6 +8883,8 @@
         //   // put when id is specified
         //   response = sjs.client.put(url, data, successcb, errorcb);
         // }
+
+        
         response = sjs.client.post(url, data, successcb, errorcb);
         
         return response;
@@ -18434,8 +18441,8 @@
 
         if (query.query !== undefined && query.query.filtered !== undefined) {
           // For table module: we use fq to filter result set
-          var start_time = '';
-          var end_time = '';
+          var start_time = '*';
+          var end_time = '*';
           if (query.query.filtered.filter.bool.must[1].range !== undefined) {
             start_time = new Date(query.query.filtered.filter.bool.must[1].range.logstash_timestamp.from).toISOString();
             end_time = new Date(query.query.filtered.filter.bool.must[1].range.logstash_timestamp.to).toISOString();
@@ -20092,7 +20099,8 @@
 
   // run in noConflict mode
   sjs.noConflict = function () {
-    root.ejs = _ejs;
+    // root.ejs = _ejs;
+    root.sjs = _sjs;
     return this;
   };
   

@@ -86,6 +86,7 @@ function (angular, $, _, appLevelRequire) {
   // Solr rejects the preflight request, so I have to remove the header.
   // NOTE: The 'X-Requested-With' header has been removed in Angular 1.1.x
   app.config(['$httpProvider', function($httpProvider) {
+    $httpProvider.defaults.useXDomain = true;
     delete $httpProvider.defaults.headers.common["X-Requested-With"];
   }]);
   

@@ -286,17 +286,22 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
           response = angular.fromJson(response);
 
+          // DEBUG
           console.log('response = ');console.log(response);
           // console.log('_source = ' + response.response.docs[0]._source);
 
-          var parsed_source = response.response.docs[0]._source.replace(/"dashboard":"{/, '"dashboard":{');
-          parsed_source = parsed_source.replace(/}}"}$/, '}}}');
-          var source_json = angular.fromJson(parsed_source);
+          // TODO
+          // var parsed_source = response.response.docs[0]._source.replace(/"dashboard":"{/, '"dashboard":{');
+          // parsed_source = parsed_source.replace(/}}"}$/, '}}}');
+          // var source_json = angular.fromJson(parsed_source);
+          var source_json = angular.fromJson(response.response.docs[0].dashboard);
 
+          // DEBUG
           console.log('source_json = ');console.log(source_json);
 
           // return renderTemplate(angular.fromJson(response)._source.dashboard, $routeParams);
-          return renderTemplate(JSON.stringify(source_json.dashboard), $routeParams);
+          // return renderTemplate(JSON.stringify(source_json.dashboard), $routeParams);
+          return renderTemplate(JSON.stringify(source_json), $routeParams);
         }
       }).error(function(data, status) {
         if(status === 0) {
@@ -381,9 +386,13 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         id = save.title = _.isUndefined(title) ? self.current.title : title;
       }
 
+      // DEBUG
+      // console.log('id for saving dashboard = '+id);
+
       // Create request with id as title. Rethink this.
       // TODO:
       var request = sjs.Document(config.kibana_index,type,id).source({
+        _id: id,
         user: 'guest',
         group: 'guest',
         title: save.title,
@@ -391,6 +400,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       });
 
       request = type === 'temp' && ttl ? request.ttl(ttl) : request;
+
+      // set sjs.client.server to use 'kibana-int' for saving dashboard
+      sjs.client.server(config.solr_server + config.kibana_index);
 
       return request.doIndex(
         // Success
@@ -430,6 +442,11 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       // set indices and type
       sjs.client.server(config.solr_server + config.kibana_index);
       var request = sjs.Request().indices(config.kibana_index).types('dashboard');
+
+      // Need to set sjs.client.server back to use 'logstash_logs' collection
+      // But cannot do it here, it will interrupt other modules.
+      // sjs.client.server(config.solr);
+
       return request.query(
         sjs.QueryStringQuery(query || '*:*')
         ).size(count).doSearch(
@@ -442,9 +459,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             return false;
           }
         );
-      // return request.query(
-      //   sjs.QueryStringQuery(query || '*:*')
-      //   ).size(count).doListDashboard();
+      
     };
 
     this.save_gist = function(title,dashboard) {

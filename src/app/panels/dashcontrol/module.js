@@ -84,14 +84,19 @@ function(angular, app, _) {
         ($scope.panel.ttl_enable ? ttl : false)
       ).then(
         function(result) {
+          
+        // DEBUG
+        console.log('result = ');console.log(result);
+
+        // TODO
         if(!_.isUndefined(result._id)) {
-          alertSrv.set('Dashboard Saved','This dashboard has been saved to Elasticsearch as "' +
+          alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
             result._id + '"','success',5000);
           if(type === 'temp') {
             $scope.share = dashboard.share_link(dashboard.current.title,'temp',result._id);
           }
         } else {
-          alertSrv.set('Save failed','Dashboard could not be saved to Elasticsearch','error',5000);
+          alertSrv.set('Save failed','Dashboard could not be saved to Solr','error',5000);
         }
       });
     };
@@ -106,7 +111,7 @@ function(angular, app, _) {
               var toDelete = _.where($scope.elasticsearch.dashboards,{_id:id})[0];
               $scope.elasticsearch.dashboards = _.without($scope.elasticsearch.dashboards,toDelete);
             } else {
-              alertSrv.set('Dashboard Not Found','Could not find '+id+' in Elasticsearch','warning',5000);
+              alertSrv.set('Dashboard Not Found','Could not find '+id+' in Solr','warning',5000);
             }
           } else {
             alertSrv.set('Dashboard Not Deleted','An error occurred deleting the dashboard','error',5000);

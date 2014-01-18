@@ -34,6 +34,7 @@ define([
   'underscore',
   'kbn',
   'moment',
+  'config',
   './timeSeries',
 
   'jquery.flot',
@@ -43,7 +44,7 @@ define([
   'jquery.flot.stack',
   'jquery.flot.stackpercent'
 ],
-function (angular, app, $, _, kbn, moment, timeSeries) {
+function (angular, app, $, _, kbn, moment, config, timeSeries) {
 
   'use strict';
 
@@ -189,8 +190,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       $scope.panelMeta.loading = true;
 
-      var request = $scope.sjs.Request().indices(dashboard.indices[segment]);
+      // set sjs to query 'logstash_logs' collection
+      $scope.sjs.client.server(config.solr);
 
+      var request = $scope.sjs.Request().indices(dashboard.indices[segment]);
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
       // Build the query
       _.each($scope.panel.queries.ids, function(id) {
@@ -238,7 +241,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
         // Check for error and abort if found
         if(!(_.isUndefined(results.error))) {
-          $scope.panel.error = $scope.parse_error(results.error);
+          // $scope.panel.error = $scope.parse_error(results.error);
+          $scope.panel.error = $scope.parse_error(results.error.msg);
           return;
         }
 
