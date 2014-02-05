@@ -48,6 +48,8 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
 
   'use strict';
 
+  var DEBUG = true; // DEBUG mode
+
   var module = angular.module('kibana.panels.histogram', []);
   app.useModule(module);
 
@@ -203,8 +205,11 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
         );
 
         var facet = $scope.sjs.DateHistogramFacet(id);
-        // DEBUG
-        // console.log('histogram LINE 204: facet = '+facet);console.log(facet);
+        
+        if (DEBUG) {
+          console.log('histogram: facet = '+facet);
+          console.log(facet);
+        }       
 
         if($scope.panel.mode === 'count') {
           facet = facet.field($scope.panel.time_field);
@@ -262,11 +267,13 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
             hits;
 
           _.each($scope.panel.queries.ids, function(id) {
-            // TODO
             // var query_results = results.facets[id];
             var query_results = results.facet_counts;
-            // DEBUG
-            console.log('histogram LINE 265: query_results = '+query_results);console.log(query_results);
+
+            if (DEBUG) {
+              console.log('histogram: query_results = '+query_results);
+              console.log(query_results);  
+            }
 
             // we need to initialize the data variable on the first run,
             // and when we are working on the first segment of the data.

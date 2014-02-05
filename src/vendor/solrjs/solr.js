@@ -11,6 +11,8 @@
   'use strict';
 
   var 
+    // DEBUG mode
+    DEBUG = true,
 
     // save reference to global object
     // `window` in browser
@@ -189,6 +191,29 @@
     return (isEJSObject(obj) && obj._type() === 'generator');
   };
   
+  // Solr utility methods
+  var convertFacetGap = function (gap) {
+    // Need to prepend '+' to gap
+    switch(true) {
+      case (gap.charAt(gap.length-1) == 's'):
+        return '%2B' + gap.replace('s', 'SECOND');
+      case (gap.charAt(gap.length-1) == 'm'):
+        return '%2B' + gap.replace('m', 'MINUTE');
+      case (gap.charAt(gap.length-1) == 'h'):
+        return '%2B' + gap.replace('h', 'HOUR');
+      case (gap.charAt(gap.length-1) == 'd'):
+        return '%2B' + gap.replace('d', 'DAY');
+      case (gap.charAt(gap.length-1) == 'w'):
+        // multiply a week by 7 days
+        num_days = gap.substring(0, gap.length-1) * 7;
+        return '%2B' + num_days + 'DAY';
+      case (gap.charAt(gap.length-1) == 'M'):
+        return '%2B' + gap.replace('M', 'MONTH');
+      case (gap.charAt(gap.length-1) == 'y'):
+        return '%2B' + gap.replace('y', 'YEAR');
+    }
+  };
+
   /**
     @class
     <p>The DateHistogram facet works with time-based values by building a histogram across time
@@ -18417,8 +18442,6 @@
             @returns {Object} Returns a client specific object.
             */
       doSearch: function (successcb, errorcb) {
-        // DEBUG
-        console.log('doSearch(): query = ');console.log(query);
         // TODO: Need to use "for loop" to construct query
         // TODO: Default searching fields should be defined in Solr instead of hard code here.
         // Default fields for searching.
@@ -18436,10 +18459,15 @@
         // &facet=true&facet.range=logstash_event_timestamp&facet.range.start=2013-10-01T00:00:00Z&facet.range.end=NOW&facet.range.gap=%2B1DAY
         // var facet_field = query.facets.0.date_histogram.field;
 
-        
         var queryData = '';
 
         if (query.query !== undefined && query.query.filtered !== undefined) {
+          // DEBUG
+          if (DEBUG) {
+            console.log('\tFor table module doSearch(): query = ');
+            console.log(query);
+          }
+
           // For table module: we use fq to filter result set
           var start_time = '*';
           var end_time = '*';
@@ -18451,6 +18479,12 @@
           var q_str = query.query.filtered.query.bool.should[0].query_string.query;
           queryData = 'q=' + q_str + df + wt_json + rows_limit + fq;
         } else if (query.facets !== undefined && query.facets[0] !== undefined) {
+          // DEBUG
+          if (DEBUG) {
+            console.log('\tFor histogram module doSearch(): query = ');
+            console.log(query);
+          }
+
           // For histogram module: query.facets[] array case
           var facet_start = '';
           var facet_end = '';
@@ -18466,7 +18500,30 @@
           // TODO: need to format facet_gap for Solr dynamically, based on user's input from histogram
           // var facet_gap = query.facets.0.date_histogram.interval; 
           // Need to add +1DAY to facet.range.end to be inclusive range search.
-          var facet_gap = '%2B1DAY';
+          // var facet_gap = '%2B1DAY';
+          var facet_gap = query.facets[0].date_histogram.interval; // e.g. 1s,1m,1h,1d,1w,1M,1y
+          // TODO - implement dynamic facet field, remove hard code "logstash_timestamp" field
+          var histogram_field = query.facets[0].date_histogram.field; // "logstash_timestamp"
+
+          if (DEBUG) {
+            console.log('\tfacet_gap = ' + facet_gap + '\n\thistogram_field = ' + histogram_field);
+          }
+
+          // convert facet_gap to Solr compatible format
+          // switch(true) {
+          //   case (facet_gap.charAt(facet_gap.length-1) == 'h'):
+          //     facet_gap = facet_gap.replace('h', 'HOUR');
+
+          // }
+          // // prepend '+' to facet_gap
+          // facet_gap = '%2B' + facet_gap;
+          facet_gap = convertFacetGap(facet_gap);
+
+
+          if (DEBUG) {
+            console.log('\tconverted facet_gap = ' + facet_gap);
+          }
+
           var facet = '&facet=true' +
                       '&facet.range=logstash_timestamp' +
                       '&facet.range.start=' + facet_start + '/DAY' +
@@ -18475,6 +18532,12 @@
           var q_str = query.facets[0].facet_filter.fquery.query.filtered.query.query_string.query;
           queryData = 'q=' + q_str + df + wt_json + rows_limit + facet;
         } else if (query.facets !== undefined) {
+          // DEBUG
+          if (DEBUG) {
+            console.log('\tFor terms module doSearch(): query =');
+            console.log(query);
+          }
+
           // For terms module: query.facets object case (not array)
           var facet_start = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range.logstash_timestamp.from).toISOString();
           var facet_end = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range.logstash_timestamp.to).toISOString();
