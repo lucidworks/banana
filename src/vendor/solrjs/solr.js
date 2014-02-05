@@ -18464,7 +18464,7 @@
         if (query.query !== undefined && query.query.filtered !== undefined) {
           // DEBUG
           if (DEBUG) {
-            console.log('\tFor table module doSearch(): query = ');
+            console.log('For table module doSearch(): query = ');
             console.log(query);
           }
 
@@ -18481,7 +18481,7 @@
         } else if (query.facets !== undefined && query.facets[0] !== undefined) {
           // DEBUG
           if (DEBUG) {
-            console.log('\tFor histogram module doSearch(): query = ');
+            console.log('For histogram module doSearch(): query = ');
             console.log(query);
           }
 
@@ -18532,9 +18532,8 @@
           var q_str = query.facets[0].facet_filter.fquery.query.filtered.query.query_string.query;
           queryData = 'q=' + q_str + df + wt_json + rows_limit + facet;
         } else if (query.facets !== undefined) {
-          // DEBUG
           if (DEBUG) {
-            console.log('\tFor terms module doSearch(): query =');
+            console.log('For terms module doSearch(): query =');
             console.log(query);
           }
 
@@ -18560,7 +18559,10 @@
           throw new Error("Unsupported Solr Query");
         }
 
-        console.log('queryData = '+queryData);
+        if (DEBUG) {
+          console.log('queryData = '+queryData);
+        }
+        
         // query = {};
         // query.q = queryData;
         // query.wt = 'json';

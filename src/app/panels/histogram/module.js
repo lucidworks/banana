@@ -289,9 +289,7 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
               time_series = $scope.data[i].time_series;
               hits = $scope.data[i].hits;
             }
-            // DEBUG
-            console.log('histogram LINE 282: time_series = '+time_series);console.log(time_series);
-
+            
             // push each entry into the time series, while incrementing counters
             // _.each(query_results.entries, function(entry) {
             //   time_series.addValue(entry.time, entry[$scope.panel.mode]);
@@ -300,12 +298,23 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
             // });
             
             var entry = query_results.facet_ranges.logstash_timestamp.counts;
+
+            if (DEBUG) {
+              console.log('histogram: time_series = '+time_series);
+              console.log(time_series);
+              console.log('histogram: entry =');
+              console.log(entry);
+              console.log('histogram: hits = '+hits+', $scope.hits = '+$scope.hits);
+            }
+
             for (var j = 0; j < entry.length; j++) {
               var entry_time = new Date(entry[j]).getTime(); // convert to millisec
               j++; // Solr facet counts response is in one big Array.
               var entry_count = entry[j];
-              // DEBUG
-              // console.log('histogram LINE 302: entry_time = '+entry_time+'histogram LINE 302: entry_count = '+entry_count);
+              if (DEBUG) {
+                console.log('histogram: entry_time = '+entry_time+', entry_count = '+entry_count);
+                console.log('\thits = '+hits+', $scope.hits = '+$scope.hits);
+              }
               time_series.addValue(entry_time, entry_count);
               hits += entry_count; // The series level hits counter
               $scope.hits += entry_count; // Entire dataset level hits counter
@@ -319,9 +328,13 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
 
             i++;
           });
-          // DEBUG
-          console.log('histogram LINE 312: $scope.data = '+$scope.data);console.log($scope.data);
-          console.log('histogram LINE 313: $scope = '+$scope);console.log($scope);
+          
+          if (DEBUG) {
+            console.log('histogram LINE 312: $scope.data = '+$scope.data);
+            console.log($scope.data);
+            console.log('histogram LINE 313: $scope = '+$scope);
+            console.log($scope); 
+          }
 
           // Tell the histogram directive to render.
           $scope.$emit('render');

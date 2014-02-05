@@ -11,6 +11,9 @@ define([
 function (angular, $, kbn, _, config, moment, Modernizr) {
   'use strict';
 
+  // DEBUG mode
+  var DEBUG = true;
+
   var module = angular.module('kibana.services');
 
   module.service('dashboard', function($routeParams, $http, $rootScope, $injector, $location,
@@ -239,8 +242,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       var _r;
       _.templateSettings = {interpolate : /\{\{(.+?)\}\}/g};
 
-      // DEBUG
-      console.log('renderTemplate json = ');console.log(json);
+      if (DEBUG) {
+        // console.log('renderTemplate json = ');console.log(json);
+      }
 
       var template = _.template(json);
       var rendered = template({ARGS:params});
