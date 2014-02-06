@@ -30,6 +30,9 @@ define([
 function (angular, app, _, kbn, moment, config) {
   'use strict';
 
+  // DEBUG mode
+  var DEBUG = true;
+
   var module = angular.module('kibana.panels.table', []);
   app.useModule(module);
   module.controller('table', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
@@ -184,31 +187,24 @@ function (angular, app, _, kbn, moment, config) {
       if(dashboard.indices.length === 0) {
         return;
       }
-
       $scope.panelMeta.loading = true;
-      // TODO: Not sure here
-      // DEBUG
-      console.log('table Line 190: $scope = ');console.log($scope);
-      console.log('table Line 191: $scope.panel = '+$scope.panel);console.log($scope.panel);
-
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
 
       // What this segment is for? => to select which indices to query.
       var _segment = _.isUndefined(segment) ? 0 : segment;
       $scope.segment = _segment;
 
+      if(DEBUG) {
+        console.log('table begin of get_data(): $scope=',$scope,', $scope.panel=',$scope.panel,', _segment='+_segment,', dashboard.indices[_segment]=',dashboard.indices[_segment]);
+      }
+
       // TODO: Need to modify ejs.Request() for Solr. ejs methods request ejsObj
       //       isEJSObject() line 141 in elastic.js
       //       I have to replace ejs.Request() with solr.Request().
       //       The problem is I don't have Solr JS client lib to use one now.
 
-      // DEBUG
-      console.log('table Line 204: dashboard.indices[_segment] = ');console.log(dashboard.indices[_segment]);
-
       // set sjs to query 'logstash_logs' collection
       $scope.sjs.client.server(config.solr);
-      // DEBUG
-      // console.log('config.solr = '+config.solr);
 
       var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
       var boolQuery = $scope.sjs.BoolQuery();
@@ -232,8 +228,9 @@ function (angular, app, _, kbn, moment, config) {
 
       $scope.populate_modal(request);
 
-      // DEBUG
-      console.log('Line 234: request = '+request);console.log(request);
+      if (DEBUG) {
+        console.log('table: request=',request);
+      }
 
       // Need to modify request.query with Solr's params
       // request = request.query();
@@ -242,15 +239,20 @@ function (angular, app, _, kbn, moment, config) {
 
       // Populate scope when we have results
       results.then(function(results) {
-        // DEBUG
-        console.log('table LINE 241: results = ');console.log(results);
-
         $scope.panelMeta.loading = false;
 
         if(_segment === 0) {
           $scope.hits = 0;
           $scope.data = [];
           query_id = $scope.query_id = new Date().getTime();
+        } else {
+          // Fix BUG with wrong total event count.
+          $scope.data = [];
+        }
+
+        if(DEBUG) {
+          console.log('table: results=',results);
+          console.log('\t_segment='+_segment+', $scope.hits='+$scope.hits+', $scope.data=',$scope.data,', query_id='+query_id);
         }
 
         // Check for error and abort if found
@@ -263,7 +265,7 @@ function (angular, app, _, kbn, moment, config) {
         // Check that we're still on the same query, if not stop
         if($scope.query_id === query_id) {
           // $scope.data= $scope.data.concat(_.map(results.hits.hits, function(hit) {
-            $scope.data= $scope.data.concat(_.map(results.response.docs, function(hit) {
+            $scope.data = $scope.data.concat(_.map(results.response.docs, function(hit) {
             var _h = _.clone(hit);
             //_h._source = kbn.flatten_json(hit._source);
             //_h.highlight = kbn.flatten_json(hit.highlight||{});
@@ -288,19 +290,25 @@ function (angular, app, _, kbn, moment, config) {
             // console.log('table LINE 280: hit = '+hit);console.log(hit);
             // console.log('table LINE 281: hit_object = '+hit_object);console.log(hit_object);
 
-            _h.kibana = {
-              // _source : kbn.flatten_json(hit._source),
-              // highlight : kbn.flatten_json(hit.highlight||{})
-              
-              // _source : kbn.flatten_json(hit_object),
-              _source : kbn.flatten_json(hit),
-              highlight : kbn.flatten_json(hit.highlight||{})
-            };
-            return _h;
-          }));
+              _h.kibana = {
+                // _source : kbn.flatten_json(hit._source),
+                // highlight : kbn.flatten_json(hit.highlight||{})
+                
+                // _source : kbn.flatten_json(hit_object),
+                _source : kbn.flatten_json(hit),
+                highlight : kbn.flatten_json(hit.highlight||{})
+              };
+                return _h;
+            }));
 
+          // Solr does not need to accumulate hits count because it can get total count
+          // from a single faceted query.
           // $scope.hits += results.hits.total;
-          $scope.hits += results.response.numFound;
+          $scope.hits = results.response.numFound;
+
+          if (DEBUG) {
+            console.log('\t$scope.hits='+$scope.hits+', $scope.data=',$scope.data);
+          }
 
           // Sort the data
           $scope.data = _.sortBy($scope.data, function(v){
@@ -329,6 +337,10 @@ function (angular, app, _, kbn, moment, config) {
           !((_.contains(filterSrv.timeField(),$scope.panel.sort[0])) && $scope.panel.sort[1] === 'desc')) &&
           _segment+1 < dashboard.indices.length) {
           $scope.get_data(_segment+1,$scope.query_id);
+
+          if (DEBUG) {
+            console.log('\tnot sorting in reverse chrono order!');
+          }
         }
 
       });

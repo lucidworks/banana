@@ -235,8 +235,8 @@
             "default"
           ],
           "type": "table",
-          "size": 50,
-          "pages": 10,
+          "size": 100,
+          "pages": 100,
           "offset": 0,
           "sort": [
             "logstash_timestamp",
