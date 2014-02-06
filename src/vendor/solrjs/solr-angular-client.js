@@ -16,6 +16,9 @@ angular.module('solrjs.service', [])
 
   return function (url) {
 
+    // DEBUG mode
+    var DEBUG = true;
+
     var
 
       // use existing ejs object if it exists
@@ -50,10 +53,10 @@ angular.module('solrjs.service', [])
       post: function (path, data, successcb, errorcb) {
         var config = {};
         var isUpdate = path.indexOf('/update');
-        // DEBUG
-        console.log('LINE 53: url = '+url);
-        console.log('LINE 54: path = '+path);
-        console.log('LINE 55: isUpdate = '+isUpdate);
+
+        if(DEBUG) {
+          console.log('solr-angular-client: url='+url+', path='+path+', isUpdate='+isUpdate);
+        }
 
         if (isUpdate !== -1) {
           // update request, meaning to save a dashboard to kibana-int collection.
@@ -67,10 +70,9 @@ angular.module('solrjs.service', [])
         }
         path = url + path;
         
-        // DEBUG
-        console.log('LINE 69: url = '+url);
-        console.log('LINE 70: path = '+path);
-        console.log('LINE 71: data = ');console.log(data);
+        if(DEBUG) {
+          console.log('solr-angular-client: url='+url+', path='+path+', data=',data);
+        }
 
         // var config = {
         //   headers: {

@@ -18464,8 +18464,7 @@
         if (query.query !== undefined && query.query.filtered !== undefined) {
           // DEBUG
           if (DEBUG) {
-            console.log('For table module doSearch(): query = ');
-            console.log(query);
+            console.log('For table module doSearch(): query=',query);
           }
 
           // For table module: we use fq to filter result set
@@ -18481,8 +18480,7 @@
         } else if (query.facets !== undefined && query.facets[0] !== undefined) {
           // DEBUG
           if (DEBUG) {
-            console.log('For histogram module doSearch(): query = ');
-            console.log(query);
+            console.log('For histogram module doSearch(): query=',query);
           }
 
           // For histogram module: query.facets[] array case
@@ -18533,8 +18531,7 @@
           queryData = 'q=' + q_str + df + wt_json + rows_limit + facet;
         } else if (query.facets !== undefined) {
           if (DEBUG) {
-            console.log('For terms module doSearch(): query =');
-            console.log(query);
+            console.log('For terms module doSearch(): query=',query);
           }
 
           // For terms module: query.facets object case (not array)
@@ -18560,7 +18557,7 @@
         }
 
         if (DEBUG) {
-          console.log('queryData = '+queryData);
+          console.log('doSearch() queryData = '+queryData);
         }
         
         // query = {};

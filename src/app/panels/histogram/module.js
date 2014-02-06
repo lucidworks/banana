@@ -168,6 +168,9 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
      * array of objects with the properties info, time_series, and hits. These objects are used in the
      * render_panel function to create the historgram.
      *
+     * !!! Solr does not need to fetch the data in chunk because it uses a facet search and retrieve
+     * !!! all events from a single query.
+     *
      * @param {number} segment   The segment count, (0 based)
      * @param {number} query_id  The id of the query, generated on the first run and passed back when
      *                            this call is made recursively for more segments
@@ -195,6 +198,10 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
       // set sjs to query 'logstash_logs' collection
       $scope.sjs.client.server(config.solr);
 
+      if (DEBUG) {
+        console.log('histogram: dashboard=',dashboard,', $scope.panel.queries=',$scope.panel.queries,', $scope=',$scope);
+      }
+
       var request = $scope.sjs.Request().indices(dashboard.indices[segment]);
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
       // Build the query
@@ -206,10 +213,10 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
 
         var facet = $scope.sjs.DateHistogramFacet(id);
         
-        if (DEBUG) {
-          console.log('histogram: facet = '+facet);
-          console.log(facet);
-        }       
+        // if (DEBUG) {
+        //   console.log('histogram: facet = '+facet);
+        //   console.log(facet);
+        // }
 
         if($scope.panel.mode === 'count') {
           facet = facet.field($scope.panel.time_field);
@@ -221,8 +228,10 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
           facet = facet.keyField($scope.panel.time_field).valueField($scope.panel.value_field);
         }
         facet = facet.interval(_interval).facetFilter($scope.sjs.QueryFilter(query));
-        // DEBUG
-        console.log('histogram LINE 217: facet = '+facet);console.log(facet);
+        
+        if (DEBUG) {
+          console.log('histogram: facet='+facet);
+        }
 
         request = request.facet(facet).size(0);
       });
@@ -234,8 +243,9 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
 
       // Populate scope when we have results
       results.then(function(results) {
-        // DEBUG
-        console.log('histogram LINE 230: results = ');console.log(results);
+        if (DEBUG) {
+          console.log('histogram: results=',results);
+        }
 
         $scope.panelMeta.loading = false;
         if(segment === 0) {
@@ -256,9 +266,10 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
         // TODO: change this, Solr do faceting differently
         var facetIds = [0]; // Need to fix this
 
-        // DEBUG
-        // console.log('histogram LINE 245: results.facets = '+results.facets);console.log(results.facets);
-        // console.log('histogram LINE 246: facetIds = '+facetIds);console.log(facetIds);
+        if(DEBUG) {
+          // console.log('histogram LINE 245: results.facets = '+results.facets);console.log(results.facets);
+          // console.log('histogram LINE 246: facetIds = '+facetIds);console.log(facetIds);
+        }
 
         // Make sure we're still on the same query/queries
         if($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
@@ -271,8 +282,7 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
             var query_results = results.facet_counts;
 
             if (DEBUG) {
-              console.log('histogram: query_results = '+query_results);
-              console.log(query_results);  
+              console.log('histogram: i='+i+', query_results=',query_results,', segment=',segment,', $scope=',$scope);
             }
 
             // we need to initialize the data variable on the first run,
@@ -285,9 +295,20 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
                 fill_style: 'minimal'
               });
               hits = 0;
+              if (DEBUG) {
+                console.log('\tfirst run: i='+i+', time_series=',time_series);
+              }
             } else {
+              if (DEBUG) {
+                console.log('\tNot first run: i='+i+', $scope.data[i].time_series=',$scope.data[i].time_series,', hits='+$scope.data[i].hits);
+              }
               time_series = $scope.data[i].time_series;
-              hits = $scope.data[i].hits;
+              // Bug fix for wrong event count:
+              //   Solr don't need to accumulate hits count since it can get total count from facet query.
+              //   Therefore, I need to set hits and $scope.hits to zero.
+              // hits = $scope.data[i].hits;
+              hits = 0;
+              $scope.hits = 0;
             }
             
             // push each entry into the time series, while incrementing counters
@@ -300,20 +321,16 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
             var entry = query_results.facet_ranges.logstash_timestamp.counts;
 
             if (DEBUG) {
-              console.log('histogram: time_series = '+time_series);
-              console.log(time_series);
-              console.log('histogram: entry =');
-              console.log(entry);
-              console.log('histogram: hits = '+hits+', $scope.hits = '+$scope.hits);
+              console.log('histogram: time_series=',time_series,', entry=',entry,', hits='+hits,', $scope=',$scope);
             }
 
             for (var j = 0; j < entry.length; j++) {
               var entry_time = new Date(entry[j]).getTime(); // convert to millisec
               j++; // Solr facet counts response is in one big Array.
               var entry_count = entry[j];
-              if (DEBUG) {
-                console.log('histogram: entry_time = '+entry_time+', entry_count = '+entry_count);
-                console.log('\thits = '+hits+', $scope.hits = '+$scope.hits);
+              if (DEBUG && j < 5) {
+                // console.log('histogram: entry_time = '+entry_time+', entry_count = '+entry_count+'\thits = '+hits+', $scope.hits = '+$scope.hits);
+                console.log('\tj='+j+', entry_count='+entry_count+', hits='+hits+', $scope.hits='+$scope.hits);
               }
               time_series.addValue(entry_time, entry_count);
               hits += entry_count; // The series level hits counter
@@ -330,10 +347,7 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
           });
           
           if (DEBUG) {
-            console.log('histogram LINE 312: $scope.data = '+$scope.data);
-            console.log($scope.data);
-            console.log('histogram LINE 313: $scope = '+$scope);
-            console.log($scope); 
+            console.log('histogram: $scope.data=',$scope.data,', $scope=',$scope);
           }
 
           // Tell the histogram directive to render.
