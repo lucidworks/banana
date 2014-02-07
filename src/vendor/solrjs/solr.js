@@ -18452,7 +18452,7 @@
         if (query.size !== undefined && query.size !== 0) {
           rows_limit = '&rows=' + query.size;
         } else { // default to get 100 rows
-          rows_limit = '&rows=100';
+          rows_limit = '&rows=25';
         }
 
         // For histogram needs to add facet on logstash_event_timestamp
@@ -18528,7 +18528,13 @@
                       '&facet.range.end=' + facet_end + '%2B1DAY/DAY' +
                       '&facet.range.gap=' + facet_gap;
           var q_str = query.facets[0].facet_filter.fquery.query.filtered.query.query_string.query;
-          queryData = 'q=' + q_str + df + wt_json + rows_limit + facet;
+          
+            //Need to use fq to filter according to the specified time range-added by Ravi; 
+           // Different JSON hierarchy from Table Module, from and to captured in facet_start and facet_end           
+          
+          var fq = '&fq=logstash_timestamp:[' + facet_start + '%20TO%20' + facet_end + ']'; 
+          
+          queryData = 'q=' + q_str + df + wt_json + rows_limit + facet +fq;
         } else if (query.facets !== undefined) {
           if (DEBUG) {
             console.log('For terms module doSearch(): query=',query);
@@ -18548,7 +18554,13 @@
                       '&facet.range.start=' + facet_start +
                       '&facet.range.end=' + facet_end +
                       '&facet.range.gap=' + facet_gap;
-          queryData = 'q=' + q_str + df + wt_json + rows_limit + facet;
+                      
+           //Need to use fq to filter according to the specified time range-added by Ravi; 
+           // Different JSON hierarchy from Table Module, from and to captured in facet_start and facet_end           
+          
+          var fq = '&fq=logstash_timestamp:[' + facet_start + '%20TO%20' + facet_end + ']';  
+               
+          queryData = 'q=' + q_str + df + wt_json + rows_limit + facet + fq;
         } else if (query.query.query_string !== undefined) {
           // For loading dashboard from json files
           queryData = 'q=' + query.query.query_string.query + wt_json;

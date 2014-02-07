@@ -25,8 +25,8 @@
       ],
       "list": {
         "0": {
-          "from": "2013-10-22T08:11:30.779Z",
-          "to": "2013-11-21T08:11:30.779Z",
+          "from": "2014-02-06T20:42:49.790Z",
+          "to": "2014-02-07T20:42:49.790Z",
           "field": "logstash_timestamp",
           "type": "time",
           "mandate": "must",
@@ -69,59 +69,28 @@
             "7d",
             "30d"
           ],
-          "timespan": "30d",
+          "timespan": "24h",
           "timefield": "logstash_timestamp",
           "timeformat": "",
           "refresh": {
-            "enable": false,
-            "interval": 30,
+            "enable": true,
+            "interval": 600,
             "min": 3
           },
           "filter_id": 0,
           "status": "Stable"
-        }
-      ]
-    },
-    {
-      "title": "Query",
-      "height": "50px",
-      "editable": true,
-      "collapse": false,
-      "collapsable": true,
-      "panels": [
+        },
         {
-          "title": "Search",
           "error": false,
-          "span": 12,
+          "span": 6,
           "editable": true,
-          "group": [
-            "default"
-          ],
           "type": "query",
-          "label": "Search",
+          "loadingEditor": false,
+          "query": "*:*",
+          "pinned": true,
           "history": [],
           "remember": 10,
-          "pinned": true,
-          "query": "*:*"
-        }
-      ]
-    },
-    {
-      "title": "Filters",
-      "height": "50px",
-      "editable": true,
-      "collapse": true,
-      "collapsable": true,
-      "panels": [
-        {
-          "title": "dashboard filters",
-          "error": false,
-          "span": 12,
-          "editable": true,
-          "group": [
-            "default"
-          ],
-          "type": "filtering"
+          "title": "Search"
         }
       ]
     },
@@ -144,7 +113,7 @@
           "value_field": null,
           "auto_int": true,
           "resolution": 100,
-          "interval": "12h",
+          "interval": "10m",
           "fill": 3,
           "linewidth": 3,
           "timezone": "browser",
@@ -165,7 +134,7 @@
               0
             ]
           },
-          "title": "Events over time",
+          "title": "System Log Messages",
           "intervals": [
             "auto",
             "1s",
@@ -199,7 +168,7 @@
               0
             ]
           },
-          "field": "type",
+          "field": "syslog_program",
           "exclude": [],
           "missing": true,
           "other": true,
@@ -208,14 +177,14 @@
           "style": {
             "font-size": "10pt"
           },
-          "donut": false,
-          "tilt": false,
+          "donut": true,
+          "tilt": true,
           "labels": true,
           "arrangement": "horizontal",
           "chart": "pie",
-          "counter_pos": "above",
+          "counter_pos": "none",
           "spyable": true,
-          "title": "Pie"
+          "title": "Programs"
         }
       ]
     },
@@ -246,7 +215,11 @@
             "font-size": "9pt"
           },
           "overflow": "min-height",
-          "fields": [],
+          "fields": [
+            "logstash_timestamp",
+            "syslog_program",
+            "message"
+          ],
           "highlight": [],
           "sortable": true,
           "header": true,
@@ -269,11 +242,11 @@
   "editable": true,
   "failover": false,
   "index": {
-    "interval": "day",
+    "interval": "none",
     "pattern": "[logstash-]YYYY.MM.DD",
     "default": "NO_TIME_FILTER_OR_INDEX_PATTERN_NOT_MATCHED"
   },
-  "style": "dark",
+  "style": "light",
   "panel_hints": true,
   "loader": {
     "save_gist": false,
