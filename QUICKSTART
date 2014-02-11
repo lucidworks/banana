@@ -1,0 +1,3 @@
+Copy Banana folder to $SOLR_HOME/example/solr-webapp/webapp/
+
+Browse to http://localhost:8983/solr/banana/src/index.html#/dashboard
