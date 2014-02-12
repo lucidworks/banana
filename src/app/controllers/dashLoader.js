@@ -49,7 +49,6 @@ function (angular, _) {
       }
     };
 
-    // TODO: add solr support
     $scope.elasticsearch_save = function(type,ttl) {
       dashboard.elasticsearch_save(
         type,
@@ -63,6 +62,7 @@ function (angular, _) {
         // if(!_.isUndefined(result._id)) {          
         //   alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
         //     result._id + '"','success',5000);
+        // Solr
         if(!_.isUndefined(result.response.docs[0]._id)) {
         alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
           result.response.docs[0]._id + '"','success',5000);
@@ -95,7 +95,6 @@ function (angular, _) {
       );
     };
 
-    // TODO
     $scope.elasticsearch_dblist = function(query) {
       dashboard.elasticsearch_list(query,$scope.loader.load_elasticsearch_size).then(
         function(result) {
@@ -106,6 +105,7 @@ function (angular, _) {
         //   $scope.hits = result.hits.total;
         //   $scope.elasticsearch.dashboards = result.hits.hits;
         // }
+        // Solr
         if (!_.isUndefined(result.response.docs)) {
           $scope.hits = result.response.numFound;
           $scope.elasticsearch.dashboards = result.response.docs;

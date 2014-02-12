@@ -47,6 +47,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         pattern: '_all',  // TODO: Remove it
         default: 'INDEX_MISSING'
       },
+      collection: {
+        name: 'logstash_logs'
+      }
     };
 
     // An elasticJS client to use
