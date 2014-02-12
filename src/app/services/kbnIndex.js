@@ -49,7 +49,7 @@ function (angular, _, config, moment) {
         // url: config.elasticsearch + "/_aliases",
         // url: config.solr + "/schema/fields",
         // NOTE: Hard-coded to start -10YEARS from NOW
-        url: config.solr + "/select?q=*:*&wt=json&rows=0&omitHeader=true&facet=true&facet.range=logstash_timestamp&facet.range.start=NOW-10YEARS/DAY&facet.range.end=NOW&facet.range.gap=%2B1DAY&facet.mincount=1",
+        url: config.solr + config.solr_collection + "/select?q=*:*&wt=json&rows=0&omitHeader=true&facet=true&facet.range=logstash_timestamp&facet.range.start=NOW-10YEARS/DAY&facet.range.end=NOW&facet.range.gap=%2B1DAY&facet.mincount=1",
 
         method: "GET"
       }).error(function(data, status) {

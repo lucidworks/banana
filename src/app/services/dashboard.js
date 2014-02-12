@@ -54,7 +54,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
     // An elasticJS client to use
     var ejs = ejsResource(config.elasticsearch);
-    var sjs = sjsResource(config.solr);
+    // Solr
+    var sjs = sjsResource(config.solr + config.solr_collection);
     // var sjs = sjsResource(config.solr_server);
 
     var gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;
@@ -281,10 +282,10 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     // TODO: add solr support
     this.elasticsearch_load = function(type,id) {
       return $http({
-        // TODO:
+        // TODO: Solr
         // url: config.elasticsearch + "/" + config.kibana_index + "/"+type+"/"+id,
         // url: config.solr + "/schema/fields",
-        url: config.solr_server + config.kibana_index + "/select?wt=json&q=title:" + id,
+        url: config.solr + config.kibana_index + "/select?wt=json&q=title:" + id,
         method: "GET",
         transformResponse: function(response) {
           // DEBUG
@@ -408,8 +409,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
       request = type === 'temp' && ttl ? request.ttl(ttl) : request;
 
+      // Solr
       // set sjs.client.server to use 'kibana-int' for saving dashboard
-      sjs.client.server(config.solr_server + config.kibana_index);
+      sjs.client.server(config.solr + config.kibana_index);
 
       return request.doIndex(
         // Success
@@ -440,14 +442,14 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       );
     };
 
-    // TODO: add solr support
+    // Solr
     this.elasticsearch_list = function(query,count) {
       // DEBUG
       console.log('LINE 411: query = '+query);
       console.log('LINE 412: count = '+count);
 
       // set indices and type
-      sjs.client.server(config.solr_server + config.kibana_index);
+      sjs.client.server(config.solr + config.kibana_index);
       var request = sjs.Request().indices(config.kibana_index).types('dashboard');
 
       // Need to set sjs.client.server back to use 'logstash_logs' collection

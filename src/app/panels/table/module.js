@@ -90,7 +90,8 @@ function (angular, app, _, kbn, moment, config) {
 
     $scope.init = function () {
       $scope.Math = Math;
-      $scope.sjs = $scope.sjs || sjsResource(config.solr);
+      // Solr
+      $scope.sjs = $scope.sjs || sjsResource(config.solr + config.solr_collection);
 
       $scope.$on('refresh',function(){$scope.get_data();});
 
@@ -203,8 +204,9 @@ function (angular, app, _, kbn, moment, config) {
       //       I have to replace ejs.Request() with solr.Request().
       //       The problem is I don't have Solr JS client lib to use one now.
 
+      // Solr
       // set sjs to query 'logstash_logs' collection
-      $scope.sjs.client.server(config.solr);
+      $scope.sjs.client.server(config.solr + config.solr_collection);
 
       var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
       var boolQuery = $scope.sjs.BoolQuery();

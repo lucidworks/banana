@@ -23,8 +23,10 @@ function (Settings) {
     elasticsearch: "http://localhost:9200",
 
     // Which Solr's core store the logstash output?
-    solr_server: "http://localhost:8983/solr/",
-    solr: "http://localhost:8983/solr/logstash_logs",
+    // solr_server: "http://localhost:8983/solr/",
+    // solr: "http://localhost:8983/solr/logstash_logs",
+    solr: "http://localhost:8983/solr/",
+    solr_collection: "logstash_logs",
 
     /**
      * The default ES index to use for storing Kibana specific object

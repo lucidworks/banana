@@ -82,7 +82,8 @@ function (angular, _, config) {
       var request = $http({
         // Query ES to get mapping fields
         // url: config.elasticsearch + "/" + indices.join(',') + "/_mapping",
-        url: config.solr + "/schema/fields",
+        // Solr
+        url: config.solr + config.solr_collection + "/schema/fields",
         method: "GET"
       }).error(function(data, status) {
         if(status === 0) {
