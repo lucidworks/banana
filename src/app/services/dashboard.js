@@ -48,7 +48,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         default: 'INDEX_MISSING'
       },
       collection: {
-        name: 'logstash_logs'
+        name: config.solr_collection
       }
     };
 
@@ -56,7 +56,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     var ejs = ejsResource(config.elasticsearch);
     // Solr
     var sjs = sjsResource(config.solr + config.solr_collection);
-    // var sjs = sjsResource(config.solr_server);
 
     var gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;
 
@@ -158,6 +157,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       _.defaults(dashboard,_dash);
       _.defaults(dashboard.index,_dash.index);
       _.defaults(dashboard.loader,_dash.loader);
+      // Solr
+      _.defaults(dashboard.collection,_dash.collection);
       return dashboard;
     };
 

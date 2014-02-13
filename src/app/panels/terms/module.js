@@ -15,9 +15,10 @@ define([
   'app',
   'underscore',
   'jquery',
-  'kbn'
+  'kbn',
+  'config'
 ],
-function (angular, app, _, $, kbn) {
+function (angular, app, _, $, kbn, config) {
   'use strict';
 
   var module = angular.module('kibana.panels.terms', []);
@@ -84,6 +85,9 @@ function (angular, app, _, $, kbn) {
       var request,
         results,
         boolQuery;
+
+      //Solr
+      $scope.sjs.client.server(config.solr + dashboard.current.collection.name);
 
       request = $scope.sjs.Request().indices(dashboard.indices);
 

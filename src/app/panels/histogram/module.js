@@ -197,7 +197,8 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
 
       // Solr
       // set sjs to query 'logstash_logs' collection
-      $scope.sjs.client.server(config.solr + config.solr_collection);
+      // $scope.sjs.client.server(config.solr + config.solr_collection);
+      $scope.sjs.client.server(config.solr + dashboard.current.collection.name);
 
       if (DEBUG) {
         console.log('histogram: dashboard=',dashboard,', $scope.panel.queries=',$scope.panel.queries,', $scope=',$scope);

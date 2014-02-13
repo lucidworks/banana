@@ -180,7 +180,6 @@ function (angular, app, _, kbn, moment, config) {
       dashboard.refresh();
     };
 
-    // TODO: add Solr support
     $scope.get_data = function(segment,query_id) {
       $scope.panel.error =  false;
 
@@ -206,7 +205,8 @@ function (angular, app, _, kbn, moment, config) {
 
       // Solr
       // set sjs to query 'logstash_logs' collection
-      $scope.sjs.client.server(config.solr + config.solr_collection);
+      // $scope.sjs.client.server(config.solr + config.solr_collection);
+      $scope.sjs.client.server(config.solr + dashboard.current.collection.name);
 
       var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
       var boolQuery = $scope.sjs.BoolQuery();

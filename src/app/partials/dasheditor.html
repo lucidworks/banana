@@ -148,11 +148,19 @@
   <div ng-show="editor.index == 4">
     <div class="row-fluid">
       <h4>Collection Settings</h4>
+      <!-- <h5>Current collection = {{config.solr_collection}}</h5> -->
     </div>
     <div class="row-fluid">
       <div class="span4">
-        <h6>Collection Name</h6><select class="input-small" ng-model="dashboard.current.collection.name" ng-options="f for f in ['logstash_logs','collection2','kibana-int']"></select>
+        <h6>Collection Name</h6><input type="text" class="input-medium" ng-model="dashboard.current.collection.name">
       </div>
+      <!-- TODO: Get the collection names from Solr API and populate the dropdown box -->
+      <!--
+      <div class="span4">
+        
+        <h6>Collection Name</h6><select class="input-small" ng-model="dashboard.current.collection.name" ng-options="f for f in ['a','b','c']"></select>
+      </div>
+      -->
     </div>
   </div>
 </div>
