@@ -47,15 +47,19 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         pattern: '_all',  // TODO: Remove it
         default: 'INDEX_MISSING'
       },
-      collection: {
-        name: config.solr_collection
+      // collection: {
+      //   name: config.solr_collection
+      // }
+      solr: {
+        server: config.solr,
+        core_name: config.solr_core
       }
     };
 
     // An elasticJS client to use
     var ejs = ejsResource(config.elasticsearch);
     // Solr
-    var sjs = sjsResource(config.solr + config.solr_collection);
+    var sjs = sjsResource(config.solr + config.solr_core);
 
     var gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;
 

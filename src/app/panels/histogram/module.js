@@ -34,7 +34,6 @@ define([
   'underscore',
   'kbn',
   'moment',
-  'config',
   './timeSeries',
 
   'jquery.flot',
@@ -44,7 +43,7 @@ define([
   'jquery.flot.stack',
   'jquery.flot.stackpercent'
 ],
-function (angular, app, $, _, kbn, moment, config, timeSeries) {
+function (angular, app, $, _, kbn, moment, timeSeries) {
 
   'use strict';
 
@@ -198,7 +197,7 @@ function (angular, app, $, _, kbn, moment, config, timeSeries) {
       // Solr
       // set sjs to query 'logstash_logs' collection
       // $scope.sjs.client.server(config.solr + config.solr_collection);
-      $scope.sjs.client.server(config.solr + dashboard.current.collection.name);
+      $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       if (DEBUG) {
         console.log('histogram: dashboard=',dashboard,', $scope.panel.queries=',$scope.panel.queries,', $scope=',$scope);

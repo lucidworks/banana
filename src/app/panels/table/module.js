@@ -22,12 +22,11 @@ define([
   'app',
   'underscore',
   'kbn',
-  'moment',
-  'config'
+  'moment'
   // 'text!./pagination.html',
   // 'text!partials/querySelect.html'
 ],
-function (angular, app, _, kbn, moment, config) {
+function (angular, app, _, kbn, moment) {
   'use strict';
 
   // DEBUG mode
@@ -91,7 +90,8 @@ function (angular, app, _, kbn, moment, config) {
     $scope.init = function () {
       $scope.Math = Math;
       // Solr
-      $scope.sjs = $scope.sjs || sjsResource(config.solr + config.solr_collection);
+      // $scope.sjs = $scope.sjs || sjsResource(config.solr + config.solr_collection);
+      $scope.sjs = $scope.sjs || sjsResource(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       $scope.$on('refresh',function(){$scope.get_data();});
 
@@ -206,7 +206,7 @@ function (angular, app, _, kbn, moment, config) {
       // Solr
       // set sjs to query 'logstash_logs' collection
       // $scope.sjs.client.server(config.solr + config.solr_collection);
-      $scope.sjs.client.server(config.solr + dashboard.current.collection.name);
+      $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
       var boolQuery = $scope.sjs.BoolQuery();

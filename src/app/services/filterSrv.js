@@ -20,7 +20,7 @@ define([
 
     // For convenience
     var ejs = ejsResource(config.elasticsearch);
-    var sjs = sjsResource(config.solr + config.solr_collection);
+    var sjs = sjsResource(config.solr + config.solr_core);
     
     var _f = dashboard.current.services.filter;
 

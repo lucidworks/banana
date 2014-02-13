@@ -1,9 +1,8 @@
 define([
   'angular',
-  'underscore',
-  'config'
+  'underscore'
 ],
-function (angular, _, config) {
+function (angular, _) {
   'use strict';
 
   var module = angular.module('kibana.services');
@@ -83,14 +82,15 @@ function (angular, _, config) {
         // Query ES to get mapping fields
         // url: config.elasticsearch + "/" + indices.join(',') + "/_mapping",
         // Solr
-        url: config.solr + config.solr_collection + "/schema/fields",
+        // url: config.solr + config.solr_collection + "/schema/fields",
+        url: dashboard.current.solr.server + dashboard.current.solr.core_name + "/schema/fields",
         method: "GET"
       }).error(function(data, status) {
         if(status === 0) {
-          alertSrv.set('Error',"Could not contact Solr at "+config.solr+
+          alertSrv.set('Error',"Could not contact Solr at "+dashboard.current.solr.server+
             ". Please ensure that Solr is reachable from your system." ,'error');
         } else {
-          alertSrv.set('Error',"No index found at "+config.solr+
+          alertSrv.set('Error',"No index found at "+dashboard.current.solr.server+
             ". Please create at least one index."+
             "If you're using a proxy ensure it is configured correctly.",'error');
         }

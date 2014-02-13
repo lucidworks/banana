@@ -14,7 +14,7 @@ function (_) {
       elasticsearch : "http://"+window.location.hostname+":9200",
       solr: "http://"+window.location.hostname+":8983/solr/",
       // solr_server: "http://"+window.location.hostname+":8983/solr",
-      solr_collection: "logstash_logs",
+      solr_core: "logstash_logs",
       panel_names   : [],
       kibana_index  : 'kibana-int'
     };

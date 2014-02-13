@@ -37,7 +37,7 @@ function (angular, config, _) {
 
       // Solr
       $scope.ejs = ejsResource(config.elasticsearch);
-      $scope.sjs = sjsResource(config.solr + config.solr_collection);
+      $scope.sjs = sjsResource(config.solr + config.solr_core);
     };
 
     $scope.isPanel = function(obj) {
