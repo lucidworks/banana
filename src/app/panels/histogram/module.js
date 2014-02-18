@@ -70,8 +70,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       ],
       status  : "Stable",
       description : "A bucketed time series chart of the current query or queries. Uses the "+
-        "Elasticsearch date_histogram facet. If using time stamped indices this panel will query"+
-        " them sequentially to attempt to apply the lighest possible load to your Elasticsearch cluster"
+        "Solr facet range. If using time stamped indices this panel will query"+
+        " them sequentially to attempt to apply the lighest possible load to your Solr cluster"
     };
 
     // Set and populate defaults
@@ -200,7 +200,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       if (DEBUG) {
-        console.log('histogram: dashboard=',dashboard,', $scope.panel.queries=',$scope.panel.queries,', $scope=',$scope);
+        console.log('histogram: dashboard=',dashboard,', $scope.panel.queries=',$scope.panel.queries,', $scope=',$scope,'\n\tdashboard.current.solr.server + core_name = '+dashboard.current.solr.server+dashboard.current.solr.core_name);
       }
 
       var request = $scope.sjs.Request().indices(dashboard.indices[segment]);

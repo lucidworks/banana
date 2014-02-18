@@ -10,10 +10,9 @@
 (function () {
   'use strict';
 
-  var 
-    // DEBUG mode
-    DEBUG = true,
+  var DEBUG = true; // DEBUG mode
 
+  var 
     // save reference to global object
     // `window` in browser
     // `exports` on server
@@ -8881,8 +8880,9 @@
         // Otherwise, SolrException "Unknown Command" will occur.
         params.source = [params.source];
 
-        // DEBUG
-        console.log('solrjs LINE 8855: params.source = '+params.source);console.log(params.source);
+        if (DEBUG) {
+          console.log('solrjs: params.source = ',params.source);
+        }
 
         var url = '/update?commit=true',
           data = JSON.stringify(params.source),
@@ -8897,9 +8897,9 @@
           url = url + '?' + paramStr;
         }
         
-        // DEBUG
-        console.log('solrjs LINE 8870: url = '+url);
-        console.log('solrjs LINE 8871: data = '+data);
+        if (DEBUG) {
+          console.log('solrjs: url='+url+', data=',data);
+        }
 
         // // do post if id not set so one is created
         // if (id == null) {
@@ -8908,7 +8908,6 @@
         //   // put when id is specified
         //   response = sjs.client.put(url, data, successcb, errorcb);
         // }
-
         
         response = sjs.client.post(url, data, successcb, errorcb);
         

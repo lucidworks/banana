@@ -5,6 +5,8 @@ define([
 function (angular, _) {
   'use strict';
 
+  var DEBUG = true; // DEBUG mode
+
   var module = angular.module('kibana.controllers');
 
   module.controller('dashLoader', function($scope, $http, timer, dashboard, alertSrv) {
@@ -56,18 +58,19 @@ function (angular, _) {
         ($scope.loader.save_temp_ttl_enable ? ttl : false)
       ).then(
         function(result) {
-        // DEBUG
-        console.log('result = ');console.log(result);
+        if (DEBUG) {
+          console.log('result = ',result);
+        }
 
         // if(!_.isUndefined(result._id)) {          
         //   alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
         //     result._id + '"','success',5000);
         // Solr
-        if(!_.isUndefined(result.response.docs[0]._id)) {
+        if(!_.isUndefined(result.response.docs[0].id)) {
         alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
-          result.response.docs[0]._id + '"','success',5000);
+          result.response.docs[0].id + '"','success',5000);
           if(type === 'temp') {
-            $scope.share = dashboard.share_link(dashboard.current.title,'temp',result.response.docs[0]._id);
+            $scope.share = dashboard.share_link(dashboard.current.title,'temp',result.response.docs[0].id);
           }
         } else {
           alertSrv.set('Save failed','Dashboard could not be saved to Solr','error',5000);
@@ -83,7 +86,8 @@ function (angular, _) {
             if(result.found) {
               alertSrv.set('Dashboard Deleted',id+' has been deleted','success',5000);
               // Find the deleted dashboard in the cached list and remove it
-              var toDelete = _.where($scope.elasticsearch.dashboards,{_id:id})[0];
+              // var toDelete = _.where($scope.elasticsearch.dashboards,{_id:id})[0];
+              var toDelete = _.where($scope.elasticsearch.dashboards,{id:id})[0];
               $scope.elasticsearch.dashboards = _.without($scope.elasticsearch.dashboards,toDelete);
             } else {
               alertSrv.set('Dashboard Not Found','Could not find '+id+' in Solr','warning',5000);

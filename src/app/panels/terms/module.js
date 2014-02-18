@@ -20,6 +20,8 @@ define([
 function (angular, app, _, $, kbn) {
   'use strict';
 
+  var DEBUG = true; // DEBUG mode
+
   var module = angular.module('kibana.panels.terms', []);
   app.useModule(module);
 
@@ -37,7 +39,7 @@ function (angular, app, _, $, kbn) {
         {title:'Queries', src:'app/partials/querySelect.html'}
       ],
       status  : "Beta",
-      description : "Displays the results of an elasticsearch facet as a pie chart, bar chart, or a "+
+      description : "Displays the results of a Solr facet as a pie chart, bar chart, or a "+
         "table"
     };
 
@@ -88,6 +90,9 @@ function (angular, app, _, $, kbn) {
       //Solr
       // $scope.sjs.client.server(config.solr + dashboard.current.collection.name);
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
+      if (DEBUG) {
+        console.log('terms: dashboard.current.solr.server + core_name = '+dashboard.current.solr.server + dashboard.current.solr.core_name);
+      }
 
       request = $scope.sjs.Request().indices(dashboard.indices);
 
@@ -118,8 +123,9 @@ function (angular, app, _, $, kbn) {
 
       // Populate scope when we have results
       results.then(function(results) {
-        // DEBUG
-        console.log('terms LINE 118: results = '+results);console.log(results);
+        if (DEBUG) {
+          console.log('terms: results=',results);
+        }
 
         var k = 0;
         $scope.panelMeta.loading = false;

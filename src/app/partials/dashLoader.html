@@ -34,10 +34,11 @@
       <h6 ng-show="elasticsearch.dashboards.length">Solr stored dashboards</h6>
       <h6 ng-hide="elasticsearch.dashboards.length">No dashboards matching your query found</h6>
       <table class="table table-condensed table-striped">
-        <tr ng-repeat="row in elasticsearch.dashboards | orderBy:['_id']">
-          <td><a ng-click="elasticsearch_delete(row._id)"><i class="icon-remove"></i></a></td>
-          <td><a href="#/dashboard/elasticsearch/{{row._id}}">{{row._id}}</a></td>
-          <td><a><i class="icon-share" ng-click="share = dashboard.share_link(row._id,'elasticsearch',row._id)" bs-modal="'app/panels/dashcontrol/share.html'"></i></a></td>
+        <tr ng-repeat="row in elasticsearch.dashboards | orderBy:['id']">
+          <!-- TODO: Solr -->
+          <td><a ng-show="0" ng-click="elasticsearch_delete(row.id)"><i class="icon-remove"></i></a></td>
+          <td><a href="#/dashboard/solr/{{row.id}}">{{row.id}}</a></td>
+          <td><a><i class="icon-share" ng-click="share = dashboard.share_link(row.id,'solr',row.id)" bs-modal="'app/panels/dashcontrol/share.html'"></i></a></td>
         </tr>
       </table>
     </li>

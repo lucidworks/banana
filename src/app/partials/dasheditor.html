@@ -2,10 +2,10 @@
   <div class="pull-right editor-title">Dashboard settings</div>
 
   <div ng-model="editor.index" bs-tabs>
-    <div ng-repeat="tab in ['General','Index','Rows','Controls','Solr']" data-title="{{tab}}">
+    <div ng-repeat="tab in ['General','Rows','Controls','Solr']" data-title="{{tab}}">
     </div>
   </div>
-
+  <!-- General tab -->
   <div ng-show="editor.index == 0">
     <div class="row-fluid">
       <div class="span4">
@@ -22,6 +22,8 @@
       </div>
     </div>
   </div>
+  <!-- Index tab -->
+  <!--
   <div ng-show="editor.index == 1">
     <div class="row-fluid">
       <h4>Index Settings</h4>
@@ -62,8 +64,9 @@
       </div>
     </div>
   </div>
-
-  <div ng-show="editor.index == 2">
+  -->
+  <!-- Rows tab -->
+  <div ng-show="editor.index == 1">
     <div class="row-fluid">
       <div class="span12">
         <table class="table table-condensed table-striped">
@@ -98,8 +101,8 @@
       </form>
     </div>
   </div>
-
-  <div ng-show="editor.index == 3" ng-controller="dashLoader">
+  <!-- Controls tab -->
+  <div ng-show="editor.index == 2" ng-controller="dashLoader">
     <h5>Allow saving to</h5>
     <div class="row-fluid">
       <div class="span2">
@@ -112,7 +115,7 @@
         <label class="small">Gist <tip>Requires your domain to be OAUTH registered with Github<tip></label><input type="checkbox" ng-model="loader.save_gist" ng-checked="loader.save_gist">
       </div>
       <div class="span2">
-        <label class="small">Elasticsearch</label><input type="checkbox" ng-model="loader.save_elasticsearch" ng-checked="loader.save_elasticsearch">
+        <label class="small">Solr</label><input type="checkbox" ng-model="loader.save_elasticsearch" ng-checked="loader.save_elasticsearch">
       </div>
     </div>
     <h5>Allow loading from</h5>
@@ -124,10 +127,10 @@
         <label class="small">Gist</label><input type="checkbox" ng-model="loader.load_gist" ng-checked="loader.load_gist">
       </div>
       <div class="span2">
-        <label class="small">Elasticsearch</label><input type="checkbox" ng-model="loader.load_elasticsearch" ng-checked="loader.load_elasticsearch">
+        <label class="small">Solr</label><input type="checkbox" ng-model="loader.load_elasticsearch" ng-checked="loader.load_elasticsearch">
       </div>
       <div class="span3" ng-show="loader.load.elasticsearch">
-        <label class="small">ES list size</label><input class="input-mini" type="number" ng-model="loader.load_elasticsearch_size">
+        <label class="small">Solr list size</label><input class="input-mini" type="number" ng-model="loader.load_elasticsearch_size">
       </div>
     </div>
     <h5>Sharing</h5>
@@ -139,13 +142,12 @@
         <label class="small">TTL <tip>Expire temp urls</tip></label><input type="checkbox" ng-model="loader.save_temp_ttl_enable">
       </div>
       <div class="span5" ng-show="loader.save_temp &amp;&amp; loader.save_temp_ttl_enable">
-        <label class="small">TTL Duration <tip>Elasticsearch date math, eg: 1m,1d,1w,30d  </tip></label><input class="input-small" type="text" ng-model="loader.save_temp_ttl">
+        <label class="small">TTL Duration <tip>Solr date math, eg: 1m,1d,1w,30d  </tip></label><input class="input-small" type="text" ng-model="loader.save_temp_ttl">
       </div>
     </div>
   </div>
-
-  <!-- Solr -->
-  <div ng-show="editor.index == 4">
+  <!-- Solr tab -->
+  <div ng-show="editor.index == 3">
     <div class="row-fluid">
       <h4>Solr Settings</h4>
     </div>
@@ -167,6 +169,6 @@
 </div>
 
 <div class="modal-footer">
-  <button ng-click="add_row(dashboard.current,row); reset_row();" class="btn btn-success" ng-show="editor.index == 2">Create Row</button>
+  <button ng-click="add_row(dashboard.current,row); reset_row();" class="btn btn-success" ng-show="editor.index == 1">Create Row</button>
   <button type="button" class="btn btn-danger" ng-click="editor.index=0;dismiss();reset_panel();dashboard.refresh()">Close</button>
 </div>

@@ -24,6 +24,8 @@ define([
 function(angular, app, _) {
   'use strict';
 
+  var DEBUG = true; // DEBUG mode
+
   var module = angular.module('kibana.panels.dashcontrol', []);
   app.useModule(module);
 
@@ -85,15 +87,16 @@ function(angular, app, _) {
       ).then(
         function(result) {
           
-        // DEBUG
-        console.log('result = ');console.log(result);
+        if (DEBUG) {
+          console.log('result = ',result);
+        }
 
-        // TODO
-        if(!_.isUndefined(result._id)) {
+        // Solr
+        if(!_.isUndefined(result.id)) {
           alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
-            result._id + '"','success',5000);
+            result.id + '"','success',5000);
           if(type === 'temp') {
-            $scope.share = dashboard.share_link(dashboard.current.title,'temp',result._id);
+            $scope.share = dashboard.share_link(dashboard.current.title,'temp',result.id);
           }
         } else {
           alertSrv.set('Save failed','Dashboard could not be saved to Solr','error',5000);

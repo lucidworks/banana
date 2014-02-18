@@ -83,8 +83,12 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         var _type = $routeParams.kbnType;
         var _id = $routeParams.kbnId;
 
+        // Solr
         switch(_type) {
-        case ('elasticsearch'): // TODO: Maybe I can add _type = solr here?
+        case ('elasticsearch'):
+          self.elasticsearch_load('dashboard',_id);
+          break;
+        case ('solr'):
           self.elasticsearch_load('dashboard',_id);
           break;
         case ('temp'):
@@ -290,7 +294,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         // TODO: Solr
         // url: config.elasticsearch + "/" + config.kibana_index + "/"+type+"/"+id,
         // url: config.solr + "/schema/fields",
-        url: config.solr + config.kibana_index + "/select?wt=json&q=title:" + id,
+        url: config.solr + config.kibana_index + '/select?wt=json&q=title:"' + id + '"',
         method: "GET",
         transformResponse: function(response) {
           // DEBUG
@@ -403,9 +407,10 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       // console.log('id for saving dashboard = '+id);
 
       // Create request with id as title. Rethink this.
-      // TODO:
+      // Use id instead of _id, because it is the default field of Solr schema-less.
       var request = sjs.Document(config.kibana_index,type,id).source({
-        _id: id,
+        // _id: id,
+        id: id,
         user: 'guest',
         group: 'guest',
         title: save.title,
@@ -422,7 +427,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         // Success
         function(result) {
           if(type === 'dashboard') {
-            $location.path('/dashboard/elasticsearch/'+title);
+            // TODO
+            $location.path('/dashboard/solr/'+title);
           }
           return result;
         },

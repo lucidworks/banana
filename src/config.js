@@ -45,19 +45,19 @@ function (Settings) {
      */
     panel_names: [
       'histogram',
-      'map',
-      'pie',
+      // 'map',  // TODO
+      // 'pie',  // Deprecated, use terms panel instead
       'table',
       'filtering',
       'timepicker',
       'text',
-      'fields',
-      'hits',
-      'dashcontrol',
+      // 'fields',  // Deprecated, table panel now integrates a field selector
+      // 'hits',  // TODO
+      // 'dashcontrol',  // Deprecated, moved to nav bar
       'column',
-      'derivequeries',
-      'trends',
-      'bettermap',
+      // 'derivequeries',  // TODO
+      // 'trends',  // TODO
+      // 'bettermap',  // TODO
       'query',
       'terms'
     ]

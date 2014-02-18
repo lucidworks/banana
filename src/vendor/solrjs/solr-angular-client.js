@@ -16,8 +16,7 @@ angular.module('solrjs.service', [])
 
   return function (url) {
 
-    // DEBUG mode
-    var DEBUG = true;
+    var DEBUG = true; // DEBUG mode
 
     var
 
@@ -111,9 +110,10 @@ angular.module('solrjs.service', [])
       post_solr: function (path, data, successcb, errorcb) {
         var config = {};
         var isUpdate = path.indexOf('/update');
-        // DEBUG
-        console.log('LINE 110: path = '+path);
-        console.log('LINE 111: isUpdate = '+isUpdate);
+        
+        if (DEBUG) {
+          console.log('solr-angular-client: path='+path+', isUpdate='+isUpdate);
+        }
 
         if (isUpdate !== -1) {
           // update request, meaning to save a dashboard to kibana-int collection.
@@ -126,9 +126,9 @@ angular.module('solrjs.service', [])
           config = { headers: {'Content-type':'application/x-www-form-urlencoded'} };
         }
 
-        // DEBUG
-        console.log('LINE 66: path = '+path);
-        console.log('LINE 67: data = '+data);console.log(data);
+        if (DEBUG) {
+          console.log('solr-angular-client: path='+path+', data=',data);
+        }
 
         // var config = {
         //   headers: {
