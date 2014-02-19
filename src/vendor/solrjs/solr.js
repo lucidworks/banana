@@ -18470,10 +18470,10 @@
           var start_time = '*';
           var end_time = '*';
           if (query.query.filtered.filter.bool.must[1].range !== undefined) {
-            start_time = new Date(query.query.filtered.filter.bool.must[1].range.logstash_timestamp.from).toISOString();
-            end_time = new Date(query.query.filtered.filter.bool.must[1].range.logstash_timestamp.to).toISOString();
+            start_time = new Date(query.query.filtered.filter.bool.must[1].range.event_timestamp.from).toISOString();
+            end_time = new Date(query.query.filtered.filter.bool.must[1].range.event_timestamp.to).toISOString();
           }
-          var fq = '&fq=logstash_timestamp:[' + start_time + '%20TO%20' + end_time + ']';
+          var fq = '&fq=event_timestamp:[' + start_time + '%20TO%20' + end_time + ']';
           var q_str = query.query.filtered.query.bool.should[0].query_string.query;
           queryData = 'q=' + q_str + df + wt_json + rows_limit + fq;
         } else if (query.facets !== undefined && query.facets[0] !== undefined) {
@@ -18486,11 +18486,11 @@
           var facet_start = '';
           var facet_end = '';
           if (query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range !== undefined) {
-            facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range.logstash_timestamp.from).toISOString();
-            facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range.logstash_timestamp.to).toISOString();
+            facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range.event_timestamp.from).toISOString();
+            facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range.event_timestamp.to).toISOString();
           } else if (query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range !== undefined) {
-            facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range.logstash_timestamp.from).toISOString();
-            facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range.logstash_timestamp.to).toISOString();
+            facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range.event_timestamp.from).toISOString();
+            facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range.event_timestamp.to).toISOString();
           } else {
             throw new Error("Time range undefined");
           }
@@ -18499,8 +18499,8 @@
           // Need to add +1DAY to facet.range.end to be inclusive range search.
           // var facet_gap = '%2B1DAY';
           var facet_gap = query.facets[0].date_histogram.interval; // e.g. 1s,1m,1h,1d,1w,1M,1y
-          // TODO - implement dynamic facet field, remove hard code "logstash_timestamp" field
-          var histogram_field = query.facets[0].date_histogram.field; // "logstash_timestamp"
+          // TODO - implement dynamic facet field, remove hard code "event_timestamp" field
+          var histogram_field = query.facets[0].date_histogram.field; // "event_timestamp"
 
           if (DEBUG) {
             console.log('\tfacet_gap = ' + facet_gap + '\n\thistogram_field = ' + histogram_field);
@@ -18522,7 +18522,7 @@
           }
 
           var facet = '&facet=true' +
-                      '&facet.range=logstash_timestamp' +
+                      '&facet.range=event_timestamp' +
                       '&facet.range.start=' + facet_start + '/DAY' +
                       '&facet.range.end=' + facet_end + '%2B1DAY/DAY' +
                       '&facet.range.gap=' + facet_gap;
@@ -18531,7 +18531,7 @@
             //Need to use fq to filter according to the specified time range-added by Ravi; 
            // Different JSON hierarchy from Table Module, from and to captured in facet_start and facet_end           
           
-          var fq = '&fq=logstash_timestamp:[' + facet_start + '%20TO%20' + facet_end + ']'; 
+          var fq = '&fq=event_timestamp:[' + facet_start + '%20TO%20' + facet_end + ']'; 
           
           queryData = 'q=' + q_str + df + wt_json + rows_limit + facet +fq;
         } else if (query.facets !== undefined) {
@@ -18540,8 +18540,8 @@
           }
 
           // For terms module: query.facets object case (not array)
-          var facet_start = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range.logstash_timestamp.from).toISOString();
-          var facet_end = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range.logstash_timestamp.to).toISOString();
+          var facet_start = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range.event_timestamp.from).toISOString();
+          var facet_end = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range.event_timestamp.to).toISOString();
           var q_str = query.facets.terms.facet_filter.fquery.query.filtered.query.bool.should[0].query_string.query;
           // TODO: need to format facet_gap for Solr dynamically, based on user's input from histogram
           // var facet_gap = query.facets.0.date_histogram.interval;
@@ -18549,7 +18549,7 @@
           var facet_gap = '%2B1DAY';
           var facet = '&facet=true' +
                       '&facet.field=' + facet_term +
-                      '&facet.range=logstash_timestamp' +
+                      '&facet.range=event_timestamp' +
                       '&facet.range.start=' + facet_start +
                       '&facet.range.end=' + facet_end +
                       '&facet.range.gap=' + facet_gap;
@@ -18557,7 +18557,7 @@
            //Need to use fq to filter according to the specified time range-added by Ravi; 
            // Different JSON hierarchy from Table Module, from and to captured in facet_start and facet_end           
           
-          var fq = '&fq=logstash_timestamp:[' + facet_start + '%20TO%20' + facet_end + ']';  
+          var fq = '&fq=event_timestamp:[' + facet_start + '%20TO%20' + facet_end + ']';  
                
           queryData = 'q=' + q_str + df + wt_json + rows_limit + facet + fq;
         } else if (query.query.query_string !== undefined) {

@@ -48,7 +48,7 @@ function (Settings) {
       // 'map',  // TODO
       // 'pie',  // Deprecated, use terms panel instead
       'table',
-      'filtering',
+      // 'filtering',  // TODO
       'timepicker',
       'text',
       // 'fields',  // Deprecated, table panel now integrates a field selector

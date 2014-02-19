@@ -78,7 +78,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     var _d = {
       mode        : 'count',
       // time_field  : '@timestamp',
-      time_field  : 'logstash_timestamp',
+      time_field  : 'event_timestamp',
       queries     : {
         mode        : 'all',
         ids         : []
@@ -319,7 +319,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             //   $scope.hits += entry.count; // Entire dataset level hits counter
             // });
             
-            var entry = query_results.facet_ranges.logstash_timestamp.counts;
+            var entry = query_results.facet_ranges.event_timestamp.counts;
 
             if (DEBUG) {
               console.log('histogram: time_series=',time_series,', entry=',entry,', hits='+hits,', $scope=',$scope);
