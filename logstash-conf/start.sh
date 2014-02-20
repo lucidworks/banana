@@ -1,1 +1,1 @@
-java -jar logstash-1.2.2-flatjar.jar agent -f lw_solr.conf -p .
+java -jar logstash-1.3.3-flatjar.jar agent -f lw_solr.conf -p .
