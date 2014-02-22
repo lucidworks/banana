@@ -27,7 +27,7 @@
         "0": {
           "from": "2013-10-22T08:11:30.779Z",
           "to": "2013-11-21T08:11:30.779Z",
-          "field": "logstash_timestamp",
+          "field": "event_timestamp",
           "type": "time",
           "mandate": "must",
           "active": true,
@@ -70,7 +70,7 @@
             "30d"
           ],
           "timespan": "30d",
-          "timefield": "logstash_timestamp",
+          "timefield": "event_timestamp",
           "timeformat": "",
           "refresh": {
             "enable": false,
@@ -140,7 +140,7 @@
           ],
           "type": "histogram",
           "mode": "count",
-          "time_field": "logstash_timestamp",
+          "time_field": "event_timestamp",
           "value_field": null,
           "auto_int": true,
           "resolution": 100,
@@ -239,7 +239,7 @@
           "pages": 10,
           "offset": 0,
           "sort": [
-            "logstash_timestamp",
+            "event_timestamp",
             "desc"
           ],
           "style": {

@@ -18485,12 +18485,19 @@
           // For histogram module: query.facets[] array case
           var facet_start = '';
           var facet_end = '';
+          // Get timestamp field name
+          var timestamp_field = query.facets[0].date_histogram.field;
+
           if (query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range !== undefined) {
-            facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range.event_timestamp.from).toISOString();
-            facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range.event_timestamp.to).toISOString();
+            // facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range.event_timestamp.from).toISOString();
+            // facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range.event_timestamp.to).toISOString();
+            facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range[timestamp_field].from).toISOString();
+            facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range[timestamp_field].to).toISOString();
           } else if (query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range !== undefined) {
-            facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range.event_timestamp.from).toISOString();
-            facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range.event_timestamp.to).toISOString();
+            // facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range.event_timestamp.from).toISOString();
+            // facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range.event_timestamp.to).toISOString();
+            facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range[timestamp_field].from).toISOString();
+            facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range[timestamp_field].to).toISOString();
           } else {
             throw new Error("Time range undefined");
           }
@@ -18499,11 +18506,9 @@
           // Need to add +1DAY to facet.range.end to be inclusive range search.
           // var facet_gap = '%2B1DAY';
           var facet_gap = query.facets[0].date_histogram.interval; // e.g. 1s,1m,1h,1d,1w,1M,1y
-          // TODO - implement dynamic facet field, remove hard code "event_timestamp" field
-          var histogram_field = query.facets[0].date_histogram.field; // "event_timestamp"
 
           if (DEBUG) {
-            console.log('\tfacet_gap = ' + facet_gap + '\n\thistogram_field = ' + histogram_field);
+            console.log('\tfacet_gap = ' + facet_gap + '\n\ttimestamp_field = ' + timestamp_field);
           }
 
           // convert facet_gap to Solr compatible format
@@ -18522,7 +18527,7 @@
           }
 
           var facet = '&facet=true' +
-                      '&facet.range=event_timestamp' +
+                      '&facet.range=' + timestamp_field +
                       '&facet.range.start=' + facet_start + '/DAY' +
                       '&facet.range.end=' + facet_end + '%2B1DAY/DAY' +
                       '&facet.range.gap=' + facet_gap;
@@ -18531,7 +18536,7 @@
             //Need to use fq to filter according to the specified time range-added by Ravi; 
            // Different JSON hierarchy from Table Module, from and to captured in facet_start and facet_end           
           
-          var fq = '&fq=event_timestamp:[' + facet_start + '%20TO%20' + facet_end + ']'; 
+          var fq = '&fq=' + timestamp_field + ':[' + facet_start + '%20TO%20' + facet_end + ']'; 
           
           queryData = 'q=' + q_str + df + wt_json + rows_limit + facet +fq;
         } else if (query.facets !== undefined) {

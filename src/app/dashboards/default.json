@@ -27,7 +27,7 @@
         "0": {
           "from": "2014-02-06T20:42:49.790Z",
           "to": "2014-02-07T20:42:49.790Z",
-          "field": "logstash_timestamp",
+          "field": "event_timestamp",
           "type": "time",
           "mandate": "must",
           "active": true,
@@ -70,7 +70,7 @@
             "30d"
           ],
           "timespan": "24h",
-          "timefield": "logstash_timestamp",
+          "timefield": "event_timestamp",
           "timeformat": "",
           "refresh": {
             "enable": true,
@@ -109,7 +109,7 @@
           ],
           "type": "histogram",
           "mode": "count",
-          "time_field": "logstash_timestamp",
+          "time_field": "event_timestamp",
           "value_field": null,
           "auto_int": true,
           "resolution": 100,
@@ -208,7 +208,7 @@
           "pages": 100,
           "offset": 0,
           "sort": [
-            "logstash_timestamp",
+            "event_timestamp",
             "desc"
           ],
           "style": {
@@ -216,7 +216,7 @@
           },
           "overflow": "min-height",
           "fields": [
-            "logstash_timestamp",
+            "event_timestamp",
             "syslog_program",
             "message"
           ],

@@ -245,7 +245,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       // Populate scope when we have results
       results.then(function(results) {
         if (DEBUG) {
-          console.log('histogram: results=',results);
+          console.log('histogram:\n\trequest='+request+'\n\tresults=',results);
         }
 
         $scope.panelMeta.loading = false;
@@ -318,8 +318,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             //   hits += entry.count; // The series level hits counter
             //   $scope.hits += entry.count; // Entire dataset level hits counter
             // });
-            
-            var entry = query_results.facet_ranges.event_timestamp.counts;
+            if (DEBUG) { console.log('histogram: request.facet()[0]=',request.facet()[0]); }
+            var timestamp_field = request.facet()[0].date_histogram.field;
+            // var entry = query_results.facet_ranges.event_timestamp.counts;
+            var entry = query_results.facet_ranges[timestamp_field].counts;
 
             if (DEBUG) {
               console.log('histogram: time_series=',time_series,', entry=',entry,', hits='+hits,', $scope=',$scope);

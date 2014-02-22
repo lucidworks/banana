@@ -25,7 +25,7 @@
         "0": {
           "from": "2013-07-30T18:58:13.977Z",
           "to": "2013-07-30T19:58:13.977Z",
-          "field": "logstash_timestamp",
+          "field": "event_timestamp",
           "type": "time",
           "mandate": "must",
           "active": true,
@@ -68,7 +68,7 @@
             "30d"
           ],
           "timespan": "{{ARGS.from || '1h'}}",
-          "timefield": "logstash_timestamp",
+          "timefield": "event_timestamp",
           "timeformat": "",
           "refresh": {
             "enable": false,
@@ -138,7 +138,7 @@
           ],
           "type": "histogram",
           "mode": "count",
-          "time_field": "logstash_timestamp",
+          "time_field": "event_timestamp",
           "value_field": null,
           "auto_int": true,
           "resolution": 100,
@@ -187,7 +187,7 @@
           "pages": 10,
           "offset": 0,
           "sort": [
-            "logstash_timestamp",
+            "event_timestamp",
             "desc"
           ],
           "style": {
