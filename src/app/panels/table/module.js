@@ -29,8 +29,7 @@ define([
 function (angular, app, _, kbn, moment) {
   'use strict';
 
-  // DEBUG mode
-  var DEBUG = true;
+  var DEBUG = true; // DEBUG mode
 
   var module = angular.module('kibana.panels.table', []);
   app.useModule(module);
@@ -83,7 +82,8 @@ function (angular, app, _, kbn, moment) {
       field_list: true,
       trimFactor: 300,
       normTimes : true,
-      spyable : true
+      spyable : true,
+      time_field : 'event_timestamp'
     };
     _.defaults($scope.panel,_d);
 
@@ -230,8 +230,12 @@ function (angular, app, _, kbn, moment) {
 
       $scope.populate_modal(request);
 
+      var facet = $scope.sjs.RangeFacet('time_facet');
+      facet = facet.field($scope.panel.time_field);
+      request = request.facet(facet);
+
       if (DEBUG) {
-        console.log('table: request=',request);
+        console.log('table:\n\trequest=',request,'\n\tfacet=',facet,'\n\t$scope.panel.time_field=',$scope.panel.time_field);
       }
 
       // Need to modify request.query with Solr's params
@@ -254,7 +258,7 @@ function (angular, app, _, kbn, moment) {
 
         if(DEBUG) {
           console.log('table: results=',results);
-          console.log('\t_segment='+_segment+', $scope.hits='+$scope.hits+', $scope.data=',$scope.data,', query_id='+query_id);
+          console.log('\t_segment='+_segment+', $scope.hits='+$scope.hits+', $scope.data=',$scope.data,', query_id='+query_id+'\n\t$scope.panel',$scope.panel);
         }
 
         // Check for error and abort if found

@@ -6,6 +6,7 @@ define([
 ],
 function (angular, _, config, moment) {
   'use strict';
+  var DEBUG = true; //DEBUG mode
 
   var module = angular.module('kibana.services');
 
@@ -63,8 +64,10 @@ function (angular, _, config, moment) {
       });
 
       return something.then(function(p) {
-        // DEBUG
-        console.log('kbnIndex LINE 67: p = '+p);console.log(p);
+        if (DEBUG) {
+          console.log('kbnIndex: p=',p);
+        }
+        
 
         // var indices = [];
         // _.each(p.data, function(v,k) {
@@ -75,7 +78,9 @@ function (angular, _, config, moment) {
         //   });
         // });
         var indices = [];
+
         var timestamp_array = p.data.facet_counts.facet_ranges.event_timestamp.counts;
+
         for (var i=0; i < timestamp_array.length; i=i+2) {
           // extract and convert timestamp to YYYY.MM.DD
           var t = timestamp_array[i].substr(0,10).replace(/-/g,'.');

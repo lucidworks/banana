@@ -18450,7 +18450,7 @@
         var rows_limit;
         if (query.size !== undefined && query.size !== 0) {
           rows_limit = '&rows=' + query.size;
-        } else { // default to get 100 rows
+        } else { // default
           rows_limit = '&rows=25';
         }
 
@@ -18461,27 +18461,28 @@
         var queryData = '';
 
         if (query.query !== undefined && query.query.filtered !== undefined) {
-          // DEBUG
           if (DEBUG) {
-            console.log('For table module doSearch(): query=',query);
+            console.log('For table module doSearch():\n\tquery=',query,'\n\tquery.query.filtered.filter.bool.must[1].range=',query.query.filtered.filter.bool.must[1].range);
           }
-
           // For table module: we use fq to filter result set
           var start_time = '*';
           var end_time = '*';
+          var timestamp_field = query.facets.time_facet.range.field;
+
           if (query.query.filtered.filter.bool.must[1].range !== undefined) {
-            start_time = new Date(query.query.filtered.filter.bool.must[1].range.event_timestamp.from).toISOString();
-            end_time = new Date(query.query.filtered.filter.bool.must[1].range.event_timestamp.to).toISOString();
+            // start_time = new Date(query.query.filtered.filter.bool.must[1].range.event_timestamp.from).toISOString();
+            // end_time = new Date(query.query.filtered.filter.bool.must[1].range.event_timestamp.to).toISOString();
+            start_time = new Date(query.query.filtered.filter.bool.must[1].range[timestamp_field].from).toISOString();
+            end_time = new Date(query.query.filtered.filter.bool.must[1].range[timestamp_field].to).toISOString();
           }
-          var fq = '&fq=event_timestamp:[' + start_time + '%20TO%20' + end_time + ']';
+          // var fq = '&fq=event_timestamp:[' + start_time + '%20TO%20' + end_time + ']';
+          var fq = '&fq=' + timestamp_field + ':[' + start_time + '%20TO%20' + end_time + ']';
           var q_str = query.query.filtered.query.bool.should[0].query_string.query;
           queryData = 'q=' + q_str + df + wt_json + rows_limit + fq;
         } else if (query.facets !== undefined && query.facets[0] !== undefined) {
-          // DEBUG
           if (DEBUG) {
             console.log('For histogram module doSearch(): query=',query);
           }
-
           // For histogram module: query.facets[] array case
           var facet_start = '';
           var facet_end = '';
@@ -18521,7 +18522,6 @@
           // facet_gap = '%2B' + facet_gap;
           facet_gap = convertFacetGap(facet_gap);
 
-
           if (DEBUG) {
             console.log('\tconverted facet_gap = ' + facet_gap);
           }
@@ -18543,7 +18543,6 @@
           if (DEBUG) {
             console.log('For terms module doSearch(): query=',query);
           }
-
           // For terms module: query.facets object case (not array)
           var facet_start = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range.event_timestamp.from).toISOString();
           var facet_end = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range.event_timestamp.to).toISOString();
