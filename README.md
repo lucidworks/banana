@@ -40,6 +40,7 @@ We have packaged Solr, the open Source LogStash with Solr Output Plug-in and Ban
 1. Run Solr  
   * cd slk4.7.0/solr-4.7.0/example-logs  
   * java -jar start.jar   
+  
 2. Browse to http://localhost:8983/banana 
  
 You will see example dashboards which you can use as a starting point for your applications.
