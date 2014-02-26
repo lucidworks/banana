@@ -93,7 +93,8 @@ __A__: The simplest solution is to use a nginx reverse proxy (See for example ht
 
 ### Support
 
-Banana preserves most of the features of Kibana (from which it is forked).
+Banana preserves most of the features of Kibana (from which it is forked). If you have any questions, please contact Andrew Thanalertvisuti (andrew.thanalertvisuti@lucidworks.com) or Ravi Krishnamurthy (ravi.krishnamurthy@lucidworks.com).
+
 
 Introduction videos on Kibana can be found at [http://three.kibana.org/about.html](http://three.kibana.org/about.html)  
 
