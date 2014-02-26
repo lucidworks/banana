@@ -22,11 +22,14 @@ access to it.
 ### Installation and QuickStart
 
 #### Banana Web App run within existing Solr instance
-1. Run Solr once to create the webapp directories  
+Run Solr once to create the webapp directories  
+
 		cd $SOLR_HOME/example  
 		java -jar start.jar
-2. Copy banana folder to $SOLR_HOME/example/solr-webapp/webapp/  
-3. Browse to http://localhost:8983/solr/banana/src/index.html#/dashboard  
+		
+Copy banana folder to $SOLR_HOME/example/solr-webapp/webapp/ \
+ 
+Browse to http://localhost:8983/solr/banana/src/index.html#/dashboard  
 
 If your Solr port is different, edit banana/src/config.js and enter the port you are using.
 
@@ -39,26 +42,30 @@ If you want to save and load dashboards from Solr, copy either solr-4.4.0/kibana
 We have packaged Solr, the open Source LogStash with Solr Output Plug-in and Banana, along with default collections and dashboards to make it easy for you to get started. The package is available here  (Link to be added). Unzip the package and:  
 1. Run Solr  
 
-    cd slk4.7.0/solr-4.7.0/example-logs  
+    cd slk4.7.0/solr-4.7.0/example-logs
     java -jar start.jar  
      
-2. Browse to http://localhost:8983/banana 
+Browse to http://localhost:8983/banana 
  
 You will see example dashboards which you can use as a starting point for your applications.
 Once again, if you choose to run Solr on a different port, please edit the config.js file.
 
 #### Running from a war file
 1.Pull the develop or release1.0 branch. Run "ant" from within the banana directory to build the war file.
-  * cd $BANANA_REPO_HOME  
-  * ant  
+
+    cd $BANANA_REPO_HOME  
+    ant 
+     
 The war file will be called banana-buildnumber.war and will be located in $BANANA_REPO_HOME/build  
 
 
-1. Copy $BANANA_REPO_HOME/build/banana-buildnumber.war to $SOLR_HOME/example/webapps/banana.war 
-2. Copy $BANANA_REPO_HOME/jetty/banana-context.xml  to $SOLR_HOME/example/contexts/    
-3  Run Solr:  
-		.... cd $SOLR_HOME/example/    
-		.... java -jar start.jar    
+Copy $BANANA_REPO_HOME/build/banana-buildnumber.war to $SOLR_HOME/example/webapps/banana.war 
+Copy $BANANA_REPO_HOME/jetty/banana-context.xml  to $SOLR_HOME/example/contexts/    
+Run Solr:
+
+    cd $SOLR_HOME/example/
+    java -jar start.jar    
+    
 4. Browse to http://localhost:8983/banana  
 
 	
