@@ -54,7 +54,7 @@ The war file will be called banana-<build number>.war and will be located in $BA
 3  Run Solr:
 		cd $SOLR_HOME/example/
 		java -jar start.jar
-4. Browse to 
+4. Browse to http://localhost:8983/banana
 
 	
 
