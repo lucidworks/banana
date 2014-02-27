@@ -13,11 +13,9 @@ All recent development has taken place on the "develop" branch. So pull the repo
 Banana is Apache Licensed and serves as a visualizer and search interface to timestamped data sets stored in Solr, such as log files, Twitter streams, etc. Banana is designed to be easy to start-up with (just like Kibana from which it is forked). Data can be ingested into Solr through a variety of ways, including Solr Output Plug-in for LogStash, Flume and other connectors.
 
 ### Requirements
-* A modern web browser. The latest version of Chrome, Safari and Firefox have all been tested to 
-work.
-* A webserver. So far, we have tested it with Jetty embedded with Solr, but it should work with other webservers.
-* A browser reachable Solr server. The Solr endpoint must be open, or a proxy configured to allow 
-access to it.
+* A modern web browser. The latest version of Chrome, Safari and Firefox have been tested to work.
+* A webserver. 
+* A browser reachable Solr server. The Solr endpoint must be open, or a proxy configured to allow access to it.
 
 ### Installation and QuickStart
 
@@ -101,7 +99,7 @@ Introduction videos on Kibana can be found at [http://three.kibana.org/about.htm
 
 ###Trademarks
 
-Kibana is a trademark of Elasticsearch BV
+Kibana is a trademark of Elasticsearch BV  
 Logstash is a trademark of Elasticsearch BV
 
 
