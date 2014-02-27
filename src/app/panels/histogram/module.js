@@ -283,7 +283,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             var query_results = results.facet_counts;
 
             if (DEBUG) {
-              console.log('histogram: i='+i+', query_results=',query_results,', segment=',segment,', $scope=',$scope);
+              console.log('histogram: i='+i+', results=',results,', query_results=',query_results,', segment=',segment,', $scope=',$scope);
             }
 
             // we need to initialize the data variable on the first run,

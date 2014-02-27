@@ -230,6 +230,7 @@ function (angular, app, _, kbn, moment) {
 
       $scope.populate_modal(request);
 
+      // Create a facet to store and pass on time_field value to request.doSearch()
       var facet = $scope.sjs.RangeFacet('time_facet');
       facet = facet.field($scope.panel.time_field);
       request = request.facet(facet);

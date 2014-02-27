@@ -62,7 +62,8 @@ function (angular, app, _, $, kbn) {
       arrangement : 'horizontal',
       chart       : 'bar',
       counter_pos : 'above',
-      spyable     : true
+      spyable     : true,
+      time_field  : 'event_timestamp'
     };
     _.defaults($scope.panel,_d);
 
@@ -118,6 +119,15 @@ function (angular, app, _, $, kbn) {
 
       // Populate the inspector panel
       $scope.inspector = angular.toJson(JSON.parse(request.toString()),true);
+
+      // Create a facet to store and pass on time_field value to request.doSearch()
+      var facet = $scope.sjs.RangeFacet('time_facet');
+      facet = facet.field($scope.panel.time_field);
+      request = request.facet(facet);
+
+      if (DEBUG) {
+        console.log('terms:\n\trequest=',request,'\n\tfacet=',facet,'\n\t$scope.panel.time_field=',$scope.panel.time_field);
+      }
 
       results = request.doSearch();
 
