@@ -1,5 +1,5 @@
 {
-  "title": "Logstash Solr Search",
+  "title": "Banana for Solr",
   "services": {
     "query": {
       "idQueue": [
