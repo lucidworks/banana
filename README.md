@@ -2,58 +2,105 @@
 
 __NOTE__: You have reached the Banana repository. 
 The Banana project is a fork of Kibana 3, which can be found at [http://three.kibana.org](http://three.kibana.org)
-The goal is to port the code to work with Apache Solr as a backend storage.
+The goal is to port the code to work with Apache Solr as a backend storage. 
+ 
+## IMPORTANT
 
-### Important!
-The dashboard storage format has changed in Kibana 3 milestone 3. Existing dashboards are unfortunately not backward compatible. However there are some great new features:
-* Every panel supports multi-query
-* Customizable query colors and labels
-* Queries, labels and colors are synced across panels at all times
-* Queries can be assigned explicitly to panels, they can also be pinned and unpinned
-* New filtering functionality
-* Filters can be toggled, removed and edited
-* Drill down won't overwrite your queries, labels or colors
-* Confusing group functionality has been removed
-* Index configuration has been moved from the timepicker, to the main dashboard editor
-* The stringquery panel has been replaced with a more polished 'query' panel
-
-More information about Kibana 3 can be found at [http://www.elasticsearch.org/overview/kibana/](http://www.elasticsearch.org/overview/kibana/)
+All recent development has taken place on the "develop" branch. So pull the repo from the "develop" branch or the "release1.0" branch that will be created soon.
 
 ## Overview
 
-Kibana is an open source (Apache Licensed), browser based analytics and search interface to Logstash 
-and other timestamped data sets stored in ElasticSearch. With those in place Kibana is a snap to 
-setup and start using (seriously). Kibana strives to be easy to get started with, while also being 
-flexible and powerful
+Banana is Apache Licensed and serves as a visualizer and search interface to timestamped data sets stored in Solr, such as log files, Twitter streams, etc. Banana is designed to be easy to start-up with (just like Kibana from which it is forked). Data can be ingested into Solr through a variety of ways, including Solr Output Plug-in for LogStash, Flume and other connectors.
 
 ### Requirements
-* A modern web browser. The latest version of Chrome, Safari and Firefox have all been tested to 
-work. IE8 is not currently supported
-* A webserver. No extensions are required, as long as it can serve plain html it will work
-* A browser reachable Elasticsearch server. Port 9200 must be open, or a proxy configured to allow 
-access to it.
+* A modern web browser. The latest version of Chrome, Safari and Firefox have been tested to work.
+* A webserver. 
+* A browser reachable Solr server. The Solr endpoint must be open, or a proxy configured to allow access to it.
 
-### Installation
+### Installation and QuickStart
 
-1. Copy the entire Kibana directory to your webserver
-2. Edit config.js to point to your elasticsearch server. This should __not be 
-http://localhost:9200__, but rather the fully qualified domain name of your elasticsearch server. 
-The url entered here _must be reachable_ by your browser.
-3. Point your browser at your installation. If you're using Logstash with the default indexing 
-configuration the default Kibana dashboard should work nicely. 
+#### QuickStart for Complete SLK Stack
 
-### FAQ
-__Q__: Why doesnt it work? I have http://localhost:9200 in my config.js, my webserver and elasticsearch
-server are on the same machine  
-__A__: Kibana 3 does not work like previous versions of Kibana. To ease deployment, the server side
-component has been eliminated. Thus __the browser connects directly to Elasticsearch__. The default
-config.js setup works for the webserver+Elasticsearch on the same machine scenario. Do not set it
-to http://localhost:9200 unless your browser and elasticsearch are on the same machine
+We have packaged Solr, the open Source LogStash with Solr Output Plug-in and Banana, along with default collections and dashboards to make it easy for you to get started. The package is available here  (Link to be added). Unzip the package and:  
+1. Run Solr  
 
-__Q__: How do I secure this? I don't want to leave 9200 open.  
-__A__: A simple nginx virtual host and proxy configuration can be found in the sample/nginx.conf 
+    cd slk4.7.0/solr-4.7.0/example-logs
+    java -jar start.jar  
+     
+Browse to http://localhost:8983/banana 
+ 
+You will see example dashboards which you can use as a starting point for your applications.
+Once again, if you choose to run Solr on a different port, please edit the config.js file.
+
+THAT'S IT!
+
+
+#### Run Banana Web App within your existing Solr instance
+Run Solr at least once to create the webapp directories  
+
+		cd $SOLR_HOME/example  
+		java -jar start.jar
+		
+Copy banana folder to $SOLR_HOME/example/solr-webapp/webapp/
+ 
+Browse to http://localhost:8983/solr/banana/src/index.html#/dashboard
+
+
+
+If your Solr port is different, edit banana/src/config.js and enter the port you are using.
+
+If you have not created the data collections and ingested data into Solr, you will see an error message saying "No Index found at .." Go to the Solr Output Plug-in for LogStash QucickStart page to learn how to import data into your Solr instance
+
+If you want to save and load dashboards from Solr, copy either solr-4.4.0/kibana-int or solr-4.5.0/kibana-int directories (as appropriate) into $SOLR_HOME/example/solr in order to setup the required core and restart Solr.
+
+
+
+#### Running from a war file
+Pull the develop or release1.0 branch. Run "ant" from within the banana directory to build the war file.
+
+    cd $BANANA_REPO_HOME  
+    ant 
+     
+The war file will be called banana-buildnumber.war and will be located in $BANANA_REPO_HOME/build  
+
+
+Copy $BANANA_REPO_HOME/build/banana-buildnumber.war to $SOLR_HOME/example/webapps/banana.war   
+Copy $BANANA_REPO_HOME/jetty/banana-context.xml  to $SOLR_HOME/example/contexts/      
+Run Solr:
+
+    cd $SOLR_HOME/example/
+    java -jar start.jar    
+    
+Browse to http://localhost:8983/banana  
+
+	
+#### Banana Web App run in a WebServer
+
+Edit config.js to point to the Solr server that will store the Kibana dashboards. You will need to make sure that a collection is created with the appropriate conf directory and schema.xml. Conf directories are available at banana/solr-4.4.0	(for Solr 4.4) and banana/solr-4.5.0 (for 4.5 and later).
+
+The Solr server configured in config.js will serve as the default node for each dashboard; you can configure each dashboard to point to a different Solr endpoint as long as your webserver puts out the correct CORS headers.
+
+Point your browser at your installation based on the contexts you have configured.
+
+
+
+## FAQ
+
+__Q__: How do I secure my solr endpoint so that users do not have access to it?   
+__A__: The simplest solution is to use a nginx reverse proxy (See for example https://groups.google.com/forum/#!topic/ajax-solr/pLtYfm83I98).
 
 ### Support
 
-Introduction videos can be found at [http://three.kibana.org/about.html](http://three.kibana.org/about.html)  
-If you have questions or comments the best place to reach me is #logstash or #elasticsearch on irc.freenode.net
+Banana preserves most of the features of Kibana (from which it is forked). If you have any questions, please contact Andrew Thanalertvisuti (andrew.thanalertvisuti@lucidworks.com) or Ravi Krishnamurthy (ravi.krishnamurthy@lucidworks.com).
+
+
+Introduction videos on Kibana can be found at [http://three.kibana.org/about.html](http://three.kibana.org/about.html)  
+
+
+###Trademarks
+
+Kibana is a trademark of Elasticsearch BV  
+Logstash is a trademark of Elasticsearch BV
+
+
+
