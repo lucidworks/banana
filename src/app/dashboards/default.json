@@ -1,5 +1,5 @@
 {
-  "title": "Banana for Solr",
+  "title": "Welcome Syslog Demo",
   "services": {
     "query": {
       "idQueue": [
@@ -7,7 +7,7 @@
       ],
       "list": {
         "0": {
-          "query": "*:*",
+          "query": "error",
           "alias": "",
           "color": "#7EB26D",
           "id": 0,
@@ -25,8 +25,8 @@
       ],
       "list": {
         "0": {
-          "from": "2014-02-06T20:42:49.790Z",
-          "to": "2014-02-07T20:42:49.790Z",
+          "from": "2014-01-29T21:45:46.000Z",
+          "to": "2014-02-28T22:30:10.897Z",
           "field": "event_timestamp",
           "type": "time",
           "mandate": "must",
@@ -57,7 +57,7 @@
             "default"
           ],
           "type": "timepicker",
-          "mode": "relative",
+          "mode": "since",
           "time_options": [
             "5m",
             "15m",
@@ -69,7 +69,7 @@
             "7d",
             "30d"
           ],
-          "timespan": "24h",
+          "timespan": "30d",
           "timefield": "event_timestamp",
           "timeformat": "",
           "refresh": {
@@ -78,7 +78,11 @@
             "min": 3
           },
           "filter_id": 0,
-          "status": "Stable"
+          "status": "Stable",
+          "time": {
+            "from": "01/29/2014 13:45:46",
+            "to": "02/28/2014 14:30:10"
+          }
         },
         {
           "error": false,
@@ -88,9 +92,32 @@
           "loadingEditor": false,
           "query": "*:*",
           "pinned": true,
-          "history": [],
+          "history": [
+            "error"
+          ],
           "remember": 10,
           "title": "Search"
+        }
+      ]
+    },
+    {
+      "title": "",
+      "height": "100px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "type": "text",
+          "loadingEditor": false,
+          "status": "Stable",
+          "mode": "markdown",
+          "content": "This is the demonstration dashboard for Banana, a port of Kibana for Solr. This points to a collection called logstash\\_logs\\_demo which contains example system log data - imported using the Solr Output Writer for LogStash.  At a glance it shows how many errors have occurred within the chosen time period and which programs have thrown those errors.\n\nI set this up as a toy example using some syslogs from my MacBook, and learned to my surprise that Micorsoft Outlook was throwing a large number of errors. The \"All Events\" table provides us the ability to drill down into the individual messages.\n\nTo build your own dashboards, first get time series data into a collection. Then you can start from a blank dashboard (Select Load at the top of the screen and choose \"Clean Slate\") or you can begin with this dashboard and modify to fit your needs.",
+          "style": {},
+          "title": "Welcome to Banana"
         }
       ]
     },
@@ -113,7 +140,7 @@
           "value_field": null,
           "auto_int": true,
           "resolution": 100,
-          "interval": "10m",
+          "interval": "12h",
           "fill": 3,
           "linewidth": 3,
           "timezone": "browser",
@@ -184,7 +211,8 @@
           "chart": "pie",
           "counter_pos": "none",
           "spyable": true,
-          "title": "Programs"
+          "title": "Programs",
+          "time_field": "event_timestamp"
         }
       ]
     },
@@ -204,7 +232,7 @@
             "default"
           ],
           "type": "table",
-          "size": 100,
+          "size": 10,
           "pages": 100,
           "offset": 0,
           "sort": [
@@ -234,7 +262,8 @@
           "field_list": true,
           "status": "Stable",
           "trimFactor": 300,
-          "normTimes": true
+          "normTimes": true,
+          "time_field": "event_timestamp"
         }
       ]
     }
@@ -261,5 +290,9 @@
     "load_elasticsearch_size": 20,
     "load_local": true,
     "hide": false
+  },
+  "solr": {
+    "server": "http://localhost:8983/solr/",
+    "core_name": "logstash_logs"
   }
 }
