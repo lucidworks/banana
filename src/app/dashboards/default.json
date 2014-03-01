@@ -115,7 +115,7 @@
           "loadingEditor": false,
           "status": "Stable",
           "mode": "markdown",
-          "content": "This is the demonstration dashboard for Banana, a port of Kibana for Solr. This points to a collection called logstash\\_logs\\_demo which contains example system log data - imported using the Solr Output Writer for LogStash.  At a glance it shows how many errors have occurred within the chosen time period and which programs have thrown those errors.\n\nI set this up as a toy example using some syslogs from my MacBook, and learned to my surprise that Micorsoft Outlook was throwing a large number of errors. The \"All Events\" table provides us the ability to drill down into the individual messages.\n\nTo build your own dashboards, first get time series data into a collection. Then you can start from a blank dashboard (Select Load at the top of the screen and choose \"Clean Slate\") or you can begin with this dashboard and modify to fit your needs.",
+          "content": "This is the demonstration dashboard for Banana, a port of Kibana for Solr. This points to a collection called logstash\\_logs. If you followed the QuickStart instructions provided by the  the Solr Output Writer for LogStash, you will see example data here. \n\nTo build your own dashboards, first get time series data into a collection. Then you can begin with this dashboard and configure it to fit your needs.",
           "style": {},
           "title": "Welcome to Banana"
         }
