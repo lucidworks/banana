@@ -18448,10 +18448,17 @@
         var wt_json = '&wt=json';
         // set the size of query result
         var rows_limit;
+        var facet_limit;
         if (query.size !== undefined && query.size !== 0) {
           rows_limit = '&rows=' + query.size;
+          facet_limit = '&facet.limit=' + query.size;
         } else { // default
           rows_limit = '&rows=25';
+          facet_limit = '&facet.limit=10';
+        }
+
+        if (DEBUG) {
+          console.log('doSearch: query.size='+query.size+', rows_limit='+rows_limit+', facet_limit='+facet_limit);
         }
 
         // For histogram needs to add facet on logstash_event_timestamp
@@ -18563,7 +18570,7 @@
                       '&facet.range=' + timestamp_field +
                       '&facet.range.start=' + facet_start +
                       '&facet.range.end=' + facet_end +
-                      '&facet.range.gap=' + facet_gap;
+                      '&facet.range.gap=' + facet_gap + facet_limit;
                       
            //Need to use fq to filter according to the specified time range-added by Ravi; 
            // Different JSON hierarchy from Table Module, from and to captured in facet_start and facet_end           

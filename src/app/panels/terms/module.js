@@ -117,6 +117,9 @@ function (angular, app, _, $, kbn) {
               filterSrv.getBoolFilter(filterSrv.ids)
               )))).size(0);
 
+      // Use request.size to limit the facet query (is this a good idea?)
+      request = request.size($scope.panel.size);
+
       // Populate the inspector panel
       $scope.inspector = angular.toJson(JSON.parse(request.toString()),true);
 
