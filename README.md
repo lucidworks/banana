@@ -36,7 +36,7 @@ If your Solr port is different, edit banana/src/config.js and enter the port you
 
 If you have not created the data collections and ingested data into Solr, you will see an error message saying "No Index found at .." Go to the Solr Output Plug-in for LogStash  Page (https://github.com/LucidWorks/solrlogmanager) to learn how to import data into your Solr instance using LogStash
 
-If you want to save and load dashboards from Solr, copy either solr-4.4.0/kibana-int or solr-4.5.0/kibana-int directories (as appropriate) into $SOLR_HOME/example/solr in order to setup the required core and restart Solr.
+If you want to save and load dashboards from Solr, copy either solr-4.4.0/kibana-int (for Solr 4.4) or solr-4.5.0/kibana-int (for Solr 4.5 and above) directories (as appropriate) into $SOLR_HOME/example/solr in order to setup the required core and restart Solr.
 
 
 #### QuickStart for Complete SLK Stack
