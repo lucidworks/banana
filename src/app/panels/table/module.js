@@ -64,6 +64,7 @@ function (angular, app, _, kbn, moment) {
       queries     : {
         mode        : 'all',
         ids         : [],
+        query       : 'q=*:*',
         custom      : ''
       },
       size    : 100, // Per page
@@ -237,6 +238,9 @@ function (angular, app, _, kbn, moment) {
       if (DEBUG) {
         console.log('table:\n\trequest=',request,'\n\trequest.toString()=',request.toString(),'\n\tfilterSrv=',filterSrv.getBoolFilter(filterSrv.ids).toString(),'\n\tfacet=',facet,'\n\t$scope.panel.time_field=',$scope.panel.time_field);
       }
+
+      // TODO: Parse query here and send to request.doSearch()
+
 
       // Need to modify request.query with Solr's params
       // request = request.query();

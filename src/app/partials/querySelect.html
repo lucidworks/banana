@@ -24,7 +24,11 @@
 </div>
 <div class="row-fluid">
   <div class="span12" style="margin-left:0px">
+    <label class="small">Panel Query</label>
+    <pre>{{panel.queries.query}}</pre>
+  </div>
+  <div class="span12" style="margin-left:0px">
     <label class="small">Add Custom Queries</label>
-    <input type="text" class="input-xxlarge" ng-model="panel.queries.custom" ng-change="set_refresh(true)">
+    <input class="input-xxlarge" type="text" placeholder="&fq=field1:value1" ng-model="panel.queries.custom" ng-change="set_refresh(true)">
   </div>
 </div>

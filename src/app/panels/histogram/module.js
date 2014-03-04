@@ -82,6 +82,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       queries     : {
         mode        : 'all',
         ids         : [],
+        query       : 'q=*:*',
         custom      : ''
       },
       value_field : null,
@@ -237,6 +238,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
         request = request.facet(facet).size(0);
       });
+
+      // Set the additional custom query
+      if ($scope.panel.queries.custom != null) {
+        request = request.customQuery($scope.panel.queries.custom);
+      }
 
       // Populate the inspector panel
       $scope.populate_modal(request);

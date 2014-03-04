@@ -18504,12 +18504,13 @@
           var fq = '&fq=' + timestamp_field + ':[' + start_time + '%20TO%20' + end_time + ']';
           var q_str = query.query.filtered.query.bool.should[0].query_string.query;
           queryData = 'q=' + q_str + df + wt_json + rows_limit + fq + custom_query;
-          
+
         } else if (query.facets !== undefined && query.facets[0] !== undefined) {
+          // For histogram module: query.facets[] array case
           if (DEBUG) {
             console.log('For histogram module doSearch(): query=',query);
           }
-          // For histogram module: query.facets[] array case
+          
           var facet_start = '';
           var facet_end = '';
           var timestamp_field = query.facets[0].date_histogram.field; // Get timestamp field name
@@ -18533,14 +18534,6 @@
             console.log('\tfacet_gap = ' + facet_gap + '\n\ttimestamp_field = ' + timestamp_field);
           }
 
-          // convert facet_gap to Solr compatible format
-          // switch(true) {
-          //   case (facet_gap.charAt(facet_gap.length-1) == 'h'):
-          //     facet_gap = facet_gap.replace('h', 'HOUR');
-
-          // }
-          // // prepend '+' to facet_gap
-          // facet_gap = '%2B' + facet_gap;
           facet_gap = convertFacetGap(facet_gap);
 
           if (DEBUG) {
@@ -18554,12 +18547,12 @@
                       '&facet.range.gap=' + facet_gap;
           var q_str = query.facets[0].facet_filter.fquery.query.filtered.query.query_string.query;
           
-            //Need to use fq to filter according to the specified time range-added by Ravi; 
-           // Different JSON hierarchy from Table Module, from and to captured in facet_start and facet_end           
+          // Need to use fq to filter according to the specified time range-added by Ravi; 
+          // Different JSON hierarchy from Table Module, from and to captured in facet_start and facet_end           
           
           var fq = '&fq=' + timestamp_field + ':[' + facet_start + '%20TO%20' + facet_end + ']'; 
           
-          queryData = 'q=' + q_str + df + wt_json + rows_limit + facet +fq;
+          queryData = 'q=' + q_str + df + wt_json + rows_limit + facet + fq + custom_query;
         } else if (query.facets !== undefined) {
           // For terms module: query.facets object case (not array)
           var timestamp_field = query.facets.time_facet.range.field;
@@ -18568,8 +18561,6 @@
             console.log('For terms module doSearch():\n\tquery=',query,'\n\ttimestamp_field='+timestamp_field);
           }
           
-          // var facet_start = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range.event_timestamp.from).toISOString();
-          // var facet_end = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range.event_timestamp.to).toISOString();
           var facet_start = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range[timestamp_field].from).toISOString();
           var facet_end = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range[timestamp_field].to).toISOString();
 
@@ -18590,7 +18581,8 @@
           
           var fq = '&fq='+ timestamp_field + ':[' + facet_start + '%20TO%20' + facet_end + ']';  
                
-          queryData = 'q=' + q_str + df + wt_json + rows_limit + facet + fq;
+          queryData = 'q=' + q_str + df + wt_json + rows_limit + facet + fq + custom_query;
+
         } else if (query.query.query_string !== undefined) {
           // For loading dashboard from json files
           queryData = 'q=' + query.query.query_string.query + wt_json;

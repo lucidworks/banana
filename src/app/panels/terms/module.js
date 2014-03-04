@@ -48,6 +48,7 @@ function (angular, app, _, $, kbn) {
       queries     : {
         mode        : 'all',
         ids         : [],
+        query       : 'q=*:*',
         custom      : ''
       },
       field   : 'type',
@@ -128,6 +129,11 @@ function (angular, app, _, $, kbn) {
       var facet = $scope.sjs.RangeFacet('time_facet');
       facet = facet.field($scope.panel.time_field);
       request = request.facet(facet);
+
+      // Set the additional custom query
+      if ($scope.panel.queries.custom != null) {
+        request = request.customQuery($scope.panel.queries.custom);
+      }
 
       if (DEBUG) {
         console.log('terms:\n\trequest=',request,'\n\tfacet=',facet,'\n\t$scope.panel.time_field=',$scope.panel.time_field,'\n\t$scope.panel=',$scope.panel);
