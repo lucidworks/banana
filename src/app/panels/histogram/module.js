@@ -81,7 +81,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       time_field  : 'event_timestamp',
       queries     : {
         mode        : 'all',
-        ids         : []
+        ids         : [],
+        custom      : ''
       },
       value_field : null,
       auto_int    : true,
@@ -200,7 +201,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       if (DEBUG) {
-        console.log('histogram: dashboard=',dashboard,', $scope.panel.queries=',$scope.panel.queries,', $scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\tdashboard.current.solr.server + core_name = '+dashboard.current.solr.server+dashboard.current.solr.core_name);
+        console.log('histogram: dashboard=',dashboard,'\n\t$scope.panel.queries=',$scope.panel.queries,'\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\tdashboard.current.solr.server + core_name = '+dashboard.current.solr.server+dashboard.current.solr.core_name);
       }
 
       var request = $scope.sjs.Request().indices(dashboard.indices[segment]);

@@ -47,7 +47,8 @@ function (angular, app, _, $, kbn) {
     var _d = {
       queries     : {
         mode        : 'all',
-        ids         : []
+        ids         : [],
+        custom      : ''
       },
       field   : 'type',
       exclude : [],
@@ -129,7 +130,7 @@ function (angular, app, _, $, kbn) {
       request = request.facet(facet);
 
       if (DEBUG) {
-        console.log('terms:\n\trequest=',request,'\n\tfacet=',facet,'\n\t$scope.panel.time_field=',$scope.panel.time_field);
+        console.log('terms:\n\trequest=',request,'\n\tfacet=',facet,'\n\t$scope.panel.time_field=',$scope.panel.time_field,'\n\t$scope.panel=',$scope.panel);
       }
 
       results = request.doSearch();

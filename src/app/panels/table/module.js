@@ -63,7 +63,8 @@ function (angular, app, _, kbn, moment) {
       status  : "Stable",
       queries     : {
         mode        : 'all',
-        ids         : []
+        ids         : [],
+        custom      : ''
       },
       size    : 100, // Per page
       pages   : 5,   // Pages available
@@ -195,17 +196,10 @@ function (angular, app, _, kbn, moment) {
       $scope.segment = _segment;
 
       if(DEBUG) {
-        console.log('table begin of get_data(): $scope=',$scope,', $scope.panel=',$scope.panel,', _segment='+_segment,', dashboard.indices[_segment]=',dashboard.indices[_segment]);
+        console.log('table: Begin of get_data():\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\t_segment='+_segment,'\n\tdashboard.indices[_segment]=',dashboard.indices[_segment]);
       }
 
-      // TODO: Need to modify ejs.Request() for Solr. ejs methods request ejsObj
-      //       isEJSObject() line 141 in elastic.js
-      //       I have to replace ejs.Request() with solr.Request().
-      //       The problem is I don't have Solr JS client lib to use one now.
-
       // Solr
-      // set sjs to query 'logstash_logs' collection
-      // $scope.sjs.client.server(config.solr + config.solr_collection);
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
@@ -217,7 +211,7 @@ function (angular, app, _, kbn, moment) {
       request = request.query(
         $scope.sjs.FilteredQuery(
           boolQuery,
-          filterSrv.getBoolFilter(filterSrv.ids)
+          filterSrv.getBoolFilter(filterSrv.ids)  // search time range is provided here.
         ))
         .highlight(
           $scope.sjs.Highlight($scope.panel.highlight)
@@ -225,8 +219,13 @@ function (angular, app, _, kbn, moment) {
           .preTags('@start-highlight@')
           .postTags('@end-highlight@')
         )
-        .size($scope.panel.size*$scope.panel.pages) // to set the size of query result
+        .size($scope.panel.size*$scope.panel.pages) // Set the size of query result
         .sort($scope.panel.sort[0],$scope.panel.sort[1]);
+
+      // Set the additional custom query
+      if ($scope.panel.queries.custom != null) {
+        request = request.customQuery($scope.panel.queries.custom);
+      }
 
       $scope.populate_modal(request);
 
@@ -236,7 +235,7 @@ function (angular, app, _, kbn, moment) {
       request = request.facet(facet);
 
       if (DEBUG) {
-        console.log('table:\n\trequest=',request,'\n\tfacet=',facet,'\n\t$scope.panel.time_field=',$scope.panel.time_field);
+        console.log('table:\n\trequest=',request,'\n\trequest.toString()=',request.toString(),'\n\tfilterSrv=',filterSrv.getBoolFilter(filterSrv.ids).toString(),'\n\tfacet=',facet,'\n\t$scope.panel.time_field=',$scope.panel.time_field);
       }
 
       // Need to modify request.query with Solr's params
@@ -276,26 +275,6 @@ function (angular, app, _, kbn, moment) {
             var _h = _.clone(hit);
             //_h._source = kbn.flatten_json(hit._source);
             //_h.highlight = kbn.flatten_json(hit.highlight||{});
-
-            // TODO: Use for loop instead of hard code
-            // var concat_hit = hit.message
-            //                  .concat(hit.logstash_timestamp)
-            //                  .concat(hit.host)
-            //                  .concat(hit.path)
-            //                  .concat(hit.type)
-            //                  .concat(hit.logstash_version);
-            // console.log('table LINE 274: concat_hit = '+concat_hit);console.log(concat_hit);
-            // var hit_object = _.object(['message','logstash_timestamp','host','path','type','logstash_version'], concat_hit);
-
-            // TODO: Fix - Do not use hard coded fields. Change to getting fields from results obj. 
-            // var hit_object = _.object(['message','logstash_timestamp','host','path','type','logstash_version'],
-            //                           [hit.message, hit.logstash_timestamp, hit.host, hit.path, hit.type, hit.logstash_version]);
-            // var hit_object = _.object(hit);
-
-            // DEBUG
-            // console.log('table LINE 279: $scope = '+$scope);console.log($scope);
-            // console.log('table LINE 280: hit = '+hit);console.log(hit);
-            // console.log('table LINE 281: hit_object = '+hit_object);console.log(hit_object);
 
               _h.kibana = {
                 // _source : kbn.flatten_json(hit._source),
