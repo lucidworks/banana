@@ -26,8 +26,8 @@ function (Settings) {
     // solr_server: "http://localhost:8983/solr/",
     // solr: "http://localhost:8983/solr/logstash_logs",
     solr: "http://localhost:8983/solr/",
-    // solr_collection: "logstash_logs",
-    solr_core: "logstash_logs",
+    //solr_core: "logstash_logs",
+    solr_core: "logstash1",
 
     /**
      * The default ES index to use for storing Kibana specific object

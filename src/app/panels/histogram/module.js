@@ -202,7 +202,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       if (DEBUG) {
-        console.log('histogram: dashboard=',dashboard,'\n\t$scope.panel.queries=',$scope.panel.queries,'\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\tdashboard.current.solr.server + core_name = '+dashboard.current.solr.server+dashboard.current.solr.core_name);
+        console.log('histogram:\n\tdashboard=',dashboard,'\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv);
       }
 
       var request = $scope.sjs.Request().indices(dashboard.indices[segment]);

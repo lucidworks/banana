@@ -197,7 +197,8 @@ function (angular, app, _, kbn, moment) {
       $scope.segment = _segment;
 
       if(DEBUG) {
-        console.log('table: Begin of get_data():\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\t_segment='+_segment,'\n\tdashboard.indices[_segment]=',dashboard.indices[_segment]);
+        var dummy = new Date(dashboard.current.services.filter.list[0].from).toISOString();
+        console.log('table: Begin of get_data():\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\t_segment='+_segment,'\n\tdashboard.indices[_segment]=',dashboard.indices[_segment],'\n\tdashboard=',dashboard,'\n\tdashboard.current.services.filter.list[0].from='+ dummy,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv);
       }
 
       // Solr
@@ -236,14 +237,20 @@ function (angular, app, _, kbn, moment) {
       request = request.facet(facet);
 
       if (DEBUG) {
-        console.log('table:\n\trequest=',request,'\n\trequest.toString()=',request.toString(),'\n\tfilterSrv=',filterSrv.getBoolFilter(filterSrv.ids).toString(),'\n\tfacet=',facet,'\n\t$scope.panel.time_field=',$scope.panel.time_field);
+        console.log('table:\n\trequest=',request,'\n\trequest.toString()=',request.toString(),'\n\tfacet=',facet);
       }
 
       // TODO: Parse query here and send to request.doSearch()
+      // declare default Solr params here
 
+      // get query
+      // * use dashboard.current.service
 
-      // Need to modify request.query with Solr's params
-      // request = request.query();
+      // get from and to time range
+      // get query.size
+      // construct the query
+      // set queryData
+      // request = request.setQuery(q);
 
       var results = request.doSearch();
 

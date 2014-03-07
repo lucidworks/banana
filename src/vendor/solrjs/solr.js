@@ -18448,7 +18448,22 @@
         return sjs.client.post(getRestPath('_count'), queryData, successcb, errorcb);
         // return sjs.client.post(getRestPath('select'), queryData, successcb, errorcb);
       },
-            
+      
+      /**
+          Solr
+          set Solr query for doSearch()
+          */
+      setQuery: function (q) {
+        if (q == null) {
+          return query.solrquery;
+        }
+
+        query.solrquery = q;
+        return this;
+      },
+
+      
+
       /**
             Executes the search. 
 
@@ -18503,7 +18518,10 @@
           }
           var fq = '&fq=' + timestamp_field + ':[' + start_time + '%20TO%20' + end_time + ']';
           var q_str = query.query.filtered.query.bool.should[0].query_string.query;
+          
           queryData = 'q=' + q_str + df + wt_json + rows_limit + fq + custom_query;
+
+          // queryData = query.solrquery;
 
         } else if (query.facets !== undefined && query.facets[0] !== undefined) {
           // For histogram module: query.facets[] array case

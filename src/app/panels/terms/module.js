@@ -94,7 +94,7 @@ function (angular, app, _, $, kbn) {
       // $scope.sjs.client.server(config.solr + dashboard.current.collection.name);
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
       if (DEBUG) {
-        console.log('terms: dashboard.current.solr.server + core_name = '+dashboard.current.solr.server + dashboard.current.solr.core_name);
+        console.log('terms:\n\tdashboard',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv);
       }
 
       request = $scope.sjs.Request().indices(dashboard.indices);
