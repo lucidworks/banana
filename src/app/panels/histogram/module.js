@@ -239,14 +239,48 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         request = request.facet(facet).size(0);
       });
 
+      // Populate the inspector panel
+      $scope.populate_modal(request);
+
+      // Setup query params
+      var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
+      var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
+      var fq = '&fq=' + $scope.panel.time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
+      var query_size = $scope.panel.size * $scope.panel.pages;
+      var df = '&df=message&df=host&df=path&df=type';
+      var wt_json = '&wt=json';
+      var rows_limit;
+      var facet_gap = $scope.sjs.convertFacetGap($scope.panel.interval);
+      var facet = '&facet=true' +
+                  '&facet.range=' + $scope.panel.time_field +
+                  '&facet.range.start=' + start_time + '/DAY' +
+                  '&facet.range.end=' + end_time + '%2B1DAY/DAY' +
+                  '&facet.range.gap=' + facet_gap;
+
+      // set the size of query result
+      if (query_size !== undefined && query_size !== 0) {
+        rows_limit = '&rows=' + query_size;
+        // facet_limit = '&facet.limit=' + query_size;
+      } else { // default
+        rows_limit = '&rows=25';
+        // facet_limit = '&facet.limit=10';
+      }
+
+      // Set the panel's query
+      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + facet;
+
+      if (DEBUG) {
+        console.log('histogram:\n\tfacet_gap='+facet_gap);
+      }
+
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
         request = request.customQuery($scope.panel.queries.custom);
+        request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
+      } else {
+        request = request.setQuery($scope.panel.queries.query);
       }
 
-      // Populate the inspector panel
-      $scope.populate_modal(request);
-      // Then run it
       var results = request.doSearch();
 
       // Populate scope when we have results

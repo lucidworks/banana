@@ -224,33 +224,53 @@ function (angular, app, _, kbn, moment) {
         .size($scope.panel.size*$scope.panel.pages) // Set the size of query result
         .sort($scope.panel.sort[0],$scope.panel.sort[1]);
 
-      // Set the additional custom query
-      if ($scope.panel.queries.custom != null) {
-        request = request.customQuery($scope.panel.queries.custom);
-      }
-
       $scope.populate_modal(request);
 
       // Create a facet to store and pass on time_field value to request.doSearch()
-      var facet = $scope.sjs.RangeFacet('time_facet');
-      facet = facet.field($scope.panel.time_field);
-      request = request.facet(facet);
+      // var facet = $scope.sjs.RangeFacet('time_facet');
+      // facet = facet.field($scope.panel.time_field);
+      // request = request.facet(facet);
 
       if (DEBUG) {
-        console.log('table:\n\trequest=',request,'\n\trequest.toString()=',request.toString(),'\n\tfacet=',facet);
+        console.log('table:\n\trequest=',request,'\n\trequest.toString()=',request.toString());
       }
 
       // TODO: Parse query here and send to request.doSearch()
       // declare default Solr params here
-
       // get query
-      // * use dashboard.current.service
-
       // get from and to time range
       // get query.size
       // construct the query
       // set queryData
       // request = request.setQuery(q);
+      var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
+      var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
+      var fq = '&fq=' + $scope.panel.time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
+      var query_size = $scope.panel.size * $scope.panel.pages;
+      var df = '&df=message&df=host&df=path&df=type';
+      var wt_json = '&wt=json';
+      var rows_limit;
+      // var facet_limit;
+
+      // set the size of query result
+      if (query_size !== undefined && query_size !== 0) {
+        rows_limit = '&rows=' + query_size;
+        // facet_limit = '&facet.limit=' + query_size;
+      } else { // default
+        rows_limit = '&rows=25';
+        // facet_limit = '&facet.limit=10';
+      }
+
+      // Set the panel's query
+      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq;
+
+      // Set the additional custom query
+      if ($scope.panel.queries.custom != null) {
+        // request = request.customQuery($scope.panel.queries.custom);
+        request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
+      } else {
+        request = request.setQuery($scope.panel.queries.query);
+      }
 
       var results = request.doSearch();
 

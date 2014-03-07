@@ -6,10 +6,16 @@
 <div class="modal-body">
 
   <div>
-      <!-- TODO: add solr support -->
+    <!-- TODO: add solr support -->
     <!-- <pre>curl -XGET '{{config.elasticsearch}}/{{dashboard.indices|stringify}}/_search?pretty' -d '{{inspector}}' -->
-    	<pre>'{{inspector}}'
+    <!-- 
+    <pre>'{{inspector}}'
     </pre>
+	-->
+	<h5>Panel Query</h5>
+    <pre>{{panel.queries.query}}</pre>
+    <h5>Additional Custom Query</h5>
+    <pre>{{panel.queries.custom}}</h6>
   </div>
   
 </div>

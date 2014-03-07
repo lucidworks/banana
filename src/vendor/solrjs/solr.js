@@ -191,7 +191,8 @@
   };
   
   // Solr utility methods
-  var convertFacetGap = function (gap) {
+  // var convertFacetGap = function (gap) {
+  sjs.convertFacetGap = function (gap) {
     // Need to prepend '+' to gap
     switch(true) {
       case (gap.charAt(gap.length-1) == 's'):
@@ -18500,27 +18501,27 @@
           console.log('doSearch:\n\tquery.size='+query.size+', rows_limit='+rows_limit+', facet_limit='+facet_limit+', custom_query='+custom_query);
         }
 
-        var queryData = '';
+        var queryData = query.solrquery;
 
         if (query.query !== undefined && query.query.filtered !== undefined) {
           // For table module: we use fq to filter result set
-          var start_time = '*';
-          var end_time = '*';
-          var timestamp_field = query.facets.time_facet.range.field; // Get timestamp field name
+          // var start_time = '*';
+          // var end_time = '*';
+          // var timestamp_field = query.facets.time_facet.range.field; // Get timestamp field name
 
           if (DEBUG) {
-            console.log('For table module doSearch():\n\tquery=',query,'\n\tquery.query.filtered.filter.bool.must[1].range=',query.query.filtered.filter.bool.must[1].range,'\n\ttimestamp_field='+timestamp_field);
+            // console.log('For table module doSearch():\n\tquery=',query,'\n\tquery.query.filtered.filter.bool.must[1].range=',query.query.filtered.filter.bool.must[1].range,'\n\ttimestamp_field='+timestamp_field);
+            console.log('For table module doSearch():\n\tquery.solrquery='+query.solrquery);
           }
 
-          if (query.query.filtered.filter.bool.must[1].range !== undefined) {
-            start_time = new Date(query.query.filtered.filter.bool.must[1].range[timestamp_field].from).toISOString();
-            end_time = new Date(query.query.filtered.filter.bool.must[1].range[timestamp_field].to).toISOString();
-          }
-          var fq = '&fq=' + timestamp_field + ':[' + start_time + '%20TO%20' + end_time + ']';
-          var q_str = query.query.filtered.query.bool.should[0].query_string.query;
+          // if (query.query.filtered.filter.bool.must[1].range !== undefined) {
+          //   start_time = new Date(query.query.filtered.filter.bool.must[1].range[timestamp_field].from).toISOString();
+          //   end_time = new Date(query.query.filtered.filter.bool.must[1].range[timestamp_field].to).toISOString();
+          // }
+          // var fq = '&fq=' + timestamp_field + ':[' + start_time + '%20TO%20' + end_time + ']';
+          // var q_str = query.query.filtered.query.bool.should[0].query_string.query;
           
-          queryData = 'q=' + q_str + df + wt_json + rows_limit + fq + custom_query;
-
+          // queryData = 'q=' + q_str + df + wt_json + rows_limit + fq + custom_query;
           // queryData = query.solrquery;
 
         } else if (query.facets !== undefined && query.facets[0] !== undefined) {
@@ -18552,7 +18553,7 @@
             console.log('\tfacet_gap = ' + facet_gap + '\n\ttimestamp_field = ' + timestamp_field);
           }
 
-          facet_gap = convertFacetGap(facet_gap);
+          facet_gap = sjs.convertFacetGap(facet_gap);
 
           if (DEBUG) {
             console.log('\tconverted facet_gap = ' + facet_gap);
