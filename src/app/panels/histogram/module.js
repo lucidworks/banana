@@ -246,10 +246,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
       var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
       var fq = '&fq=' + $scope.panel.time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
-      var query_size = $scope.panel.size * $scope.panel.pages;
+      // var query_size = $scope.panel.size * $scope.panel.pages;
       var df = '&df=message&df=host&df=path&df=type';
       var wt_json = '&wt=json';
-      var rows_limit;
+      var rows_limit = '&rows=1'; // for histogram, we do not need the actual response doc, so set rows=1
       var facet_gap = $scope.sjs.convertFacetGap($scope.panel.interval);
       var facet = '&facet=true' +
                   '&facet.range=' + $scope.panel.time_field +
@@ -257,19 +257,20 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                   '&facet.range.end=' + end_time + '%2B1DAY/DAY' +
                   '&facet.range.gap=' + facet_gap;
 
-      // set the size of query result
-      if (query_size !== undefined && query_size !== 0) {
-        rows_limit = '&rows=' + query_size;
-        // facet_limit = '&facet.limit=' + query_size;
-      } else { // default
-        rows_limit = '&rows=25';
-        // facet_limit = '&facet.limit=10';
-      }
+      // // set the size of query result
+      // if (query_size !== undefined && query_size !== 0) {
+      //   rows_limit = '&rows=' + query_size;
+      //   // facet_limit = '&facet.limit=' + query_size;
+      // } else { // default
+      //   rows_limit = '&rows=25';
+      //   // facet_limit = '&facet.limit=10';
+      // }
 
       // Set the panel's query
       $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + facet;
 
       if (DEBUG) {
+
         console.log('histogram:\n\tfacet_gap='+facet_gap);
       }
 
