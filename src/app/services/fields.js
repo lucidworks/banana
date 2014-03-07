@@ -83,7 +83,7 @@ function (angular, _) {
         // url: config.elasticsearch + "/" + indices.join(',') + "/_mapping",
         // Solr
         // url: config.solr + config.solr_collection + "/schema/fields",
-        url: dashboard.current.solr.server + dashboard.current.solr.core_name + "/schema/fields",
+        url: dashboard.current.solr.server + dashboard.current.solr.core_name + "/schema/fields?includeDynamic=true",
         method: "GET"
       }).error(function(data, status) {
         if(status === 0) {
