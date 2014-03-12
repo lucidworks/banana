@@ -197,8 +197,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       $scope.panelMeta.loading = true;
 
       // Solr
-      // set sjs to query 'logstash_logs' collection
-      // $scope.sjs.client.server(config.solr + config.solr_collection);
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       if (DEBUG) {
@@ -242,7 +240,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       // Populate the inspector panel
       $scope.populate_modal(request);
 
-      // Setup query params
+      // Build Solr query
       var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
       var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
       var fq = '&fq=' + $scope.panel.time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
@@ -269,14 +267,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       // Set the panel's query
       $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + facet;
 
-      if (DEBUG) {
-
-        console.log('histogram:\n\tfacet_gap='+facet_gap);
-      }
-
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
-        request = request.customQuery($scope.panel.queries.custom);
+        // request = request.customQuery($scope.panel.queries.custom);
         request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
       } else {
         request = request.setQuery($scope.panel.queries.query);

@@ -91,8 +91,8 @@ function (angular, app, _, $, kbn) {
         boolQuery;
 
       //Solr
-      // $scope.sjs.client.server(config.solr + dashboard.current.collection.name);
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
+
       if (DEBUG) {
         console.log('terms:\n\tdashboard',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv);
       }
@@ -130,13 +130,32 @@ function (angular, app, _, $, kbn) {
       facet = facet.field($scope.panel.time_field);
       request = request.facet(facet);
 
+      // Build Solr query
+      var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
+      var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
+      var fq = '&fq=' + $scope.panel.time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
+      // var query_size = $scope.panel.size * $scope.panel.pages;
+      var df = '&df=message&df=host&df=path&df=type';
+      var wt_json = '&wt=json';
+      var rows_limit = '&rows=1' // for terms, we do not need the actual response doc, so set rows=1
+      var facet_gap = '%2B1DAY';
+      var facet = '&facet=true' +
+                  '&facet.field=' + $scope.panel.field +
+                  '&facet.range=' + $scope.panel.time_field +
+                  '&facet.range.start=' + start_time +
+                  '&facet.range.end=' + end_time +
+                  '&facet.range.gap=' + facet_gap +
+                  '&facet.limit=' + $scope.panel.size;
+
+      // Set the panel's query
+      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + facet;
+
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
-        request = request.customQuery($scope.panel.queries.custom);
-      }
-
-      if (DEBUG) {
-        console.log('terms:\n\trequest=',request,'\n\tfacet=',facet,'\n\t$scope.panel.time_field=',$scope.panel.time_field,'\n\t$scope.panel=',$scope.panel);
+        // request = request.customQuery($scope.panel.queries.custom);
+        request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
+      } else {
+        request = request.setQuery($scope.panel.queries.query);
       }
 
       results = request.doSearch();
