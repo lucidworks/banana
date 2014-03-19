@@ -34,7 +34,7 @@
     </div>
     <div class="span3" style="white-space:nowrap" ng-show='panel.sortable'>
       <h6>Sort</h6>
-      <input ng-show="all_fields.length<=0 || !all_fields"style="width:85%" ng-model="panel.sort[0]" type="text"></input>
+      <input ng-show="all_fields.length<=0 || !all_fields"style="width:85%" ng-model="panel.sort[0]" bs-typeahead="fields.list" type="text"></input>
       <select ng-show="all_fields.length>0"style="width:85%" ng-model="panel.sort[0]" ng-options="f for f in all_fields"></select>
       <i ng-click="set_sort(panel.sort[0])" ng-class="{'icon-chevron-up': panel.sort[1] == 'asc','icon-chevron-down': panel.sort[1] == 'desc'}"></i>
     </div>

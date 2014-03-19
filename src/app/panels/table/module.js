@@ -71,7 +71,8 @@ function (angular, app, _, kbn, moment) {
       pages   : 5,   // Pages available
       offset  : 0,
       
-      sort    : ['_score','desc'],
+      // sort    : ['_score','desc'],
+      sort    : ['event_timestamp','desc'],
 
       group   : "default",
       style   : {'font-size': '9pt'},
@@ -243,6 +244,8 @@ function (angular, app, _, kbn, moment) {
       // construct the query
       // set queryData
       // request = request.setQuery(q);
+      // TODO: Validate dashboard.current.services.filter.list[0], what if it is not the timestamp field?
+      //       This will cause error.
       var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
       var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
       var fq = '&fq=' + $scope.panel.time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
@@ -250,7 +253,11 @@ function (angular, app, _, kbn, moment) {
       var df = '&df=message&df=host&df=path&df=type';
       var wt_json = '&wt=json';
       var rows_limit;
-      // var facet_limit;
+      var sorting = '';
+
+      if ($scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined) {
+        sorting = '&sort=' + $scope.panel.sort[0] + ' ' + $scope.panel.sort[1];
+      }
 
       // set the size of query result
       if (query_size !== undefined && query_size !== 0) {
@@ -262,7 +269,7 @@ function (angular, app, _, kbn, moment) {
       }
 
       // Set the panel's query
-      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq;
+      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + sorting;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
@@ -327,20 +334,22 @@ function (angular, app, _, kbn, moment) {
             console.log('\t$scope.hits='+$scope.hits+', $scope.data=',$scope.data);
           }
 
+          // NO NEED for sorting here. Solr result is already sorted.
           // Sort the data
-          $scope.data = _.sortBy($scope.data, function(v){
-            if(!_.isUndefined(v.sort)) {
-              return v.sort[0];
-            } else {
-              return 0;
-            }
-          });
+          // $scope.data = _.sortBy($scope.data, function(v){
+          //   if(!_.isUndefined(v.sort)) {
+          //     return v.sort[0];
+          //   } else {
+          //     return 0;
+          //   }
+          // });
 
-          // Reverse if needed
-          if($scope.panel.sort[1] === 'desc') {
-            $scope.data.reverse();
-          }
-          
+          // We DO NOT need to reverse here because Solr's result is already sorted.
+          // if($scope.panel.sort[1] === 'desc') {
+          //   if (DEBUG) { console.log('\tREVERSE IT!!'); }
+          //   $scope.data.reverse();
+          // }
+
           // Keep only what we need for the set
           $scope.data = $scope.data.slice(0,$scope.panel.size * $scope.panel.pages);
         } else {
