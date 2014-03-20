@@ -258,7 +258,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                   '&facet.range.gap=' + facet_gap;
       var filter_fq = '';
       var filter_either = [];
-      
+
       // Apply filters to the query
       _.each(dashboard.current.services.filter.list, function(v,k) {
         // Skip the timestamp filter because it's already applied to the query using fq param.
@@ -377,10 +377,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             //   hits += entry.count; // The series level hits counter
             //   $scope.hits += entry.count; // Entire dataset level hits counter
             // });
-            if (DEBUG) { console.log('histogram: request.facet()[0]=',request.facet()[0]); }
-            var timestamp_field = request.facet()[0].date_histogram.field;
+            
+            // if (DEBUG) { console.log('histogram: request.facet()[0]=',request.facet()[0]); }
+            // var timestamp_field = request.facet()[0].date_histogram.field;
+
             // var entry = query_results.facet_ranges.event_timestamp.counts;
-            var entry = query_results.facet_ranges[timestamp_field].counts;
+            var entry = query_results.facet_ranges[$scope.panel.time_field].counts;
 
             if (DEBUG) {
               console.log('histogram: time_series=',time_series,', entry=',entry,', hits='+hits,', $scope=',$scope);
