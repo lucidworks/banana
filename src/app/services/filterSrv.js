@@ -19,8 +19,10 @@ define([
     };
 
     // For convenience
-    var ejs = ejsResource(config.elasticsearch);
-    var sjs = sjsResource(config.solr + config.solr_core);
+    // var ejs = ejsResource(config.elasticsearch);
+    var solrserver = dashboard.current.solr.server + dashboard.current.solr.core_name || config.solr + config.solr_core;
+    // var sjs = sjsResource(config.solr + config.solr_core);
+    var sjs = sjsResource(solrserver);
     
     var _f = dashboard.current.services.filter;
 
@@ -75,9 +77,9 @@ define([
 
     this.getBoolFilter = function(ids) {
       // A default match all filter, just in case there are no other filters
-      var bool = ejs.BoolFilter().must(ejs.MatchAllFilter());
+      var bool = sjs.BoolFilter().must(sjs.MatchAllFilter());
 
-      var either_bool = ejs.BoolFilter().must(ejs.MatchAllFilter());
+      var either_bool = sjs.BoolFilter().must(sjs.MatchAllFilter());
       _.each(ids,function(id) {
         if(self.list[id].active) {
           switch(self.list[id].mandate)
@@ -107,23 +109,23 @@ define([
       switch(filter.type)
       {
       case 'time':
-        return ejs.RangeFilter(filter.field)
+        return sjs.RangeFilter(filter.field)
           .from(filter.from.valueOf())
           .to(filter.to.valueOf());
       case 'range':
-        return ejs.RangeFilter(filter.field)
+        return sjs.RangeFilter(filter.field)
           .from(filter.from)
           .to(filter.to);
       case 'querystring':
-        return ejs.QueryFilter(ejs.QueryStringQuery(filter.query)).cache(true);
+        return sjs.QueryFilter(sjs.QueryStringQuery(filter.query)).cache(true);
       case 'field':
-        return ejs.QueryFilter(ejs.FieldQuery(filter.field,filter.query)).cache(true);
+        return sjs.QueryFilter(sjs.FieldQuery(filter.field,filter.query)).cache(true);
       case 'terms':
-        return ejs.TermsFilter(filter.field,filter.value);
+        return sjs.TermsFilter(filter.field,filter.value);
       case 'exists':
-        return ejs.ExistsFilter(filter.field);
+        return sjs.ExistsFilter(filter.field);
       case 'missing':
-        return ejs.MissingFilter(filter.field);
+        return sjs.MissingFilter(filter.field);
       default:
         return false;
       }

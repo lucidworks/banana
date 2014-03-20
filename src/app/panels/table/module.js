@@ -254,6 +254,28 @@ function (angular, app, _, kbn, moment) {
       var wt_json = '&wt=json';
       var rows_limit;
       var sorting = '';
+      var filter_fq = '';
+      var filter_either = [];
+      
+      // Apply filters to the query
+      _.each(dashboard.current.services.filter.list, function(v,k) {
+        // Skip the timestamp filter because it's already applied to the query using fq param.
+        // timestamp filter should be in k = 0
+        if (k > 0 && v.field != $scope.panel.time_field && v.active) {
+          if (DEBUG) { console.log('terms: k=',k,' v=',v); }
+          if (v.mandate == 'must') {
+            filter_fq = filter_fq + '&fq=' + v.field + ':' + v.value;
+          } else if (v.mandate == 'mustNot') {
+            filter_fq = filter_fq + '&fq=-' + v.field + ':' + v.value;
+          } else if (v.mandate == 'either') {
+            filter_either.push(v.field + ':' + v.value);
+          }
+        }
+      });
+      // parse filter_either array values, if exists
+      if (filter_either.length > 0) {
+        filter_fq = filter_fq + '&fq=(' + filter_either.join(' OR ') + ')';
+      }
 
       if ($scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined) {
         sorting = '&sort=' + $scope.panel.sort[0] + ' ' + $scope.panel.sort[1];
@@ -269,7 +291,7 @@ function (angular, app, _, kbn, moment) {
       }
 
       // Set the panel's query
-      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + sorting;
+      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + sorting + filter_fq;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {

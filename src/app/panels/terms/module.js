@@ -131,13 +131,15 @@ function (angular, app, _, $, kbn) {
       request = request.facet(facet);
 
       // Build Solr query
+      // TODO: Validate dashboard.current.services.filter.list[0], what if it is not the timestamp field?
+      //       This will cause error.
       var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
       var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
       var fq = '&fq=' + $scope.panel.time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
       // var query_size = $scope.panel.size * $scope.panel.pages;
       var df = '&df=message&df=host&df=path&df=type';
       var wt_json = '&wt=json';
-      var rows_limit = '&rows=1' // for terms, we do not need the actual response doc, so set rows=1
+      var rows_limit = '&rows=0' // for terms, we do not need the actual response doc, so set rows=0
       var facet_gap = '%2B1DAY';
       var facet = '&facet=true' +
                   '&facet.field=' + $scope.panel.field +
@@ -146,9 +148,31 @@ function (angular, app, _, $, kbn) {
                   '&facet.range.end=' + end_time +
                   '&facet.range.gap=' + facet_gap +
                   '&facet.limit=' + $scope.panel.size;
+      var filter_fq = '';
+      var filter_either = [];
+
+      // Apply filters to the query
+      _.each(dashboard.current.services.filter.list, function(v,k) {
+        // Skip the timestamp filter because it's already applied to the query using fq param.
+        // timestamp filter should be in k = 0
+        if (k > 0 && v.field != $scope.panel.time_field && v.active) {
+          if (DEBUG) { console.log('terms: k=',k,' v=',v); }
+          if (v.mandate == 'must') {
+            filter_fq = filter_fq + '&fq=' + v.field + ':' + v.value;
+          } else if (v.mandate == 'mustNot') {
+            filter_fq = filter_fq + '&fq=-' + v.field + ':' + v.value;
+          } else if (v.mandate == 'either') {
+            filter_either.push(v.field + ':' + v.value);
+          }
+        }
+      });
+      // parse filter_either array values, if exists
+      if (filter_either.length > 0) {
+        filter_fq = filter_fq + '&fq=(' + filter_either.join(' OR ') + ')';
+      }
 
       // Set the panel's query
-      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + facet;
+      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + facet + filter_fq;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
@@ -182,6 +206,8 @@ function (angular, app, _, $, kbn) {
             var term = v[i];
             i++;
             var count = v[i];
+            // if count = 0, do not add it to the chart, just skip it
+            if (count == 0) continue;
             var slice = { label : term, data : [[k,count]], actions: true};
             $scope.data.push(slice);
             k = k + 1;  
