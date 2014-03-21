@@ -85,6 +85,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         query       : 'q=*:*',
         custom      : ''
       },
+      max_rows    : 100000,  // maximum number of rows returned from Solr
       value_field : null,
       auto_int    : true,
       resolution  : 100,
@@ -213,11 +214,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         );
 
         var facet = $scope.sjs.DateHistogramFacet(id);
-        
-        // if (DEBUG) {
-        //   console.log('histogram: facet = '+facet);
-        //   console.log(facet);
-        // }
 
         if($scope.panel.mode === 'count') {
           facet = facet.field($scope.panel.time_field);
@@ -229,10 +225,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           facet = facet.keyField($scope.panel.time_field).valueField($scope.panel.value_field);
         }
         facet = facet.interval(_interval).facetFilter($scope.sjs.QueryFilter(query));
-        
-        if (DEBUG) {
-          console.log('histogram: facet='+facet);
-        }
 
         request = request.facet(facet).size(0);
       });
@@ -246,7 +238,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
       var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
       var fq = '&fq=' + $scope.panel.time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
-      // var query_size = $scope.panel.size * $scope.panel.pages;
       var df = '&df=message&df=host&df=path&df=type';
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0'; // for histogram, we do not need the actual response doc, so set rows=0
@@ -258,6 +249,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                   '&facet.range.gap=' + facet_gap;
       var filter_fq = '';
       var filter_either = [];
+      var fl = '';
 
       // Apply filters to the query
       _.each(dashboard.current.services.filter.list, function(v,k) {
@@ -279,17 +271,19 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         filter_fq = filter_fq + '&fq=(' + filter_either.join(' OR ') + ')';
       }
 
-      // // set the size of query result
-      // if (query_size !== undefined && query_size !== 0) {
-      //   rows_limit = '&rows=' + query_size;
-      //   // facet_limit = '&facet.limit=' + query_size;
-      // } else { // default
-      //   rows_limit = '&rows=25';
-      //   // facet_limit = '&facet.limit=10';
-      // }
+      // For mode = value
+      if($scope.panel.mode === 'values') {
+        if(_.isNull($scope.panel.value_field)) {
+            $scope.panel.error = "In " + $scope.panel.mode + " mode a field must be specified";
+            return;
+        }
+        fl = '&fl=' + $scope.panel.time_field + ' ' + $scope.panel.value_field;
+        rows_limit = '&rows=' + $scope.panel.max_rows;
+        facet = '';
+      }
 
       // Set the panel's query
-      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + facet + filter_fq;
+      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + facet + filter_fq + fl;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
@@ -326,11 +320,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         // TODO: change this, Solr do faceting differently
         var facetIds = [0]; // Need to fix this
 
-        if(DEBUG) {
-          // console.log('histogram LINE 245: results.facets = '+results.facets);console.log(results.facets);
-          // console.log('histogram LINE 246: facetIds = '+facetIds);console.log(facetIds);
-        }
-
         // Make sure we're still on the same query/queries
         if($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
           var i = 0,
@@ -339,11 +328,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
           _.each($scope.panel.queries.ids, function(id) {
             // var query_results = results.facets[id];
-            var query_results = results.facet_counts;
 
-            if (DEBUG) {
-              console.log('histogram: i='+i+', results=',results,', query_results=',query_results,', segment=',segment,', $scope=',$scope);
-            }
+            if (DEBUG) { console.log('histogram: i='+i+', results=',results,', segment=',segment,', $scope=',$scope); }
 
             // we need to initialize the data variable on the first run,
             // and when we are working on the first segment of the data.
@@ -355,9 +341,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 fill_style: 'minimal'
               });
               hits = 0;
-              if (DEBUG) {
-                console.log('\tfirst run: i='+i+', time_series=',time_series);
-              }
+              if (DEBUG) { console.log('\tfirst run: i='+i+', time_series=',time_series); }
             } else {
               if (DEBUG) {
                 console.log('\tNot first run: i='+i+', $scope.data[i].time_series=',$scope.data[i].time_series,', hits='+$scope.data[i].hits);
@@ -377,29 +361,46 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             //   hits += entry.count; // The series level hits counter
             //   $scope.hits += entry.count; // Entire dataset level hits counter
             // });
-            
-            // if (DEBUG) { console.log('histogram: request.facet()[0]=',request.facet()[0]); }
-            // var timestamp_field = request.facet()[0].date_histogram.field;
 
-            // var entry = query_results.facet_ranges.event_timestamp.counts;
-            var entry = query_results.facet_ranges[$scope.panel.time_field].counts;
+            if ($scope.panel.mode === 'count') {
+              // Entries from facet_ranges counts
+              var entries = results.facet_counts.facet_ranges[$scope.panel.time_field].counts;
+              for (var j = 0; j < entries.length; j++) {
+                var entry_time = new Date(entries[j]).getTime(); // convert to millisec
+                j++; // Solr facet counts response is in one big Array.
+                var entry_count = entries[j];
+                
+                // For mode == count, add count value to histogram
+                // Otherwise, just add zero as a placeholder
+                // var entry_count = 0;
+                // if ($scope.panel.mode === 'count') {
+                //   entry_count = entries[j];
+                // }
 
-            if (DEBUG) {
-              console.log('histogram: time_series=',time_series,', entry=',entry,', hits='+hits,', $scope=',$scope);
+                // if (DEBUG && j < 5) {
+                //   console.log('\tj='+j+', entry_count='+entry_count+', hits='+hits+', $scope.hits='+$scope.hits);
+                // }
+
+                time_series.addValue(entry_time, entry_count);
+                hits += entry_count; // The series level hits counter
+                $scope.hits += entry_count; // Entire dataset level hits counter
+              };
+            } else if ($scope.panel.mode === 'values') {
+              var entries = results.response.docs;
+              for (var j = 0; j < entries.length; j++) {
+                var entry_time = new Date(entries[j][$scope.panel.time_field]).getTime(); // convert to millisec
+                var entry_value = entries[j][$scope.panel.value_field];
+                time_series.addValue(entry_time, entry_value);
+                hits += 1;
+                $scope.hits += 1;
+
+                // if (DEBUG && j < 10) {
+                //   console.log('\tj=',j,'entry_time=',entry_time,'entry_value=',entry_value,'hits=',hits,'$scope.hits=',$scope.hits);
+                // }
+              }
             }
 
-            for (var j = 0; j < entry.length; j++) {
-              var entry_time = new Date(entry[j]).getTime(); // convert to millisec
-              j++; // Solr facet counts response is in one big Array.
-              var entry_count = entry[j];
-              if (DEBUG && j < 5) {
-                // console.log('histogram: entry_time = '+entry_time+', entry_count = '+entry_count+'\thits = '+hits+', $scope.hits = '+$scope.hits);
-                console.log('\tj='+j+', entry_count='+entry_count+', hits='+hits+', $scope.hits='+$scope.hits);
-              }
-              time_series.addValue(entry_time, entry_count);
-              hits += entry_count; // The series level hits counter
-              $scope.hits += entry_count; // Entire dataset level hits counter
-            };
+            if (DEBUG) { console.log('histogram: time_series=',time_series); }
             
             $scope.data[i] = {
               info: querySrv.list[id],
@@ -410,9 +411,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             i++;
           });
           
-          if (DEBUG) {
-            console.log('histogram: $scope.data=',$scope.data,', $scope=',$scope);
-          }
+          if (DEBUG) { console.log('histogram: $scope=',$scope,'$scope.panel=',$scope.panel); }
 
           // Tell the histogram directive to render.
           $scope.$emit('render');
@@ -580,17 +579,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 return a-b;
               }), true);
             }
-            // DEBUG
-            // console.log('histogram LINE 482: required_times = '+required_times);console.log(required_times);
 
             for (var i = 0; i < scope.data.length; i++) {
               scope.data[i].data = scope.data[i].time_series.getFlotPairs(required_times);
-              // DEBUG
-              // console.log('histogram LINE 487: scope.data[i].data = '+scope.data[i].data);console.log(scope.data[i].data);
             }
 
             scope.plot = $.plot(elem, scope.data, options);
-
           } catch(e) {
             // TODO: Need to fix bug => "Invalid dimensions for plot, width = 0, height = 200"
             console.log(e);

@@ -111,6 +111,7 @@
           "mode": "count",
           "time_field": "event_timestamp",
           "value_field": null,
+          "max_rows": 100000,
           "auto_int": true,
           "resolution": 100,
           "interval": "10m",
