@@ -264,11 +264,11 @@ function (angular, app, _, kbn, moment) {
         if (k > 0 && v.field != $scope.panel.time_field && v.active) {
           if (DEBUG) { console.log('terms: k=',k,' v=',v); }
           if (v.mandate == 'must') {
-            filter_fq = filter_fq + '&fq=' + v.field + ':' + v.value;
+            filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
           } else if (v.mandate == 'mustNot') {
-            filter_fq = filter_fq + '&fq=-' + v.field + ':' + v.value;
+            filter_fq = filter_fq + '&fq=-' + v.field + ':"' + v.value + '"';
           } else if (v.mandate == 'either') {
-            filter_either.push(v.field + ':' + v.value);
+            filter_either.push(v.field + ':"' + v.value + '"');
           }
         }
       });
