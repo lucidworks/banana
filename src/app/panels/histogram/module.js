@@ -86,7 +86,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         custom      : ''
       },
       max_rows    : 100000,  // maximum number of rows returned from Solr
-      group_limit : 10, // maximum number of results to return for each group (group.limit)
+      // group_limit : 10000, // maximum number of results to return for each group (group.limit)
       value_field : null,
       group_field : null,
       auto_int    : true,
@@ -296,8 +296,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         facet = '';
 
         // if Group By Field is specified
-        if ($scope.panel.group_field && $scope.panel.group_limit) {
-          values_mode_query += '&group=true&group.field=' + $scope.panel.group_field + '&group.limit=' + $scope.panel.group_limit;
+        // if ($scope.panel.group_field && $scope.panel.group_limit) {
+        //   values_mode_query += '&group=true&group.field=' + $scope.panel.group_field + '&group.limit=' + $scope.panel.group_limit;
+        // }
+        if ($scope.panel.group_field) {
+          values_mode_query += '&group=true&group.field=' + $scope.panel.group_field + '&group.limit=' + $scope.panel.max_rows;
         }
       }
 
