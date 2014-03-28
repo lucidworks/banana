@@ -69,9 +69,7 @@ angular.module('solrjs.service', [])
         }
         path = url + path;
         
-        if(DEBUG) {
-          console.log('solr-angular-client: url='+url+', path='+path+', data=',data);
-        }
+        
 
         // var config = {
         //   headers: {
@@ -82,6 +80,17 @@ angular.module('solrjs.service', [])
         // 'Content-type': 'application/json'
 
         // return promiseThen($http.post(path, data), successcb, errorcb);
+
+
+
+        // SOLR - TESTING Multiple Queries
+        
+        // var queries = [data, 'q=*:*&wt=json'];
+
+        if(DEBUG) {
+          console.log('solr-angular-client: url='+url+', path='+path+', data=',data);
+        }
+
         return promiseThen($http.post(path, data, config), successcb, errorcb);
       },
       get: function (path, data, successcb, errorcb) {

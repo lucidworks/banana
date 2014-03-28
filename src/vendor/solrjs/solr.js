@@ -18477,32 +18477,33 @@
         // TODO: Need to use "for loop" to construct query
         // TODO: Default searching fields should be defined in Solr instead of hard code here.
         // Default fields for searching.
-        var df = '&df=message&df=host&df=path&df=type';
-        var wt_json = '&wt=json';
-        var rows_limit;
-        var facet_limit;
-        var custom_query = '';
+        // var df = '&df=message&df=host&df=path&df=type';
+        // var wt_json = '&wt=json';
+        // var rows_limit;
+        // var facet_limit;
+        // var custom_query = '';
 
-        // set the size of query result
-        if (query.size !== undefined && query.size !== 0) {
-          rows_limit = '&rows=' + query.size;
-          facet_limit = '&facet.limit=' + query.size;
-        } else { // default
-          rows_limit = '&rows=25';
-          facet_limit = '&facet.limit=10';
-        }
+        // // set the size of query result
+        // if (query.size !== undefined && query.size !== 0) {
+        //   rows_limit = '&rows=' + query.size;
+        //   facet_limit = '&facet.limit=' + query.size;
+        // } else { // default
+        //   rows_limit = '&rows=25';
+        //   facet_limit = '&facet.limit=10';
+        // }
 
-        // set custom query
-        if (query.custom != null) {
-          custom_query = query.custom;
-        }
+        // // set custom query
+        // if (query.custom != null) {
+        //   custom_query = query.custom;
+        // }
 
-        if (DEBUG) {
-          console.log('doSearch:\n\tquery.size='+query.size+', rows_limit='+rows_limit+', facet_limit='+facet_limit+', custom_query='+custom_query);
-        }
+        // if (DEBUG) {
+        //   console.log('doSearch:\n\tquery.size='+query.size+', rows_limit='+rows_limit+', facet_limit='+facet_limit+', custom_query='+custom_query);
+        // }
 
         var queryData = query.solrquery;
 
+        // TODO - Delete this if clause, no need anymore
         if (query.query !== undefined && query.query.filtered !== undefined) {
           // For table module: we use fq to filter result set
           // var start_time = '*';
@@ -18605,13 +18606,13 @@
 
         } else if (query.query.query_string !== undefined) {
           // For loading dashboard from json files
-          queryData = 'q=' + query.query.query_string.query + wt_json;
+          queryData = 'q=' + query.query.query_string.query + '&wt=json';
         } else {
           throw new Error("Unsupported Solr Query");
         }
 
         if (DEBUG) {
-          console.log('doSearch():\n\tqueryData = '+queryData);
+          console.debug('doSearch():\n\tqueryData = ',queryData);
         }
         
         // query = {};
