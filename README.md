@@ -2,7 +2,7 @@
 
 __NOTE__: You have reached the Banana repository. 
 The Banana project is a fork of Kibana 3, which can be found at [http://three.kibana.org](http://three.kibana.org)
-The goal is to port the code to work with Apache Solr as a backend storage. 
+The goal is to port the code to work with time series data stored in Apache Solr. 
  
 ## IMPORTANT
 
@@ -65,7 +65,7 @@ Browse to http://localhost:8983/banana
 You will see example dashboards which you can use as a starting point for your applications.
 Once again, if you choose to run Solr on a different port, please edit the config.js file.
 
-THAT'S IT! Now you have a baseline that you can use to build your own applications
+THAT'S IT! Now you have a baseline that you can use to build your own applications.
 
 
 #### Running from a war file
