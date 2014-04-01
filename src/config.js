@@ -19,13 +19,11 @@ function (Settings) {
      * @type {String}
      */
     //elasticsearch: "http://"+window.location.hostname+":9200",
-    // TODO:
     elasticsearch: "http://localhost:9200",
 
     // Specify Solr server and core to store the data.
     solr: "http://localhost:8983/solr/",
-    //solr_core: "logstash_logs",
-    solr_core: "logstash1",
+    solr_core: "logstash_logs",
 
     /**
      * The default ES index to use for storing Kibana specific object
