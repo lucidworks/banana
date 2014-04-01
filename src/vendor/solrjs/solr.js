@@ -10,7 +10,7 @@
 (function () {
   'use strict';
 
-  var DEBUG = true; // DEBUG mode
+  var DEBUG = false; // DEBUG mode
 
   var 
     // save reference to global object
@@ -191,7 +191,8 @@
   };
   
   // Solr utility methods
-  var convertFacetGap = function (gap) {
+  // var convertFacetGap = function (gap) {
+  sjs.convertFacetGap = function (gap) {
     // Need to prepend '+' to gap
     switch(true) {
       case (gap.charAt(gap.length-1) == 's'):
@@ -18361,6 +18362,23 @@
       },
 
       /**
+            Solr
+            Add custom queries to the query object.
+
+            @member sjs.Request
+            @param {String}
+            @returns {Object} returns <code>this</code> so that calls can be chained.
+            */
+      customQuery: function (custom) {
+        if (custom == null) {
+          return query.custom;
+        }
+
+        query.custom = custom;
+        return this;
+      },
+
+      /**
             Allows you to serialize this object into a JSON encoded string.
 
             @member ejs.Request
@@ -18431,7 +18449,22 @@
         return sjs.client.post(getRestPath('_count'), queryData, successcb, errorcb);
         // return sjs.client.post(getRestPath('select'), queryData, successcb, errorcb);
       },
-            
+      
+      /**
+          Solr
+          set Solr query for doSearch()
+          */
+      setQuery: function (q) {
+        if (q == null) {
+          return query.solrquery;
+        }
+
+        query.solrquery = q;
+        return this;
+      },
+
+      
+
       /**
             Executes the search. 
 
@@ -18444,142 +18477,142 @@
         // TODO: Need to use "for loop" to construct query
         // TODO: Default searching fields should be defined in Solr instead of hard code here.
         // Default fields for searching.
-        var df = '&df=message&df=host&df=path&df=type';
-        var wt_json = '&wt=json';
-        // set the size of query result
-        var rows_limit;
-        if (query.size !== undefined && query.size !== 0) {
-          rows_limit = '&rows=' + query.size;
-        } else { // default
-          rows_limit = '&rows=25';
-        }
+        // var df = '&df=message&df=host&df=path&df=type';
+        // var wt_json = '&wt=json';
+        // var rows_limit;
+        // var facet_limit;
+        // var custom_query = '';
 
-        // For histogram needs to add facet on logstash_event_timestamp
-        // &facet=true&facet.range=logstash_event_timestamp&facet.range.start=2013-10-01T00:00:00Z&facet.range.end=NOW&facet.range.gap=%2B1DAY
-        // var facet_field = query.facets.0.date_histogram.field;
+        // // set the size of query result
+        // if (query.size !== undefined && query.size !== 0) {
+        //   rows_limit = '&rows=' + query.size;
+        //   facet_limit = '&facet.limit=' + query.size;
+        // } else { // default
+        //   rows_limit = '&rows=25';
+        //   facet_limit = '&facet.limit=10';
+        // }
 
-        var queryData = '';
+        // // set custom query
+        // if (query.custom != null) {
+        //   custom_query = query.custom;
+        // }
 
+        // if (DEBUG) {
+        //   console.log('doSearch:\n\tquery.size='+query.size+', rows_limit='+rows_limit+', facet_limit='+facet_limit+', custom_query='+custom_query);
+        // }
+
+        var queryData = query.solrquery;
+
+        // TODO - Delete this if clause, no need anymore
         if (query.query !== undefined && query.query.filtered !== undefined) {
           // For table module: we use fq to filter result set
-          var start_time = '*';
-          var end_time = '*';
-          var timestamp_field = query.facets.time_facet.range.field;
+          // var start_time = '*';
+          // var end_time = '*';
+          // var timestamp_field = query.facets.time_facet.range.field; // Get timestamp field name
 
           if (DEBUG) {
-            console.log('For table module doSearch():\n\tquery=',query,'\n\tquery.query.filtered.filter.bool.must[1].range=',query.query.filtered.filter.bool.must[1].range,'\n\ttimestamp_field='+timestamp_field);
+            // console.log('For table module doSearch():\n\tquery=',query,'\n\tquery.query.filtered.filter.bool.must[1].range=',query.query.filtered.filter.bool.must[1].range,'\n\ttimestamp_field='+timestamp_field);
+            console.log('For table module doSearch():\n\tquery.solrquery='+query.solrquery);
           }
 
-          if (query.query.filtered.filter.bool.must[1].range !== undefined) {
-            // start_time = new Date(query.query.filtered.filter.bool.must[1].range.event_timestamp.from).toISOString();
-            // end_time = new Date(query.query.filtered.filter.bool.must[1].range.event_timestamp.to).toISOString();
-            start_time = new Date(query.query.filtered.filter.bool.must[1].range[timestamp_field].from).toISOString();
-            end_time = new Date(query.query.filtered.filter.bool.must[1].range[timestamp_field].to).toISOString();
-          }
-          // var fq = '&fq=event_timestamp:[' + start_time + '%20TO%20' + end_time + ']';
-          var fq = '&fq=' + timestamp_field + ':[' + start_time + '%20TO%20' + end_time + ']';
-          var q_str = query.query.filtered.query.bool.should[0].query_string.query;
-          queryData = 'q=' + q_str + df + wt_json + rows_limit + fq;
-        } else if (query.facets !== undefined && query.facets[0] !== undefined) {
-          if (DEBUG) {
-            console.log('For histogram module doSearch(): query=',query);
-          }
-          // For histogram module: query.facets[] array case
-          var facet_start = '';
-          var facet_end = '';
-          // Get timestamp field name
-          var timestamp_field = query.facets[0].date_histogram.field;
-
-          if (query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range !== undefined) {
-            // facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range.event_timestamp.from).toISOString();
-            // facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range.event_timestamp.to).toISOString();
-            facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range[timestamp_field].from).toISOString();
-            facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range[timestamp_field].to).toISOString();
-          } else if (query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range !== undefined) {
-            // facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range.event_timestamp.from).toISOString();
-            // facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range.event_timestamp.to).toISOString();
-            facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range[timestamp_field].from).toISOString();
-            facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range[timestamp_field].to).toISOString();
-          } else {
-            throw new Error("Time range undefined");
-          }
-          // TODO: need to format facet_gap for Solr dynamically, based on user's input from histogram
-          // var facet_gap = query.facets.0.date_histogram.interval; 
-          // Need to add +1DAY to facet.range.end to be inclusive range search.
-          // var facet_gap = '%2B1DAY';
-          var facet_gap = query.facets[0].date_histogram.interval; // e.g. 1s,1m,1h,1d,1w,1M,1y
-
-          if (DEBUG) {
-            console.log('\tfacet_gap = ' + facet_gap + '\n\ttimestamp_field = ' + timestamp_field);
-          }
-
-          // convert facet_gap to Solr compatible format
-          // switch(true) {
-          //   case (facet_gap.charAt(facet_gap.length-1) == 'h'):
-          //     facet_gap = facet_gap.replace('h', 'HOUR');
-
+          // if (query.query.filtered.filter.bool.must[1].range !== undefined) {
+          //   start_time = new Date(query.query.filtered.filter.bool.must[1].range[timestamp_field].from).toISOString();
+          //   end_time = new Date(query.query.filtered.filter.bool.must[1].range[timestamp_field].to).toISOString();
           // }
-          // // prepend '+' to facet_gap
-          // facet_gap = '%2B' + facet_gap;
-          facet_gap = convertFacetGap(facet_gap);
+          // var fq = '&fq=' + timestamp_field + ':[' + start_time + '%20TO%20' + end_time + ']';
+          // var q_str = query.query.filtered.query.bool.should[0].query_string.query;
+          
+          // queryData = 'q=' + q_str + df + wt_json + rows_limit + fq + custom_query;
+          // queryData = query.solrquery;
 
+        } else if (query.facets !== undefined && query.facets[0] !== undefined) {
+          // For histogram module: query.facets[] array case
           if (DEBUG) {
-            console.log('\tconverted facet_gap = ' + facet_gap);
+            console.log('For histogram module doSearch():\n\tquery.solrquery='+query.solrquery);
           }
+          
+          // var facet_start = '';
+          // var facet_end = '';
+          // var timestamp_field = query.facets[0].date_histogram.field; // Get timestamp field name
 
-          var facet = '&facet=true' +
-                      '&facet.range=' + timestamp_field +
-                      '&facet.range.start=' + facet_start + '/DAY' +
-                      '&facet.range.end=' + facet_end + '%2B1DAY/DAY' +
-                      '&facet.range.gap=' + facet_gap;
-          var q_str = query.facets[0].facet_filter.fquery.query.filtered.query.query_string.query;
+          // if (query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range !== undefined) {
+          //   facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range[timestamp_field].from).toISOString();
+          //   facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[1].range[timestamp_field].to).toISOString();
+          // } else if (query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range !== undefined) {
+          //   facet_start = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range[timestamp_field].from).toISOString();
+          //   facet_end = new Date(query.facets[0].facet_filter.fquery.query.filtered.filter.bool.must[3].range[timestamp_field].to).toISOString();
+          // } else {
+          //   throw new Error("Time range undefined");
+          // }
+          // // TODO: need to format facet_gap for Solr dynamically, based on user's input from histogram
+          // // var facet_gap = query.facets.0.date_histogram.interval; 
+          // // Need to add +1DAY to facet.range.end to be inclusive range search.
+          // // var facet_gap = '%2B1DAY';
+          // var facet_gap = query.facets[0].date_histogram.interval; // e.g. 1s,1m,1h,1d,1w,1M,1y
+
+          // if (DEBUG) {
+          //   console.log('\tfacet_gap = ' + facet_gap + '\n\ttimestamp_field = ' + timestamp_field);
+          // }
+
+          // facet_gap = sjs.convertFacetGap(facet_gap);
+
+          // if (DEBUG) {
+          //   console.log('\tconverted facet_gap = ' + facet_gap);
+          // }
+
+          // var facet = '&facet=true' +
+          //             '&facet.range=' + timestamp_field +
+          //             '&facet.range.start=' + facet_start + '/DAY' +
+          //             '&facet.range.end=' + facet_end + '%2B1DAY/DAY' +
+          //             '&facet.range.gap=' + facet_gap;
+          // var q_str = query.facets[0].facet_filter.fquery.query.filtered.query.query_string.query;
           
-            //Need to use fq to filter according to the specified time range-added by Ravi; 
-           // Different JSON hierarchy from Table Module, from and to captured in facet_start and facet_end           
+          // // Need to use fq to filter according to the specified time range-added by Ravi; 
+          // // Different JSON hierarchy from Table Module, from and to captured in facet_start and facet_end           
           
-          var fq = '&fq=' + timestamp_field + ':[' + facet_start + '%20TO%20' + facet_end + ']'; 
+          // var fq = '&fq=' + timestamp_field + ':[' + facet_start + '%20TO%20' + facet_end + ']'; 
           
-          queryData = 'q=' + q_str + df + wt_json + rows_limit + facet +fq;
+          // queryData = 'q=' + q_str + df + wt_json + rows_limit + facet + fq + custom_query;
+          
         } else if (query.facets !== undefined) {
-          // For terms module: query.facets object case (not array)
-          var timestamp_field = query.facets.time_facet.range.field;
+          // // For terms module: query.facets object case (not array)
+          // var timestamp_field = query.facets.time_facet.range.field;
 
           if (DEBUG) {
-            console.log('For terms module doSearch():\n\tquery=',query,'\n\ttimestamp_field='+timestamp_field);
+            console.log('For terms module doSearch():\n\tquery.solrquery=',query.solrquery);
           }
           
-          // var facet_start = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range.event_timestamp.from).toISOString();
-          // var facet_end = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range.event_timestamp.to).toISOString();
-          var facet_start = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range[timestamp_field].from).toISOString();
-          var facet_end = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range[timestamp_field].to).toISOString();
+          // var facet_start = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range[timestamp_field].from).toISOString();
+          // var facet_end = new Date(query.facets.terms.facet_filter.fquery.query.filtered.filter.bool.must[1].range[timestamp_field].to).toISOString();
 
-          var q_str = query.facets.terms.facet_filter.fquery.query.filtered.query.bool.should[0].query_string.query;
-          // TODO: need to format facet_gap for Solr dynamically, based on user's input from histogram
-          // var facet_gap = query.facets.0.date_histogram.interval;
-          var facet_term = query.facets.terms.terms.field;
-          var facet_gap = '%2B1DAY';
-          var facet = '&facet=true' +
-                      '&facet.field=' + facet_term +
-                      '&facet.range=' + timestamp_field +
-                      '&facet.range.start=' + facet_start +
-                      '&facet.range.end=' + facet_end +
-                      '&facet.range.gap=' + facet_gap;
+          // var q_str = query.facets.terms.facet_filter.fquery.query.filtered.query.bool.should[0].query_string.query;
+          // // TODO: need to format facet_gap for Solr dynamically, based on user's input from histogram
+          // // var facet_gap = query.facets.0.date_histogram.interval;
+          // var facet_term = query.facets.terms.terms.field;
+          // var facet_gap = '%2B1DAY';
+          // var facet = '&facet=true' +
+          //             '&facet.field=' + facet_term +
+          //             '&facet.range=' + timestamp_field +
+          //             '&facet.range.start=' + facet_start +
+          //             '&facet.range.end=' + facet_end +
+          //             '&facet.range.gap=' + facet_gap + facet_limit;
                       
-           //Need to use fq to filter according to the specified time range-added by Ravi; 
-           // Different JSON hierarchy from Table Module, from and to captured in facet_start and facet_end           
+          //  //Need to use fq to filter according to the specified time range-added by Ravi; 
+          //  // Different JSON hierarchy from Table Module, from and to captured in facet_start and facet_end           
           
-          var fq = '&fq='+ timestamp_field + ':[' + facet_start + '%20TO%20' + facet_end + ']';  
+          // var fq = '&fq='+ timestamp_field + ':[' + facet_start + '%20TO%20' + facet_end + ']';  
                
-          queryData = 'q=' + q_str + df + wt_json + rows_limit + facet + fq;
+          // queryData = 'q=' + q_str + df + wt_json + rows_limit + facet + fq + custom_query;
+
         } else if (query.query.query_string !== undefined) {
           // For loading dashboard from json files
-          queryData = 'q=' + query.query.query_string.query + wt_json;
+          queryData = 'q=' + query.query.query_string.query + '&wt=json';
         } else {
           throw new Error("Unsupported Solr Query");
         }
 
         if (DEBUG) {
-          console.log('doSearch() queryData = '+queryData);
+          console.debug('doSearch():\n\tqueryData = ',queryData);
         }
         
         // query = {};

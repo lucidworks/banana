@@ -11,7 +11,6 @@ define([
   'angular',
   'app',
   'underscore',
-
   'css!./query.css'
 ], function (angular, app, _) {
   'use strict';
@@ -30,6 +29,7 @@ define([
     var _d = {
       // query   : "*",
       query   : "*:*",
+      def_type : '',
       pinned  : true,
       history : [],
       remember: 10 // max: 100, angular strap can't take a variable for items param
@@ -42,6 +42,16 @@ define([
     };
 
     $scope.refresh = function() {
+      _.each($scope.querySrv.list, function (v) {
+        if ($scope.panel.def_type) {
+          // If defType is specified, strip off old defType params from the query
+          // before appending the new defType value.
+          v.query = remove_deftype(v.query) + '&defType=' + $scope.panel.def_type;
+        } else {
+          // strip off defType (in case previously specified)
+          v.query = remove_deftype(v.query)
+        }
+      });
       update_history(_.pluck($scope.querySrv.list,'query'));
       $rootScope.$broadcast('refresh');
     };
@@ -54,6 +64,10 @@ define([
       querySrv.list[id].pin = querySrv.list[id].pin ? false : true;
     };
 
+    $scope.close_edit = function() {
+      $scope.refresh();
+    };
+
     var update_history = function(query) {
       if($scope.panel.remember > 0) {
         $scope.panel.history = _.union(query.reverse(),$scope.panel.history);
@@ -62,6 +76,11 @@ define([
           $scope.panel.history = $scope.panel.history.slice(0,$scope.panel.remember);
         }
       }
+    };
+
+    var remove_deftype = function(query) {
+      // strip off all defType params in the query
+      return query.replace(/(&defType=\w+)/g,'');
     };
 
     $scope.init();

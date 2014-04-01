@@ -16,7 +16,7 @@ angular.module('solrjs.service', [])
 
   return function (url) {
 
-    var DEBUG = true; // DEBUG mode
+    var DEBUG = false; // DEBUG mode
 
     var
 
@@ -69,9 +69,7 @@ angular.module('solrjs.service', [])
         }
         path = url + path;
         
-        if(DEBUG) {
-          console.log('solr-angular-client: url='+url+', path='+path+', data=',data);
-        }
+        
 
         // var config = {
         //   headers: {
@@ -82,6 +80,17 @@ angular.module('solrjs.service', [])
         // 'Content-type': 'application/json'
 
         // return promiseThen($http.post(path, data), successcb, errorcb);
+
+
+
+        // SOLR - TESTING Multiple Queries
+        
+        // var queries = [data, 'q=*:*&wt=json'];
+
+        if(DEBUG) {
+          console.log('solr-angular-client: url='+url+', path='+path+', data=',data);
+        }
+
         return promiseThen($http.post(path, data, config), successcb, errorcb);
       },
       get: function (path, data, successcb, errorcb) {
@@ -107,40 +116,40 @@ angular.module('solrjs.service', [])
           return undefined;
         });
       },
-      post_solr: function (path, data, successcb, errorcb) {
-        var config = {};
-        var isUpdate = path.indexOf('/update');
+      // post_solr: function (path, data, successcb, errorcb) {
+      //   var config = {};
+      //   var isUpdate = path.indexOf('/update');
         
-        if (DEBUG) {
-          console.log('solr-angular-client: path='+path+', isUpdate='+isUpdate);
-        }
+      //   if (DEBUG) {
+      //     console.log('solr-angular-client: path='+path+', isUpdate='+isUpdate);
+      //   }
 
-        if (isUpdate !== -1) {
-          // update request, meaning to save a dashboard to kibana-int collection.
-          // Need to modify path accordingly.
-          // TODO: Find a better way to implement this.
-          path = url.substr(0, url.indexOf('logstash_logs')) + 'kibana-int' + path;
-          config = { headers: {'Content-type':'application/json'} };
-        } else {
-          path = url + path;
-          config = { headers: {'Content-type':'application/x-www-form-urlencoded'} };
-        }
+      //   if (isUpdate !== -1) {
+      //     // update request, meaning to save a dashboard to kibana-int collection.
+      //     // Need to modify path accordingly.
+      //     // TODO: Find a better way to implement this.
+      //     path = url.substr(0, url.indexOf('logstash_logs')) + 'kibana-int' + path;
+      //     config = { headers: {'Content-type':'application/json'} };
+      //   } else {
+      //     path = url + path;
+      //     config = { headers: {'Content-type':'application/x-www-form-urlencoded'} };
+      //   }
 
-        if (DEBUG) {
-          console.log('solr-angular-client: path='+path+', data=',data);
-        }
+      //   if (DEBUG) {
+      //     console.log('solr-angular-client: path='+path+', data=',data);
+      //   }
 
-        // var config = {
-        //   headers: {
-        //     'Content-type': 'application/x-www-form-urlencoded'
-        //   }
-        // };
-        // For update JSON
-        // 'Content-type': 'application/json'
+      //   // var config = {
+      //   //   headers: {
+      //   //     'Content-type': 'application/x-www-form-urlencoded'
+      //   //   }
+      //   // };
+      //   // For update JSON
+      //   // 'Content-type': 'application/json'
 
-        // return promiseThen($http.post(path, data), successcb, errorcb);
-        return promiseThen($http.post(path, data, config), successcb, errorcb);
-      }
+      //   // return promiseThen($http.post(path, data), successcb, errorcb);
+      //   return promiseThen($http.post(path, data, config), successcb, errorcb);
+      // }
     };
   
     return sjs;

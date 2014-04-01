@@ -138,6 +138,7 @@
           "mode": "count",
           "time_field": "event_timestamp",
           "value_field": null,
+          "max_rows": 100000,
           "auto_int": true,
           "resolution": 100,
           "interval": "12h",
@@ -159,7 +160,9 @@
             "mode": "all",
             "ids": [
               0
-            ]
+            ],
+            "query": "q=*:*",
+            "custom": ""
           },
           "title": "System Log Messages",
           "intervals": [
@@ -193,7 +196,9 @@
             "mode": "all",
             "ids": [
               0
-            ]
+            ],
+            "query": "q=*:*",
+            "custom": ""
           },
           "field": "syslog_program",
           "exclude": [],
@@ -257,7 +262,9 @@
             "mode": "all",
             "ids": [
               0
-            ]
+            ],
+            "query": "q=*:*",
+            "custom": ""
           },
           "field_list": true,
           "status": "Stable",

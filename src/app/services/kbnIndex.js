@@ -6,7 +6,7 @@ define([
 ],
 function (angular, _, config, moment) {
   'use strict';
-  var DEBUG = true; //DEBUG mode
+  var DEBUG = false; //DEBUG mode
 
   var module = angular.module('kibana.services');
 
@@ -64,9 +64,7 @@ function (angular, _, config, moment) {
       });
 
       return something.then(function(p) {
-        if (DEBUG) {
-          console.log('kbnIndex: p=',p);
-        }
+        if (DEBUG) {console.debug('kbnIndex: p=',p);}
         
 
         // var indices = [];
@@ -90,7 +88,8 @@ function (angular, _, config, moment) {
         // indices[] should be in this format
         // indices = ['logstash-2013.11.25'];
         // DEBUG
-        console.log('kbnIndex LINE 78: indices = '+indices);console.log(indices);
+        if (DEBUG) {console.debug('kbnIndex: indices=',indices);}
+
         return indices;
       });
     }

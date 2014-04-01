@@ -83,16 +83,19 @@ function (angular, _) {
         // url: config.elasticsearch + "/" + indices.join(',') + "/_mapping",
         // Solr
         // url: config.solr + config.solr_collection + "/schema/fields",
-        url: dashboard.current.solr.server + dashboard.current.solr.core_name + "/schema/fields?includeDynamic=true",
+        // url: dashboard.current.solr.server + dashboard.current.solr.core_name + "/schema/fields?includeDynamic=true",
+
+        // Get all fields in Solr core
+        url: dashboard.current.solr.server + dashboard.current.solr.core_name + "/admin/luke?numTerms=0&wt=json",
+
         method: "GET"
       }).error(function(data, status) {
         if(status === 0) {
           alertSrv.set('Error',"Could not contact Solr at "+dashboard.current.solr.server+
             ". Please ensure that Solr is reachable from your system." ,'error');
         } else {
-          alertSrv.set('Error',"No index found at "+dashboard.current.solr.server+
-            ". Please create at least one index."+
-            "If you're using a proxy ensure it is configured correctly.",'error');
+          alertSrv.set('Error',"Collection not found at "+dashboard.current.solr.server+dashboard.current.solr.core_name+
+            ". Please check your configuration or create the collection. If you're using a proxy ensure it is configured correctly.",'error');
         }
       });
 
@@ -100,7 +103,7 @@ function (angular, _) {
         var mapping = {};
 
         // TODO: This hard coded value is just a place holder for extracting fields for the filter list
-        var log_index = 'logstash-2099.12.31';
+        var log_index = 'logstash-2999.12.31';
 
         var logs = 'logs';
         mapping[log_index] = {};
@@ -128,12 +131,16 @@ function (angular, _) {
         //   }
         // };
 
+        // _.each(p.data.fields, function(v,k) {
+        //   // Exclude fields: id and _version, from the filter
+        //   // if (! _.contains(['id', '_version_'], v.name)) {
+        //   //   mapping[log_index][logs][v.name] = { 'type':v.type };
+        //   // }
+        //   mapping[log_index][logs][v.name] = { 'type':v.type };
+        // });
+
         _.each(p.data.fields, function(v,k) {
-          // Exclude fields: id and _version, from the filter
-          // if (! _.contains(['id', '_version_'], v.name)) {
-          //   mapping[log_index][logs][v.name] = { 'type':v.type };
-          // }
-          mapping[log_index][logs][v.name] = { 'type':v.type };
+          mapping[log_index][logs][k] = {'type':v.type};
         });
 
         return mapping;

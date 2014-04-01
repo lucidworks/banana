@@ -5,7 +5,7 @@ define([
 function (angular, _) {
   'use strict';
 
-  var DEBUG = true; // DEBUG mode
+  var DEBUG = false; // DEBUG mode
 
   var module = angular.module('kibana.controllers');
 
@@ -103,7 +103,7 @@ function (angular, _) {
       dashboard.elasticsearch_list(query,$scope.loader.load_elasticsearch_size).then(
         function(result) {
           // DEBUG
-          console.log("LINE 96: result = "+result);console.log(result);
+          console.debug("dashLoader : result=",result);
 
         // if(!_.isUndefined(result.hits)) {
         //   $scope.hits = result.hits.total;

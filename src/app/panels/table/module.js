@@ -29,7 +29,7 @@ define([
 function (angular, app, _, kbn, moment) {
   'use strict';
 
-  var DEBUG = true; // DEBUG mode
+  var DEBUG = false; // DEBUG mode
 
   var module = angular.module('kibana.panels.table', []);
   app.useModule(module);
@@ -63,13 +63,16 @@ function (angular, app, _, kbn, moment) {
       status  : "Stable",
       queries     : {
         mode        : 'all',
-        ids         : []
+        ids         : [],
+        query       : 'q=*:*',
+        custom      : ''
       },
       size    : 100, // Per page
       pages   : 5,   // Pages available
       offset  : 0,
       
-      sort    : ['_score','desc'],
+      // sort    : ['_score','desc'],
+      sort    : ['event_timestamp','desc'],
 
       group   : "default",
       style   : {'font-size': '9pt'},
@@ -195,17 +198,11 @@ function (angular, app, _, kbn, moment) {
       $scope.segment = _segment;
 
       if(DEBUG) {
-        console.log('table begin of get_data(): $scope=',$scope,', $scope.panel=',$scope.panel,', _segment='+_segment,', dashboard.indices[_segment]=',dashboard.indices[_segment]);
+        var dummy = new Date(dashboard.current.services.filter.list[0].from).toISOString();
+        console.log('table: Begin of get_data():\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\t_segment='+_segment,'\n\tdashboard.indices[_segment]=',dashboard.indices[_segment],'\n\tdashboard=',dashboard,'\n\tdashboard.current.services.filter.list[0].from='+ dummy,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv);
       }
 
-      // TODO: Need to modify ejs.Request() for Solr. ejs methods request ejsObj
-      //       isEJSObject() line 141 in elastic.js
-      //       I have to replace ejs.Request() with solr.Request().
-      //       The problem is I don't have Solr JS client lib to use one now.
-
       // Solr
-      // set sjs to query 'logstash_logs' collection
-      // $scope.sjs.client.server(config.solr + config.solr_collection);
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
@@ -217,7 +214,7 @@ function (angular, app, _, kbn, moment) {
       request = request.query(
         $scope.sjs.FilteredQuery(
           boolQuery,
-          filterSrv.getBoolFilter(filterSrv.ids)
+          filterSrv.getBoolFilter(filterSrv.ids)  // search time range is provided here.
         ))
         .highlight(
           $scope.sjs.Highlight($scope.panel.highlight)
@@ -225,22 +222,84 @@ function (angular, app, _, kbn, moment) {
           .preTags('@start-highlight@')
           .postTags('@end-highlight@')
         )
-        .size($scope.panel.size*$scope.panel.pages) // to set the size of query result
+        .size($scope.panel.size*$scope.panel.pages) // Set the size of query result
         .sort($scope.panel.sort[0],$scope.panel.sort[1]);
 
       $scope.populate_modal(request);
 
       // Create a facet to store and pass on time_field value to request.doSearch()
-      var facet = $scope.sjs.RangeFacet('time_facet');
-      facet = facet.field($scope.panel.time_field);
-      request = request.facet(facet);
+      // var facet = $scope.sjs.RangeFacet('time_facet');
+      // facet = facet.field($scope.panel.time_field);
+      // request = request.facet(facet);
 
       if (DEBUG) {
-        console.log('table:\n\trequest=',request,'\n\tfacet=',facet,'\n\t$scope.panel.time_field=',$scope.panel.time_field);
+        console.log('table:\n\trequest=',request,'\n\trequest.toString()=',request.toString());
       }
 
-      // Need to modify request.query with Solr's params
-      // request = request.query();
+      // TODO: Parse query here and send to request.doSearch()
+      // declare default Solr params here
+      // get query
+      // get from and to time range
+      // get query.size
+      // construct the query
+      // set queryData
+      // request = request.setQuery(q);
+      // TODO: Validate dashboard.current.services.filter.list[0], what if it is not the timestamp field?
+      //       This will cause error.
+      var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
+      var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
+      var fq = '&fq=' + $scope.panel.time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
+      var query_size = $scope.panel.size * $scope.panel.pages;
+      var df = '&df=message&df=host&df=path&df=type';
+      var wt_json = '&wt=json';
+      var rows_limit;
+      var sorting = '';
+      var filter_fq = '';
+      var filter_either = [];
+      
+      // Apply filters to the query
+      _.each(dashboard.current.services.filter.list, function(v,k) {
+        // Skip the timestamp filter because it's already applied to the query using fq param.
+        // timestamp filter should be in k = 0
+        if (k > 0 && v.field != $scope.panel.time_field && v.active) {
+          if (DEBUG) { console.log('terms: k=',k,' v=',v); }
+          if (v.mandate == 'must') {
+            filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
+          } else if (v.mandate == 'mustNot') {
+            filter_fq = filter_fq + '&fq=-' + v.field + ':"' + v.value + '"';
+          } else if (v.mandate == 'either') {
+            filter_either.push(v.field + ':"' + v.value + '"');
+          }
+        }
+      });
+      // parse filter_either array values, if exists
+      if (filter_either.length > 0) {
+        filter_fq = filter_fq + '&fq=(' + filter_either.join(' OR ') + ')';
+      }
+
+      if ($scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined) {
+        sorting = '&sort=' + $scope.panel.sort[0] + ' ' + $scope.panel.sort[1];
+      }
+
+      // set the size of query result
+      if (query_size !== undefined && query_size !== 0) {
+        rows_limit = '&rows=' + query_size;
+        // facet_limit = '&facet.limit=' + query_size;
+      } else { // default
+        rows_limit = '&rows=25';
+        // facet_limit = '&facet.limit=10';
+      }
+
+      // Set the panel's query
+      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + sorting + filter_fq;
+
+      // Set the additional custom query
+      if ($scope.panel.queries.custom != null) {
+        // request = request.customQuery($scope.panel.queries.custom);
+        request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
+      } else {
+        request = request.setQuery($scope.panel.queries.query);
+      }
 
       var results = request.doSearch();
 
@@ -277,26 +336,6 @@ function (angular, app, _, kbn, moment) {
             //_h._source = kbn.flatten_json(hit._source);
             //_h.highlight = kbn.flatten_json(hit.highlight||{});
 
-            // TODO: Use for loop instead of hard code
-            // var concat_hit = hit.message
-            //                  .concat(hit.logstash_timestamp)
-            //                  .concat(hit.host)
-            //                  .concat(hit.path)
-            //                  .concat(hit.type)
-            //                  .concat(hit.logstash_version);
-            // console.log('table LINE 274: concat_hit = '+concat_hit);console.log(concat_hit);
-            // var hit_object = _.object(['message','logstash_timestamp','host','path','type','logstash_version'], concat_hit);
-
-            // TODO: Fix - Do not use hard coded fields. Change to getting fields from results obj. 
-            // var hit_object = _.object(['message','logstash_timestamp','host','path','type','logstash_version'],
-            //                           [hit.message, hit.logstash_timestamp, hit.host, hit.path, hit.type, hit.logstash_version]);
-            // var hit_object = _.object(hit);
-
-            // DEBUG
-            // console.log('table LINE 279: $scope = '+$scope);console.log($scope);
-            // console.log('table LINE 280: hit = '+hit);console.log(hit);
-            // console.log('table LINE 281: hit_object = '+hit_object);console.log(hit_object);
-
               _h.kibana = {
                 // _source : kbn.flatten_json(hit._source),
                 // highlight : kbn.flatten_json(hit.highlight||{})
@@ -317,20 +356,22 @@ function (angular, app, _, kbn, moment) {
             console.log('\t$scope.hits='+$scope.hits+', $scope.data=',$scope.data);
           }
 
+          // NO NEED for sorting here. Solr result is already sorted.
           // Sort the data
-          $scope.data = _.sortBy($scope.data, function(v){
-            if(!_.isUndefined(v.sort)) {
-              return v.sort[0];
-            } else {
-              return 0;
-            }
-          });
+          // $scope.data = _.sortBy($scope.data, function(v){
+          //   if(!_.isUndefined(v.sort)) {
+          //     return v.sort[0];
+          //   } else {
+          //     return 0;
+          //   }
+          // });
 
-          // Reverse if needed
-          if($scope.panel.sort[1] === 'desc') {
-            $scope.data.reverse();
-          }
-          
+          // We DO NOT need to reverse here because Solr's result is already sorted.
+          // if($scope.panel.sort[1] === 'desc') {
+          //   if (DEBUG) { console.log('\tREVERSE IT!!'); }
+          //   $scope.data.reverse();
+          // }
+
           // Keep only what we need for the set
           $scope.data = $scope.data.slice(0,$scope.panel.size * $scope.panel.pages);
         } else {

@@ -12,7 +12,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
   'use strict';
 
   // DEBUG mode
-  var DEBUG = true;
+  var DEBUG = false;
 
   var module = angular.module('kibana.services');
 
@@ -254,11 +254,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     var renderTemplate = function(json,params) {
       var _r;
       _.templateSettings = {interpolate : /\{\{(.+?)\}\}/g};
-
-      if (DEBUG) {
-        // console.log('renderTemplate json = ');console.log(json);
-      }
-
       var template = _.template(json);
       var rendered = template({ARGS:params});
       try {
@@ -288,33 +283,15 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       });
     };
 
-    // TODO: add solr support
     this.elasticsearch_load = function(type,id) {
       return $http({
-        // TODO: Solr
-        // url: config.elasticsearch + "/" + config.kibana_index + "/"+type+"/"+id,
-        // url: config.solr + "/schema/fields",
         url: config.solr + config.kibana_index + '/select?wt=json&q=title:"' + id + '"',
         method: "GET",
         transformResponse: function(response) {
-          // DEBUG
-          console.log('type = '+type);
-          console.log('id = '+id);
-
           response = angular.fromJson(response);
-
-          // DEBUG
-          console.log('response = ');console.log(response);
-          // console.log('_source = ' + response.response.docs[0]._source);
-
-          // TODO
-          // var parsed_source = response.response.docs[0]._source.replace(/"dashboard":"{/, '"dashboard":{');
-          // parsed_source = parsed_source.replace(/}}"}$/, '}}}');
-          // var source_json = angular.fromJson(parsed_source);
           var source_json = angular.fromJson(response.response.docs[0].dashboard);
 
-          // DEBUG
-          console.log('source_json = ');console.log(source_json);
+          if (DEBUG) { console.debug('dashboard: type=',type,' id=',id,' response=',response,' source_json=',source_json); }
 
           // return renderTemplate(angular.fromJson(response)._source.dashboard, $routeParams);
           // return renderTemplate(JSON.stringify(source_json.dashboard), $routeParams);
@@ -322,10 +299,10 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         }
       }).error(function(data, status) {
         if(status === 0) {
-          alertSrv.set('Error',"!!!!  Could not contact Solr at "+config.solr+
+          alertSrv.set('Error',"Could not contact Solr at "+config.solr+
             ". Please ensure that Solr is reachable from your system." ,'error');
         } else {
-          alertSrv.set('Error',"!!!! Could not find "+id+". If you"+
+          alertSrv.set('Error',"Could not find "+id+". If you"+
             " are using a proxy, ensure it is configured correctly",'error');
         }
         return false;
