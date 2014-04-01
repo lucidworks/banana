@@ -12,14 +12,14 @@ Pull the repo from the "release" branch; version 1.1 will be tagged as banana-1.
 
 We have added a number of exciting new features and fixed key issues, including:
 * You can now add a Filtering panel that supports global filter queries (fq's). Now, if you click on a facet in the terms panel, the results will be filtered for that particular value.
-* The terms, histogram and table module allow you to specify a panel-specific filter query (within the Query Tab while configuring the panel) allowing greater flexibility in designing dashboards.
+* The terms, histogram and table modules allow you to specify a panel-specific filter query (within the Query Tab while configuring the panel) allowing greater flexibility in designing dashboards.
 * The inspector icon on these panels shows the Solr query, which is very useful for debugging dashboards.
 * The Histogram module allows you to plot values in addition to counts. It also allows you to group values by another field. This would be useful if for example you plot CPU utilization over time and want to group by hostname.
-* The sort operation in the Table module is now fixed and works correctly ion single-valued fields.
+* The sort operation in the Table module is now fixed and works correctly on single-valued fields.
 * We have refactored the code to enable easier addition of new modules and fixes to existing modules.
 
 ### Changes to your dashboards
-If you created dashboards for Banana 1.0, you did not have a global filtering panel. In some cases, these filter values can be implicitly set to defaults that may lead to strange search results. We recommend updating your old dashboards by adding a filtering panel. A good way to do it visually is to put it on its own row and hide it when it is not needed.
+If you created dashboards for Banana 1.0, you did not have a global filtering panel. In some cases, these filter values can be implicitly set to defaults that may lead to strange search results. We recommend updating your old dashboards by adding a filtering panel. A good way to do it visually is to put the filtering panel on its own row and hide it when it is not needed.
 
 ## Overview
 
@@ -69,7 +69,7 @@ THAT'S IT! Now you have a baseline that you can use to build your own applicatio
 
 
 #### Running from a war file
-Pull the repo from the "release" branch; version 1.1 will be tagged as banana1.1.  Run "ant" from within the banana directory to build the war file.
+Pull the repo from the "release" branch; version 1.1 will be tagged as banana-1.1.  Run "ant" from within the banana directory to build the war file.
 
     cd $BANANA_REPO_HOME  
     ant 
