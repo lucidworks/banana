@@ -6,7 +6,20 @@ The goal is to port the code to work with Apache Solr as a backend storage.
  
 ## IMPORTANT
 
-Pull the repo from the "release" branch; version 1.0 is tagged as banana-1.0.
+Pull the repo from the "release" branch; version 1.1 will be tagged as banana-1.1.
+
+## Banana 1.1 is here!
+
+We have added a number of exciting new features and fixed key issues, including:
+* You can now add a Filtering panel that supports global filter queries (fq's). Now, if you click on a facet in the terms panel, the results will be filtered for that particular value.
+* The terms, histogram and table module allow you to specify a panel-specific filter query (within the Query Tab while configuring the panel) allowing greater flexibility in designing dashboards.
+* The inspector icon on these panels shows the Solr query, which is very useful for debugging dashboards.
+* The Histogram module allows you to plot values in addition to counts. It also allows you to group values by another field. This would be useful if for example you plot CPU utilization over time and want to group by hostname.
+* The sort operation in the Table module is now fixed and works correctly ion single-valued fields.
+* We have refactored the code to enable easier addition of new modules and fixes to existing modules.
+
+### Changes to your dashboards
+If you created dashboards for Banana 1.0, you did not have a global filtering panel. In some cases, these filter values can be implicitly set to defaults that may lead to strange search results. We recommend updating your old dashboards by adding a filtering panel. A good way to do it visually is to put it on its own row and hide it when it is not needed.
 
 ## Overview
 
@@ -34,14 +47,14 @@ Browse to http://localhost:8983/solr/banana/src/index.html#/dashboard
 
 If your Solr port is different, edit banana/src/config.js and enter the port you are using.
 
-If you have not created the data collections and ingested data into Solr, you will see an error message saying "No Index found at .." Go to the Solr Output Plug-in for LogStash  Page (https://github.com/LucidWorks/solrlogmanager) to learn how to import data into your Solr instance using LogStash
+If you have not created the data collections and ingested data into Solr, you will see an error message saying "Collection not found at .." Go to the Solr Output Plug-in for LogStash  Page (https://github.com/LucidWorks/solrlogmanager) to learn how to import data into your Solr instance using LogStash
 
-If you want to save and load dashboards from Solr, copy either solr-4.4.0/kibana-int (for Solr 4.4) or solr-4.5.0/kibana-int (for Solr 4.5 and above) directories (as appropriate) into $SOLR_HOME/example/solr in order to setup the required core. Then restart Solr, and if it is not loaded already, load the core from Solr Admin.
+If you want to save and load dashboards from Solr, copy either solr-4.4.0/kibana-int (for Solr 4.4) or solr-4.5.0/kibana-int (for Solr 4.5 and above) directories (as appropriate) into $SOLR_HOME/example/solr in order to setup the required core. Then restart Solr, and if it is not loaded already, load the core from Solr Admin (if you are using Solr Cloud, you will need to upload the 
 
 
 #### QuickStart for Complete SLK Stack
 
-We have packaged Solr, the open Source LogStash with Solr Output Plug-in and Banana, along with example collections and dashboards to make it easy for you to get started. The package is available here  (Link to be added). Unzip the package and:  
+We have packaged Solr, the open Source LogStash with Solr Output Plug-in and Banana, along with example collections and dashboards to make it easy for you to get started. The package is available here at http://www.lucidworks.com/lucidworks-silk/. Unzip the package and:  
 1. Run Solr  
 
     cd slk4.7.0/solr-4.7.0/example-logs
@@ -52,11 +65,11 @@ Browse to http://localhost:8983/banana
 You will see example dashboards which you can use as a starting point for your applications.
 Once again, if you choose to run Solr on a different port, please edit the config.js file.
 
-THAT'S IT!
+THAT'S IT! Now you have a baseline that you can use to build your own applications
 
 
 #### Running from a war file
-Pull the repo from the "release" branch; version 1.0 is tagged as banana1.0.  Run "ant" from within the banana directory to build the war file.
+Pull the repo from the "release" branch; version 1.1 will be tagged as banana1.1.  Run "ant" from within the banana directory to build the war file.
 
     cd $BANANA_REPO_HOME  
     ant 
@@ -93,12 +106,13 @@ __A__: The simplest solution is to use a nginx reverse proxy (See for example ht
 _Q_: The timestamp field in my data is different from "event_timestamp". How do I modify my dashboards to account for this?   
 _A_: By default, Banana assumes that the time field is "event_timestamp" If your time field is different you will just need to manually change it in ALL panels. We are reviewing this design (of allowing different time fields for different panels) and may move to one time field for all panels, based on user feedback.
 
+_Q_ : Can I use banana for non-time series data?
+_A_: Currently, we are focused on time series data and the dashboards will nto work correctly without a time picker and without configuring the time field in the terms, histogram and table panles. However, in many cases you can use the following workaround, if you are at least storing a timestamp indicating the indexing time of the document:
+Create a time picker panel in its own row and move the row to the bottom. Select the time field and then set the date range to be "Since 01/01/2000" (or starting even earlier if necessary). Use the same time field in the other terms panels, and you can get beautiful visualizations of facets.
+
 ### Support
 
 Banana preserves most of the features of Kibana (from which it is forked). If you have any questions, please contact Andrew Thanalertvisuti (andrew.thanalertvisuti@lucidworks.com) or Ravi Krishnamurthy (ravi.krishnamurthy@lucidworks.com).
-
-
-Introduction videos on Kibana can be found at [http://three.kibana.org/about.html](http://three.kibana.org/about.html)  
 
 
 ###Trademarks
