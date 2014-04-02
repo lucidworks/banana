@@ -25,8 +25,8 @@
       ],
       "list": {
         "0": {
-          "from": "2014-01-29T21:45:46.000Z",
-          "to": "2014-02-28T22:30:10.897Z",
+          "from": "2014-04-01T07:47:30.228Z",
+          "to": "2014-04-02T07:47:30.228Z",
           "field": "event_timestamp",
           "type": "time",
           "mandate": "must",
@@ -57,7 +57,7 @@
             "default"
           ],
           "type": "timepicker",
-          "mode": "since",
+          "mode": "relative",
           "time_options": [
             "5m",
             "15m",
@@ -69,7 +69,7 @@
             "7d",
             "30d"
           ],
-          "timespan": "30d",
+          "timespan": "24h",
           "timefield": "event_timestamp",
           "timeformat": "",
           "refresh": {
@@ -78,11 +78,7 @@
             "min": 3
           },
           "filter_id": 0,
-          "status": "Stable",
-          "time": {
-            "from": "01/29/2014 13:45:46",
-            "to": "02/28/2014 14:30:10"
-          }
+          "status": "Stable"
         },
         {
           "error": false,
@@ -96,7 +92,8 @@
             "error"
           ],
           "remember": 10,
-          "title": "Search"
+          "title": "Search",
+          "def_type": ""
         }
       ]
     },
@@ -115,9 +112,26 @@
           "loadingEditor": false,
           "status": "Stable",
           "mode": "markdown",
-          "content": "This is the demonstration dashboard for Banana, a port of Kibana for Solr. This points to a collection called logstash\\_logs. If you followed the QuickStart instructions provided by the  the Solr Output Writer for LogStash, you will see example data here. \n\nTo build your own dashboards, first get time series data into a collection. Then you can begin with this dashboard and configure it to fit your needs.",
+          "content": "This is the demonstration dashboard for Banana, a port of Kibana for Solr. This points to a collection called logstash\\_logs. If you followed the QuickStart instructions provided by the Solr Output Writer for LogStash, you will see example data here. \n\nTo build your own dashboards, first get time series data into a collection. Then you can begin with this dashboard and configure it to fit your needs.",
           "style": {},
           "title": "Welcome to Banana"
+        }
+      ]
+    },
+    {
+      "title": "Filter",
+      "height": "150px",
+      "editable": true,
+      "collapse": true,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "type": "filtering",
+          "loadingEditor": false,
+          "title": "Filter"
         }
       ]
     },
@@ -141,7 +155,7 @@
           "max_rows": 100000,
           "auto_int": true,
           "resolution": 100,
-          "interval": "12h",
+          "interval": "10m",
           "fill": 3,
           "linewidth": 3,
           "timezone": "browser",
@@ -161,7 +175,7 @@
             "ids": [
               0
             ],
-            "query": "q=*:*",
+            "query": "q=error&df=message&df=host&df=path&df=type&wt=json&rows=0&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&facet=true&facet.range=event_timestamp&facet.range.start=2014-04-01T07:47:30.228Z/DAY&facet.range.end=2014-04-02T07:47:30.228Z%2B1DAY/DAY&facet.range.gap=%2B10MINUTE",
             "custom": ""
           },
           "title": "System Log Messages",
@@ -184,7 +198,9 @@
           "tooltip": {
             "value_type": "cumulative",
             "query_as_alias": false
-          }
+          },
+          "group_field": null,
+          "error": false
         },
         {
           "error": false,
@@ -197,7 +213,7 @@
             "ids": [
               0
             ],
-            "query": "q=*:*",
+            "query": "q=error&df=message&df=host&df=path&df=type&wt=json&rows=0&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&facet=true&facet.field=syslog_program&facet.range=event_timestamp&facet.range.start=2014-04-01T07:47:30.228Z&facet.range.end=2014-04-02T07:47:30.228Z&facet.range.gap=%2B1DAY&facet.limit=10",
             "custom": ""
           },
           "field": "syslog_program",
@@ -263,7 +279,7 @@
             "ids": [
               0
             ],
-            "query": "q=*:*",
+            "query": "q=error&df=message&df=host&df=path&df=type&wt=json&rows=1000&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&sort=event_timestamp desc",
             "custom": ""
           },
           "field_list": true,
