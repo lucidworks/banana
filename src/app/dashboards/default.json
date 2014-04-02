@@ -1,5 +1,5 @@
 {
-  "title": "Banana for Solr",
+  "title": "Welcome Syslog Demo",
   "services": {
     "query": {
       "idQueue": [
@@ -7,7 +7,7 @@
       ],
       "list": {
         "0": {
-          "query": "*:*",
+          "query": "error",
           "alias": "",
           "color": "#7EB26D",
           "id": 0,
@@ -25,8 +25,8 @@
       ],
       "list": {
         "0": {
-          "from": "2014-02-06T20:42:49.790Z",
-          "to": "2014-02-07T20:42:49.790Z",
+          "from": "2014-04-01T07:47:30.228Z",
+          "to": "2014-04-02T07:47:30.228Z",
           "field": "event_timestamp",
           "type": "time",
           "mandate": "must",
@@ -88,9 +88,50 @@
           "loadingEditor": false,
           "query": "*:*",
           "pinned": true,
-          "history": [],
+          "history": [
+            "error"
+          ],
           "remember": 10,
-          "title": "Search"
+          "title": "Search",
+          "def_type": ""
+        }
+      ]
+    },
+    {
+      "title": "",
+      "height": "100px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "type": "text",
+          "loadingEditor": false,
+          "status": "Stable",
+          "mode": "markdown",
+          "content": "This is the demonstration dashboard for Banana, a port of Kibana for Solr. This points to a collection called logstash\\_logs. If you followed the QuickStart instructions provided by the Solr Output Writer for LogStash, you will see example data here. \n\nTo build your own dashboards, first get time series data into a collection. Then you can begin with this dashboard and configure it to fit your needs.",
+          "style": {},
+          "title": "Welcome to Banana"
+        }
+      ]
+    },
+    {
+      "title": "Filter",
+      "height": "150px",
+      "editable": true,
+      "collapse": true,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "type": "filtering",
+          "loadingEditor": false,
+          "title": "Filter"
         }
       ]
     },
@@ -134,7 +175,7 @@
             "ids": [
               0
             ],
-            "query": "q=*:*",
+            "query": "q=error&df=message&df=host&df=path&df=type&wt=json&rows=0&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&facet=true&facet.range=event_timestamp&facet.range.start=2014-04-01T07:47:30.228Z/DAY&facet.range.end=2014-04-02T07:47:30.228Z%2B1DAY/DAY&facet.range.gap=%2B10MINUTE",
             "custom": ""
           },
           "title": "System Log Messages",
@@ -157,7 +198,9 @@
           "tooltip": {
             "value_type": "cumulative",
             "query_as_alias": false
-          }
+          },
+          "group_field": null,
+          "error": false
         },
         {
           "error": false,
@@ -170,7 +213,7 @@
             "ids": [
               0
             ],
-            "query": "q=*:*",
+            "query": "q=error&df=message&df=host&df=path&df=type&wt=json&rows=0&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&facet=true&facet.field=syslog_program&facet.range=event_timestamp&facet.range.start=2014-04-01T07:47:30.228Z&facet.range.end=2014-04-02T07:47:30.228Z&facet.range.gap=%2B1DAY&facet.limit=10",
             "custom": ""
           },
           "field": "syslog_program",
@@ -189,7 +232,8 @@
           "chart": "pie",
           "counter_pos": "none",
           "spyable": true,
-          "title": "Programs"
+          "title": "Programs",
+          "time_field": "event_timestamp"
         }
       ]
     },
@@ -209,7 +253,7 @@
             "default"
           ],
           "type": "table",
-          "size": 100,
+          "size": 10,
           "pages": 100,
           "offset": 0,
           "sort": [
@@ -235,13 +279,14 @@
             "ids": [
               0
             ],
-            "query": "q=*:*",
+            "query": "q=error&df=message&df=host&df=path&df=type&wt=json&rows=1000&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&sort=event_timestamp desc",
             "custom": ""
           },
           "field_list": true,
           "status": "Stable",
           "trimFactor": 300,
-          "normTimes": true
+          "normTimes": true,
+          "time_field": "event_timestamp"
         }
       ]
     }
@@ -268,5 +313,9 @@
     "load_elasticsearch_size": 20,
     "load_local": true,
     "hide": false
+  },
+  "solr": {
+    "server": "http://localhost:8983/solr/",
+    "core_name": "logstash_logs"
   }
 }
