@@ -39,10 +39,10 @@ function (Settings) {
      */
     panel_names: [
       'histogram',
-      // 'map',  // TODO
+      'map',
       // 'pie',  // Deprecated, use terms panel instead
       'table',
-      'filtering',  // TODO
+      'filtering',
       'timepicker',
       'text',
       // 'fields',  // Deprecated, table panel now integrates a field selector
@@ -53,7 +53,8 @@ function (Settings) {
       // 'trends',  // TODO
       // 'bettermap',  // TODO
       'query',
-      'terms'
+      'terms',
+      // 'dummy'  // Dummy module for testing
     ]
   });
 });
