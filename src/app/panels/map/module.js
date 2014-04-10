@@ -156,7 +156,8 @@ function (angular, app, _, $) {
         if (results.response.numFound) {
           $scope.hits = results.response.numFound;
         } else {
-          // Undefined numFound
+          // Undefined numFound or zero, clear the map.
+          $scope.$emit('render');
           return false;
         }
 
