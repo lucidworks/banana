@@ -150,6 +150,8 @@ function (angular, app, _, $) {
       // Populate scope when we have results
       results.then(function(results) {
         $scope.panelMeta.loading = false;
+        $scope.data = {}; // empty the data for new results
+
         // $scope.hits = results.hits.total;
         if (results.response.numFound) {
           $scope.hits = results.response.numFound;
@@ -158,7 +160,7 @@ function (angular, app, _, $) {
           return false;
         }
 
-        $scope.data = {};
+        
         // _.each(results.facets.map.terms, function(v) {
         //   $scope.data[v.term.toUpperCase()] = v.count;
         // });
