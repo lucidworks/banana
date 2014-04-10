@@ -44,7 +44,6 @@ define([
   'jquery.flot.stackpercent'
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
-
   'use strict';
 
   var DEBUG = true; // DEBUG mode
@@ -82,7 +81,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       queries     : {
         mode        : 'all',
         ids         : [],
-        query       : 'q=*:*',
+        query       : '*:*',
         custom      : ''
       },
       max_rows    : 100000,  // maximum number of rows returned from Solr
@@ -247,41 +246,47 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       // Build Solr query
       // TODO: Validate dashboard.current.services.filter.list[0], what if it is not the timestamp field?
       //       This will cause error.
-      var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
-      var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
-      var fq = '&fq=' + $scope.panel.time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
-      var df = '&df=message&df=host&df=path&df=type';
+      // var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
+      // var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
+      // var fq = '&fq=' + $scope.panel.time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
+      // var df = '&df=message&df=host&df=path&df=type';
+      
+      var fq = '&' + filterSrv.getSolrFq();
+      var time_field = filterSrv.timeField();
+      var start_time = filterSrv.getStartTime();
+      var end_time = filterSrv.getEndTime();
+
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0'; // for histogram, we do not need the actual response doc, so set rows=0
       var facet_gap = $scope.sjs.convertFacetGap($scope.panel.interval);
       var facet = '&facet=true' +
-                  '&facet.range=' + $scope.panel.time_field +
+                  '&facet.range=' + time_field +
                   '&facet.range.start=' + start_time + '/DAY' +
                   '&facet.range.end=' + end_time + '%2B1DAY/DAY' +
                   '&facet.range.gap=' + facet_gap;
-      var filter_fq = '';
-      var filter_either = [];
+      // var filter_fq = '';
+      // var filter_either = [];
       var values_mode_query = '';
 
       // Apply filters to the query
-      _.each(dashboard.current.services.filter.list, function(v,k) {
-        // Skip the timestamp filter because it's already applied to the query using fq param.
-        // timestamp filter should be in k = 0
-        if (k > 0 && v.field != $scope.panel.time_field && v.active) {
-          if (DEBUG) { console.log('terms: k=',k,' v=',v); }
-          if (v.mandate == 'must') {
-            filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
-          } else if (v.mandate == 'mustNot') {
-            filter_fq = filter_fq + '&fq=-' + v.field + ':"' + v.value + '"';
-          } else if (v.mandate == 'either') {
-            filter_either.push(v.field + ':"' + v.value + '"');
-          }
-        }
-      });
-      // parse filter_either array values, if exists
-      if (filter_either.length > 0) {
-        filter_fq = filter_fq + '&fq=(' + filter_either.join(' OR ') + ')';
-      }
+      // _.each(dashboard.current.services.filter.list, function(v,k) {
+      //   // Skip the timestamp filter because it's already applied to the query using fq param.
+      //   // timestamp filter should be in k = 0
+      //   if (k > 0 && v.field != $scope.panel.time_field && v.active) {
+      //     if (DEBUG) { console.log('terms: k=',k,' v=',v); }
+      //     if (v.mandate == 'must') {
+      //       filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
+      //     } else if (v.mandate == 'mustNot') {
+      //       filter_fq = filter_fq + '&fq=-' + v.field + ':"' + v.value + '"';
+      //     } else if (v.mandate == 'either') {
+      //       filter_either.push(v.field + ':"' + v.value + '"');
+      //     }
+      //   }
+      // });
+      // // parse filter_either array values, if exists
+      // if (filter_either.length > 0) {
+      //   filter_fq = filter_fq + '&fq=(' + filter_either.join(' OR ') + ')';
+      // }
 
       // For mode = value
       if($scope.panel.mode === 'values') {
@@ -305,7 +310,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       }
 
       // Set the panel's query
-      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + facet + filter_fq + values_mode_query;
+      $scope.panel.queries.query = 'q=' + querySrv.list[0].query + wt_json + rows_limit + fq + facet + values_mode_query;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {

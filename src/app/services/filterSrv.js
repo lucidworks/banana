@@ -131,6 +131,100 @@ define([
       }
     };
 
+    // Return fq string for constructing a query to send to Solr.
+    this.getSolrFq = function () {
+      var start_time, end_time, time_field;
+      var filter_fq ='';
+      var filter_either = [];
+
+      // Loop through the list to find the time field, usually it should be in self.list[0]
+      _.each(self.list, function(v,k) {
+
+        console.debug('filterSrv: v=',v,' k=',k);
+
+        if (v.type == 'time') {
+          time_field = v.field;
+          start_time = new Date(v.from).toISOString();
+          end_time = new Date(v.to).toISOString();
+        } else if (v.type == 'terms') {
+          if (v.mandate == 'must') {
+            filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
+          } else if (v.mandate == 'mustNot') {
+            filter_fq = filter_fq + '&fq=-' + v.field + ':"' + v.value + '"';
+          } else if (v.mandate == 'either') {
+            filter_either.push(v.field + ':"' + v.value + '"');
+          }
+        } else if (v.type == 'field') {
+          // v.query contains double-quote around it.
+          if (v.mandate == 'must') {
+            filter_fq = filter_fq + '&fq=' + v.field + ':' + v.query;
+          } else if (v.mandate == 'mustNot') {
+            filter_fq = filter_fq + '&fq=-' + v.field + ':' + v.query;
+          } else if (v.mandate == 'either') {
+            filter_either.push(v.field + ':' + v.query);
+          }
+        } else if (v.type == 'querystring') {
+          if (v.mandate == 'must') {
+            filter_fq = filter_fq + '&fq=' + v.query;
+          } else if (v.mandate == 'mustNot') {
+            filter_fq = filter_fq + '&fq=-' + v.query;
+          } else if (v.mandate == 'either') {
+            filter_either.push(v.query);
+          }
+        } else {
+          // Unsupport filter type
+          return false;
+        }
+      });
+      // Return false for undefined time field
+      if (!start_time || !end_time || !time_field) {
+        return false;
+      }
+      // parse filter_either array values, if exists
+      if (filter_either.length > 0) {
+        filter_fq = filter_fq + '&fq=(' + filter_either.join(' OR ') + ')';
+      }
+
+      return 'fq=' + time_field + ':[' + start_time + '%20TO%20' + end_time + ']' + filter_fq;
+    };
+
+    // Get start time for Solr query (e.g. facet.range.start)
+    this.getStartTime = function() {
+      var start_time;
+      _.each(self.list, function(v) {
+        if (v.type == 'time') {
+          start_time = new Date(v.from).toISOString();
+          return;
+        }
+      });
+      return start_time;
+    };
+
+    // Get end time for Solr query (e.g. facet.range.end)
+    this.getEndTime = function() {
+      var end_time;
+      _.each(self.list, function(v) {
+        if (v.type == 'time') {
+          end_time = new Date(v.to).toISOString();
+          return;
+        }
+      });
+      return end_time;
+    };
+
+    // Get both start and end time in one shot
+    this.getStartTimeAndEndTime = function() {
+      var start_time, end_time;
+      _.each(self.list, function(v) {
+        if (v.type == 'time') {
+          start_time = new Date(v.from).toISOString();
+          end_time = new Date(v.to).toISOString();
+          return;
+        }
+      });
+      return [start_time, end_time];
+    };
+
     this.getByType = function(type,inactive) {
       return _.pick(self.list,self.idsByType(type,inactive));
     };
