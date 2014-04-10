@@ -132,7 +132,7 @@ define([
     };
 
     // Return fq string for constructing a query to send to Solr.
-    this.getSolrFq = function () {
+    this.getSolrFq = function() {
       var start_time, end_time, time_field;
       var filter_fq ='';
       var filter_either = [];
@@ -187,6 +187,18 @@ define([
 
       return 'fq=' + time_field + ':[' + start_time + '%20TO%20' + end_time + ']' + filter_fq;
     };
+
+    // Get time field for Solr query
+    this.getTimeField = function() {
+      var time_field;
+      _.each(self.list, function(v) {
+        if (v.type == 'time') {
+          time_field = v.field;
+          return;
+        }
+      });
+      return time_field;
+    }
 
     // Get start time for Solr query (e.g. facet.range.start)
     this.getStartTime = function() {

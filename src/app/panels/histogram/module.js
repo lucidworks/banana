@@ -252,7 +252,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       // var df = '&df=message&df=host&df=path&df=type';
       
       var fq = '&' + filterSrv.getSolrFq();
-      var time_field = filterSrv.timeField();
+      var time_field = filterSrv.getTimeField();
       var start_time = filterSrv.getStartTime();
       var end_time = filterSrv.getEndTime();
 

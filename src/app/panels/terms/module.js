@@ -139,7 +139,7 @@ function (angular, app, _, $, kbn) {
       // var query_size = $scope.panel.size * $scope.panel.pages;
 
       var fq = '&' + filterSrv.getSolrFq();
-      var time_field = filterSrv.timeField();
+      var time_field = filterSrv.getTimeField();
       var start_time = filterSrv.getStartTime();
       var end_time = filterSrv.getEndTime();
 
