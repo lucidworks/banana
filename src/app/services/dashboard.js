@@ -52,7 +52,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       // }
       solr: {
         server: config.solr,
-        core_name: config.solr_core
+        core_name: config.solr_core,
+        // deftype: 'lucene',
+        // df: 'df=message',
       }
     };
 

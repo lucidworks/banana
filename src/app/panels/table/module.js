@@ -198,8 +198,7 @@ function (angular, app, _, kbn, moment) {
       $scope.segment = _segment;
 
       if(DEBUG) {
-        var dummy = new Date(dashboard.current.services.filter.list[0].from).toISOString();
-        console.log('table: Begin of get_data():\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\t_segment='+_segment,'\n\tdashboard.indices[_segment]=',dashboard.indices[_segment],'\n\tdashboard=',dashboard,'\n\tdashboard.current.services.filter.list[0].from='+ dummy,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv);
+        console.debug('table: Begin of get_data():\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\t_segment='+_segment,'\n\tdashboard.indices[_segment]=',dashboard.indices[_segment],'\n\tdashboard=',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv);
       }
 
       // Solr
@@ -227,62 +226,16 @@ function (angular, app, _, kbn, moment) {
 
       $scope.populate_modal(request);
 
-      // Create a facet to store and pass on time_field value to request.doSearch()
-      // var facet = $scope.sjs.RangeFacet('time_facet');
-      // facet = facet.field($scope.panel.time_field);
-      // request = request.facet(facet);
-
       if (DEBUG) {
         console.log('table:\n\trequest=',request,'\n\trequest.toString()=',request.toString());
       }
 
-      // TODO: Parse query here and send to request.doSearch()
-      // declare default Solr params here
-      // get query
-      // get from and to time range
-      // get query.size
-      // construct the query
-      // set queryData
-      // request = request.setQuery(q);
-      // TODO: Validate dashboard.current.services.filter.list[0], what if it is not the timestamp field?
-      //       This will cause error.
-      // var start_time = new Date(filterSrv.list[0].from).toISOString();
-      // var end_time = new Date(filterSrv.list[0].to).toISOString();
-      // TODO
-      // Get time field from filterSrv, is the time field always at list[0]?
-      // var time_field = filterSrv.timeField();
-      
-      // console.debug('table: time_field=',time_field);
-
-      // var fq = '&fq=' + time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
       var fq = '&' + filterSrv.getSolrFq();
       var query_size = $scope.panel.size * $scope.panel.pages;
-      var df = '&df=message&df=host&df=path&df=type';
+      // var df = '&df=message';
       var wt_json = '&wt=json';
       var rows_limit;
       var sorting = '';
-      // var filter_fq = '';
-      // var filter_either = [];
-      
-      // Apply filters to the query
-      // _.each(filterSrv.list, function(v,k) {
-      //   // Skip the timestamp filter because it's already applied to the query using fq param.
-      //   // timestamp filter should be in k = 0
-      //   if (k > 0 && v.field != time_field && v.active) {
-      //     console.debug('table filter terms: k=',k,' v=',v);
-      //     if (v.mandate == 'must') {
-      //       filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
-      //     } else if (v.mandate == 'mustNot') {
-      //       filter_fq = filter_fq + '&fq=-' + v.field + ':"' + v.value + '"';
-      //     } else if (v.mandate == 'either') {
-      //       filter_either.push(v.field + ':"' + v.value + '"');
-      //     }
-      //   }
-      // });
-      // // parse filter_either array values, if exists
-      // if (filter_either.length > 0) {
-      //   filter_fq = filter_fq + '&fq=(' + filter_either.join(' OR ') + ')';
-      // }
 
       if ($scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined) {
         sorting = '&sort=' + $scope.panel.sort[0] + ' ' + $scope.panel.sort[1];
@@ -297,11 +250,11 @@ function (angular, app, _, kbn, moment) {
         // facet_limit = '&facet.limit=10';
       }
 
-      
-
       // Set the panel's query
       // $scope.panel.queries.query = 'q=' + querySrv.list[0].query + df + wt_json + rows_limit + fq + sorting + filter_fq;
-      $scope.panel.queries.query = 'q=' + querySrv.list[0].query + df + wt_json + rows_limit + fq + sorting;
+      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + sorting;
+
+      console.debug('table: query=',$scope.panel.queries.query);
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
