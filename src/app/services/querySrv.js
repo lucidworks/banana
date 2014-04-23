@@ -23,8 +23,8 @@ function (angular, _, config) {
       query: '*:*',
       alias: '',
       pin: false,
-      type: 'lucene',
-      df: 'df=message'
+      // type: 'lucene',
+      // df: 'df=message'
     };
 
     // For convenience
@@ -118,12 +118,18 @@ function (angular, _, config) {
     // Get query string for Solr with defType param and default fields (df).
     this.getQuery = function(id) {
       var solr_q = 'q=' + self.list[id].query;
-      if (self.list[id].type) {
-        solr_q += '&defType=' + self.list[id].type;
+
+      // if (self.list[id].type) {
+      //   solr_q += '&defType=' + self.list[id].type;
+      // }
+      // if (self.list[id].df) {
+      //   solr_q += '&' + self.list[id].df;
+      // }
+
+      if (dashboard.current.solr.global_params) {
+        solr_q += dashboard.current.solr.global_params;
       }
-      if (self.list[id].df) {
-        solr_q += '&' + self.list[id].df;
-      }
+
       return  solr_q;
     }
 
