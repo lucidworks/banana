@@ -29,18 +29,18 @@ function (angular, app, _, L, localRequire) {
 
   module.controller('bettermap', function($scope, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
-      editorTabs : [
-        {
-          title: 'Queries',
-          src: 'app/partials/querySelect.html'
-        }
-      ],
       modals : [
         {
           description: "Inspect",
           icon: "icon-info-sign",
           partial: "app/partials/inspector.html",
           show: $scope.panel.spyable
+        }
+      ],
+      editorTabs : [
+        {
+          title: 'Queries',
+          src: 'app/partials/querySelect.html'
         }
       ],
       status  : "Experimental",
@@ -59,8 +59,12 @@ function (angular, app, _, L, localRequire) {
         query       : '*:*',
         custom      : ''
       },
-      size    : 1000,
-      spyable : true,
+      size     : 1000,
+      spyable  : true,
+      lat_start: '',
+      lat_end  : '',
+      lon_start: '',
+      lon_end: '',
 //      tooltip : "_id",
       field   : null
     };
@@ -72,10 +76,21 @@ function (angular, app, _, L, localRequire) {
     // setting this property the paths would be relative to the app not this context/file.
 
     $scope.init = function() {
-      $scope.$on('refresh',function(){
+      $scope.$on('refresh',function() {
         $scope.get_data();
       });
       $scope.get_data();
+    };
+      
+    $scope.set_refresh = function (state) {
+      $scope.refresh = state;
+    };  
+    
+    $scope.close_edit = function() {
+      if($scope.refresh) {
+        $scope.get_data();
+      }
+      $scope.refresh =  false;
     };
 
     $scope.get_data = function(segment,query_id) {
@@ -86,21 +101,12 @@ function (angular, app, _, L, localRequire) {
         if(dashboard.indices.length === 0) {
           return;
         }
-
+        
+        // check if [lon,lat] field is defined
+        // Used for Now Multi-valued field, Looking forward to support (solr spatial search)
         if(_.isUndefined($scope.panel.field)) {
           $scope.panel.error = "Please select a field that contains geo point in [lon,lat] format";
           return;
-        }
-
-        // Determine the field to sort on
-        var timeField = _.uniq(_.pluck(filterSrv.getByType('time'),'field'));
-
-        if(timeField.length > 1) {
-          $scope.panel.error = "Time field must be consistent amongst time filters";
-        } else if(timeField.length === 0) {
-          timeField = null;
-        } else {
-          timeField = timeField[0];
         }
 
         // Solr.js
@@ -113,7 +119,7 @@ function (angular, app, _, L, localRequire) {
 
         $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
         // This could probably be changed to a BoolFilter
-        var boolQuery = $scope.ejs.BoolQuery();
+        var boolQuery = $scope.sjs.BoolQuery();
         _.each($scope.panel.queries.ids,function(id) {
           boolQuery = boolQuery.should(querySrv.getEjsObj(id));
         });
@@ -125,8 +131,7 @@ function (angular, app, _, L, localRequire) {
           boolQuery,
           filterSrv.getBoolFilter(filterSrv.ids)
         ))
-        .size($scope.panel.size) // Set the size of query result
-        .sort($scope.panel.sort[0], $scope.panel.sort[1]);
+        .size($scope.panel.size); // Set the size of query result
 
         $scope.populate_modal(request);
 
@@ -142,40 +147,38 @@ function (angular, app, _, L, localRequire) {
       // construct the query
       // set queryData
       // request = request.setQuery(q);
-      // TODO: Validate dashboard.current.services.filter.list[0], what if it is not the "defined time field of this dataset" field?
+      // TODO: Validate dashboard.current.services.filter.list[0], undefined or in-compatible problem
       //       This will cause error.
+          
+//      var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
+//      var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
+//      var fq = '&fq=' + dashboard.current.services.filter.list[0].field + ':[' + start_time + '%20TO%20' + end_time + ']';
 
-      var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
-      var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
-
-      var fq = '&fq=' + $scope.panel.time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
+      var fq = '&' + filterSrv.getSolrFq();
       var query_size = $scope.panel.size;
-      var df = '&df=start_time&df=start_station_id&df=start_station_latitude&df=start_station_longitude';
+      var df = '';
       var wt_json = '&wt=json';
       var rows_limit;
       var sorting = '';
       var filter_fq = '';
       var filter_either = [];
-
-      if ($scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined) {
-        sorting = '&sort=' + $scope.panel.sort[0] + ' ' + $scope.panel.sort[1];
-      }
-
+          
       // set the size of query result
       if (query_size !== undefined && query_size !== 0) {
         rows_limit = '&rows=' + query_size;
-        // facet_limit = '&facet.limit=' + query_size;
       } else { // default
         rows_limit = '&rows=25';
-        // facet_limit = '&facet.limit=10';
       }
+          
+     if($scope.panel.lat_start && $scope.panel.lat_end && $scope.panel.lon_start && $scope.panel.lon_end && $scope.panel.field) {
+         fq += '&fq=' + $scope.panel.field + '_0_coordinate:[' + $scope.panel.lat_start + ' TO ' + $scope.panel.lat_end + '] AND ' + $scope.panel.field + '_1_coordinate:[' + $scope.panel.lon_start + ' TO ' + $scope.panel.lon_end + ']';
+     }
 
       // Set the panel's query
       $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + sorting + filter_fq;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
-        // request = request.customQuery($scope.panel.queries.custom);
         request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
       } else {
         request = request.setQuery($scope.panel.queries.query);
@@ -197,14 +200,14 @@ function (angular, app, _, L, localRequire) {
             $scope.panel.error = $scope.parse_error(results.error);
             return;
           }
-
+          
           // Check that we're still on the same query, if not stop
           if($scope.query_id === query_id) {
 
             // Keep only what we need for the set
             $scope.data = $scope.data.slice(0,$scope.panel.size).concat(_.map(results.response.docs, function(hit) {
               return {
-                coordinates : new L.LatLng(hit[$scope.panel.latitude_field],hit[$scope.panel.longitude_field]),
+                coordinates : new L.LatLng(hit[$scope.panel.field + '_0_coordinate'],hit[$scope.panel.field + '_1_coordinate']),
                 tooltip : hit[$scope.panel.tooltip]
               };
             }));
