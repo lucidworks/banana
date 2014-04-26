@@ -22,23 +22,25 @@ define([
 function (angular, app, _, L, localRequire) {
   'use strict';
 
+  var DEBUG = true; // DEBUG mode
+
   var module = angular.module('kibana.panels.bettermap', []);
   app.useModule(module);
 
   module.controller('bettermap', function($scope, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
-      editorTabs : [
-        {
-          title: 'Queries',
-          src: 'app/partials/querySelect.html'
-        }
-      ],
       modals : [
         {
           description: "Inspect",
           icon: "icon-info-sign",
           partial: "app/partials/inspector.html",
           show: $scope.panel.spyable
+        }
+      ],
+      editorTabs : [
+        {
+          title: 'Queries',
+          src: 'app/partials/querySelect.html'
         }
       ],
       status  : "Experimental",
@@ -53,25 +55,42 @@ function (angular, app, _, L, localRequire) {
     var _d = {
       queries     : {
         mode        : 'all',
-        ids         : []
+        ids         : [],
+        query       : '*:*',
+        custom      : ''
       },
-      size    : 1000,
-      spyable : true,
-      tooltip : "_id",
+      size     : 1000,
+      spyable  : true,
+      lat_start: '',
+      lat_end  : '',
+      lon_start: '',
+      lon_end: '',
+//      tooltip : "_id",
       field   : null
     };
 
-    _.defaults($scope.panel,_d);
+    _.defaults($scope.panel, _d);
     $scope.requireContext = localRequire;
 
     // inorder to use relative paths in require calls, require needs a context to run. Without
     // setting this property the paths would be relative to the app not this context/file.
 
     $scope.init = function() {
-      $scope.$on('refresh',function(){
+      $scope.$on('refresh',function() {
         $scope.get_data();
       });
       $scope.get_data();
+    };
+      
+    $scope.set_refresh = function (state) {
+      $scope.refresh = state;
+    };  
+    
+    $scope.close_edit = function() {
+      if($scope.refresh) {
+        $scope.get_data();
+      }
+      $scope.refresh =  false;
     };
 
     $scope.get_data = function(segment,query_id) {
@@ -82,53 +101,96 @@ function (angular, app, _, L, localRequire) {
         if(dashboard.indices.length === 0) {
           return;
         }
-
+        
+        // check if [lon,lat] field is defined
+        // Used for Now Multi-valued field, Looking forward to support (solr spatial search)
         if(_.isUndefined($scope.panel.field)) {
           $scope.panel.error = "Please select a field that contains geo point in [lon,lat] format";
           return;
         }
 
-        // Determine the field to sort on
-        var timeField = _.uniq(_.pluck(filterSrv.getByType('time'),'field'));
-        if(timeField.length > 1) {
-          $scope.panel.error = "Time field must be consistent amongst time filters";
-        } else if(timeField.length === 0) {
-          timeField = null;
-        } else {
-          timeField = timeField[0];
-        }
+        // Solr.js
+        $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
         var _segment = _.isUndefined(segment) ? 0 : segment;
 
+        var request;
+        request = $scope.sjs.Request().indices(dashboard.indices);
+
         $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
         // This could probably be changed to a BoolFilter
-        var boolQuery = $scope.ejs.BoolQuery();
+        var boolQuery = $scope.sjs.BoolQuery();
         _.each($scope.panel.queries.ids,function(id) {
           boolQuery = boolQuery.should(querySrv.getEjsObj(id));
         });
 
-        var request = $scope.ejs.Request().indices(dashboard.indices[_segment])
-          .query($scope.ejs.FilteredQuery(
-            boolQuery,
-            filterSrv.getBoolFilter(filterSrv.ids).must($scope.ejs.ExistsFilter($scope.panel.field))
-          ))
-          .fields([$scope.panel.field,$scope.panel.tooltip])
-          .size($scope.panel.size);
+        var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
 
-        if(!_.isNull(timeField)) {
-          request = request.sort(timeField,'desc');
-        }
+        request = request.query(
+        $scope.sjs.FilteredQuery(
+          boolQuery,
+          filterSrv.getBoolFilter(filterSrv.ids)
+        ))
+        .size($scope.panel.size); // Set the size of query result
 
         $scope.populate_modal(request);
 
-        var results = request.doSearch();
+        if (DEBUG) {
+            console.log('bettermap:\n\trequest=',request,'\n\trequest.toString()=',request.toString());
+        }
 
+      // TODO: Parse query here and send to request.doSearch()
+      // declare default Solr params here
+      // get query
+      // get from and to time range
+      // get query.size
+      // construct the query
+      // set queryData
+      // request = request.setQuery(q);
+      // TODO: Validate dashboard.current.services.filter.list[0], undefined or in-compatible problem
+      //       This will cause error.
+          
+//      var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
+//      var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
+//      var fq = '&fq=' + dashboard.current.services.filter.list[0].field + ':[' + start_time + '%20TO%20' + end_time + ']';
+
+      var fq = '&' + filterSrv.getSolrFq();
+      var query_size = $scope.panel.size;
+      var df = '';
+      var wt_json = '&wt=json';
+      var rows_limit;
+      var sorting = '';
+      var filter_fq = '';
+      var filter_either = [];
+          
+      // set the size of query result
+      if (query_size !== undefined && query_size !== 0) {
+        rows_limit = '&rows=' + query_size;
+      } else { // default
+        rows_limit = '&rows=25';
+      }
+          
+     if($scope.panel.lat_start && $scope.panel.lat_end && $scope.panel.lon_start && $scope.panel.lon_end && $scope.panel.field) {
+         fq += '&fq=' + $scope.panel.field + '_0_coordinate:[' + $scope.panel.lat_start + ' TO ' + $scope.panel.lat_end + '] AND ' + $scope.panel.field + '_1_coordinate:[' + $scope.panel.lon_start + ' TO ' + $scope.panel.lon_end + ']';
+     }
+
+      // Set the panel's query
+      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + sorting + filter_fq;
+
+      // Set the additional custom query
+      if ($scope.panel.queries.custom != null) {
+        request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
+      } else {
+        request = request.setQuery($scope.panel.queries.query);
+      }
+
+      var results = request.doSearch();
         // Populate scope when we have results
+        // Using promises
         results.then(function(results) {
           $scope.panelMeta.loading = false;
 
           if(_segment === 0) {
-            $scope.hits = 0;
             $scope.data = [];
             query_id = $scope.query_id = new Date().getTime();
           }
@@ -138,15 +200,15 @@ function (angular, app, _, L, localRequire) {
             $scope.panel.error = $scope.parse_error(results.error);
             return;
           }
-
+          
           // Check that we're still on the same query, if not stop
           if($scope.query_id === query_id) {
 
             // Keep only what we need for the set
-            $scope.data = $scope.data.slice(0,$scope.panel.size).concat(_.map(results.hits.hits, function(hit) {
+            $scope.data = $scope.data.slice(0,$scope.panel.size).concat(_.map(results.response.docs, function(hit) {
               return {
-                coordinates : new L.LatLng(hit.fields[$scope.panel.field][1],hit.fields[$scope.panel.field][0]),
-                tooltip : hit.fields[$scope.panel.tooltip]
+                coordinates : new L.LatLng(hit[$scope.panel.field + '_0_coordinate'],hit[$scope.panel.field + '_1_coordinate']),
+                tooltip : hit[$scope.panel.tooltip]
               };
             }));
 
@@ -155,18 +217,17 @@ function (angular, app, _, L, localRequire) {
           }
 
           $scope.$emit('draw');
-
           // Get $size results then stop querying
+          // Searching Solr using Segments
           if($scope.data.length < $scope.panel.size && _segment+1 < dashboard.indices.length) {
-            $scope.get_data(_segment+1,$scope.query_id);
+            $scope.get_data(_segment+1, $scope.query_id);
           }
-
         });
       });
     };
 
     $scope.populate_modal = function(request) {
-      $scope.inspector = angular.toJson(JSON.parse(request.toString()),true);
+      $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
     };
 
   });
@@ -195,19 +256,25 @@ function (angular, app, _, L, localRequire) {
         function render_panel() {
           scope.require(['./leaflet/plugins'], function () {
             scope.panelMeta.loading = false;
+
             L.Icon.Default.imagePath = 'app/panels/bettermap/leaflet/images';
             if(_.isUndefined(map)) {
               map = L.map(attrs.id, {
-                scrollWheelZoom: false,
+                scrollWheelZoom: true,
                 center: [40, -86],
                 zoom: 10
               });
 
-              L.tileLayer('http://{s}.tile.cloudmade.com/57cbb6ca8cac418dbb1a402586df4528/22677/256/{z}/{x}/{y}.png', {
+              // Add Change to the tile layer url, because it was returning 403 (forbidden)
+              // Forbidden because of API Key in cloudmade, so I used osm for now
+              // osm (open street map) (http://{s}.tile.osm.org/{z}/{x}/{y}.png)
+              // cloud made (http://{s}.tile.cloudmade.com/57cbb6ca8cac418dbb1a402586df4528/22677/256/{z}/{x}/{y}.png)
+              L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
                 minZoom: 2
               }).addTo(map);
-              layerGroup = new L.MarkerClusterGroup({maxClusterRadius:30});
+
+              layerGroup = new L.MarkerClusterGroup({maxClusterRadius:50});
             } else {
               layerGroup.clearLayers();
             }
