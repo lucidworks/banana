@@ -51,7 +51,7 @@ function (Settings) {
       'column',
       // 'derivequeries',  // TODO
       // 'trends',  // TODO
-      // 'bettermap',  // TODO
+      'bettermap',
       'query',
       'terms',
       // 'dummy'  // Dummy module for testing

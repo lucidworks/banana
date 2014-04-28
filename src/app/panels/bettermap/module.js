@@ -136,55 +136,37 @@ function (angular, app, _, L, localRequire) {
         $scope.populate_modal(request);
 
         if (DEBUG) {
-            console.log('bettermap:\n\trequest=',request,'\n\trequest.toString()=',request.toString());
+            console.debug('bettermap:\n\trequest=',request,'\n\trequest.toString()=',request.toString());
         }
 
-      // TODO: Parse query here and send to request.doSearch()
-      // declare default Solr params here
-      // get query
-      // get from and to time range
-      // get query.size
-      // construct the query
-      // set queryData
-      // request = request.setQuery(q);
-      // TODO: Validate dashboard.current.services.filter.list[0], undefined or in-compatible problem
-      //       This will cause error.
-          
-//      var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
-//      var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
-//      var fq = '&fq=' + dashboard.current.services.filter.list[0].field + ':[' + start_time + '%20TO%20' + end_time + ']';
+        // Build Solr query
+        var fq = '&' + filterSrv.getSolrFq();
+        var query_size = $scope.panel.size;
+        var wt_json = '&wt=json';
+        var rows_limit;
+        
+        // set the size of query result
+        if (query_size !== undefined && query_size !== 0) {
+          rows_limit = '&rows=' + query_size;
+        } else { // default
+          rows_limit = '&rows=25';
+        }
+            
+        if($scope.panel.lat_start && $scope.panel.lat_end && $scope.panel.lon_start && $scope.panel.lon_end && $scope.panel.field) {
+          fq += '&fq=' + $scope.panel.field + '_0_coordinate:[' + $scope.panel.lat_start + ' TO ' + $scope.panel.lat_end + '] AND ' + $scope.panel.field + '_1_coordinate:[' + $scope.panel.lon_start + ' TO ' + $scope.panel.lon_end + ']';
+        }
 
-      var fq = '&' + filterSrv.getSolrFq();
-      var query_size = $scope.panel.size;
-      var df = '';
-      var wt_json = '&wt=json';
-      var rows_limit;
-      var sorting = '';
-      var filter_fq = '';
-      var filter_either = [];
-          
-      // set the size of query result
-      if (query_size !== undefined && query_size !== 0) {
-        rows_limit = '&rows=' + query_size;
-      } else { // default
-        rows_limit = '&rows=25';
-      }
-          
-     if($scope.panel.lat_start && $scope.panel.lat_end && $scope.panel.lon_start && $scope.panel.lon_end && $scope.panel.field) {
-         fq += '&fq=' + $scope.panel.field + '_0_coordinate:[' + $scope.panel.lat_start + ' TO ' + $scope.panel.lat_end + '] AND ' + $scope.panel.field + '_1_coordinate:[' + $scope.panel.lon_start + ' TO ' + $scope.panel.lon_end + ']';
-     }
+        // Set the panel's query
+        $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq;
 
-      // Set the panel's query
-      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + sorting + filter_fq;
+        // Set the additional custom query
+        if ($scope.panel.queries.custom != null) {
+          request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
+        } else {
+          request = request.setQuery($scope.panel.queries.query);
+        }
 
-      // Set the additional custom query
-      if ($scope.panel.queries.custom != null) {
-        request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
-      } else {
-        request = request.setQuery($scope.panel.queries.query);
-      }
-
-      var results = request.doSearch();
+        var results = request.doSearch();
         // Populate scope when we have results
         // Using promises
         results.then(function(results) {
@@ -203,7 +185,6 @@ function (angular, app, _, L, localRequire) {
           
           // Check that we're still on the same query, if not stop
           if($scope.query_id === query_id) {
-
             // Keep only what we need for the set
             $scope.data = $scope.data.slice(0,$scope.panel.size).concat(_.map(results.response.docs, function(hit) {
               return {
