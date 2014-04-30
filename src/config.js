@@ -9,15 +9,16 @@ function (Settings) {
   return new Settings({
 
     /**
-     * URL to your elasticsearch server. You almost certainly don't
-     * want 'http://localhost:9200' here. Even if Kibana and ES are on
+     * URL to your Solr server. You almost certainly don't
+     * want 'http://localhost:8983/solr/' here. Even if Banana and Solr are on
      * the same host
      *
-     * By default this will attempt to reach ES at the same host you have
-     * elasticsearch installed on. You probably want to set it to the FQDN of your
-     * elasticsearch host
+     * By default this will attempt to reach Solr at the same host you have
+     * Banana installed on. You probably want to set it to the FQDN of your
+     * Solr host
      * @type {String}
      */
+    // TODO: Remove ES related settings
     //elasticsearch: "http://"+window.location.hostname+":9200",
     elasticsearch: "http://localhost:9200",
 
@@ -26,7 +27,7 @@ function (Settings) {
     solr_core: "logstash_logs",
 
     /**
-     * The default ES index to use for storing Kibana specific object
+     * The default Solr index to use for storing Banana specific object
      * such as stored dashboards
      * @type {String}
      */

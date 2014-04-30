@@ -11,8 +11,7 @@ define([
 function (angular, $, kbn, _, config, moment, Modernizr) {
   'use strict';
 
-  // DEBUG mode
-  var DEBUG = true;
+  var DEBUG = true; // DEBUG mode
 
   var module = angular.module('kibana.services');
 
@@ -30,7 +29,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       services: {},
       loader: {
         save_gist: false,
-        save_elasticsearch: true,  // TODO: Remove it
+        save_elasticsearch: true,
         save_local: true,
         save_default: true,
         save_temp: true,
@@ -47,15 +46,10 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         pattern: '_all',  // TODO: Remove it
         default: 'INDEX_MISSING'
       },
-      // collection: {
-      //   name: config.solr_collection
-      // }
       solr: {
         server: config.solr,
         core_name: config.solr_core,
         global_params: ''
-        // deftype: 'lucene',
-        // df: 'df=message',
       }
     };
 
@@ -361,8 +355,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
       request = type === 'temp' && ttl ? request.ttl(ttl) : request;
 
-      // Solr
-      // set sjs.client.server to use 'kibana-int' for saving dashboard
+      // Solr: set sjs.client.server to use 'kibana-int' for saving dashboard
       sjs.client.server(config.solr + config.kibana_index);
 
       return request.doIndex(

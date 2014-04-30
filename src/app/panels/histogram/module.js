@@ -200,12 +200,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       // Solr
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
-      if (DEBUG) {
-        console.debug('histogram:\n\tdashboard=',dashboard,'\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv);
-      }
+      if (DEBUG) { console.debug('histogram:\n\tdashboard=',dashboard,'\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv); }
 
       var request = $scope.sjs.Request().indices(dashboard.indices[segment]);
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
+      
       // Build the query
       _.each($scope.panel.queries.ids, function(id) {
         var query = $scope.sjs.FilteredQuery(
@@ -250,7 +249,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       // For mode = value
       if($scope.panel.mode === 'values') {
-        // if (_.isNull($scope.panel.value_field)) {
         if (!$scope.panel.value_field) {
             $scope.panel.error = "In " + $scope.panel.mode + " mode a field must be specified";
             return;
@@ -271,7 +269,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
-        // request = request.customQuery($scope.panel.queries.custom);
         request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
       } else {
         request = request.setQuery($scope.panel.queries.query);
@@ -305,10 +302,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       // Populate scope when we have results
       results.then(function(results) {
-
-        if (DEBUG) {
-          console.debug('histogram:\n\trequest='+request+'\n\tresults=',results);
-        }
+        if (DEBUG) { console.debug('histogram:\n\trequest='+request+'\n\tresults=',results); }
 
         $scope.panelMeta.loading = false;
         if(segment === 0) {
@@ -319,7 +313,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
         // Check for error and abort if found
         if(!(_.isUndefined(results.error))) {
-          // $scope.panel.error = $scope.parse_error(results.error);
           $scope.panel.error = $scope.parse_error(results.error.msg);
           return;
         }
@@ -353,9 +346,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               hits = 0;
               if (DEBUG) { console.debug('\tfirst run: i='+i+', time_series=',time_series); }
             } else {
-              if (DEBUG) {
-                console.debug('\tNot first run: i='+i+', $scope.data[i].time_series=',$scope.data[i].time_series,', hits='+$scope.data[i].hits);
-              }
+              if (DEBUG) { console.debug('\tNot first run: i='+i+', $scope.data[i].time_series=',$scope.data[i].time_series,', hits='+$scope.data[i].hits); }
               time_series = $scope.data[i].time_series;
               // Bug fix for wrong event count:
               //   Solr don't need to accumulate hits count since it can get total count from facet query.
@@ -365,13 +356,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               $scope.hits = 0;
             }
             
-            // push each entry into the time series, while incrementing counters
-            // _.each(query_results.entries, function(entry) {
-            //   time_series.addValue(entry.time, entry[$scope.panel.mode]);
-            //   hits += entry.count; // The series level hits counter
-            //   $scope.hits += entry.count; // Entire dataset level hits counter
-            // });
-
             // Solr facet counts response is in one big array.
             // So no need to get each segment like Elasticsearch does.
             if ($scope.panel.mode === 'count') {
@@ -420,7 +404,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                     time_series: group_time_series,
                     hits: hits
                   };
-
                 }
               } else { // Group By Field is not specified
                 var entries = results.response.docs;
@@ -456,10 +439,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           // Tell the histogram directive to render.
           $scope.$emit('render');
 
-          // DON'T NEED THIS
+          // Don't need this for Solr unless we need to support multiple queries.
           // If we still have segments left, get them
           // if(segment < dashboard.indices.length-1) {
-          //   if (DEBUG) { console.log('histogram: Still have segments left!'); }
           //   $scope.get_data(segment+1,query_id);
           // }
         }
@@ -642,7 +624,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               }
             }
             
-            console.debug('histogram:\n\tflot options = ',options,'\n\tscope.data = ',scope.data);
+            if (DEBUG) { console.debug('histogram:\n\tflot options = ',options,'\n\tscope.data = ',scope.data); }
 
             scope.plot = $.plot(elem, scope.data, options);
           } catch(e) {

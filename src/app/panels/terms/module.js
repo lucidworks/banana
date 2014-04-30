@@ -93,9 +93,7 @@ function (angular, app, _, $, kbn) {
       //Solr
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
-      if (DEBUG) {
-        console.log('terms:\n\tdashboard',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv);
-      }
+      if (DEBUG) { console.debug('terms:\n\tdashboard',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv); }
 
       request = $scope.sjs.Request().indices(dashboard.indices);
 
@@ -119,31 +117,14 @@ function (angular, app, _, $, kbn) {
               filterSrv.getBoolFilter(filterSrv.ids)
               )))).size(0);
 
-      // Use request.size to limit the facet query (is this a good idea?)
-      request = request.size($scope.panel.size);
-
       // Populate the inspector panel
       $scope.inspector = angular.toJson(JSON.parse(request.toString()),true);
 
-      // Create a facet to store and pass on time_field value to request.doSearch()
-      var facet = $scope.sjs.RangeFacet('time_facet');
-      facet = facet.field($scope.panel.time_field);
-      request = request.facet(facet);
-
       // Build Solr query
-      // TODO: Validate dashboard.current.services.filter.list[0], what if it is not the timestamp field?
-      //       This will cause error.
-      // var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
-      // var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
-      // var fq = '&fq=' + $scope.panel.time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
-      // var query_size = $scope.panel.size * $scope.panel.pages;
-
       var fq = '&' + filterSrv.getSolrFq();
       var time_field = filterSrv.getTimeField();
       var start_time = filterSrv.getStartTime();
       var end_time = filterSrv.getEndTime();
-
-      // var df = '&df=message&df=host&df=path&df=type';
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0' // for terms, we do not need the actual response doc, so set rows=0
       var facet_gap = '%2B1DAY';
@@ -156,12 +137,10 @@ function (angular, app, _, $, kbn) {
                   '&facet.limit=' + $scope.panel.size;
 
       // Set the panel's query
-      // $scope.panel.queries.query = 'q=' + querySrv.list[0].query + wt_json + rows_limit + fq + facet;
       $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
-        // request = request.customQuery($scope.panel.queries.custom);
         request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
       } else {
         request = request.setQuery($scope.panel.queries.query);
@@ -171,21 +150,14 @@ function (angular, app, _, $, kbn) {
 
       // Populate scope when we have results
       results.then(function(results) {
-        if (DEBUG) {
-          console.log('terms: results=',results);
-        }
+        if (DEBUG) { console.debug('terms: results=',results); }
 
         var k = 0;
         $scope.panelMeta.loading = false;
-        // $scope.hits = results.hits.total;
         $scope.hits = results.response.numFound;
 
         $scope.data = [];
-        // _.each(results.facets.terms.terms, function(v) {
-        //   var slice = { label : v.term, data : [[k,v.count]], actions: true};
-        //   $scope.data.push(slice);
-        //   k = k + 1;
-        // });
+
         _.each(results.facet_counts.facet_fields, function(v) {
           for (var i = 0; i < v.length; i++) {
             var term = v[i];
@@ -201,12 +173,10 @@ function (angular, app, _, $, kbn) {
 
         $scope.data.push({label:'Missing field',
           // data:[[k,results.facets.terms.missing]],meta:"missing",color:'#aaa',opacity:0});
-
           // TODO: Hard coded to 0 for now. Solr faceting does not provide 'missing' value.
           data:[[k,0]],meta:"missing",color:'#aaa',opacity:0});
         $scope.data.push({label:'Other values',
           // data:[[k+1,results.facets.terms.other]],meta:"other",color:'#444'});
-
           // TODO: Hard coded to 0 for now. Solr faceting does not provide 'other' value. 
           data:[[k+1,0]],meta:"other",color:'#444'});
 

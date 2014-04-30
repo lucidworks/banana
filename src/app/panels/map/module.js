@@ -116,34 +116,24 @@ function (angular, app, _, $) {
       $scope.populate_modal(request);
 
       // Build Solr query
-      // var start_time = new Date(filterSrv.list[0].from).toISOString();
-      // var end_time = new Date(filterSrv.list[0].to).toISOString();
-      // Get time field from filterSrv, is the time field always at list[0]?
-      // var time_field = filterSrv.list[0].field;
-      // var fq = '&fq=' + time_field + ':[' + start_time + '%20TO%20' + end_time + ']';  // Get timefield from filterSrv
-
       var fq = '&' + filterSrv.getSolrFq();
-      // var df = '&df=message';
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0'; // for map module, we don't display results from row, but we use facets.
-      // var facet_gap = '%2B1DAY';
       var facet = '&facet=true' +
                   '&facet.field=' + $scope.panel.field +
                   '&facet.limit=' + $scope.panel.size;
 
       // Set the panel's query
-      // $scope.panel.queries.query = 'q=' + querySrv.list[0].query + df + wt_json + fq + rows_limit + facet + filter_fq;
       $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + fq + rows_limit + facet;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
-        // request = request.customQuery($scope.panel.queries.custom);
         request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
       } else {
         request = request.setQuery($scope.panel.queries.query);
       }
 
-      console.debug('map: $scope.panel=',$scope.panel);
+      if (DEBUG) { console.debug('map: $scope.panel=',$scope.panel); }
 
       var results = request.doSearch();
 
@@ -152,7 +142,6 @@ function (angular, app, _, $) {
         $scope.panelMeta.loading = false;
         $scope.data = {}; // empty the data for new results
 
-        // $scope.hits = results.hits.total;
         if (results.response.numFound) {
           $scope.hits = results.response.numFound;
         } else {
@@ -160,12 +149,8 @@ function (angular, app, _, $) {
           $scope.$emit('render');
           return false;
         }
-
         
-        // _.each(results.facets.map.terms, function(v) {
-        //   $scope.data[v.term.toUpperCase()] = v.count;
-        // });
-        console.debug('map: results=',results);
+        if (DEBUG) { console.debug('map: results=',results); }
 
         var terms = results.facet_counts.facet_fields[$scope.panel.field];
 

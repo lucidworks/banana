@@ -70,10 +70,7 @@ function (angular, app, _, kbn, moment) {
       size    : 100, // Per page
       pages   : 5,   // Pages available
       offset  : 0,
-      
-      // sort    : ['_score','desc'],
       sort    : ['event_timestamp','desc'],
-
       group   : "default",
       style   : {'font-size': '9pt'},
       overflow: 'min-height',
@@ -93,7 +90,6 @@ function (angular, app, _, kbn, moment) {
     $scope.init = function () {
       $scope.Math = Math;
       // Solr
-      // $scope.sjs = $scope.sjs || sjsResource(config.solr + config.solr_collection);
       $scope.sjs = $scope.sjs || sjsResource(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       $scope.$on('refresh',function(){$scope.get_data();});
@@ -197,11 +193,8 @@ function (angular, app, _, kbn, moment) {
       var _segment = _.isUndefined(segment) ? 0 : segment;
       $scope.segment = _segment;
 
-      if(DEBUG) {
-        console.debug('table: Begin of get_data():\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\t_segment='+_segment,'\n\tdashboard.indices[_segment]=',dashboard.indices[_segment],'\n\tdashboard=',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv);
-      }
+      if (DEBUG) { console.debug('table: Begin of get_data():\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\t_segment='+_segment,'\n\tdashboard.indices[_segment]=',dashboard.indices[_segment],'\n\tdashboard=',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv); }
 
-      // Solr
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
@@ -226,13 +219,10 @@ function (angular, app, _, kbn, moment) {
 
       $scope.populate_modal(request);
 
-      if (DEBUG) {
-        console.log('table:\n\trequest=',request,'\n\trequest.toString()=',request.toString());
-      }
+      if (DEBUG) { console.debug('table:\n\trequest=',request,'\n\trequest.toString()=',request.toString()); }
 
       var fq = '&' + filterSrv.getSolrFq();
       var query_size = $scope.panel.size * $scope.panel.pages;
-      // var df = '&df=message';
       var wt_json = '&wt=json';
       var rows_limit;
       var sorting = '';
@@ -244,21 +234,17 @@ function (angular, app, _, kbn, moment) {
       // set the size of query result
       if (query_size !== undefined && query_size !== 0) {
         rows_limit = '&rows=' + query_size;
-        // facet_limit = '&facet.limit=' + query_size;
       } else { // default
         rows_limit = '&rows=25';
-        // facet_limit = '&facet.limit=10';
       }
 
       // Set the panel's query
-      // $scope.panel.queries.query = 'q=' + querySrv.list[0].query + df + wt_json + rows_limit + fq + sorting + filter_fq;
       $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + sorting;
 
-      console.debug('table: query=',$scope.panel.queries.query);
+      if (DEBUG) { console.debug('table: query=',$scope.panel.queries.query); }
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
-        // request = request.customQuery($scope.panel.queries.custom);
         request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
       } else {
         request = request.setQuery($scope.panel.queries.query);
@@ -279,61 +265,31 @@ function (angular, app, _, kbn, moment) {
           $scope.data = [];
         }
 
-        if(DEBUG) {
-          console.log('table: results=',results);
-          console.log('\t_segment='+_segment+', $scope.hits='+$scope.hits+', $scope.data=',$scope.data,', query_id='+query_id+'\n\t$scope.panel',$scope.panel);
-        }
+        if(DEBUG) { console.debug('table:\n\tresults=',results,'\n\t_segment=',_segment,', $scope.hits=',$scope.hits,', $scope.data=',$scope.data,', query_id=',query_id,'\n\t$scope.panel',$scope.panel); }
 
         // Check for error and abort if found
         if(!(_.isUndefined(results.error))) {
-          // $scope.panel.error = $scope.parse_error(results.error);
           $scope.panel.error = $scope.parse_error(results.error.msg); // There's also results.error.code
           return;
         }
 
         // Check that we're still on the same query, if not stop
         if($scope.query_id === query_id) {
-          // $scope.data= $scope.data.concat(_.map(results.hits.hits, function(hit) {
-            $scope.data = $scope.data.concat(_.map(results.response.docs, function(hit) {
+          $scope.data = $scope.data.concat(_.map(results.response.docs, function(hit) {
             var _h = _.clone(hit);
-            //_h._source = kbn.flatten_json(hit._source);
-            //_h.highlight = kbn.flatten_json(hit.highlight||{});
+            _h.kibana = {
+              _source : kbn.flatten_json(hit),
+              highlight : kbn.flatten_json(hit.highlight||{})
+            };
 
-              _h.kibana = {
-                // _source : kbn.flatten_json(hit._source),
-                // highlight : kbn.flatten_json(hit.highlight||{})
-                
-                // _source : kbn.flatten_json(hit_object),
-                _source : kbn.flatten_json(hit),
-                highlight : kbn.flatten_json(hit.highlight||{})
-              };
-                return _h;
-            }));
+            return _h;
+          }));
 
           // Solr does not need to accumulate hits count because it can get total count
           // from a single faceted query.
-          // $scope.hits += results.hits.total;
           $scope.hits = results.response.numFound;
 
-          if (DEBUG) {
-            console.log('\t$scope.hits='+$scope.hits+', $scope.data=',$scope.data);
-          }
-
-          // NO NEED for sorting here. Solr result is already sorted.
-          // Sort the data
-          // $scope.data = _.sortBy($scope.data, function(v){
-          //   if(!_.isUndefined(v.sort)) {
-          //     return v.sort[0];
-          //   } else {
-          //     return 0;
-          //   }
-          // });
-
-          // We DO NOT need to reverse here because Solr's result is already sorted.
-          // if($scope.panel.sort[1] === 'desc') {
-          //   if (DEBUG) { console.log('\tREVERSE IT!!'); }
-          //   $scope.data.reverse();
-          // }
+          if (DEBUG) { console.debug('table: $scope.hits=',$scope.hits,', $scope.data=',$scope.data); }
 
           // Keep only what we need for the set
           $scope.data = $scope.data.slice(0,$scope.panel.size * $scope.panel.pages);
@@ -349,9 +305,7 @@ function (angular, app, _, kbn, moment) {
           _segment+1 < dashboard.indices.length) {
           $scope.get_data(_segment+1,$scope.query_id);
 
-          if (DEBUG) {
-            console.log('\tnot sorting in reverse chrono order!');
-          }
+          if (DEBUG) { console.debug('\tnot sorting in reverse chrono order!'); }
         }
 
       });
@@ -392,7 +346,6 @@ function (angular, app, _, kbn, moment) {
       return obj;
     };
 
-
   });
 
   // This also escapes some xml sequences
@@ -419,8 +372,6 @@ function (angular, app, _, kbn, moment) {
       return '';
     };
   });
-
-
 
   module.filter('tableJson', function() {
     var json;
