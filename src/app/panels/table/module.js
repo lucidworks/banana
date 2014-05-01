@@ -43,6 +43,32 @@ function (angular, app, _, kbn, moment) {
           show: $scope.panel.spyable
         }
       ],
+//      dropdowns : [
+//          {
+//              description: "Export",
+//              icon: "icon-save",
+//              list: [
+//                  {
+//                      "text": "<h5>Export to File</h5>"
+//                  },
+//                  {
+//                      "text" : "<i class='icon-download'></i> csv format",
+//                      "href": "",
+//                      "click": "exportfile('csv')"
+//                  },
+//                  {
+//                      "text": "<i class='icon-download'></i> json format",
+//                      "href": "",
+//                      "click": "exportfile('json')"
+//                  },
+//                  {
+//                      "text": "<i class='icon-download'></i> xml format",
+//                      "href": "",
+//                      "click": "exportfile('xml')"
+//                  }
+//              ]
+//          }
+//      ],
       editorTabs : [
         {
           title:'Paging',
@@ -53,6 +79,7 @@ function (angular, app, _, kbn, moment) {
           src: 'app/partials/querySelect.html'
         }
       ],
+      exportfile: true,
       status: "Stable",
       description: "A paginated table of records matching your query or queries. Click on a row to "+
         "expand it and review all of the fields associated with that document. <p>"
@@ -64,7 +91,8 @@ function (angular, app, _, kbn, moment) {
       queries     : {
         mode        : 'all',
         ids         : [],
-        query       : 'q=*:*',
+        query       : '*:*',
+        basic_query : '',
         custom      : ''
       },
       size    : 100, // Per page
@@ -86,7 +114,8 @@ function (angular, app, _, kbn, moment) {
       trimFactor: 300,
       normTimes : true,
       spyable : true,
-      time_field : 'event_timestamp'
+      time_field : 'event_timestamp',
+      saveOption : 'json'
     };
     _.defaults($scope.panel,_d);
 
@@ -198,8 +227,7 @@ function (angular, app, _, kbn, moment) {
       $scope.segment = _segment;
 
       if(DEBUG) {
-        var dummy = new Date(dashboard.current.services.filter.list[0].from).toISOString();
-        console.log('table: Begin of get_data():\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\t_segment='+_segment,'\n\tdashboard.indices[_segment]=',dashboard.indices[_segment],'\n\tdashboard=',dashboard,'\n\tdashboard.current.services.filter.list[0].from='+ dummy,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv);
+        console.debug('table: Begin of get_data():\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\t_segment='+_segment,'\n\tdashboard.indices[_segment]=',dashboard.indices[_segment],'\n\tdashboard=',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv);
       }
 
       // Solr
@@ -225,57 +253,20 @@ function (angular, app, _, kbn, moment) {
         .size($scope.panel.size*$scope.panel.pages) // Set the size of query result
         .sort($scope.panel.sort[0],$scope.panel.sort[1]);
 
-      $scope.populate_modal(request);
+      $scope.panel_request = request;
 
-      // Create a facet to store and pass on time_field value to request.doSearch()
-      // var facet = $scope.sjs.RangeFacet('time_facet');
-      // facet = facet.field($scope.panel.time_field);
-      // request = request.facet(facet);
+      $scope.populate_modal(request);
 
       if (DEBUG) {
         console.log('table:\n\trequest=',request,'\n\trequest.toString()=',request.toString());
       }
 
-      // TODO: Parse query here and send to request.doSearch()
-      // declare default Solr params here
-      // get query
-      // get from and to time range
-      // get query.size
-      // construct the query
-      // set queryData
-      // request = request.setQuery(q);
-      // TODO: Validate dashboard.current.services.filter.list[0], what if it is not the timestamp field?
-      //       This will cause error.
-      var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
-      var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
-      var fq = '&fq=' + $scope.panel.time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
+      var fq = '&' + filterSrv.getSolrFq();
       var query_size = $scope.panel.size * $scope.panel.pages;
-      var df = '&df=message&df=host&df=path&df=type';
+      // var df = '&df=message';
       var wt_json = '&wt=json';
       var rows_limit;
       var sorting = '';
-      var filter_fq = '';
-      var filter_either = [];
-      
-      // Apply filters to the query
-      _.each(dashboard.current.services.filter.list, function(v,k) {
-        // Skip the timestamp filter because it's already applied to the query using fq param.
-        // timestamp filter should be in k = 0
-        if (k > 0 && v.field != $scope.panel.time_field && v.active) {
-          if (DEBUG) { console.log('terms: k=',k,' v=',v); }
-          if (v.mandate == 'must') {
-            filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
-          } else if (v.mandate == 'mustNot') {
-            filter_fq = filter_fq + '&fq=-' + v.field + ':"' + v.value + '"';
-          } else if (v.mandate == 'either') {
-            filter_either.push(v.field + ':"' + v.value + '"');
-          }
-        }
-      });
-      // parse filter_either array values, if exists
-      if (filter_either.length > 0) {
-        filter_fq = filter_fq + '&fq=(' + filter_either.join(' OR ') + ')';
-      }
 
       if ($scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined) {
         sorting = '&sort=' + $scope.panel.sort[0] + ' ' + $scope.panel.sort[1];
@@ -291,7 +282,11 @@ function (angular, app, _, kbn, moment) {
       }
 
       // Set the panel's query
-      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + sorting + filter_fq;
+      // $scope.panel.queries.query = 'q=' + querySrv.list[0].query + df + wt_json + rows_limit + fq + sorting + filter_fq;
+      $scope.panel.queries.basic_query = querySrv.getQuery(0) + fq + sorting + rows_limit;
+      $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json;
+
+      console.debug('table: query=',$scope.panel.queries.query);
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
@@ -392,6 +387,38 @@ function (angular, app, _, kbn, moment) {
         }
 
       });
+    };
+
+    $scope.exportfile = function(filetype) {
+        var omitHeader = '&omitHeader=true';
+        var exportQuery = $scope.panel.queries.basic_query + '&wt=' + filetype + omitHeader;
+
+        var request = $scope.panel_request;
+        request = request.setQuery(exportQuery);
+
+        var response = request.doSearch();
+
+        response.then(function(response) {
+            var blob; // the file to be written
+            // TODO: manipulating solr requests
+            // pagination (batch downloading)
+            // example: 1,000,000 rows will explode the memory !
+            if(filetype === 'json') {
+                blob = new Blob([angular.toJson(response,true)], {type: "application/json;charset=utf-8"});
+            } else if(filetype === 'csv') {
+                blob = new Blob([response.toString()], {type: "text/csv;charset=utf-8"});
+            } else if(filetype === 'xml'){
+                blob = new Blob([response.toString()], {type: "application/xml;charset=utf-8"});
+            } else {
+                // incorrect file type
+                alert('incorrect file type');
+                return false;
+            }
+            // from filesaver.js
+            window.saveAs(blob, "table"+"-"+new Date().getTime()+"."+filetype);
+            return true;
+        });
+
     };
 
     $scope.populate_modal = function(request) {

@@ -46,7 +46,7 @@ function (Settings) {
       'timepicker',
       'text',
       // 'fields',  // Deprecated, table panel now integrates a field selector
-      // 'hits',  // TODO
+      'hits',  // TODO
       // 'dashcontrol',  // Deprecated, moved to nav bar
       'column',
       // 'derivequeries',  // TODO

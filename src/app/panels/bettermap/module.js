@@ -14,10 +14,12 @@ define([
   'underscore',
   './leaflet/leaflet-src',
   'require',
+  './leaflet/plugins',
 
   'css!./module.css',
   'css!./leaflet/leaflet.css',
   'css!./leaflet/plugins.css'
+
 ],
 function (angular, app, _, L, localRequire) {
   'use strict';
@@ -77,7 +79,7 @@ function (angular, app, _, L, localRequire) {
 
     $scope.init = function() {
       $scope.$on('refresh',function() {
-        $scope.get_data();
+        $scope.get_data();$
       });
       $scope.get_data();
     };
@@ -114,8 +116,7 @@ function (angular, app, _, L, localRequire) {
 
         var _segment = _.isUndefined(segment) ? 0 : segment;
 
-        var request;
-        request = $scope.sjs.Request().indices(dashboard.indices);
+        var request = $scope.sjs.Request().indices(dashboard.indices);
 
         $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
         // This could probably be changed to a BoolFilter
@@ -138,17 +139,6 @@ function (angular, app, _, L, localRequire) {
         if (DEBUG) {
             console.log('bettermap:\n\trequest=',request,'\n\trequest.toString()=',request.toString());
         }
-
-      // TODO: Parse query here and send to request.doSearch()
-      // declare default Solr params here
-      // get query
-      // get from and to time range
-      // get query.size
-      // construct the query
-      // set queryData
-      // request = request.setQuery(q);
-      // TODO: Validate dashboard.current.services.filter.list[0], undefined or in-compatible problem
-      //       This will cause error.
           
 //      var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
 //      var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
@@ -254,7 +244,7 @@ function (angular, app, _, L, localRequire) {
         var map, layerGroup;
 
         function render_panel() {
-          scope.require(['./leaflet/plugins'], function () {
+//          scope.require(['./leaflet/plugins'], function () {
             scope.panelMeta.loading = false;
 
             L.Icon.Default.imagePath = 'app/panels/bettermap/leaflet/images';
@@ -290,7 +280,7 @@ function (angular, app, _, L, localRequire) {
             layerGroup.addTo(map);
 
             map.fitBounds(_.pluck(scope.data,'coordinates'));
-          });
+//          });
         }
       }
     };
