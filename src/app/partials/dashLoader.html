@@ -1,4 +1,6 @@
 
+<li class="dropdown" bs-tooltip="'Collection'" data-placement="bottom" style="padding-top:5px;"><select class="span2" ng-model="dashboard.current.solr.core_name" ng-change="dashboard.refresh()" ng-options="c as c for c in dashboard.current.solr.core_list"></select></li>
+
 <li><a bs-tooltip="'Goto saved default'" data-placement="bottom" href='#/dashboard'><i class='icon-home'></i></a></li>
 
 <li class="dropdown" bs-tooltip="'Load'" data-placement="bottom" ng-show="showDropdown('load')" >

@@ -29,6 +29,40 @@ function (angular, _, config, moment) {
       });
     };
 
+    // Solr: returns a promise containing an array of all collections in the Solr server.
+    // param: solr_server (e.g. http://localhost:8983/solr/)
+    this.collections = function(solr_server) {
+      return all_collections(solr_server).then(function (p) {
+        return p;
+      });
+    }
+
+    // returns a promise containing an array of all collections in Solr
+    // param: solr_server (e.g. http://localhost:8983/solr/)
+    function all_collections(solr_server) {
+      var something = $http({
+        // Use Solr Admin handler to get the list of all collections.
+        // TODO: Need to test this with SolrCloud and LWS
+        url: solr_server + "admin/cores?action=STATUS&wt=json&omitHeader=true",
+        method: "GET"
+      }).error(function(data, status) {
+        alertSrv.set('Error',"Could not retrieve collections from Solr (error status = "+status+")");
+        console.debug('kbnIndex: error data = ',data);
+      });
+
+      return something.then(function (p) {
+        // Parse Solr response to an array of collections
+        var collections = [];
+
+        _.each(p.data.status, function(v,k) {
+          collections.push(k);
+        });
+
+        if (DEBUG) { console.debug('kbnIndex: all_collections response p = ',p,'collections = ',collections); }
+        return collections;
+      });
+    }
+
     // returns a promise containing an array of all indices in an elasticsearch
     // cluster
     function all_indices() {
