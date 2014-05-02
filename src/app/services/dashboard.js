@@ -28,6 +28,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       rows: [],
       services: {},
       loader: {
+        dropdown_collections: true,
         save_gist: false,
         save_elasticsearch: true,
         save_local: true,
@@ -171,6 +172,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         self.indices = [self.current.index.default];
         $rootScope.$broadcast('refresh');
       }
+
+      if (DEBUG) { console.debug('dashboard: after refresh',self); }
     };
 
     var dash_defaults = function(dashboard) {
