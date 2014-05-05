@@ -13,8 +13,7 @@ define([
   'app',
   'underscore',
   './leaflet/leaflet-src',
-  'require',
-
+  './leaflet/plugins',
   'css!./module.css',
   'css!./leaflet/leaflet.css',
   'css!./leaflet/plugins.css'
@@ -114,8 +113,7 @@ function (angular, app, _, L, localRequire) {
 
         var _segment = _.isUndefined(segment) ? 0 : segment;
 
-        var request;
-        request = $scope.sjs.Request().indices(dashboard.indices);
+        var request = $scope.sjs.Request().indices(dashboard.indices);
 
         $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
         // This could probably be changed to a BoolFilter
@@ -235,7 +233,7 @@ function (angular, app, _, L, localRequire) {
         var map, layerGroup;
 
         function render_panel() {
-          scope.require(['./leaflet/plugins'], function () {
+//          scope.require(['./leaflet/plugins'], function () {
             scope.panelMeta.loading = false;
 
             L.Icon.Default.imagePath = 'app/panels/bettermap/leaflet/images';
@@ -271,7 +269,7 @@ function (angular, app, _, L, localRequire) {
             layerGroup.addTo(map);
 
             map.fitBounds(_.pluck(scope.data,'coordinates'));
-          });
+//          });
         }
       }
     };
