@@ -13,7 +13,9 @@ define([
   'app',
   'underscore',
   './leaflet/leaflet-src',
-  './leaflet/plugins',
+  'require',
+  // './leaflet/plugins', // moving it here causing error in the app, fallback to the old Kibana way.
+  
   'css!./module.css',
   'css!./leaflet/leaflet.css',
   'css!./leaflet/plugins.css'
@@ -122,7 +124,7 @@ function (angular, app, _, L, localRequire) {
           boolQuery = boolQuery.should(querySrv.getEjsObj(id));
         });
 
-        var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
+        // var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
 
         request = request.query(
         $scope.sjs.FilteredQuery(
@@ -233,7 +235,7 @@ function (angular, app, _, L, localRequire) {
         var map, layerGroup;
 
         function render_panel() {
-//          scope.require(['./leaflet/plugins'], function () {
+          scope.require(['./leaflet/plugins'], function () {
             scope.panelMeta.loading = false;
 
             L.Icon.Default.imagePath = 'app/panels/bettermap/leaflet/images';
@@ -269,7 +271,7 @@ function (angular, app, _, L, localRequire) {
             layerGroup.addTo(map);
 
             map.fitBounds(_.pluck(scope.data,'coordinates'));
-//          });
+          });
         }
       }
     };
