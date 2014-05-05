@@ -1,0 +1,149 @@
+{
+  "title": "Welcome Syslog Demo",
+  "services": {
+    "query": {
+      "idQueue": [
+        1
+      ],
+      "list": {
+        "0": {
+          "query": "*:*",
+          "alias": "",
+          "color": "#7EB26D",
+          "id": 0,
+          "pin": false,
+          "type": "lucene"
+        }
+      },
+      "ids": [
+        0
+      ]
+    },
+    "filter": {
+      "idQueue": [
+        1
+      ],
+      "list": {
+        "0": {
+          "from": "2014-01-01T06:33:02.000Z",
+          "to": "2014-05-05T15:32:50.905Z",
+          "field": "event_timestamp",
+          "type": "time",
+          "mandate": "must",
+          "active": true,
+          "alias": "",
+          "id": 0
+        }
+      },
+      "ids": [
+        0
+      ]
+    }
+  },
+  "rows": [
+    {
+      "title": "Options",
+      "height": "50px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "title": "Set time span",
+          "error": "",
+          "span": 6,
+          "editable": true,
+          "group": [
+            "default"
+          ],
+          "type": "timepicker",
+          "mode": "since",
+          "time_options": [
+            "5m",
+            "15m",
+            "1h",
+            "6h",
+            "12h",
+            "24h",
+            "2d",
+            "7d",
+            "30d"
+          ],
+          "timespan": "24h",
+          "timefield": "event_timestamp",
+          "timeformat": "",
+          "refresh": {
+            "enable": false,
+            "interval": 600,
+            "min": 3
+          },
+          "filter_id": 0,
+          "status": "Stable",
+          "time": {
+            "from": "01/01/2014 08:33:02",
+            "to": "05/05/2014 17:32:50"
+          }
+        },
+        {
+          "error": false,
+          "span": 6,
+          "editable": true,
+          "type": "query",
+          "loadingEditor": false,
+          "query": "*:*",
+          "pinned": true,
+          "history": [
+            "error"
+          ],
+          "remember": 10,
+          "title": "Search",
+          "def_type": ""
+        }
+      ]
+    },
+    {
+      "title": "Multiseries Chart",
+      "height": "350px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "dummy",
+          "loadingEditor": false,
+          "foo": "bar"
+        }
+      ]
+    }
+  ],
+  "editable": true,
+  "failover": false,
+  "index": {
+    "interval": "none",
+    "pattern": "[logstash-]YYYY.MM.DD",
+    "default": "NO_TIME_FILTER_OR_INDEX_PATTERN_NOT_MATCHED"
+  },
+  "style": "light",
+  "panel_hints": true,
+  "loader": {
+    "save_gist": false,
+    "save_elasticsearch": true,
+    "save_local": true,
+    "save_default": true,
+    "save_temp": true,
+    "save_temp_ttl_enable": true,
+    "save_temp_ttl": "30d",
+    "load_gist": true,
+    "load_elasticsearch": true,
+    "load_elasticsearch_size": 20,
+    "load_local": true,
+    "hide": false
+  },
+  "solr": {
+    "server": "http://localhost:8983/solr/",
+    "core_name": "d3-sample"
+  }
+}
