@@ -52,7 +52,10 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       // }
       solr: {
         server: config.solr,
-        core_name: config.solr_core
+        core_name: config.solr_core,
+        global_params: ''
+        // deftype: 'lucene',
+        // df: 'df=message',
       }
     };
 
@@ -334,41 +337,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       });
     };
 
-    // this.elasticsearch_save = function(type,title,ttl) {
-    //   // Clone object so we can modify it without influencing the existing obejct
-    //   var save = _.clone(self.current);
-    //   var id;
-
-    //   // Change title on object clone
-    //   if (type === 'dashboard') {
-    //     id = save.title = _.isUndefined(title) ? self.current.title : title;
-    //   }
-
-    //   // Create request with id as title. Rethink this.
-    //   // TODO:
-    //   var request = ejs.Document(config.kibana_index,type,id).source({
-    //     user: 'guest',
-    //     group: 'guest',
-    //     title: save.title,
-    //     dashboard: angular.toJson(save)
-    //   });
-
-    //   request = type === 'temp' && ttl ? request.ttl(ttl) : request;
-
-    //   return request.doIndex(
-    //     // Success
-    //     function(result) {
-    //       if(type === 'dashboard') {
-    //         $location.path('/dashboard/elasticsearch/'+title);
-    //       }
-    //       return result;
-    //     },
-    //     // Failure
-    //     function() {
-    //       return false;
-    //     }
-    //   );
-    // };
     // TODO: Rename to solr_save
     this.elasticsearch_save = function(type,title,ttl) {
       // Clone object so we can modify it without influencing the existing obejct
@@ -379,9 +347,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       if (type === 'dashboard') {
         id = save.title = _.isUndefined(title) ? self.current.title : title;
       }
-
-      // DEBUG
-      // console.log('id for saving dashboard = '+id);
 
       // Create request with id as title. Rethink this.
       // Use id instead of _id, because it is the default field of Solr schema-less.
@@ -432,10 +397,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
     // Solr
     this.elasticsearch_list = function(query,count) {
-      // DEBUG
-      console.log('LINE 411: query = '+query);
-      console.log('LINE 412: count = '+count);
-
       // set indices and type
       sjs.client.server(config.solr + config.kibana_index);
       var request = sjs.Request().indices(config.kibana_index).types('dashboard');

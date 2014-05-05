@@ -24,6 +24,8 @@ define([
 function (angular, app, _, $) {
   'use strict';
 
+  var DEBUG = true; // DEBUG mode
+
   var module = angular.module('kibana.panels.map', []);
   app.useModule(module);
 
@@ -114,43 +116,24 @@ function (angular, app, _, $) {
       $scope.populate_modal(request);
 
       // Build Solr query
-      var start_time = new Date(filterSrv.list[0].from).toISOString();
-      var end_time = new Date(filterSrv.list[0].to).toISOString();
+      // var start_time = new Date(filterSrv.list[0].from).toISOString();
+      // var end_time = new Date(filterSrv.list[0].to).toISOString();
       // Get time field from filterSrv, is the time field always at list[0]?
-      var time_field = filterSrv.list[0].field;
-      var fq = '&fq=' + time_field + ':[' + start_time + '%20TO%20' + end_time + ']';  // Get timefield from filterSrv
-      var df = '&df=message';
+      // var time_field = filterSrv.list[0].field;
+      // var fq = '&fq=' + time_field + ':[' + start_time + '%20TO%20' + end_time + ']';  // Get timefield from filterSrv
+
+      var fq = '&' + filterSrv.getSolrFq();
+      // var df = '&df=message';
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0'; // for map module, we don't display results from row, but we use facets.
       // var facet_gap = '%2B1DAY';
       var facet = '&facet=true' +
                   '&facet.field=' + $scope.panel.field +
                   '&facet.limit=' + $scope.panel.size;
-      var filter_fq = '';
-      var filter_either = [];
-
-      // Apply filters to the query
-      _.each(filterSrv.list, function(v,k) {
-        // Skip the timestamp filter because it's already applied to the query using fq param.
-        // timestamp filter should be in k = 0
-        if (k > 0 && v.field != time_field && v.active) {
-          if (DEBUG) { console.log('terms: k=',k,' v=',v); }
-          if (v.mandate == 'must') {
-            filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
-          } else if (v.mandate == 'mustNot') {
-            filter_fq = filter_fq + '&fq=-' + v.field + ':"' + v.value + '"';
-          } else if (v.mandate == 'either') {
-            filter_either.push(v.field + ':"' + v.value + '"');
-          }
-        }
-      });
-      // parse filter_either array values, if exists
-      if (filter_either.length > 0) {
-        filter_fq = filter_fq + '&fq=(' + filter_either.join(' OR ') + ')';
-      }
 
       // Set the panel's query
-      $scope.panel.queries.query = 'q=' + querySrv.list[0].query + df + wt_json + fq + rows_limit + facet + filter_fq;
+      // $scope.panel.queries.query = 'q=' + querySrv.list[0].query + df + wt_json + fq + rows_limit + facet + filter_fq;
+      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + fq + rows_limit + facet;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
@@ -167,9 +150,18 @@ function (angular, app, _, $) {
       // Populate scope when we have results
       results.then(function(results) {
         $scope.panelMeta.loading = false;
+        $scope.data = {}; // empty the data for new results
+
         // $scope.hits = results.hits.total;
-        $scope.hits = results.response.numFound;
-        $scope.data = {};
+        if (results.response.numFound) {
+          $scope.hits = results.response.numFound;
+        } else {
+          // Undefined numFound or zero, clear the map.
+          $scope.$emit('render');
+          return false;
+        }
+
+        
         // _.each(results.facets.map.terms, function(v) {
         //   $scope.data[v.term.toUpperCase()] = v.count;
         // });
@@ -179,8 +171,18 @@ function (angular, app, _, $) {
 
         if ($scope.hits > 0) {
           for (var i=0; i < terms.length; i += 2) {
+            // Skip states with zero count to make them greyed out in the map.
             if (terms[i+1] > 0) {
-              $scope.data[terms[i]] = terms[i+1];
+              // if $scope.data[terms] is undefined, assign the value to it
+              // otherwise, we will add the value. This case can happen when
+              // the data contains both uppercase and lowercase state letters with
+              // duplicate states (e.g. CA and ca). By adding the value, the map will
+              // show correct counts for states with mixed-case letters.
+              if (!$scope.data[terms[i].toUpperCase()]) {
+                $scope.data[terms[i].toUpperCase()] = terms[i+1];
+              } else {
+                $scope.data[terms[i].toUpperCase()] += terms[i+1];
+              }
             }
           };
         }
@@ -195,7 +197,9 @@ function (angular, app, _, $) {
     };
 
     $scope.build_search = function(field,value) {
-      filterSrv.set({type:'querystring',mandate:'must',query:field+":"+value});
+      // Set querystring to both uppercase and lowercase state values with double-quote around the value
+      // to prevent query error from state=OR (Oregon)
+      filterSrv.set({type:'querystring',mandate:'must',query:field+':"'+value.toUpperCase()+'" OR '+field+':"'+value.toLowerCase()+'"'});
       dashboard.refresh();
     };
 

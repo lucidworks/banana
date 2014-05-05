@@ -44,7 +44,6 @@ define([
   'jquery.flot.stackpercent'
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
-
   'use strict';
 
   var DEBUG = true; // DEBUG mode
@@ -77,16 +76,14 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     // Set and populate defaults
     var _d = {
       mode        : 'count',
-      // time_field  : '@timestamp',
       time_field  : 'event_timestamp',
       queries     : {
         mode        : 'all',
         ids         : [],
-        query       : 'q=*:*',
+        query       : '*:*',
         custom      : ''
       },
-      max_rows    : 100000,  // maximum number of rows returned from Solr
-      // group_limit : 10000, // maximum number of results to return for each group (group.limit)
+      max_rows    : 100000,  // maximum number of rows returned from Solr (also use this for group.limit to simplify UI setting)
       value_field : null,
       group_field : null,
       auto_int    : true,
@@ -102,6 +99,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       stack       : true,
       points      : false,
       lines       : false,
+      lines_smooth: false, // Enable 'smooth line' mode by removing zero values from the plot.
       legend      : true,
       'x-axis'    : true,
       'y-axis'    : true,
@@ -115,16 +113,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
     _.defaults($scope.panel,_d);
-
-    // var chart_colors = [
-    //   "#7EB26D","#EAB839","#6ED0E0","#EF843C","#E24D42","#1F78C1","#BA43A9","#705DA0", //1
-    //   "#508642","#CCA300","#447EBC","#C15C17","#890F02","#0A437C","#6D1F62","#584477", //2
-    //   "#B7DBAB","#F4D598","#70DBED","#F9BA8F","#F29191","#82B5D8","#E5A8E2","#AEA2E0", //3
-    //   "#629E51","#E5AC0E","#64B0C8","#E0752D","#BF1B00","#0A50A1","#962D82","#614D93", //4
-    //   "#9AC48A","#F2C96D","#65C5DB","#F9934E","#EA6460","#5195CE","#D683CE","#806EB7", //5
-    //   "#3F6833","#967302","#2F575E","#99440A","#58140C","#052B51","#511749","#3F2B5B", //6
-    //   "#E0F9D7","#FCEACA","#CFFAFF","#F9E2D2","#FCE2DE","#BADFF4","#F9D9F9","#DEDAF7"  //7
-    // ];
 
     $scope.init = function() {
       // Hide view options by default
@@ -213,7 +201,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       if (DEBUG) {
-        console.log('histogram:\n\tdashboard=',dashboard,'\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv);
+        console.debug('histogram:\n\tdashboard=',dashboard,'\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv);
       }
 
       var request = $scope.sjs.Request().indices(dashboard.indices[segment]);
@@ -245,43 +233,20 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       $scope.populate_modal(request);
 
       // Build Solr query
-      // TODO: Validate dashboard.current.services.filter.list[0], what if it is not the timestamp field?
-      //       This will cause error.
-      var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
-      var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
-      var fq = '&fq=' + $scope.panel.time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
-      var df = '&df=message&df=host&df=path&df=type';
+      var fq = '&' + filterSrv.getSolrFq();
+      var time_field = filterSrv.getTimeField();
+      var start_time = filterSrv.getStartTime();
+      var end_time = filterSrv.getEndTime();
+
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0'; // for histogram, we do not need the actual response doc, so set rows=0
       var facet_gap = $scope.sjs.convertFacetGap($scope.panel.interval);
       var facet = '&facet=true' +
-                  '&facet.range=' + $scope.panel.time_field +
+                  '&facet.range=' + time_field +
                   '&facet.range.start=' + start_time + '/DAY' +
                   '&facet.range.end=' + end_time + '%2B1DAY/DAY' +
                   '&facet.range.gap=' + facet_gap;
-      var filter_fq = '';
-      var filter_either = [];
       var values_mode_query = '';
-
-      // Apply filters to the query
-      _.each(dashboard.current.services.filter.list, function(v,k) {
-        // Skip the timestamp filter because it's already applied to the query using fq param.
-        // timestamp filter should be in k = 0
-        if (k > 0 && v.field != $scope.panel.time_field && v.active) {
-          if (DEBUG) { console.log('terms: k=',k,' v=',v); }
-          if (v.mandate == 'must') {
-            filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
-          } else if (v.mandate == 'mustNot') {
-            filter_fq = filter_fq + '&fq=-' + v.field + ':"' + v.value + '"';
-          } else if (v.mandate == 'either') {
-            filter_either.push(v.field + ':"' + v.value + '"');
-          }
-        }
-      });
-      // parse filter_either array values, if exists
-      if (filter_either.length > 0) {
-        filter_fq = filter_fq + '&fq=(' + filter_either.join(' OR ') + ')';
-      }
 
       // For mode = value
       if($scope.panel.mode === 'values') {
@@ -296,16 +261,13 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         facet = '';
 
         // if Group By Field is specified
-        // if ($scope.panel.group_field && $scope.panel.group_limit) {
-        //   values_mode_query += '&group=true&group.field=' + $scope.panel.group_field + '&group.limit=' + $scope.panel.group_limit;
-        // }
         if ($scope.panel.group_field) {
           values_mode_query += '&group=true&group.field=' + $scope.panel.group_field + '&group.limit=' + $scope.panel.max_rows;
         }
       }
 
       // Set the panel's query
-      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + facet + filter_fq + values_mode_query;
+      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet + values_mode_query;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
@@ -345,7 +307,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       results.then(function(results) {
 
         if (DEBUG) {
-          console.log('histogram:\n\trequest='+request+'\n\tresults=',results);
+          console.debug('histogram:\n\trequest='+request+'\n\tresults=',results);
         }
 
         $scope.panelMeta.loading = false;
@@ -368,7 +330,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         var facetIds = [0]; // Need to fix this
 
         // Make sure we're still on the same query/queries
-        // TODO: We probably DON'T NEED THIS
+        // TODO: We probably DON'T NEED THIS unless we have to support multiple queries in query module.
         if($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
           var i = 0,
             time_series,
@@ -377,7 +339,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           _.each($scope.panel.queries.ids, function(id) {
             // var query_results = results.facets[id];
 
-            if (DEBUG) { console.log('histogram: i='+i+', results=',results,', segment=',segment,', $scope=',$scope); }
+            if (DEBUG) { console.debug('histogram: i=',i,', segment=',segment,', $scope=',$scope); }
 
             // we need to initialize the data variable on the first run,
             // and when we are working on the first segment of the data.
@@ -389,10 +351,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 fill_style: 'minimal'
               });
               hits = 0;
-              if (DEBUG) { console.log('\tfirst run: i='+i+', time_series=',time_series); }
+              if (DEBUG) { console.debug('\tfirst run: i='+i+', time_series=',time_series); }
             } else {
               if (DEBUG) {
-                console.log('\tNot first run: i='+i+', $scope.data[i].time_series=',$scope.data[i].time_series,', hits='+$scope.data[i].hits);
+                console.debug('\tNot first run: i='+i+', $scope.data[i].time_series=',$scope.data[i].time_series,', hits='+$scope.data[i].hits);
               }
               time_series = $scope.data[i].time_series;
               // Bug fix for wrong event count:
@@ -446,18 +408,19 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                     hits += 1;
                     $scope.hits += 1;
                   }
-                  // TESTING
-                  $scope.data[j] = {
-                  // info: querySrv.list[id],
-                  // Need to define chart info here according to the results, cannot use querySrv.list[id]
-                  info: {
-                    alias: groups[j].groupValue,
-                    color: querySrv.colors[j],
 
-                  },
-                  time_series: group_time_series,
-                  hits: hits
+                  $scope.data[j] = {
+                    // info: querySrv.list[id],
+                    // Need to define chart info here according to the results, cannot use querySrv.list[id]
+                    info: {
+                      alias: groups[j].groupValue,
+                      color: querySrv.colors[j],
+
+                    },
+                    time_series: group_time_series,
+                    hits: hits
                   };
+
                 }
               } else { // Group By Field is not specified
                 var entries = results.response.docs;
@@ -468,22 +431,20 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                   hits += 1;
                   $scope.hits += 1;
                 }
-                // TESTING
+                
                 $scope.data[i] = {
-                info: querySrv.list[id],
-                time_series: time_series,
-                hits: hits
+                  info: querySrv.list[id],
+                  time_series: time_series,
+                  hits: hits
                 };
               }
             }
-
-            if (DEBUG) { console.log('histogram: time_series=',time_series); }
             
             if ($scope.panel.mode !== 'values') {
               $scope.data[i] = {
-              info: querySrv.list[id],
-              time_series: time_series,
-              hits: hits
+                info: querySrv.list[id],
+                time_series: time_series,
+                hits: hits
               };
             }
 
@@ -664,6 +625,24 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             for (var i = 0; i < scope.data.length; i++) {
               scope.data[i].data = scope.data[i].time_series.getFlotPairs(required_times);
             }
+
+            // ISSUE: SOL-76
+            // If 'lines_smooth' is enabled, loop through $scope.data[] and remove zero filled entries.
+            // Without zero values, the line chart will appear smooth as SiLK ;-)
+            if (scope.panel.lines_smooth) {
+              for (var i=0; i < scope.data.length; i++) {
+                var new_data = [];
+                for (var j=0; j < scope.data[i].data.length; j++) {
+                  // if value of the timestamp !== 0, then add it to new_data
+                  if (scope.data[i].data[j][1] !== 0) {
+                    new_data.push(scope.data[i].data[j]);
+                  }
+                }
+                scope.data[i].data = new_data;
+              }
+            }
+            
+            console.debug('histogram:\n\tflot options = ',options,'\n\tscope.data = ',scope.data);
 
             scope.plot = $.plot(elem, scope.data, options);
           } catch(e) {

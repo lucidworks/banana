@@ -25,8 +25,8 @@
       ],
       "list": {
         "0": {
-          "from": "2014-04-01T07:47:30.228Z",
-          "to": "2014-04-02T07:47:30.228Z",
+          "from": "2014-01-01T06:33:02.000Z",
+          "to": "2014-04-29T06:33:11.352Z",
           "field": "event_timestamp",
           "type": "time",
           "mandate": "must",
@@ -57,7 +57,7 @@
             "default"
           ],
           "type": "timepicker",
-          "mode": "relative",
+          "mode": "since",
           "time_options": [
             "5m",
             "15m",
@@ -73,12 +73,16 @@
           "timefield": "event_timestamp",
           "timeformat": "",
           "refresh": {
-            "enable": true,
+            "enable": false,
             "interval": 600,
             "min": 3
           },
           "filter_id": 0,
-          "status": "Stable"
+          "status": "Stable",
+          "time": {
+            "from": "01/01/2014 08:33:02",
+            "to": "04/29/2014 08:33:11"
+          }
         },
         {
           "error": false,
@@ -155,7 +159,7 @@
           "max_rows": 100000,
           "auto_int": true,
           "resolution": 100,
-          "interval": "10m",
+          "interval": "1d",
           "fill": 3,
           "linewidth": 3,
           "timezone": "browser",
@@ -175,7 +179,7 @@
             "ids": [
               0
             ],
-            "query": "q=error&df=message&df=host&df=path&df=type&wt=json&rows=0&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&facet=true&facet.range=event_timestamp&facet.range.start=2014-04-01T07:47:30.228Z/DAY&facet.range.end=2014-04-02T07:47:30.228Z%2B1DAY/DAY&facet.range.gap=%2B10MINUTE",
+            "query": "q=error&wt=json&rows=0&fq=event_timestamp:[2014-01-01T06:33:02.000Z%20TO%202014-04-29T06:33:11.352Z]&facet=true&facet.range=event_timestamp&facet.range.start=2014-01-01T06:33:02.000Z/DAY&facet.range.end=2014-04-29T06:33:11.352Z%2B1DAY/DAY&facet.range.gap=%2B1DAY",
             "custom": ""
           },
           "title": "System Log Messages",
@@ -200,7 +204,7 @@
             "query_as_alias": false
           },
           "group_field": null,
-          "error": false
+          "lines_smooth": false
         },
         {
           "error": false,
@@ -213,7 +217,7 @@
             "ids": [
               0
             ],
-            "query": "q=error&df=message&df=host&df=path&df=type&wt=json&rows=0&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&facet=true&facet.field=syslog_program&facet.range=event_timestamp&facet.range.start=2014-04-01T07:47:30.228Z&facet.range.end=2014-04-02T07:47:30.228Z&facet.range.gap=%2B1DAY&facet.limit=10",
+            "query": "q=error&wt=json&rows=0&fq=event_timestamp:[2014-01-01T06:33:02.000Z%20TO%202014-04-29T06:33:11.352Z]&facet=true&facet.field=syslog_program&facet.range=event_timestamp&facet.range.start=2014-01-01T06:33:02.000Z&facet.range.end=2014-04-29T06:33:11.352Z&facet.range.gap=%2B1DAY&facet.limit=10",
             "custom": ""
           },
           "field": "syslog_program",
@@ -279,7 +283,7 @@
             "ids": [
               0
             ],
-            "query": "q=error&df=message&df=host&df=path&df=type&wt=json&rows=1000&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&sort=event_timestamp desc",
+            "query": "q=error&wt=json&rows=1000&fq=event_timestamp:[2014-01-01T06:33:02.000Z%20TO%202014-04-29T06:33:11.352Z]&sort=event_timestamp desc",
             "custom": ""
           },
           "field_list": true,
@@ -316,6 +320,6 @@
   },
   "solr": {
     "server": "http://localhost:8983/solr/",
-    "core_name": "logstash_logs"
+    "core_name": "logstash_logs_demo"
   }
 }
