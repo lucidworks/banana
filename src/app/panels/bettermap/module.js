@@ -14,7 +14,8 @@ define([
   'underscore',
   './leaflet/leaflet-src',
   'require',
-
+  // './leaflet/plugins', // moving it here causing error in the app, fallback to the old Kibana way.
+  
   'css!./module.css',
   'css!./leaflet/leaflet.css',
   'css!./leaflet/plugins.css'
@@ -114,8 +115,7 @@ function (angular, app, _, L, localRequire) {
 
         var _segment = _.isUndefined(segment) ? 0 : segment;
 
-        var request;
-        request = $scope.sjs.Request().indices(dashboard.indices);
+        var request = $scope.sjs.Request().indices(dashboard.indices);
 
         $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
         // This could probably be changed to a BoolFilter
@@ -124,7 +124,7 @@ function (angular, app, _, L, localRequire) {
           boolQuery = boolQuery.should(querySrv.getEjsObj(id));
         });
 
-        var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
+        // var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
 
         request = request.query(
         $scope.sjs.FilteredQuery(

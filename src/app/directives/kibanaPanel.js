@@ -41,9 +41,30 @@ function (angular) {
           '</span>' +
 
           '<span ng-repeat="task in panelMeta.modals" class="row-button extra" ng-show="task.show">' +
-            '<span bs-modal="task.partial" class="pointer"><i ' +
+            '<span bs-modal="task.partial"class="pointer"><i ' +
               'bs-tooltip="task.description" ng-class="task.icon" class="pointer"></i></span>'+
           '</span>' +
+
+          '<span class="dropdown row-button extra" bs-tooltip="\'Export\'" data-placement="bottom" ng-show="panelMeta.exportfile">' +
+            '<span class="pointer" class="dropdown-toggle" data-toggle="dropdown">' +
+                '<i class="icon-save" class="pointer"></i>' +
+            '</span>' +
+            '<ul class="dropdown-menu" style="padding:10px; left:-150px;">' +
+                '<li>' +
+                    '<h5>Export to File</h5>' +
+                        '<ul class="unstyled">' +
+                            '<li><a class="link" ng-click="exportfile(\'csv\')"><i class="icon-file"></i> CSV</a></li>' +
+                            '<li><a class="link" ng-click="exportfile(\'xml\')"><i class="icon-file"></i> XML</a></li>' +
+                            '<li><a class="link" ng-click="exportfile(\'json\')"><i class="icon-file"></i> JSON</a></li>' +
+                        '</ul>' +
+                '</li>' +
+            '</ul>' +
+          '</span>' +
+
+//          '<span ng-repeat="dropdown in panelMeta.dropdowns" class="row-button extra">' +
+//            '<span class="dropdown" data-placement="bottom" bs-tooltip="dropdown.description"><a href="#" class="dropdown-toggle" data-toggle="dropdown" bs-dropdown="dropdown.list"><i ' +
+//              'ng-class="dropdown.icon" class="pointer"></i></a></span>'+
+//          '</span>' +
 
           '<span class="row-button extra" ng-show="panelMeta.loading == true">' +
             '<span>'+

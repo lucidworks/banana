@@ -43,6 +43,32 @@ function (angular, app, _, kbn, moment) {
           show: $scope.panel.spyable
         }
       ],
+//      dropdowns : [
+//          {
+//              description: "Export",
+//              icon: "icon-save",
+//              list: [
+//                  {
+//                      "text": "<h5>Export to File</h5>"
+//                  },
+//                  {
+//                      "text" : "<i class='icon-download'></i> csv format",
+//                      "href": "",
+//                      "click": "exportfile('csv')"
+//                  },
+//                  {
+//                      "text": "<i class='icon-download'></i> json format",
+//                      "href": "",
+//                      "click": "exportfile('json')"
+//                  },
+//                  {
+//                      "text": "<i class='icon-download'></i> xml format",
+//                      "href": "",
+//                      "click": "exportfile('xml')"
+//                  }
+//              ]
+//          }
+//      ],
       editorTabs : [
         {
           title:'Paging',
@@ -53,6 +79,7 @@ function (angular, app, _, kbn, moment) {
           src: 'app/partials/querySelect.html'
         }
       ],
+      exportfile: true,
       status: "Stable",
       description: "A paginated table of records matching your query or queries. Click on a row to "+
         "expand it and review all of the fields associated with that document. <p>"
@@ -65,6 +92,7 @@ function (angular, app, _, kbn, moment) {
         mode        : 'all',
         ids         : [],
         query       : '*:*',
+        basic_query : '',
         custom      : ''
       },
       size    : 100, // Per page
@@ -83,7 +111,8 @@ function (angular, app, _, kbn, moment) {
       trimFactor: 300,
       normTimes : true,
       spyable : true,
-      time_field : 'event_timestamp'
+      time_field : 'event_timestamp',
+      saveOption : 'json'
     };
     _.defaults($scope.panel,_d);
 
@@ -217,7 +246,7 @@ function (angular, app, _, kbn, moment) {
         .size($scope.panel.size*$scope.panel.pages) // Set the size of query result
         .sort($scope.panel.sort[0],$scope.panel.sort[1]);
 
-      $scope.populate_modal(request);
+      $scope.panel_request = request;
 
       if (DEBUG) { console.debug('table:\n\trequest=',request,'\n\trequest.toString()=',request.toString()); }
 
@@ -239,7 +268,8 @@ function (angular, app, _, kbn, moment) {
       }
 
       // Set the panel's query
-      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + sorting;
+      $scope.panel.queries.basic_query = querySrv.getQuery(0) + fq + sorting + rows_limit;
+      $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json;
 
       if (DEBUG) { console.debug('table: query=',$scope.panel.queries.query); }
 
@@ -308,6 +338,35 @@ function (angular, app, _, kbn, moment) {
           if (DEBUG) { console.debug('\tnot sorting in reverse chrono order!'); }
         }
 
+      });
+    };
+
+    $scope.exportfile = function(filetype) {
+      var omitHeader = '&omitHeader=true';
+      var exportQuery = $scope.panel.queries.basic_query + '&wt=' + filetype + omitHeader;
+      var request = $scope.panel_request;
+      request = request.setQuery(exportQuery);
+      var response = request.doSearch();
+
+      response.then(function(response) {
+          var blob; // the file to be written
+          // TODO: manipulating solr requests
+          // pagination (batch downloading)
+          // example: 1,000,000 rows will explode the memory !
+          if(filetype === 'json') {
+              blob = new Blob([angular.toJson(response,true)], {type: "application/json;charset=utf-8"});
+          } else if(filetype === 'csv') {
+              blob = new Blob([response.toString()], {type: "text/csv;charset=utf-8"});
+          } else if(filetype === 'xml'){
+              blob = new Blob([response.toString()], {type: "application/xml;charset=utf-8"});
+          } else {
+              // incorrect file type
+              alert('incorrect file type');
+              return false;
+          }
+          // from filesaver.js
+          window.saveAs(blob, "table"+"-"+new Date().getTime()+"."+filetype);
+          return true;
       });
     };
 
