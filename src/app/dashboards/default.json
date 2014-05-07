@@ -175,7 +175,7 @@
             "ids": [
               0
             ],
-            "query": "q=error&df=message&df=host&df=path&df=type&wt=json&rows=0&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&facet=true&facet.range=event_timestamp&facet.range.start=2014-04-01T07:47:30.228Z/DAY&facet.range.end=2014-04-02T07:47:30.228Z%2B1DAY/DAY&facet.range.gap=%2B10MINUTE",
+            "query": "q=error&wt=json&rows=0&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&facet=true&facet.range=event_timestamp&facet.range.start=2014-04-01T07:47:30.228Z/DAY&facet.range.end=2014-04-02T07:47:30.228Z%2B1DAY/DAY&facet.range.gap=%2B10MINUTE",
             "custom": ""
           },
           "title": "System Log Messages",
@@ -213,7 +213,7 @@
             "ids": [
               0
             ],
-            "query": "q=error&df=message&df=host&df=path&df=type&wt=json&rows=0&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&facet=true&facet.field=syslog_program&facet.range=event_timestamp&facet.range.start=2014-04-01T07:47:30.228Z&facet.range.end=2014-04-02T07:47:30.228Z&facet.range.gap=%2B1DAY&facet.limit=10",
+            "query": "q=error&wt=json&rows=0&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&facet=true&facet.field=syslog_program&facet.range=event_timestamp&facet.range.start=2014-04-01T07:47:30.228Z&facet.range.end=2014-04-02T07:47:30.228Z&facet.range.gap=%2B1DAY&facet.limit=10",
             "custom": ""
           },
           "field": "syslog_program",
@@ -279,7 +279,7 @@
             "ids": [
               0
             ],
-            "query": "q=error&df=message&df=host&df=path&df=type&wt=json&rows=1000&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&sort=event_timestamp desc",
+            "query": "q=error&wt=json&rows=1000&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&sort=event_timestamp desc",
             "custom": ""
           },
           "field_list": true,
@@ -301,6 +301,7 @@
   "style": "light",
   "panel_hints": true,
   "loader": {
+    "dropdown_collections": false,
     "save_gist": false,
     "save_elasticsearch": true,
     "save_local": true,
@@ -316,6 +317,8 @@
   },
   "solr": {
     "server": "http://localhost:8983/solr/",
-    "core_name": "logstash_logs"
+    "core_name": "logstash_logs",
+    "core_list": [],
+    "global_params": "&df=message"
   }
 }

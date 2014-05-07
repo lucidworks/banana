@@ -28,7 +28,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       rows: [],
       services: {},
       loader: {
-        dropdown_collections: true,
+        dropdown_collections: false,
         save_gist: false,
         save_elasticsearch: true,
         save_local: true,

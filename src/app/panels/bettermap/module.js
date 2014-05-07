@@ -115,7 +115,7 @@ function (angular, app, _, L, localRequire) {
 
         var _segment = _.isUndefined(segment) ? 0 : segment;
 
-        var request = $scope.sjs.Request().indices(dashboard.indices);
+        // var request = $scope.sjs.Request().indices(dashboard.indices);
 
         $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
         // This could probably be changed to a BoolFilter
@@ -124,7 +124,7 @@ function (angular, app, _, L, localRequire) {
           boolQuery = boolQuery.should(querySrv.getEjsObj(id));
         });
 
-        // var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
+        var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
 
         request = request.query(
         $scope.sjs.FilteredQuery(
@@ -144,6 +144,7 @@ function (angular, app, _, L, localRequire) {
         var query_size = $scope.panel.size;
         var wt_json = '&wt=json';
         var rows_limit;
+        var sorting = '&sort=' + filterSrv.getTimeField() + ' desc'; // Only get the latest data, sorted by time field.
         
         // set the size of query result
         if (query_size !== undefined && query_size !== 0) {
@@ -157,7 +158,7 @@ function (angular, app, _, L, localRequire) {
         }
 
         // Set the panel's query
-        $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq;
+        $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + sorting;
 
         // Set the additional custom query
         if ($scope.panel.queries.custom != null) {
