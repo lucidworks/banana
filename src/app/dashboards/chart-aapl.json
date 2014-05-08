@@ -26,7 +26,7 @@
       "list": {
         "0": {
           "from": "2011-01-01T06:33:02.000Z",
-          "to": "2014-05-08T08:57:53.848Z",
+          "to": "2014-05-08T12:48:49.917Z",
           "field": "timestamp",
           "type": "time",
           "mandate": "must",
@@ -81,7 +81,7 @@
           "status": "Stable",
           "time": {
             "from": "01/01/2011 08:33:02",
-            "to": "05/08/2014 10:57:53"
+            "to": "05/08/2014 14:48:49"
           }
         },
         {
@@ -119,13 +119,13 @@
             "ids": [
               0
             ],
-            "query": "q=*:*&fq=timestamp:[2011-01-01T06:33:02.000Z%20TO%202014-05-08T08:57:53.848Z]&fl=date,timestamp,austin,new_york,san_francisco&wt=json&rows=1000",
+            "query": "q=*:*&fq=timestamp:[2011-01-01T06:33:02.000Z%20TO%202014-05-08T12:48:49.917Z]&fl=date,timestamp,austin,new_york,san_francisco&wt=json&rows=1000",
             "custom": ""
           },
           "size": 1000,
           "spyable": true,
           "field": "timestamp",
-          "fl": "austin,new_york,san_francisco"
+          "fl": "open,low,high,close"
         }
       ]
     },
@@ -172,6 +172,6 @@
   },
   "solr": {
     "server": "http://localhost:8983/solr/",
-    "core_name": "d3-sample-time"
+    "core_name": "aapl"
   }
 }
