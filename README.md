@@ -129,10 +129,11 @@ __Q__ : Can I use banana for non-time series data?
 __A__: Currently, we are focused on time series data and the dashboards will not work correctly without a time picker and without configuring the time field in the terms, histogram and table panels.  However, many of our users apply the following workaround:
 
 1. Store a timestamp field indicating the indexing time of the document (or last modified time).
-2. Create a time picker panel in its own row and move the row to the bottom
+2. Create a _timepicker_ panel in its own row and move the row to the bottom
 3. In the in the _timepicker_, select the time field to be the one representing indexing time or last modified time.
-4. Set the date range to be "Since 01/01/2000" (or starting even earlier if necessary). 
-5. Use the same time field in the other panels, such as the _terms_ panels, and you can get beautiful visualizations of non time-series data.
+4. Set the date range to be "Since 01/01/2000" (or starting even earlier if necessary). Fundamentally, choose a time range that is long enough to encompass the entire data set.
+5. Hide the row containing the _timepicker_. It will not be changed...
+5. Use the same time field in the other panels, such as the _terms_ panel, and you can get beautiful visualizations of non time-series data.
 
 ### Support
 
