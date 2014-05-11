@@ -1,13 +1,16 @@
 {
-  "title": "Welcome Syslog Demo",
+  "title": "Basic Dashboard With Pointers",
   "services": {
     "query": {
       "idQueue": [
-        1
+        1,
+        2,
+        3,
+        4
       ],
       "list": {
         "0": {
-          "query": "error",
+          "query": "*",
           "alias": "",
           "color": "#7EB26D",
           "id": 0,
@@ -21,12 +24,13 @@
     },
     "filter": {
       "idQueue": [
-        1
+        1,
+        2
       ],
       "list": {
         "0": {
-          "from": "2014-04-01T07:47:30.228Z",
-          "to": "2014-04-02T07:47:30.228Z",
+          "from": "2014-04-02T05:07:22.216Z",
+          "to": "2014-04-02T05:22:22.216Z",
           "field": "event_timestamp",
           "type": "time",
           "mandate": "must",
@@ -42,21 +46,54 @@
   },
   "rows": [
     {
-      "title": "Options",
+      "title": "Overview",
       "height": "50px",
       "editable": true,
       "collapse": false,
       "collapsable": true,
       "panels": [
         {
-          "title": "Set time span",
-          "error": "",
+          "error": false,
+          "span": 6,
+          "editable": true,
+          "type": "text",
+          "loadingEditor": false,
+          "status": "Stable",
+          "mode": "markdown",
+          "content": "You may be seeing a message that says Solr is not reachable or that the collection is not found. Click on _Configure Dashboard_ (cog icon) on the top right and set the Solr server and collection. By default, we have configured the dashboard to point to server _http://localhost:8983_ and collection _collection1_. You can also choose how many rows you want to have in the dashboard. \n\nTo configure what panels appear in a specific row, click on the _Configure Row_  (cog icon) at the far left of the row.\n\nEach panel can be configured by clicking on _Configure_ (cog icon) near the top right of the panel (just to the left of the panel type). The span of the panel determines its width; each row has width 12, and each panel can take up all or part of this span.\n\nAfter reading these _text panels_ (which are useful for presenting information about a dashboard), you can delete them by clicking on the \"x\" towards the top right of the panel.",
+          "style": {},
+          "title": "Configure Dashboard"
+        },
+        {
+          "error": false,
           "span": 6,
           "editable": true,
           "group": [
             "default"
           ],
+          "type": "text",
+          "status": "Stable",
+          "mode": "markdown",
+          "content": "In the row below, we have put in a _time picker_ and a _search bar._ Banana is primarily designed for time series data, and we expect every dashboard to have a time picker. You will also almost always have a search bar for user searches. \n\nBelow that there is a hidden row that contains a _filtering_ module, which is used to configure global filter queries. You will almost certainly want to have one. Clicking on any facet in the terms module will filter results by that value. You can modify each filter once it is created; you can change the value and/or choose between \"must\", \"must not\" and \"either.\"\n\nClick on the right-facing triangle to the far left of the row to _Expand Row_. You can click on the upward-facing triangle on any row in order to _Hide Row._",
+          "style": {},
+          "title": "Timestamps, Queries and Filters"
+        }
+      ]
+    },
+    {
+      "title": "Query and Time Window",
+      "height": "50px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": "",
+          "span": 6,
+          "editable": true,
           "type": "timepicker",
+          "loadingEditor": false,
+          "status": "Stable",
           "mode": "relative",
           "time_options": [
             "5m",
@@ -67,60 +104,45 @@
             "24h",
             "2d",
             "7d",
-            "30d"
+            "30d",
+            "90d",
+            "1y",
+            "5y"
           ],
-          "timespan": "24h",
+          "timespan": "15m",
           "timefield": "event_timestamp",
           "timeformat": "",
           "refresh": {
-            "enable": true,
-            "interval": 600,
+            "enable": false,
+            "interval": 30,
             "min": 3
           },
           "filter_id": 0,
-          "status": "Stable"
+          "title": "Time Window"
         },
         {
           "error": false,
           "span": 6,
           "editable": true,
+          "group": [
+            "default"
+          ],
           "type": "query",
-          "loadingEditor": false,
-          "query": "*:*",
-          "pinned": true,
+          "label": "Search",
           "history": [
-            "error"
+            "*"
           ],
           "remember": 10,
+          "pinned": true,
+          "query": "*",
           "title": "Search",
           "def_type": ""
         }
       ]
     },
     {
-      "title": "",
-      "height": "100px",
-      "editable": true,
-      "collapse": false,
-      "collapsable": true,
-      "panels": [
-        {
-          "error": false,
-          "span": 12,
-          "editable": true,
-          "type": "text",
-          "loadingEditor": false,
-          "status": "Stable",
-          "mode": "markdown",
-          "content": "This is the demonstration dashboard for Banana, a port of Kibana for Solr. This points to a collection called logstash\\_logs. If you followed the QuickStart instructions provided by the Solr Output Writer for LogStash, you will see example data here. \n\nTo build your own dashboards, first get time series data into a collection. Then you can begin with this dashboard and configure it to fit your needs.",
-          "style": {},
-          "title": "Welcome to Banana"
-        }
-      ]
-    },
-    {
-      "title": "Filter",
-      "height": "150px",
+      "title": "Filters",
+      "height": "50px",
       "editable": true,
       "collapse": true,
       "collapsable": true,
@@ -129,15 +151,39 @@
           "error": false,
           "span": 12,
           "editable": true,
-          "type": "filtering",
-          "loadingEditor": false,
-          "title": "Filter"
+          "group": [
+            "default"
+          ],
+          "type": "filtering"
+        }
+      ]
+    },
+    {
+      "title": "Facets, Histogram and Table",
+      "height": "150px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "group": [
+            "default"
+          ],
+          "type": "text",
+          "status": "Stable",
+          "mode": "markdown",
+          "content": "Without knowing about your data, I cannot fully configure the panels I have provided below. However, I have provided you with some starting points, assuming that your time field is \"event_timestamp\" and that there is a field called \"message\" that you wish to facet on in order to view the top terms that appear in the \"message\" field and their frequency. If there is no data, these panels will be empty, and may give an error.\n\nThe _histogram_ panel allows you to plot either _counts_ or a specific field's (integer) _values_ across time. If you go to  _Configure_, the panel allows you to set the type of chart and what variable is plotted (if choosing the _values_ option). Moreover, when plotting values, you can specify a _group by_ field which will produce multiple charts. You can modify the time window for the entire page from within the histogram panel.\n\nThe _terms_ panel is great for visualizing facets--as pie charts, bar charts or tables. Clicking on a term will create a global filter query restricting the result set (across all panels within the page) to the field value that is selected. You could have many such panels depending on the number of fields you choose to facet on.\n\nThe *table* panel at the bottom provides you a detailed view of search results. It has attempted to list your fields to the left; select a few to view them in the table. You can sort by any field. Click on a particular row to expand the resulting document that was returned.",
+          "style": {},
+          "title": "Facets, Histogram and Table"
         }
       ]
     },
     {
       "title": "Graph",
-      "height": "350px",
+      "height": "250px",
       "editable": true,
       "collapse": false,
       "collapsable": true,
@@ -145,40 +191,24 @@
         {
           "span": 6,
           "editable": true,
-          "group": [
-            "default"
-          ],
           "type": "histogram",
+          "loadingEditor": false,
           "mode": "count",
           "time_field": "event_timestamp",
-          "value_field": null,
-          "max_rows": 100000,
-          "auto_int": true,
-          "resolution": 100,
-          "interval": "10m",
-          "fill": 3,
-          "linewidth": 3,
-          "timezone": "browser",
-          "spyable": true,
-          "zoomlinks": true,
-          "bars": true,
-          "stack": true,
-          "points": false,
-          "lines": false,
-          "legend": true,
-          "x-axis": true,
-          "y-axis": true,
-          "percentage": false,
-          "interactive": true,
           "queries": {
             "mode": "all",
             "ids": [
               0
             ],
-            "query": "q=error&wt=json&rows=0&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&facet=true&facet.range=event_timestamp&facet.range.start=2014-04-01T07:47:30.228Z/DAY&facet.range.end=2014-04-02T07:47:30.228Z%2B1DAY/DAY&facet.range.gap=%2B10MINUTE",
+            "query": "q=*&wt=json&rows=0&fq=event_timestamp:[2014-04-02T05:07:22.000Z%20TO%202014-04-02T05:22:22.000Z]&facet=true&facet.range=event_timestamp&facet.range.start=2014-04-02T05:07:22.000Z/DAY&facet.range.end=2014-04-02T05:22:22.000Z%2B1DAY/DAY&facet.range.gap=%2B10SECOND",
             "custom": ""
           },
-          "title": "System Log Messages",
+          "max_rows": 100000,
+          "value_field": null,
+          "group_field": null,
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "10s",
           "intervals": [
             "auto",
             "1s",
@@ -194,58 +224,71 @@
             "1M",
             "1y"
           ],
+          "fill": 0,
+          "linewidth": 3,
+          "timezone": "browser",
+          "spyable": true,
+          "zoomlinks": true,
+          "bars": true,
+          "stack": true,
+          "points": false,
+          "lines": false,
+          "legend": true,
+          "x-axis": true,
+          "y-axis": true,
+          "percentage": false,
+          "interactive": true,
           "options": true,
           "tooltip": {
             "value_type": "cumulative",
             "query_as_alias": false
           },
-          "group_field": null,
-          "error": false
+          "title": "Event Counts"
         },
         {
           "error": false,
           "span": 6,
           "editable": true,
+          "group": [
+            "default"
+          ],
           "type": "terms",
-          "loadingEditor": false,
           "queries": {
             "mode": "all",
             "ids": [
               0
             ],
-            "query": "q=error&wt=json&rows=0&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&facet=true&facet.field=syslog_program&facet.range=event_timestamp&facet.range.start=2014-04-01T07:47:30.228Z&facet.range.end=2014-04-02T07:47:30.228Z&facet.range.gap=%2B1DAY&facet.limit=10",
-            "custom": ""
+            "query": "q=*&wt=json&rows=0&fq=event_timestamp:[2014-04-02T05:07:22.000Z%20TO%202014-04-02T05:22:22.000Z]&facet=true&facet.field=message&facet.range=event_timestamp&facet.range.start=2014-04-02T05:07:22.000Z&facet.range.end=2014-04-02T05:22:22.000Z&facet.range.gap=%2B1DAY&facet.limit=100"
           },
-          "field": "syslog_program",
+          "field": "message",
           "exclude": [],
-          "missing": true,
-          "other": true,
-          "size": 10,
+          "missing": false,
+          "other": false,
+          "size": 100,
           "order": "count",
           "style": {
             "font-size": "10pt"
           },
           "donut": true,
           "tilt": true,
-          "labels": true,
+          "labels": false,
           "arrangement": "horizontal",
           "chart": "pie",
           "counter_pos": "none",
+          "title": "Message Terms",
           "spyable": true,
-          "title": "Programs",
           "time_field": "event_timestamp"
         }
       ]
     },
     {
       "title": "Events",
-      "height": "350px",
+      "height": "650px",
       "editable": true,
       "collapse": false,
       "collapsable": true,
       "panels": [
         {
-          "title": "All events",
           "error": false,
           "span": 12,
           "editable": true,
@@ -253,11 +296,11 @@
             "default"
           ],
           "type": "table",
-          "size": 10,
-          "pages": 100,
+          "size": 100,
+          "pages": 5,
           "offset": 0,
           "sort": [
-            "event_timestamp",
+            "id",
             "desc"
           ],
           "style": {
@@ -265,8 +308,6 @@
           },
           "overflow": "min-height",
           "fields": [
-            "event_timestamp",
-            "syslog_program",
             "message"
           ],
           "highlight": [],
@@ -279,29 +320,28 @@
             "ids": [
               0
             ],
-            "query": "q=error&wt=json&rows=1000&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&sort=event_timestamp desc",
-            "custom": ""
+            "query": "q=*&wt=json&rows=500&fq=event_timestamp:[2014-04-02T05:07:22.000Z%20TO%202014-04-02T05:22:22.000Z]&sort=id desc"
           },
           "field_list": true,
           "status": "Stable",
           "trimFactor": 300,
           "normTimes": true,
+          "title": "Events",
           "time_field": "event_timestamp"
         }
       ]
     }
   ],
   "editable": true,
-  "failover": false,
   "index": {
     "interval": "none",
     "pattern": "[logstash-]YYYY.MM.DD",
-    "default": "NO_TIME_FILTER_OR_INDEX_PATTERN_NOT_MATCHED"
+    "default": "_all"
   },
   "style": "light",
+  "failover": false,
   "panel_hints": true,
   "loader": {
-    "dropdown_collections": false,
     "save_gist": false,
     "save_elasticsearch": true,
     "save_local": true,
@@ -317,7 +357,7 @@
   },
   "solr": {
     "server": "http://localhost:8983/solr/",
-    "core_name": "logstash_logs",
+    "core_name": "collection1",
     "core_list": [],
     "global_params": "&df=message"
   }
