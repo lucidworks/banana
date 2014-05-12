@@ -22,12 +22,14 @@ function (angular, _) {
     };
 
     $scope.showDropdown = function(type) {
-      var _l = $scope.loader;
+      // var _l = $scope.loader;
+      var _l = dashboard.current.loader || $scope.loader;
+
       if(type === 'load') {
         return (_l.load_elasticsearch || _l.load_gist || _l.load_local);
       }
       if(type === 'save') {
-        return (_l.save_elasticsearch || _l.save_gist || _l.local_local || _l.save_default);
+        return (_l.save_elasticsearch || _l.save_gist || _l.save_local || _l.save_default);
       }
       if(type === 'share') {
         return (_l.save_temp);
@@ -58,13 +60,8 @@ function (angular, _) {
         ($scope.loader.save_temp_ttl_enable ? ttl : false)
       ).then(
         function(result) {
-        if (DEBUG) {
-          console.log('result = ',result);
-        }
+        if (DEBUG) { console.debug('dashLoader: result = ',result); }
 
-        // if(!_.isUndefined(result._id)) {          
-        //   alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
-        //     result._id + '"','success',5000);
         // Solr
         if(!_.isUndefined(result.response.docs[0].id)) {
         alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
@@ -102,13 +99,8 @@ function (angular, _) {
     $scope.elasticsearch_dblist = function(query) {
       dashboard.elasticsearch_list(query,$scope.loader.load_elasticsearch_size).then(
         function(result) {
-          // DEBUG
-          console.debug("dashLoader : result=",result);
+        if (DEBUG) { console.debug("dashLoader: result=",result); }
 
-        // if(!_.isUndefined(result.hits)) {
-        //   $scope.hits = result.hits.total;
-        //   $scope.elasticsearch.dashboards = result.hits.hits;
-        // }
         // Solr
         if (!_.isUndefined(result.response.docs)) {
           $scope.hits = result.response.numFound;

@@ -28,10 +28,6 @@ function (angular, _) {
         } else {
           self.list = mapFields(_.pick(self.mapping,n));
         }
-        // DEBUG
-        // console.log("indices: "+indices.toString());
-        // console.log("mapping:");console.log(self.mapping);
-        // console.log("list:"); console.log(self.list);
       }
     });
 
@@ -76,8 +72,6 @@ function (angular, _) {
     //   }
 
     this.map = function(indices) {
-      // delete $http.defaults.headers.common['X-Requested-With'];
-
       var request = $http({
         // Query ES to get mapping fields
         // url: config.elasticsearch + "/" + indices.join(',') + "/_mapping",

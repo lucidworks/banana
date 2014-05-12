@@ -11,8 +11,7 @@ define([
 function (angular, $, kbn, _, config, moment, Modernizr) {
   'use strict';
 
-  // DEBUG mode
-  var DEBUG = false;
+  var DEBUG = false; // DEBUG mode
 
   var module = angular.module('kibana.services');
 
@@ -29,8 +28,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       rows: [],
       services: {},
       loader: {
+        dropdown_collections: false,
         save_gist: false,
-        save_elasticsearch: true,  // TODO: Remove it
+        save_elasticsearch: true,
         save_local: true,
         save_default: true,
         save_temp: true,
@@ -43,16 +43,15 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         hide: false
       },
       index: {
-        interval: 'none',
+        interval: 'none', // this will always be none because we disable 'Index Settings' tab in dasheditor.html
         pattern: '_all',  // TODO: Remove it
         default: 'INDEX_MISSING'
       },
-      // collection: {
-      //   name: config.solr_collection
-      // }
       solr: {
         server: config.solr,
-        core_name: config.solr_core
+        core_name: config.solr_core,
+        core_list: [],
+        global_params: ''
       }
     };
 
@@ -123,12 +122,25 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     // Since the dashboard is responsible for index computation, we can compute and assign the indices
     // here before telling the panels to refresh
     this.refresh = function() {
+      // Retrieve Solr collections for the dashboard
+      kbnIndex.collections(self.current.solr.server).then(function (p) {
+        if (DEBUG) { console.debug('dashboard: kbnIndex.collections p = ',p); }
+        if (p.length > 0) {
+          self.current.solr.core_list = p;
+        } else {
+          // No collections returned from Solr
+          alertSrv.set('No collections','There were no collections returned from Solr.','info',5000);
+        }
+      });
+
       if(self.current.index.interval !== 'none') {
         if(filterSrv.idsByType('time').length > 0) {
           var _range = filterSrv.timeRange('min');
           kbnIndex.indices(_range.from,_range.to,
             self.current.index.pattern,self.current.index.interval
           ).then(function (p) {
+            if (DEBUG) { console.debug('dashboard: p = ',p); }
+
             if(p.length > 0) {
               self.indices = p;
             } else {
@@ -143,6 +155,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
                 return false;
               }
             }
+            
             $rootScope.$broadcast('refresh');
           });
         } else {
@@ -159,6 +172,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         self.indices = [self.current.index.default];
         $rootScope.$broadcast('refresh');
       }
+
+      if (DEBUG) { console.debug('dashboard: after refresh',self); }
     };
 
     var dash_defaults = function(dashboard) {
@@ -334,41 +349,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       });
     };
 
-    // this.elasticsearch_save = function(type,title,ttl) {
-    //   // Clone object so we can modify it without influencing the existing obejct
-    //   var save = _.clone(self.current);
-    //   var id;
-
-    //   // Change title on object clone
-    //   if (type === 'dashboard') {
-    //     id = save.title = _.isUndefined(title) ? self.current.title : title;
-    //   }
-
-    //   // Create request with id as title. Rethink this.
-    //   // TODO:
-    //   var request = ejs.Document(config.kibana_index,type,id).source({
-    //     user: 'guest',
-    //     group: 'guest',
-    //     title: save.title,
-    //     dashboard: angular.toJson(save)
-    //   });
-
-    //   request = type === 'temp' && ttl ? request.ttl(ttl) : request;
-
-    //   return request.doIndex(
-    //     // Success
-    //     function(result) {
-    //       if(type === 'dashboard') {
-    //         $location.path('/dashboard/elasticsearch/'+title);
-    //       }
-    //       return result;
-    //     },
-    //     // Failure
-    //     function() {
-    //       return false;
-    //     }
-    //   );
-    // };
     // TODO: Rename to solr_save
     this.elasticsearch_save = function(type,title,ttl) {
       // Clone object so we can modify it without influencing the existing obejct
@@ -379,9 +359,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       if (type === 'dashboard') {
         id = save.title = _.isUndefined(title) ? self.current.title : title;
       }
-
-      // DEBUG
-      // console.log('id for saving dashboard = '+id);
 
       // Create request with id as title. Rethink this.
       // Use id instead of _id, because it is the default field of Solr schema-less.
@@ -396,8 +373,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
       request = type === 'temp' && ttl ? request.ttl(ttl) : request;
 
-      // Solr
-      // set sjs.client.server to use 'kibana-int' for saving dashboard
+      // Solr: set sjs.client.server to use 'kibana-int' for saving dashboard
       sjs.client.server(config.solr + config.kibana_index);
 
       return request.doIndex(
@@ -432,10 +408,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
     // Solr
     this.elasticsearch_list = function(query,count) {
-      // DEBUG
-      console.log('LINE 411: query = '+query);
-      console.log('LINE 412: count = '+count);
-
       // set indices and type
       sjs.client.server(config.solr + config.kibana_index);
       var request = sjs.Request().indices(config.kibana_index).types('dashboard');

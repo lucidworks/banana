@@ -8881,9 +8881,7 @@
         // Otherwise, SolrException "Unknown Command" will occur.
         params.source = [params.source];
 
-        if (DEBUG) {
-          console.log('solrjs: params.source = ',params.source);
-        }
+        if (DEBUG) { console.debug('solrjs: params.source = ',params.source); }
 
         var url = '/update?commit=true',
           data = JSON.stringify(params.source),
@@ -8898,9 +8896,7 @@
           url = url + '?' + paramStr;
         }
         
-        if (DEBUG) {
-          console.log('solrjs: url='+url+', data=',data);
-        }
+        if (DEBUG) { console.debug('solrjs: url=',url,', data=',data); }
 
         // // do post if id not set so one is created
         // if (id == null) {

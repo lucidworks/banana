@@ -1,6 +1,7 @@
   <div class="row-fluid">
     <div class="span2">
       <label class="small">Mode</label>
+      <!-- Banana: does not support 'min','mean','max', and 'total' modes yet -->
       <!-- <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['count','min','mean','max','total','value']"></select> -->
       <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['count','values']"></select>
     </div>
@@ -32,6 +33,7 @@
       <input ng-change="set_refresh(true)" placeholder="10" type="number" class="input-small" ng-model="panel.group_limit">
     </div> -->
   </div>
+
   <h5>Chart Settings</h5>
   <div class="row-fluid" style="text-align:center;margin-bottom:10px;">
     <div class="span1"> <label class="small">Bars</label><input type="checkbox" ng-model="panel.bars" ng-checked="panel.bars"></div>
@@ -45,15 +47,23 @@
     <div class="span1"> <label class="small">Legend</label><input type="checkbox" ng-model="panel.legend" ng-checked="panel.legend"></div>
     <div class="span1"> <label class="small">xAxis</label><input type="checkbox" ng-model="panel['x-axis']" ng-checked="panel['x-axis']"></div>
     <div class="span1"> <label class="small">yAxis</label><input type="checkbox" ng-model="panel['y-axis']" ng-checked="panel['y-axis']"></div>
-    <div class="span2" ng-show="panel.lines">
+  </div>
+
+  <div class="row-fluid" style="text-align:center;">
+    <div class="span2" ng-show="panel.lines" style="width:65px;">
       <label class="small">Line Fill</label>
       <select class="input-mini" ng-model="panel.fill" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9,10]"></select>
     </div>
-    <div class="span2" ng-show="panel.lines">
+    <div class="span2" ng-show="panel.lines" style="width:65px;">
       <label class="small">Line Width</label>
       <select class="input-mini" ng-model="panel.linewidth" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9,10]"></select>
     </div>
+    <div class="span2" ng-show="panel.lines" style="width:60px;">
+      <label class="small">Smooth <tip>Smooth the lines by removing zero values.</tip></label>
+      <input type="checkbox" ng-model="panel.lines_smooth" ng-checked="panel.lines_smooth">
+    </div>
   </div>
+
   <div class="row-fluid">
     <div class="span2">
       <label class="small">Time correction</label>
@@ -78,6 +88,7 @@
       <input type="text" class='input-mini' ng-model="panel.interval" ng-change='set_refresh(true)'/>
     </div>
   </div>
+
   <h5>Tooltip Settings</h5>
   <div class="row-fluid" style="margin-bottom:10px;">
     <div class="span3">

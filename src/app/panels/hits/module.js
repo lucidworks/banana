@@ -26,6 +26,8 @@ define([
   var module = angular.module('kibana.panels.hits', []);
   app.useModule(module);
 
+  var DEBUG = false; // DEBUG mode
+
   module.controller('hits', function($scope, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       modals : [
@@ -48,11 +50,14 @@ define([
     var _d = {
       queries     : {
         mode        : 'all',
-        ids         : []
+        ids         : [],
+        query       : '*:*',
+        basic_query : '',
+        custom      : ''
       },
       style   : { "font-size": '10pt'},
       arrangement : 'horizontal',
-      chart       : 'bar',
+      chart       : 'total',
       counter_pos : 'above',
       donut   : false,
       tilt    : false,
@@ -80,24 +85,47 @@ define([
         return;
       }
 
+      // Solr
+      $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
+
       var _segment = _.isUndefined(segment) ? 0 : segment;
-      var request = $scope.ejs.Request().indices(dashboard.indices[_segment]);
+
+      if (DEBUG) {
+        console.log('hits:\n\tdashboard',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv);
+      }
+
+      var request = $scope.sjs.Request().indices(dashboard.indices);
 
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
       // Build the question part of the query
       _.each($scope.panel.queries.ids, function(id) {
-        var _q = $scope.ejs.FilteredQuery(
+        var _q = $scope.sjs.FilteredQuery(
           querySrv.getEjsObj(id),
           filterSrv.getBoolFilter(filterSrv.ids));
 
         request = request
-          .facet($scope.ejs.QueryFacet(id)
+          .facet($scope.sjs.QueryFacet(id)
             .query(_q)
           ).size(0);
       });
 
       // Populate the inspector panel
-      $scope.inspector = angular.toJson(JSON.parse(request.toString()),true);
+      $scope.populate_modal(request);
+
+      //Solr Search Query
+      var fq = '&' + filterSrv.getSolrFq();
+      var wt_json = '&wt=json';
+      var rows_limit = '&rows=0'; // for hits, we do not need the actual response doc, so set rows=0
+      var facet = '';
+
+      $scope.panel.queries.query = querySrv.getQuery(0) + fq + facet + wt_json + rows_limit;
+
+      // Set the additional custom query
+      if ($scope.panel.queries.custom != null) {
+        request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
+      } else {
+        request = request.setQuery($scope.panel.queries.query);
+      }
 
       // Then run it
       var results = request.doSearch();
@@ -105,11 +133,8 @@ define([
       // Populate scope when we have results
       results.then(function(results) {
         $scope.panelMeta.loading = false;
-        if(_segment === 0) {
-          $scope.hits = 0;
-          $scope.data = [];
-          query_id = $scope.query_id = new Date().getTime();
-        }
+        $scope.hits = results.response.numFound;
+        $scope.data = [];
 
         // Check for error and abort if found
         if(!(_.isUndefined(results.error))) {
@@ -118,19 +143,20 @@ define([
         }
 
         // Convert facet ids to numbers
-        var facetIds = _.map(_.keys(results.facets),function(k){return parseInt(k, 10);});
+//        var facetIds = _.map(_.keys(results.facets),function(k){return parseInt(k, 10);});
 
         // Make sure we're still on the same query/queries
-        if($scope.query_id === query_id &&
-          _.intersection(facetIds,$scope.panel.queries.ids).length === $scope.panel.queries.ids.length
-          ) {
+//        if($scope.query_id === query_id &&
+//          _.intersection(facetIds,$scope.panel.queries.ids).length === $scope.panel.queries.ids.length
+//          ) {
           var i = 0;
-          _.each($scope.panel.queries.ids, function(id) {
-            var v = results.facets[id];
-            var hits = _.isUndefined($scope.data[i]) || _segment === 0 ?
-              v.count : $scope.data[i].hits+v.count;
-            $scope.hits += v.count;
-
+          var id = $scope.panel.queries.ids[0];
+//          _.each($scope.panel.queries.ids, function(id) {
+//            var v = results.facets[id];
+//            var hits = _.isUndefined($scope.data[i]) || _segment === 0 ?
+//              v.count : $scope.data[i].hits+v.count;
+//            $scope.hits += v.count;
+            var hits = $scope.hits;
             // Create series
             $scope.data[i] = {
               info: querySrv.list[id],
@@ -139,14 +165,15 @@ define([
               data: [[i,hits]]
             };
 
-            i++;
-          });
-          $scope.$emit('render');
-          if(_segment < dashboard.indices.length-1) {
-            $scope.get_data(_segment+1,query_id);
-          }
+//            i++;
+//          });
 
-        }
+          $scope.$emit('render');
+//          if(_segment < dashboard.indices.length-1) {
+//            $scope.get_data(_segment+1,query_id);
+//          }
+
+//        }
       });
     };
 
@@ -161,6 +188,11 @@ define([
       $scope.refresh =  false;
       $scope.$emit('render');
     };
+
+    $scope.populate_modal = function(request) {
+      $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
+    };
+
   });
 
 
@@ -185,7 +217,7 @@ define([
           elem.css({height:scope.panel.height||scope.row.height});
 
           try {
-            _.each(scope.data,function(series) {
+            _.each(scope.data, function(series) {
               series.label = series.info.alias;
               series.color = series.info.color;
             });

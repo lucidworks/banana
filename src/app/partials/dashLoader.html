@@ -1,18 +1,20 @@
+<!-- This file is responsible for nav bar of the dashboard -->
+<li class="dropdown" bs-tooltip="'Collections'" data-placement="bottom" style="padding-top:5px;" ng-show="dashboard.current.loader.dropdown_collections"><select class="span2" ng-model="dashboard.current.solr.core_name" ng-change="dashboard.refresh()" ng-options="c as c for c in dashboard.current.solr.core_list"></select></li>
 
 <li><a bs-tooltip="'Goto saved default'" data-placement="bottom" href='#/dashboard'><i class='icon-home'></i></a></li>
-
+<!-- Load menu -->
 <li class="dropdown" bs-tooltip="'Load'" data-placement="bottom" ng-show="showDropdown('load')" >
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" ng-click="elasticsearch_dblist('title:'+elasticsearch.query+'*')">
     <i class='icon-folder-open'></i>
   </a>
   <ul class="dropdown-menu" style="padding:10px">
-    <li ng-show='loader.load_local'>
+    <li ng-show='dashboard.current.loader.load_local'>
       <h5>Local File <tip>Load dashboard JSON layout from file</tip></h5>
       <form>
         <input type="file" id="dashupload" dash-upload /><br>
       </form>
     </li>
-    <li ng-show='loader.load_gist'>
+    <li ng-show='dashboard.current.loader.load_gist'>
       <h5>Gist <tip>Enter a gist number or url</tip></h5>
       <form>
         <input type="text" ng-model="gist.url"/ placeholder="Gist number or URL"><br>
@@ -26,7 +28,7 @@
         </table>
       </form>
     </li>
-    <li ng-show='loader.load_elasticsearch'>
+    <li ng-show='dashboard.current.loader.load_elasticsearch'>
       <h5>Solr</h5>
       <form>
         <input type="text" ng-model="elasticsearch.query" ng-change="elasticsearch_dblist('title:'+elasticsearch.query+'*')" placeholder="Type to filter"/>
@@ -44,20 +46,21 @@
     </li>
   </ul>
 </li>
+<!-- Save menu -->
 <li class="dropdown" bs-tooltip="'Save'" data-placement="bottom" ng-show="showDropdown('save')">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
     <i class='icon-save'></i>
   </a>
   <ul class="dropdown-menu" style="padding:10px">
-    <li ng-show="loader.save_default || loader.save_local">
+    <li ng-show="dashboard.current.loader.save_default || dashboard.current.loader.save_local">
       <h5>Locally</h5>
       <ul class="unstyled">
-        <li><a class="link" ng-show="loader.save_local" ng-click="dashboard.to_file()"><i class="icon-download"></i> Export to File</a> <tip>Export layout, not data, to file</tip></li>
-        <li><a class="link" ng-show="loader.save_default" ng-click="set_default()"><i class="icon-bookmark"></i> Set as Browser Default</a> <tip>Store dashboard preference to browser's localStorage</tip></li>
-        <li><a class="link" ng-show="loader.save_default" ng-click="purge_default()"><i class="icon-ban-circle"></i> Clear Browser Default</a></li>
+        <li ng-show="dashboard.current.loader.save_local"><a class="link" ng-click="dashboard.to_file()"><i class="icon-download"></i> Export to File</a> <tip>Export layout, not data, to file</tip></li>
+        <li ng-show="dashboard.current.loader.save_default"><a class="link" ng-click="set_default()"><i class="icon-bookmark"></i> Set as Browser Default</a> <tip>Store dashboard preference to browser's localStorage</tip></li>
+        <li ng-show="dashboard.current.loader.save_default"><a class="link" ng-click="purge_default()"><i class="icon-ban-circle"></i> Clear Browser Default</a></li>
       </ul>
     </li>
-    <li ng-show="loader.save_gist">
+    <li ng-show="dashboard.current.loader.save_gist">
       <h5>Gist</h5>
       <form class="input-append">
         <input class='input-medium' placeholder='Title' type="text" ng-model="gist.title"/>
@@ -65,7 +68,7 @@
       </form><br>
       <small ng-show="gist.last">Last gist: <a target="_blank" href="{{gist.last}}">{{gist.last}}</a></small>
     </li>
-    <li ng-show="loader.save_elasticsearch">
+    <li ng-show="dashboard.current.loader.save_elasticsearch">
       <h5>Solr</h5>
       <form class="input-append">
         <input class='input-medium' placeholder="{{dashboard.current.title}}" type="text" ng-model="elasticsearch.title"/>
@@ -74,6 +77,7 @@
     </li>
   </ul>
 </li>
+<!-- Share menu -->
 <li ng-show="showDropdown('share')"><a bs-tooltip="'Share'" data-placement="bottom" ng-click="elasticsearch_save('temp',loader.save_temp_ttl)" bs-modal="'app/partials/dashLoaderShare.html'"><i class='icon-share'></i></a></li>
-
+<!-- Configure menu -->
 <li ng-show="dashboard.current.editable "bs-tooltip="'Configure dashboard'" data-placement="bottom"><a href='#' bs-modal="'app/partials/dasheditor.html'"><i class='icon-cog pointer'></i></a></li>

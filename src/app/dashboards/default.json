@@ -200,7 +200,7 @@
             "ids": [
               0
             ],
-            "query": "q=*&df=message&df=host&df=path&df=type&wt=json&rows=0&fq=event_timestamp:[2014-04-02T05:07:22.000Z%20TO%202014-04-02T05:22:22.000Z]&facet=true&facet.range=event_timestamp&facet.range.start=2014-04-02T05:07:22.000Z/DAY&facet.range.end=2014-04-02T05:22:22.000Z%2B1DAY/DAY&facet.range.gap=%2B10SECOND",
+            "query": "q=*&wt=json&rows=0&fq=event_timestamp:[2014-04-02T05:07:22.000Z%20TO%202014-04-02T05:22:22.000Z]&facet=true&facet.range=event_timestamp&facet.range.start=2014-04-02T05:07:22.000Z/DAY&facet.range.end=2014-04-02T05:22:22.000Z%2B1DAY/DAY&facet.range.gap=%2B10SECOND",
             "custom": ""
           },
           "max_rows": 100000,
@@ -258,7 +258,7 @@
             "ids": [
               0
             ],
-            "query": "q=*&df=message&df=host&df=path&df=type&wt=json&rows=0&fq=event_timestamp:[2014-04-02T05:07:22.000Z%20TO%202014-04-02T05:22:22.000Z]&facet=true&facet.field=message&facet.range=event_timestamp&facet.range.start=2014-04-02T05:07:22.000Z&facet.range.end=2014-04-02T05:22:22.000Z&facet.range.gap=%2B1DAY&facet.limit=100"
+            "query": "q=*&wt=json&rows=0&fq=event_timestamp:[2014-04-02T05:07:22.000Z%20TO%202014-04-02T05:22:22.000Z]&facet=true&facet.field=message&facet.range=event_timestamp&facet.range.start=2014-04-02T05:07:22.000Z&facet.range.end=2014-04-02T05:22:22.000Z&facet.range.gap=%2B1DAY&facet.limit=100"
           },
           "field": "message",
           "exclude": [],
@@ -320,7 +320,7 @@
             "ids": [
               0
             ],
-            "query": "q=*&df=message&df=host&df=path&df=type&wt=json&rows=500&fq=event_timestamp:[2014-04-02T05:07:22.000Z%20TO%202014-04-02T05:22:22.000Z]&sort=id desc"
+            "query": "q=*&wt=json&rows=500&fq=event_timestamp:[2014-04-02T05:07:22.000Z%20TO%202014-04-02T05:22:22.000Z]&sort=id desc"
           },
           "field_list": true,
           "status": "Stable",
@@ -357,6 +357,8 @@
   },
   "solr": {
     "server": "http://localhost:8983/solr/",
-    "core_name": "collection1"
+    "core_name": "collection1",
+    "core_list": [],
+    "global_params": "&df=message"
   }
 }

@@ -6,6 +6,7 @@ define([
 ],
 function (angular, _, config, moment) {
   'use strict';
+
   var DEBUG = false; //DEBUG mode
 
   var module = angular.module('kibana.services');
@@ -27,6 +28,40 @@ function (angular, _, config, moment) {
         return indices;
       });
     };
+
+    // Solr: returns a promise containing an array of all collections in the Solr server.
+    // param: solr_server (e.g. http://localhost:8983/solr/)
+    this.collections = function(solr_server) {
+      return all_collections(solr_server).then(function (p) {
+        return p;
+      });
+    }
+
+    // returns a promise containing an array of all collections in Solr
+    // param: solr_server (e.g. http://localhost:8983/solr/)
+    function all_collections(solr_server) {
+      var something = $http({
+        // Use Solr Admin handler to get the list of all collections.
+        // TODO: Need to test this with SolrCloud and LWS
+        url: solr_server + "admin/cores?action=STATUS&wt=json&omitHeader=true",
+        method: "GET"
+      }).error(function(data, status) {
+        alertSrv.set('Error',"Could not retrieve collections from Solr (error status = "+status+")");
+        console.debug('kbnIndex: error data = ',data);
+      });
+
+      return something.then(function (p) {
+        // Parse Solr response to an array of collections
+        var collections = [];
+
+        _.each(p.data.status, function(v,k) {
+          collections.push(k);
+        });
+
+        if (DEBUG) { console.debug('kbnIndex: all_collections response p = ',p,'collections = ',collections); }
+        return collections;
+      });
+    }
 
     // returns a promise containing an array of all indices in an elasticsearch
     // cluster
@@ -64,9 +99,8 @@ function (angular, _, config, moment) {
       });
 
       return something.then(function(p) {
-        if (DEBUG) {console.debug('kbnIndex: p=',p);}
+        if (DEBUG) { console.debug('kbnIndex: p=',p); }
         
-
         // var indices = [];
         // _.each(p.data, function(v,k) {
         //   indices.push(k);
@@ -75,6 +109,7 @@ function (angular, _, config, moment) {
         //     indices.push(k);
         //   });
         // });
+      
         var indices = [];
 
         var timestamp_array = p.data.facet_counts.facet_ranges.event_timestamp.counts;
@@ -87,8 +122,8 @@ function (angular, _, config, moment) {
 
         // indices[] should be in this format
         // indices = ['logstash-2013.11.25'];
-        // DEBUG
-        if (DEBUG) {console.debug('kbnIndex: indices=',indices);}
+        
+        if (DEBUG) { console.debug('kbnIndex: indices=',indices); }
 
         return indices;
       });
