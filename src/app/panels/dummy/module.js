@@ -78,24 +78,23 @@ function (angular, app, _, $) {
     $scope.render = function() {
       $scope.$emit('render');
     };
+  });
 
-    module.directive('dummyTag', function() {
-      return {
-        restrict: 'E',
-        link: function(scope, element) {
-          scope.$on('render',function(){
-            render_panel();
-          });
-
-          // Function for rendering panel
-          function render_panel() {
-            element.html('Hello Dummy!');
-          }
-
+  module.directive('dummyTag', function() {
+    return {
+      restrict: 'E',
+      link: function(scope, element) {
+        scope.$on('render',function(){
           render_panel();
-        }
-      };
-    });
+        });
 
+        // Function for rendering panel
+        function render_panel() {
+          element.html('Hello Dummy!');
+        }
+
+        render_panel();
+      }
+    };
   });
 });
