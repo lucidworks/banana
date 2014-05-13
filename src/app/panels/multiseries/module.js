@@ -50,6 +50,7 @@ define([
             xAxis: 'Date',
             yAxis: 'Rates',
             fl : 'open,high,low,close',
+            rightAxis: 'volume',
             spyable: true
         };
 
@@ -114,7 +115,7 @@ define([
 //            var fq = '';
             var wt_json = '&wt=json';
             // TODO: to be fixed
-            var fl = '&fl=date,' + $scope.panel.field + ',' + $scope.panel.fl;
+            var fl = '&fl=date,' + $scope.panel.field + ',' + $scope.panel.fl + ',' + $scope.panel.rightAxis;
             var rows_limit = '&rows=' + $scope.panel.size;
 
             $scope.panel.queries.query = querySrv.getQuery(0) + fq + fl + wt_json + rows_limit;
@@ -133,7 +134,6 @@ define([
             results.then(function (results) {
                 // build $scope.data array
                 $scope.data = results.response.docs;
-
                 $scope.render();
             });
 
@@ -176,7 +176,7 @@ define([
                 render_panel();
             });
             
-            angular.element(window).bind('resize', function(){
+            angular.element(window).bind('resize', function () {
               render_panel();
             });
 
@@ -200,15 +200,24 @@ define([
                 // d3 stuffs
                 var x = d3.time.scale().range([0, width]);
                 var y = d3.scale.linear().range([height, 0]);
+//                var y1 = d3.scale.linear().range([height, 0]);
 
                 var color = d3.scale.category10();
                 var xAxis = d3.svg.axis().scale(x).orient("bottom");
                 var yAxis = d3.svg.axis().scale(y).orient("left");
+                
+//                var colorY1 = d3.scale.category20();
+//                var yAxis1 = d3.svg.axis().scale(y1).orient("right");
 
                 var line = d3.svg.line()
                     .interpolate("basis")
-                    .x(function(d) { return x(d.date); })
-                    .y(function(d) { return y(d.temperature); });
+                    .x(function(d) { return x(d.xValue); })
+                    .y(function(d) { return y(d.yValue); });
+                
+//                var line2 = d3.svg.line()
+//                    .interpolate("basis")
+//                    .x(function(d) { return x(d.xValue); })
+//                    .y(function(d) { return y1(d.yValue); });
 
                 var svg = d3.select(el).append("svg")
                     .attr("width", width + margin.left + margin.right)
@@ -219,8 +228,16 @@ define([
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
                 // Colors domain must be the same count of fl
-                color.domain(d3.keys(data[0]).filter(function(key) { return (key !== scope.panel.field && key !== "date"); }));
-
+                var fl = scope.panel.fl.split(',');
+                color.domain(d3.keys(data[0]).filter(function(key) { 
+                    return (fl.indexOf(key) !== -1);
+                }));
+                
+//                var rightAxisList = scope.panel.rightAxis.split(',');
+//                colorY1.domain(d3.keys(data[0]).filter(function(key){
+//                    return (rightAxisList.indexOf(key) !== -1);
+//                }));
+                
                 // Removing NaN entries
                 data = data.filter(function(d) {
                     var isNumber = true;
@@ -235,27 +252,50 @@ define([
                 var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%S.%LZ");
                 var parseDate2 = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ");
 
-                // That in case x-axis was date, what if not?
-                data.forEach(function(d) {
-                    var newDate = parseDate.parse(String(d[scope.panel.field]));
-                    d[scope.panel.field] = newDate !== null ? newDate : parseDate2.parse(String(d[scope.panel.field]));
-                });
+                var isDate = false;
+                // Check if x is date or another type
+                if(data && data.length > 0) {
+                    var sample_date = data[0][scope.panel.field];
+                    isDate = parseDate.parse(String(sample_date)) || parseDate2.parse(String(sample_date));
+                }
+                
+                if(isDate) {
+                    // That in case x-axis was date, what if not?
+                    data.forEach(function(d) {
+                        var newDate = parseDate.parse(String(d[scope.panel.field]));
+                        d[scope.panel.field] = newDate !== null ? newDate : parseDate2.parse(String(d[scope.panel.field]));
+                    });
+                }
 
                 var cities = color.domain().map(function(name) {
                     return {
                         name: name,
                         values: data.map(function(d) {
-                            return {date: d[scope.panel.field], temperature: +d[name]};
+                            return {xValue: d[scope.panel.field], yValue: +d[name]};
                         })
                     };
                 });
                 
+//                var volumes = colorY1.domain().map(function(name) {
+//                    return {
+//                        name: name,
+//                        values: data.map(function(d) {
+//                            return {xValue: d[scope.panel.field], yValue: +d[name]};
+//                        })
+//                    };
+//                }); 
+                
                 x.domain(d3.extent(data, function(d) { return d[scope.panel.field]; }));
 
                 y.domain([
-                    d3.min(cities, function(c) { return d3.min(c.values, function(v) { return v.temperature; }); }),
-                    d3.max(cities, function(c) { return d3.max(c.values, function(v) { return v.temperature; }); })
+                    d3.min(cities, function(c) { return d3.min(c.values, function(v) { return v.yValue; }); }),
+                    d3.max(cities, function(c) { return d3.max(c.values, function(v) { return v.yValue; }); })
                 ]);
+                
+//                y1.domain([
+//                    d3.min(volumes, function(c) { return d3.min(c.values, function(v) { return v.yValue; }); }),
+//                    d3.max(volumes, function(c) { return d3.max(c.values, function(v) { return v.yValue; }); })
+//                ]);
 
                 svg.append("g")
                    .attr("class", "x axis")
@@ -271,6 +311,18 @@ define([
                    .attr("dy", ".71em")
                    .style("text-anchor", "end")
                    .text(scope.panel.yAxis);
+                
+//                svg.append("g")
+//                   .attr("class", "y axis")
+//                   .attr("transform", "translate(" + width + " ,0)")   
+//                   .style("fill", "blue") 
+//                   .call(yAxis1)
+//                   .append("text")
+//                   .attr("transform", "rotate(-90)")
+//                   .attr("y", 6)
+//                   .attr("dy", "-1.2em")
+//                   .style("text-anchor", "end")
+//                   .text("Volume"); // TODO: make it defined in panel
 
                 var city = svg.selectAll(".city")
                               .data(cities)
@@ -285,10 +337,28 @@ define([
 
                 city.append("text")
                     .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-                    .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.temperature) + ")"; })
+                    .attr("transform", function(d) { return "translate(" + x(d.value.xValue) + "," + y(d.value.yValue) + ")"; })
                     .attr("x", 3)
                     .attr("dy", ".35em")
                     .text(function(d) { return d.name; });
+                
+//                var volume = svg.selectAll(".volume")
+//                              .data(volumes)
+//                              .enter().append("g")
+//                              .attr("class", "volume");
+//                
+//                volume.append("path")
+//                    .attr("class", "line")
+//                    .attr("d", function(d) { return line2(d.values); })
+//                    .style("stroke", function(d) { return colorY1(d.name + 10); })
+//                    .style("fill", "transparent")
+//
+//                volume.append("text")
+//                    .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+//                    .attr("transform", function(d) { return "translate(" + x(d.value.xValue) + "," + y(d.value.yValue) + ")"; })
+//                    .attr("x", 3)
+//                    .attr("dy", ".35em")
+//                    .text(function(d) { return d.name; });
                 }
             
                 render_panel();
