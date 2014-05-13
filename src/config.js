@@ -55,6 +55,7 @@ function (Settings) {
       'bettermap',
       'query',
       'terms',
+      'multiseries',
       // 'dummy'  // Dummy module for testing
     ]
   });
