@@ -333,7 +333,7 @@ define([
                     .attr("class", "line")
                     .attr("d", function(d) { return line(d.values); })
                     .style("stroke", function(d) { return color(d.name); })
-                    .style("fill", "transparent")
+                    .style("fill", "transparent");
 
                 city.append("text")
                     .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })

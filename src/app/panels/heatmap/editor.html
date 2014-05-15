@@ -1,0 +1,17 @@
+<div class="row-fluid">
+  <div class="span4">
+    <form>
+      <h6>Rows Field <tip>The field to fetch rows values</tip></h6>
+      <input bs-typeahead="fields.list" type="text" class="input-medium" ng-model="panel.row_field" ng-change="set_refresh(true)">
+    </form>
+  </div>
+  <div class="span4">
+    <form>
+      <h6>Column Field <tip>The field to fetch columns values</tip></h6>
+      <input bs-typeahead="fields.list" type="text" class="input-medium" ng-model="panel.col_field" ng-change="set_refresh(true)">
+    </form>
+  </div>
+    <div class="span4"><h6>Rows Limit <tip>The maximum number of Rows to fetch [10, 500]</tip></h6>
+      <input id="rows_limit" type="number" min="10" max="500" value="100" class="input-small" ng-model="panel.editor_size" ng-change="set_refresh(true)">
+    </div>
+</div>
