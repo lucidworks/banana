@@ -18,8 +18,8 @@ function (Settings) {
      * Solr host
      * @type {String}
      */
-    // TODO: Remove ES related settings
-    //elasticsearch: "http://"+window.location.hostname+":9200",
+
+    // TODO: Remove ES settings
     elasticsearch: "http://localhost:9200",
 
     // Specify Solr server and core to store the data.
@@ -41,14 +41,11 @@ function (Settings) {
     panel_names: [
       'histogram',
       'map',
-      // 'pie',  // Deprecated, use terms panel instead
       'table',
       'filtering',
       'timepicker',
       'text',
-      // 'fields',  // Deprecated, table panel now integrates a field selector
-      'hits',  // TODO
-      // 'dashcontrol',  // Deprecated, moved to nav bar
+      'hits',
       'column',
       // 'derivequeries',  // TODO
       // 'trends',  // TODO
