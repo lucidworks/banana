@@ -20,6 +20,8 @@ function (angular, app, _, kbn) {
   var module = angular.module('kibana.panels.trends', []);
   app.useModule(module);
 
+  var DEBUG = true;
+
   module.controller('trends', function($scope, kbnIndex, querySrv, dashboard, filterSrv) {
 
     $scope.panelMeta = {
@@ -62,95 +64,137 @@ function (angular, app, _, kbn) {
       $scope.get_data();
     };
 
-    $scope.get_data = function(segment,query_id) {
-      delete $scope.panel.error;
-      $scope.panelMeta.loading = true;
+    $scope.get_data = function(segment, query_id) {
+        delete $scope.panel.error;
+        $scope.panelMeta.loading = true;
 
-      // Make sure we have everything for the request to complete
-      if(dashboard.indices.length === 0) {
-        return;
-      } else {
-        $scope.index = segment > 0 ? $scope.index : dashboard.indices;
-      }
+        // Make sure we have everything for the request to complete
+        if (dashboard.indices.length === 0) {
+          return;
+        } else {
+          $scope.index = segment > 0 ? $scope.index : dashboard.indices;
+        }
 
-      $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
+        $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
+        $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
 
-      // Determine a time field
-      var timeField = _.uniq(_.pluck(filterSrv.getByType('time'),'field'));
-      if(timeField.length > 1) {
-        $scope.panel.error = "Time field must be consistent amongst time filters";
-        return;
-      } else if(timeField.length === 0) {
-        $scope.panel.error = "A time filter must exist for this panel to function";
-        return;
-      } else {
-        timeField = timeField[0];
-      }
+        // Determine a time field
+        var timeField = _.uniq(_.pluck(filterSrv.getByType('time'), 'field'));
+        if (timeField.length > 1) {
+          $scope.panel.error = "Time field must be consistent amongst time filters";
+          return;
+        } else if (timeField.length === 0) {
+          $scope.panel.error = "A time filter must exist for this panel to function";
+          return;
+        } else {
+          timeField = timeField[0];
+        }
 
-      $scope.time = filterSrv.timeRange('min');
-      $scope.old_time = {
-        from : new Date($scope.time.from.getTime() - kbn.interval_to_ms($scope.panel.ago)),
-        to   : new Date($scope.time.to.getTime() - kbn.interval_to_ms($scope.panel.ago))
-      };
+        $scope.time = filterSrv.timeRange('min');
+        $scope.old_time = {
+          from: new Date($scope.time.from.getTime() - kbn.interval_to_ms($scope.panel.ago)),
+          to: new Date($scope.time.to.getTime() - kbn.interval_to_ms($scope.panel.ago))
+        };
 
-      var _segment = _.isUndefined(segment) ? 0 : segment;
-      var request = $scope.ejs.Request();
-      var _ids_without_time = _.difference(filterSrv.ids,filterSrv.idsByType('time'));
+        var _segment = _.isUndefined(segment) ? 0 : segment;
+        var request = $scope.sjs.Request().indices(dashboard.indices);
+        var _ids_without_time = _.difference(filterSrv.ids, filterSrv.idsByType('time'));
 
+        // Build the question part of the query
+        _.each($scope.panel.queries.ids, function(id) {
+          var q = $scope.sjs.FilteredQuery(
+            querySrv.getEjsObj(id),
+            filterSrv.getBoolFilter(_ids_without_time).must(
+              $scope.sjs.RangeFilter(timeField)
+              .from($scope.time.from)
+              .to($scope.time.to)
+            ));
 
-      // Build the question part of the query
-      _.each($scope.panel.queries.ids, function(id) {
-        var q = $scope.ejs.FilteredQuery(
-          querySrv.getEjsObj(id),
-          filterSrv.getBoolFilter(_ids_without_time).must(
-            $scope.ejs.RangeFilter(timeField)
-            .from($scope.time.from)
-            .to($scope.time.to)
-          ));
-
-        request = request
-          .facet($scope.ejs.QueryFacet(id)
-            .query(q)
+          request = request
+            .facet($scope.sjs.QueryFacet(id)
+              .query(q)
           ).size(0);
-      });
-
-
-      // And again for the old time period
-      _.each($scope.panel.queries.ids, function(id) {
-        var q = $scope.ejs.FilteredQuery(
-          querySrv.getEjsObj(id),
-          filterSrv.getBoolFilter(_ids_without_time).must(
-            $scope.ejs.RangeFilter(timeField)
-            .from($scope.old_time.from)
-            .to($scope.old_time.to)
-          ));
-        request = request
-          .facet($scope.ejs.QueryFacet("old_"+id)
-            .query(q)
-          ).size(0);
-      });
-
-
-      // Populate the inspector panel
-      $scope.inspector = angular.toJson(JSON.parse(request.toString()),true);
-
-      // If we're on the first segment we need to get our indices
-      if (_segment === 0) {
-        kbnIndex.indices(
-          $scope.old_time.from,
-          $scope.old_time.to,
-          dashboard.current.index.pattern,
-          dashboard.current.index.interval
-        ).then(function (p) {
-          $scope.index = _.union(p,$scope.index);
-          request = request.indices($scope.index[_segment]);
-          process_results(request.doSearch(),_segment,query_id);
         });
-      } else {
-        process_results(request.indices($scope.index[_segment]).doSearch(),_segment,query_id);
-      }
 
-    };
+
+        // And again for the old time period
+        _.each($scope.panel.queries.ids, function(id) {
+          var q = $scope.sjs.FilteredQuery(
+            querySrv.getEjsObj(id),
+            filterSrv.getBoolFilter(_ids_without_time).must(
+              $scope.sjs.RangeFilter(timeField)
+              .from($scope.old_time.from)
+              .to($scope.old_time.to)
+            ));
+          request = request
+            .facet($scope.sjs.QueryFacet("old_" + id)
+              .query(q)
+          ).size(0);
+        });
+        if (DEBUG) {
+          console.log('Elastic Search Request');
+          console.log(request.toString());
+        }
+        // Populate the inspector panel
+        $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
+
+        // If we're on the first segment we need to get our indices
+        // if (_segment === 0) {
+        //   kbnIndex.indices(
+        //     $scope.old_time.from,
+        //     $scope.old_time.to,
+        //     dashboard.current.index.pattern,
+        //     dashboard.current.index.interval
+        //   ).then(function(p) {
+        //     $scope.index = _.union(p, $scope.index);
+        //     request = request.indices($scope.index[_segment]);
+        //     process_results(request.doSearch(), _segment, query_id);
+        //   });
+        // } else {
+        //   process_results(request.indices($scope.index[_segment]).doSearch(), _segment, query_id);
+        // }
+
+        // Build SOLR query
+        var time_field = filterSrv.getTimeField();
+        var wt_json = '&wt=json';
+        var rows_limit = '&rows=0'; // for trends, we do not need the actual response doc, so set rows=0
+
+        // current time
+        // make the gap equal to the difference between the start and end date
+        // this will help in reducing response size 
+        var facet_date_gap = '%2B' + diffDays($scope.time.from, $scope.time.to) + 'DAY';
+        var facet_date = '&facet=true' +
+          '&facet.date=' + time_field +
+          '&facet.date.start=' + $scope.time.from.toISOString() +
+          '&facet.date.end=' + $scope.time.to.toISOString() +
+          '&facet.date.gap=' + facet_date_gap +
+          '&facet.date.other=between';
+
+        // time ago
+        var facet_range_gap = '%2B' + diffDays($scope.old_time.from, $scope.old_time.to) + 'DAY';
+        var facet_range =
+          '&facet.range=' + time_field +
+          '&facet.range.start=' + $scope.old_time.from.toISOString() +
+          '&facet.range.end=' + $scope.old_time.to.toISOString() +
+          '&facet.range.gap=' + facet_range_gap +
+          '&facet.range.other=between';
+
+        $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + facet_date + facet_range;
+        request = request.setQuery($scope.panel.queries.query);
+        var results = request.doSearch();
+        results.then(function(results) {
+          if (DEBUG) {
+            console.log('new time')
+            console.log($scope.time.from, $scope.time.to)
+            console.log('old time')
+            console.log($scope.old_time.from, $scope.old_time.to)
+            console.log(results)
+          }
+          processSolrResults(results);
+          $scope.$emit('render');
+        });
+
+      };
 
     // Populate scope when we have results
     var process_results = function(results,_segment,query_id) {
@@ -211,6 +255,45 @@ function (angular, app, _, kbn) {
         }
       });
     };
+
+
+    function processSolrResults(results) {
+      $scope.panelMeta.loading = false;
+
+      // Check for error and abort if found
+      if (!(_.isUndefined(results.error))) {
+        $scope.panel.error = results.error.msg;
+        return;
+      }
+
+      $scope.hits = {};
+      $scope.data = [];
+
+      var hits = {
+        new: results.facet_counts.facet_dates[filterSrv.getTimeField()]['between'],
+        old: results.facet_counts.facet_ranges[filterSrv.getTimeField()]['between']
+      }
+      $scope.hits = hits;
+
+      var percent = percentage(hits.old, hits.new) == null ?
+        '?' : Math.round(percentage(hits.old, hits.new) * 100) / 100;
+      // Create series
+      $scope.data[0] = {
+        info: querySrv.list[0],
+        hits: {
+          new: hits.new,
+          old: hits.old
+        },
+        percent: percent
+      };
+      $scope.trends = $scope.data;
+    }
+
+    function diffDays(date1, date2) {
+      // calculate the number of days between two dates
+      var oneDay = 24 * 60 * 60 * 1000;
+      return (Math.round(Math.abs((date2.getTime() - date1.getTime()) / (oneDay))) + 1);
+    }
 
     function percentage(x,y) {
       return x === 0 ? null : 100*(y-x)/x;

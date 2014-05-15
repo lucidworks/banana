@@ -51,7 +51,7 @@ function (Settings) {
       // 'dashcontrol',  // Deprecated, moved to nav bar
       'column',
       // 'derivequeries',  // TODO
-      // 'trends',  // TODO
+      'trends',  // TODO
       'bettermap',
       'query',
       'terms',
