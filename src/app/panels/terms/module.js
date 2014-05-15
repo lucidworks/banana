@@ -78,7 +78,6 @@ function (angular, app, _, $, kbn) {
         $scope.get_data();
       });
       $scope.get_data();
-
     };
 
     $scope.get_data = function() {
@@ -124,11 +123,11 @@ function (angular, app, _, $, kbn) {
 
       // Build Solr query
       var fq = '&' + filterSrv.getSolrFq();
-      var start_time = filterSrv.getStartTime();
-      var end_time = filterSrv.getEndTime();
+      // var start_time = filterSrv.getStartTime();
+      // var end_time = filterSrv.getEndTime();
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0' // for terms, we do not need the actual response doc, so set rows=0
-      var facet_gap = '%2B1DAY';
+      // var facet_gap = '%2B1DAY';
       var facet = '';
 
       if ($scope.panel.mode === 'count') {
