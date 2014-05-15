@@ -54,6 +54,7 @@ function (angular, app, _, $, kbn) {
       mode    : 'count', // mode to tell which number will be used to plot the chart.
       field   : '',
       stats_field : '',
+      decimal_points : 2, // The number of digits after the decimal point
       exclude : [],
       missing : true,
       other   : true,
@@ -67,7 +68,6 @@ function (angular, app, _, $, kbn) {
       chart       : 'bar',
       counter_pos : 'above',
       spyable     : true,
-      // time_field  : 'event_timestamp' // Don't need anymore
     };
     _.defaults($scope.panel,_d);
 
@@ -124,7 +124,6 @@ function (angular, app, _, $, kbn) {
 
       // Build Solr query
       var fq = '&' + filterSrv.getSolrFq();
-      // var time_field = filterSrv.getTimeField(); // Don't need anymore
       var start_time = filterSrv.getStartTime();
       var end_time = filterSrv.getEndTime();
       var wt_json = '&wt=json';
@@ -365,7 +364,7 @@ function (angular, app, _, $, kbn) {
             $tooltip
               .html(
                 kbn.query_color_dot(item.series.color, 20) + ' ' +
-                item.series.label + " (" + value.toFixed(0)+")"
+                item.series.label + " (" + value.toFixed(scope.panel.decimal_points)+")"
               )
               .place_tt(pos.pageX, pos.pageY);
           } else {
