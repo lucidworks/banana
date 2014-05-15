@@ -67,7 +67,7 @@ function (angular, app, _, $, kbn) {
       chart       : 'bar',
       counter_pos : 'above',
       spyable     : true,
-      time_field  : 'event_timestamp'
+      // time_field  : 'event_timestamp' // Don't need anymore
     };
     _.defaults($scope.panel,_d);
 
@@ -124,7 +124,7 @@ function (angular, app, _, $, kbn) {
 
       // Build Solr query
       var fq = '&' + filterSrv.getSolrFq();
-      var time_field = filterSrv.getTimeField();
+      // var time_field = filterSrv.getTimeField(); // Don't need anymore
       var start_time = filterSrv.getStartTime();
       var end_time = filterSrv.getEndTime();
       var wt_json = '&wt=json';
