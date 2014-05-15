@@ -567,7 +567,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               },
               yaxis: {
                 show: scope.panel['y-axis'],
-                min: 0,
+                min: null, // TODO - make this adjusted dynamicmally, and add it to configuration panel
                 max: scope.panel.percentage && scope.panel.stack ? 100 : null,
               },
               xaxis: {
