@@ -3,14 +3,17 @@
   <div ng-show="panel.counter_pos == 'above' && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend'>
     <!-- vertical legend above -->
     <table class="small" ng-show="panel.arrangement == 'vertical'">
-      <tr ng-repeat="term in legend">
-        <td><i class="icon-circle" ng-style="{color:term.color}"></i></td> <td style="padding-right:10px;padding-left:10px;">{{term.label}}</td><td>{{term.data[0][1].toFixed(panel.decimal_points)}}</td>
+      <tr ng-repeat="term in legend" ng-switch="panel.mode">
+        <td><i class="icon-circle" ng-style="{color:term.color}"></i></td> <td style="padding-right:10px;padding-left:10px;">{{term.label}}</td>
+        <td ng-switch-when="count">{{term.data[0][1].toFixed(0)}}</td>
+        <td ng-switch-default>{{term.data[0][1].toFixed(panel.decimal_points)}}</td>
       </tr>
     </table>
 
     <!-- horizontal legend above -->
-    <div class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="term in legend" style="float:left;padding-left: 10px;">
-     <span><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{term.data[0][1].toFixed(panel.decimal_points)}}) </span>
+    <div class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="term in legend" ng-switch="panel.mode" style="float:left;padding-left: 10px;">
+      <span ng-switch-when="count"><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{term.data[0][1].toFixed(0)}}) </span>
+      <span ng-switch-default><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{term.data[0][1].toFixed(panel.decimal_points)}}) </span>
     </div><br>
 
   </div>
@@ -23,14 +26,17 @@
   <div ng-show="panel.counter_pos == 'below' && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend'>
     <!-- vertical legend below -->
     <table class="small" ng-show="panel.arrangement == 'vertical'">
-      <tr ng-repeat="term in legend">
-        <td><i class="icon-circle" ng-style="{color:term.color}"></i></i></td> <td style="padding-right:10px;padding-left:10px;">{{term.label}}</td><td>{{term.data[0][1].toFixed(panel.decimal_points)}}</td>
+      <tr ng-repeat="term in legend" ng-switch="panel.mode">
+        <td><i class="icon-circle" ng-style="{color:term.color}"></i></i></td> <td style="padding-right:10px;padding-left:10px;">{{term.label}}</td>
+        <td ng-switch-when="count">{{term.data[0][1].toFixed(0)}}</td>
+        <td ng-switch-default>{{term.data[0][1].toFixed(panel.decimal_points)}}</td>
       </tr>
     </table>
 
     <!-- horizontal legend below -->
-    <div class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="term in legend" style="float:left;padding-left: 10px;">
-     <span><i class="icon-circle" ng-style="{color:term.color}"></i></span> {{term.label}} ({{term.data[0][1].toFixed(panel.decimal_points)}}) </span>
+    <div class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="term in legend" ng-switch="panel.mode" style="float:left;padding-left: 10px;">
+      <span ng-switch-when="count"><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{term.data[0][1].toFixed(0)}}) </span>
+      <span ng-switch-default><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{term.data[0][1].toFixed(panel.decimal_points)}}) </span>
     </div><br>
 
   </div>
@@ -44,7 +50,13 @@
     </thead>
     <tr ng-repeat="term in data" ng-show="showMeta(term)">
       <td>{{term.label}}</td>
+      <!-- <td ng-switch-when="count">{{term.data[0][1].toFixed(0)}}</td> -->
       <td>{{term.data[0][1].toFixed(panel.decimal_points)}}</td>
+      <!--
+        *** Cannot use ng-switch here because of Angular v1.0.x ***
+        ngSwitch appends matching elements to DOM, so the table columns will be out of the order.
+        TODO: The solution is to upgrade to newer Angular version.
+      -->
       <td>
         <span ng-hide="term.meta == 'other'">
           <i class='icon-search pointer' ng-click="build_search(term)"></i>

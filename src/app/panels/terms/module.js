@@ -54,7 +54,7 @@ function (angular, app, _, $, kbn) {
       mode    : 'count', // mode to tell which number will be used to plot the chart.
       field   : '',
       stats_field : '',
-      decimal_points : 2, // The number of digits after the decimal point
+      decimal_points : 0, // The number of digits after the decimal point
       exclude : [],
       missing : true,
       other   : true,
@@ -360,10 +360,17 @@ function (angular, app, _, $, kbn) {
           if (item) {
             // if (DEBUG) { console.debug('terms: plothover item = ',item); }
             var value = scope.panel.chart === 'bar' ? item.datapoint[1] : item.datapoint[1][0][1];
+
+            if (scope.panel.mode === 'count') {
+              value = value.toFixed(0);
+            } else {
+              value = value.toFixed(scope.panel.decimal_points);
+            }
+
             $tooltip
               .html(
                 kbn.query_color_dot(item.series.color, 20) + ' ' +
-                item.series.label + " (" + value.toFixed(scope.panel.decimal_points)+")"
+                item.series.label + " (" + value +")"
               )
               .place_tt(pos.pageX, pos.pageY);
           } else {
