@@ -4,7 +4,7 @@ LucidWorks is the commercial entity behind the long-standing and popular Open So
 
 Collaboration space (issues, wiki, etc.) for Banana will be setup soon.
 
-Guidelines for Contribution
+##Guidelines for Contribution
 
 NOTE: All development on Banana proceeds on the develop branch. Periodically, we push releases to the release branch.
 
