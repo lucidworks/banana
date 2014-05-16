@@ -57,7 +57,7 @@ function (angular, app, _, $) {
       mode  : 'count', // mode to tell which number will be used to plot the chart.
       field : '',
       stats_field : '',
-      decimal_points : 2, // The number of digits after the decimal point
+      decimal_points : 0, // The number of digits after the decimal point
       map     : "world",
       colors  : ['#A0E2E2', '#265656'],
       size    : 100,
