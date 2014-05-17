@@ -214,6 +214,10 @@ function (angular, app, _, $, kbn) {
 
     $scope.set_refresh = function (state) {
       $scope.refresh = state;
+      // if 'count' mode is selected, set decimal_points to zero automatically.
+      if ($scope.panel.mode === 'count') {
+        $scope.panel.decimal_points = 0;
+      }
     };
 
     $scope.close_edit = function() {
@@ -361,16 +365,16 @@ function (angular, app, _, $, kbn) {
             // if (DEBUG) { console.debug('terms: plothover item = ',item); }
             var value = scope.panel.chart === 'bar' ? item.datapoint[1] : item.datapoint[1][0][1];
 
-            if (scope.panel.mode === 'count') {
-              value = value.toFixed(0);
-            } else {
-              value = value.toFixed(scope.panel.decimal_points);
-            }
+            // if (scope.panel.mode === 'count') {
+            //   value = value.toFixed(0);
+            // } else {
+            //   value = value.toFixed(scope.panel.decimal_points);
+            // }
 
             $tooltip
               .html(
                 kbn.query_color_dot(item.series.color, 20) + ' ' +
-                item.series.label + " (" + value +")"
+                item.series.label + " (" + value.toFixed(scope.panel.decimal_points) +")"
               )
               .place_tt(pos.pageX, pos.pageY);
           } else {

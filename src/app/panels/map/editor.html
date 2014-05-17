@@ -22,7 +22,7 @@
     <label class="small">Stats Field <tip>This is the field that contains numerical values.</tip></label>
     <input type="text" class="input-small" bs-typeahead="fields.list" ng-model="panel.stats_field" ng-change="set_refresh(true)">
   </div>
-  <div class="span2" ng-show="panel.mode != 'count'">
+  <div class="span2">
     <label class="small">Decimal Points <tip>The number of digits after the decimal point.</tip></label>
     <select class="input-mini" ng-model="panel.decimal_points" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9]"></select>
   </div>

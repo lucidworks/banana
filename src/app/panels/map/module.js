@@ -74,6 +74,10 @@ function (angular, app, _, $) {
 
     $scope.set_refresh = function (state) {
       $scope.refresh = state;
+      // if 'count' mode is selected, set decimal_points to zero automatically.
+      if ($scope.panel.mode === 'count') {
+        $scope.panel.decimal_points = 0;
+      }
     };
 
     $scope.close_edit = function() {
@@ -243,6 +247,11 @@ function (angular, app, _, $) {
               onRegionLabelShow: function(event, label, code){
                 elem.children('.map-legend').show();
                 var count = _.isUndefined(scope.data[code]) ? 0 : scope.data[code];
+                // if (scope.panel.mode === 'count') {
+                //   count = count.toFixed(0);
+                // } else {
+                //   count = count.toFixed(scope.panel.decimal_points);
+                // }
                 elem.children('.map-legend').text(label.text() + ": " + count.toFixed(scope.panel.decimal_points));
               },
               onRegionOut: function() {
