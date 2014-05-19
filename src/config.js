@@ -55,6 +55,7 @@ function (Settings) {
       'bettermap',
       'query',
       'terms',
+      'rangefacet'
       // 'dummy'  // Dummy module for testing
     ]
   });
