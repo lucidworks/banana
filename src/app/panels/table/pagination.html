@@ -10,7 +10,7 @@
   <div class="row-fluid">
     <div class="span2">
       <h6>Per Page</h6>
-      <input type="number" class="input-mini" ng-model="panel.size" ng-change="get_data()">
+      <input type="number" class="input-mini" ng-model="panel.size" ng-change="set_refresh(true)">
     </div>
     <div class="span1">
       <h6>&nbsp;</h6>
@@ -18,7 +18,7 @@
     </div>
     <div class="span2">
       <h6>Page limit</h6>
-      <input type="number" class="input-mini" ng-model="panel.pages" ng-change="get_data()">
+      <input type="number" class="input-mini" ng-model="panel.pages" ng-change="set_refresh(true)">
     </div>
     <div class="span2 large">
       <h6>Pageable</h6>

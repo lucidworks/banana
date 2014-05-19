@@ -111,7 +111,6 @@ function (angular, app, _, kbn, moment) {
       trimFactor: 300,
       normTimes : true,
       spyable : true,
-      time_field : 'event_timestamp',
       saveOption : 'json'
     };
     _.defaults($scope.panel,_d);
