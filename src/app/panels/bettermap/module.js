@@ -14,12 +14,11 @@ define([
   'underscore',
   './leaflet/leaflet-src',
   'require',
-  './leaflet/plugins',
-
+  // './leaflet/plugins', // moving it here causing error in the app, fallback to the old Kibana way.
+  
   'css!./module.css',
   'css!./leaflet/leaflet.css',
   'css!./leaflet/plugins.css'
-
 ],
 function (angular, app, _, L, localRequire) {
   'use strict';
@@ -79,7 +78,7 @@ function (angular, app, _, L, localRequire) {
 
     $scope.init = function() {
       $scope.$on('refresh',function() {
-        $scope.get_data();$
+        $scope.get_data();
       });
       $scope.get_data();
     };
@@ -104,8 +103,7 @@ function (angular, app, _, L, localRequire) {
           return;
         }
         
-        // check if [lon,lat] field is defined
-        // Used for Now Multi-valued field, Looking forward to support (solr spatial search)
+        // check if [lat,lon] field is defined
         if(_.isUndefined($scope.panel.field)) {
           $scope.panel.error = "Please select a field that contains geo point in [lon,lat] format";
           return;
@@ -116,10 +114,9 @@ function (angular, app, _, L, localRequire) {
 
         var _segment = _.isUndefined(segment) ? 0 : segment;
 
-        var request = $scope.sjs.Request().indices(dashboard.indices);
+        // var request = $scope.sjs.Request().indices(dashboard.indices);
 
         $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
-        // This could probably be changed to a BoolFilter
         var boolQuery = $scope.sjs.BoolQuery();
         _.each($scope.panel.queries.ids,function(id) {
           boolQuery = boolQuery.should(querySrv.getEjsObj(id));
@@ -137,46 +134,40 @@ function (angular, app, _, L, localRequire) {
         $scope.populate_modal(request);
 
         if (DEBUG) {
-            console.log('bettermap:\n\trequest=',request,'\n\trequest.toString()=',request.toString());
+            console.debug('bettermap:\n\trequest=',request,'\n\trequest.toString()=',request.toString());
+        }
+
+        // Build Solr query
+        var fq = '&' + filterSrv.getSolrFq();
+        var query_size = $scope.panel.size;
+        var wt_json = '&wt=json';
+        var rows_limit;
+        var sorting = '&sort=' + filterSrv.getTimeField() + ' desc'; // Only get the latest data, sorted by time field.
+        
+        // set the size of query result
+        if (query_size !== undefined && query_size !== 0) {
+          rows_limit = '&rows=' + query_size;
+        } else { // default
+          rows_limit = '&rows=25';
         }
           
-//      var start_time = new Date(dashboard.current.services.filter.list[0].from).toISOString();
-//      var end_time = new Date(dashboard.current.services.filter.list[0].to).toISOString();
-//      var fq = '&fq=' + dashboard.current.services.filter.list[0].field + ':[' + start_time + '%20TO%20' + end_time + ']';
+        // FIXED LatLong Query
+        if($scope.panel.lat_start && $scope.panel.lat_end && $scope.panel.lon_start && $scope.panel.lon_end && $scope.panel.field) {
+          fq += '&fq=' + $scope.panel.field + ':[' + $scope.panel.lat_start + ',' + $scope.panel.lon_start + ' TO ' + $scope.panel.lat_end + ',' + $scope.panel.lon_end + ']';
+        }
 
-      var fq = '&' + filterSrv.getSolrFq();
-      var query_size = $scope.panel.size;
-      var df = '';
-      var wt_json = '&wt=json';
-      var rows_limit;
-      var sorting = '';
-      var filter_fq = '';
-      var filter_either = [];
+        // Set the panel's query
+        $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + sorting;
+
+        // Set the additional custom query
+        if ($scope.panel.queries.custom != null) {
+          request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
+        } else {
+          request = request.setQuery($scope.panel.queries.query);
+        }
+
+        var results = request.doSearch();
           
-      // set the size of query result
-      if (query_size !== undefined && query_size !== 0) {
-        rows_limit = '&rows=' + query_size;
-      } else { // default
-        rows_limit = '&rows=25';
-      }
-          
-     if($scope.panel.lat_start && $scope.panel.lat_end && $scope.panel.lon_start && $scope.panel.lon_end && $scope.panel.field) {
-         fq += '&fq=' + $scope.panel.field + '_0_coordinate:[' + $scope.panel.lat_start + ' TO ' + $scope.panel.lat_end + '] AND ' + $scope.panel.field + '_1_coordinate:[' + $scope.panel.lon_start + ' TO ' + $scope.panel.lon_end + ']';
-     }
-
-      // Set the panel's query
-      $scope.panel.queries.query = 'q=' + dashboard.current.services.query.list[0].query + df + wt_json + rows_limit + fq + sorting + filter_fq;
-
-      // Set the additional custom query
-      if ($scope.panel.queries.custom != null) {
-        request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
-      } else {
-        request = request.setQuery($scope.panel.queries.query);
-      }
-
-      var results = request.doSearch();
-        // Populate scope when we have results
-        // Using promises
         results.then(function(results) {
           $scope.panelMeta.loading = false;
 
@@ -193,11 +184,11 @@ function (angular, app, _, L, localRequire) {
           
           // Check that we're still on the same query, if not stop
           if($scope.query_id === query_id) {
-
             // Keep only what we need for the set
             $scope.data = $scope.data.slice(0,$scope.panel.size).concat(_.map(results.response.docs, function(hit) {
+              var latlon = hit[$scope.panel.field].split(',');
               return {
-                coordinates : new L.LatLng(hit[$scope.panel.field + '_0_coordinate'],hit[$scope.panel.field + '_1_coordinate']),
+                coordinates : new L.LatLng(latlon[0],latlon[1]),
                 tooltip : hit[$scope.panel.tooltip]
               };
             }));
@@ -244,7 +235,7 @@ function (angular, app, _, L, localRequire) {
         var map, layerGroup;
 
         function render_panel() {
-//          scope.require(['./leaflet/plugins'], function () {
+          scope.require(['./leaflet/plugins'], function () {
             scope.panelMeta.loading = false;
 
             L.Icon.Default.imagePath = 'app/panels/bettermap/leaflet/images';
@@ -280,7 +271,7 @@ function (angular, app, _, L, localRequire) {
             layerGroup.addTo(map);
 
             map.fitBounds(_.pluck(scope.data,'coordinates'));
-//          });
+          });
         }
       }
     };

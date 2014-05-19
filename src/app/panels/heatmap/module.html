@@ -76,7 +76,11 @@
         line-height: 20px;
       }
     </style>
-    <div style='overflow:auto; height:500px;'>
+    
+    <span class="pointer" bs-tooltip="Flip">
+        <i class="icon-refresh pointer" ng-click="flip()"></i>
+    </span>
+    <div style='overflow:auto; height:500px;display: flex;align-items: center;'>
       <heatmap-chart>
       </heatmap-chart>
     </div>

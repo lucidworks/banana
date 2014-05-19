@@ -56,6 +56,7 @@ function (angular, app, _, $, d3) {
 
         $scope.init = function () {
             $scope.panel.editor_size = $scope.panel.row_size;
+            $scope.flipped = false;
             $scope.$on('refresh', function () {
                 $scope.get_data();
             });
@@ -120,76 +121,100 @@ function (angular, app, _, $, d3) {
                 var facets = results.facet_counts.facet_pivot;
                 var key = Object.keys(facets)[0];
                 
-                facets = facets[key];
+                $scope.facets = facets[key];
                 
                 $scope.data = [];
                 $scope.row_labels = [];
                 $scope.col_labels = [];
                 $scope.hcrow = [];
                 $scope.hccol = [];
+                $scope.internal_sum = [];
                 
-//                _.each(facets, function(d, i){
-//                    // build the arrays to be used 
-//                    var count = d.count;
-//                    
-//                    $scope.row_labels.push(d.value);
-//                    $scope.hcrow.push($scope.row_labels.length);
-//                    
-//                    _.each(d.pivot, function(p, j) {
-//                        // columns in each row
-//                        var entry = {};
-//                        
-//                        var v = p.value;
-//                        
-//                        if($scope.col_labels.indexOf(v) == -1) {
-//                            $scope.col_labels.push(v);
-//                            $scope.hccol.push($scope.col_labels.length);
-//                        }
-//                        
-//                        var index = $scope.col_labels.indexOf(v); // index won't be -1 as we count in the facets with count = 0
-//                        
-//                        entry.row = i + 1;
-//                        entry.col = index + 1;
-//                        entry.value = Math.ceil((p.count.toFixed(2) / count.toFixed(2)) * 10);
-//                        
-//                        $scope.data.push(entry);
-//                    });
-//                });
-                
-                _.each(facets, function(d, i){
-                    // build the arrays to be used 
-                    var count = d.count;
-                    
-                    $scope.col_labels.push(d.value);
-                    $scope.hccol.push($scope.col_labels.length);
-                    
-                    _.each(d.pivot, function(p, j) {
-                        // columns in each row
-                        var entry = {};
-                        
-                        var v = p.value;
-                        
-                        if($scope.row_labels.indexOf(v) == -1) {
-                            $scope.row_labels.push(v);
-                            $scope.hcrow.push($scope.row_labels.length);
-                        }
-                        
-                        var index = $scope.row_labels.indexOf(v); // index won't be -1 as we count in the facets with count = 0
-                        
-                        entry.col = i + 1;
-                        entry.row = index + 1;
-                        entry.value = Math.ceil((p.count.toFixed(2) / count.toFixed(2)) * 10);
-                        
-                        $scope.data.push(entry);
-                    });
-                });
+                $scope.formatData($scope.facets, $scope.flipped);
                 
                 $scope.render();
             });
             // Hide the spinning wheel icon
             $scope.panelMeta.loading = false;
         };
+        
+        $scope.formatData = function(facets, flipped) {
+            $scope.data = [];
+            $scope.row_labels = [];
+            $scope.col_labels = [];
+            $scope.hcrow = [];
+            $scope.hccol = [];
+            $scope.internal_sum = [];
+            $scope.internal_range = [];
+            
+            _.each(facets, function(d, i) {
+                // build the arrays to be used 
+                var count = d.count;
+                
+                if(!flipped) {
+                    $scope.row_labels.push(d.value);
+                    $scope.hcrow.push($scope.row_labels.length);
+                } else {
+                    $scope.col_labels.push(d.value);
+                    $scope.hccol.push($scope.col_labels.length);                    
+                }
 
+                _.each(d.pivot, function(p, j) {
+                    // columns in each row
+                    var entry = {};
+
+                    var v = p.value;
+                    
+                    if(!flipped) {
+                        if($scope.col_labels.indexOf(v) == -1) {
+                            $scope.col_labels.push(v);
+                            $scope.hccol.push($scope.col_labels.length);
+                            $scope.internal_sum.push(0);
+                            $scope.internal_range.push([Number.MAX_VALUE,0]);
+                        }
+
+                        var index = $scope.col_labels.indexOf(v); // index won't be -1 as we count in the facets with count = 0
+
+                        $scope.internal_sum[index] += p.count;
+                        $scope.internal_range[index][0] = Math.min($scope.internal_range[index][0], p.count);
+                        $scope.internal_range[index][1] = Math.max($scope.internal_range[index][0], p.count);
+                        
+                        entry.row = i + 1;
+                        entry.col = index + 1;
+//                        entry.value = Math.ceil((p.count / count) * 10.0);
+                        entry.value = p.count;
+                    } else {                 
+                        if($scope.row_labels.indexOf(v) == -1) {
+                            $scope.row_labels.push(v);
+                            $scope.hcrow.push($scope.row_labels.length);
+                            $scope.internal_sum.push(0);
+                            
+                            $scope.internal_range.push([Number.MAX_VALUE,0]);
+                        }
+                        
+                        var index = $scope.row_labels.indexOf(v); // index won't be -1 as we count in the facets with count = 0
+                        
+                        $scope.internal_sum[index] += p.count;
+                        $scope.internal_range[index][0] = Math.min($scope.internal_range[index][0], p.count);
+                        $scope.internal_range[index][1] = Math.max($scope.internal_range[index][0], p.count);
+                        
+                        entry.col = i + 1;
+                        entry.row = index + 1;
+//                        entry.value = Math.ceil((p.count / count) * 10.0);
+                        entry.value = p.count;
+                    }
+                    
+                    $scope.data.push(entry);
+                });
+            });
+        };
+        
+        $scope.flip = function() {
+            $scope.flipped = !$scope.flipped;
+            $scope.formatData($scope.facets, $scope.flipped);
+            $scope.render();
+        };
+        
         $scope.set_refresh = function (state) {
             $scope.refresh = state;
         };
@@ -250,6 +275,15 @@ function (angular, app, _, $, d3) {
                     var el = element[0];
                     
                     var data = jQuery.extend(true, [], scope.data);
+                    var div = scope.flipped ? 'row' : 'col';
+                    
+                    data = _.map(data, function(d){
+                        return{
+                            row: +d.row,
+                            col: +d.col,
+                            value: +((d.value / scope.internal_sum[d[div] - 1]) * 10.0)
+                        };
+                    });
                     
                     var margin = {
                         top: 150,
@@ -261,20 +295,46 @@ function (angular, app, _, $, d3) {
                     var rowSortOrder = false;
                     var colSortOrder = false;
                     
-                    var cellSize = 15,
-                        col_number = scope.col_labels.length, //TODO: size to be determined
-                        row_number = scope.row_labels.length, //TODO: size to be determined
-                        width = cellSize * col_number, // - margin.left - margin.right,
-                        height = cellSize * row_number, // - margin.top - margin.bottom,
-                        legendElementWidth = cellSize * 2.5;
-
-                    var colorBuckets = 11,
-                        colors = ['#FFFFFF', '#F1EEF6', '#E6D3E1', '#DBB9CD', '#D19EB9', '#C684A4', '#BB6990', '#B14F7C', '#A63467', '#9B1A53', '#91003F'];
+//                    var colorgroup = d3.scale.ordinal()
+//                        .domain(d3.range(3))
+//                        .range([ 'blue', 'red', 'green' ]);
+//                  
+                    var brightrange = d3.scale.linear()
+                        .domain([0,300])
+                        .range([0,3]);
+                    
+                    var domain = d3.range(11);
+                    
+                    var otherRange = d3.scale.linear()
+                        .domain([0,10])
+                        .range([-255,255]);
+                    
+                    var color_string = 'blue';
+                    
+                    function color(shift) {
+                         if (shift >= 0) {return d3.hsl(color_string).darker(brightrange(shift));}
+                         else {return d3.hsl(color_string).brighter(brightrange(-shift));}             
+                    }
                     
                     var hcrow = jQuery.extend(true, [], scope.hcrow),
                         hccol = jQuery.extend(true, [], scope.hccol),
                         rowLabel = jQuery.extend(true, [], scope.row_labels),
                         colLabel = jQuery.extend(true, [], scope.col_labels);
+                    
+                    var cellSize = 15,
+                        col_number = colLabel.length,
+                        row_number = rowLabel.length,
+                        width = cellSize * col_number,
+                        height = cellSize * row_number,
+                        legendElementWidth = cellSize * 2.5;
+
+                    var colors = [];
+                    
+                    _.each(domain, function(n){
+                        colors.push(color(otherRange(n)).toString());
+                    });
+                    
+                    var colorBuckets = colors.length;
                     
                     // Colors Scale for heatmap (white to red to dark red)
                     var colorScale = d3.scale.quantile()
