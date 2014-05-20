@@ -158,6 +158,7 @@ define([
 
         // Build SOLR query
         var time_field = filterSrv.getTimeField();
+        var fq = '&' + filterSrv.getSolrFq();
         var wt_json = '&wt=json';
         var rows_limit = '&rows=0'; // for trends, we do not need the actual response doc, so set rows=0
 
@@ -181,9 +182,9 @@ define([
           '&facet.range.gap=' + facet_second_gap +
           '&facet.range.other=between';
 
-        var first_request = querySrv.getQuery(0) + wt_json + rows_limit + facet_first_range;
-        var second_request = querySrv.getQuery(0) + wt_json + rows_limit + facet_second_range;
-        $scope.panel.queries.query = first_request + "\n" + second_request;
+        var first_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_first_range;
+        var second_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_second_range;
+        $scope.panel.queries.query = first_request + "\n\n" + second_request;
 
         request = request.setQuery(first_request);
         var results_new = request.doSearch();
@@ -195,12 +196,13 @@ define([
 
           results_old.then(function(results_old) {
             if (DEBUG) {
-              console.log('new time')
-              console.log($scope.time.from, $scope.time.to)
-              console.log('old time')
-              console.log($scope.old_time.from, $scope.old_time.to)
-              console.log(results_new)
-              console.log(results_old)
+              console.debug('do Search()')
+              console.debug('new time')
+              console.debug($scope.time.from, $scope.time.to)
+              console.debug('old time')
+              console.debug($scope.old_time.from, $scope.old_time.to)
+              console.debug(results_new)
+              console.debug(results_old)
             }
             processSolrResults(results_new, results_old);
             $scope.$emit('render');
