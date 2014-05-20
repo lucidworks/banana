@@ -48,11 +48,12 @@ function (Settings) {
       'hits',
       'column',
       // 'derivequeries',  // TODO
-      // 'trends',  // TODO
+      'trends',
       'bettermap',
       'query',
       'terms',
       'multiseries',
+      'rangefacet',
       // 'dummy'  // Dummy module for testing
     ]
   });
