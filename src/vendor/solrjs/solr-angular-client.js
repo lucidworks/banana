@@ -19,8 +19,7 @@ angular.module('solrjs.service', [])
     var DEBUG = true; // DEBUG mode
 
     var
-
-      // use existing ejs object if it exists
+      // use existing sjs object if it exists
       sjs = window.sjs || {},
 
       /* results are returned as a promise */
@@ -39,7 +38,7 @@ angular.module('solrjs.service', [])
       url = '';
     }
 
-    /* implement the elastic.js client interface for angular */
+    /* implement the solr.js client interface for angular */
     sjs.client = {
       server: function (s) {
         if (s == null) {
@@ -53,43 +52,17 @@ angular.module('solrjs.service', [])
         var config = {};
         var isUpdate = path.indexOf('/update');
 
-        if(DEBUG) {
-          console.log('solr-angular-client: url='+url+', path='+path+', isUpdate='+isUpdate);
-        }
+        if (DEBUG) { console.debug('solr-angular-client: url=',url,', path=',path,', isUpdate=',isUpdate); }
 
         if (isUpdate !== -1) {
-          // update request, meaning to save a dashboard to kibana-int collection.
-          // Need to modify path accordingly.
-          // TODO: Find a better way to implement this.
-          // path = url.substr(0, url.indexOf('logstash_logs')) + 'kibana-int' + path;
           config = { headers: {'Content-type':'application/json'} };
         } else {
-          // path = url + path;
           config = { headers: {'Content-type':'application/x-www-form-urlencoded'} };
         }
+
         path = url + path;
-        
-        
 
-        // var config = {
-        //   headers: {
-        //     'Content-type': 'application/x-www-form-urlencoded'
-        //   }
-        // };
-        // For update JSON
-        // 'Content-type': 'application/json'
-
-        // return promiseThen($http.post(path, data), successcb, errorcb);
-
-
-
-        // SOLR - TESTING Multiple Queries
-        
-        // var queries = [data, 'q=*:*&wt=json'];
-
-        if(DEBUG) {
-          console.log('solr-angular-client: url='+url+', path='+path+', data=',data);
-        }
+        if (DEBUG) { console.debug('solr-angular-client: url=',url,', path=',path,', data=',data); }
 
         return promiseThen($http.post(path, data, config), successcb, errorcb);
       },
@@ -115,41 +88,8 @@ angular.module('solrjs.service', [])
           (errorcb || angular.noop)(undefined);
           return undefined;
         });
-      },
-      // post_solr: function (path, data, successcb, errorcb) {
-      //   var config = {};
-      //   var isUpdate = path.indexOf('/update');
-        
-      //   if (DEBUG) {
-      //     console.log('solr-angular-client: path='+path+', isUpdate='+isUpdate);
-      //   }
+      }
 
-      //   if (isUpdate !== -1) {
-      //     // update request, meaning to save a dashboard to kibana-int collection.
-      //     // Need to modify path accordingly.
-      //     // TODO: Find a better way to implement this.
-      //     path = url.substr(0, url.indexOf('logstash_logs')) + 'kibana-int' + path;
-      //     config = { headers: {'Content-type':'application/json'} };
-      //   } else {
-      //     path = url + path;
-      //     config = { headers: {'Content-type':'application/x-www-form-urlencoded'} };
-      //   }
-
-      //   if (DEBUG) {
-      //     console.log('solr-angular-client: path='+path+', data=',data);
-      //   }
-
-      //   // var config = {
-      //   //   headers: {
-      //   //     'Content-type': 'application/x-www-form-urlencoded'
-      //   //   }
-      //   // };
-      //   // For update JSON
-      //   // 'Content-type': 'application/json'
-
-      //   // return promiseThen($http.post(path, data), successcb, errorcb);
-      //   return promiseThen($http.post(path, data, config), successcb, errorcb);
-      // }
     };
   
     return sjs;

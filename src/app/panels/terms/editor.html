@@ -1,15 +1,17 @@
 <div class="row-fluid">
   <div class="span2">
-    <label class="small">Field</label>
+    <label class="small">Field <tip>This is the facet field.</tip></label>
     <input type="text" class="input-small" bs-typeahead="fields.list" ng-model="panel.field" ng-change="set_refresh(true)">
   </div>
   <div class="span2">
-    <label class="small">Length</label>
+    <label class="small">Length <tip>Specify a maximum number of terms to display (Top N)</tip></label>
     <input class="input-small" type="number" ng-model="panel.size" ng-change="set_refresh(true)">
   </div>
   <div class="span3">
     <label class="small">Order</label>
-    <select class="input-medium" ng-model="panel.order" ng-options="f for f in ['count','term','reverse_count','reverse_term']" ng-change="set_refresh(true)"></select></span>
+    <!-- <select class="input-medium" ng-model="panel.order" ng-options="f for f in ['count','term','reverse_count','reverse_term']" ng-change="set_refresh(true)"></select></span> -->
+    <!-- TODO: rethink how to do panel.order -->
+    <select class="input-medium" ng-model="panel.order" ng-options="f for f in ['count']" ng-change="set_refresh(true)"></select>
   </div>
   <div class="span4">
     <label class="small">Exclude Terms(s) (comma seperated)</label>
@@ -51,7 +53,15 @@
 </div>
 <div class="row-fluid">
   <div class="span2">
-    <label class="small">Time Field</label>
-    <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead="fields.list" type="text" class="input-small" ng-model="panel.time_field">
+    <label class="small">Mode <tip>For min, mean, max, and sum modes. Field type has to be numeric.</tip></label>
+    <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['count','min','mean','max','sum']"></select>
+  </div>
+  <div class="span2" ng-show="panel.mode != 'count'">
+    <label class="small">Stats Field <tip>This is the field that contains numerical values.</tip></label>
+    <input type="text" class="input-small" bs-typeahead="fields.list" ng-model="panel.stats_field" ng-change="set_refresh(true)">
+  </div>
+  <div class="span2">
+    <label class="small">Decimal Points <tip>The number of digits after the decimal point.</tip></label>
+    <select class="input-mini" ng-model="panel.decimal_points" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9]"></select>
   </div>
 </div>

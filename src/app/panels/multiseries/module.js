@@ -389,6 +389,5 @@ define([
                 render_panel();
             }
         };
-
-    });
+  });
 });

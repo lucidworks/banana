@@ -5,6 +5,8 @@ define([
 ], function (angular, _, config) {
   'use strict';
 
+  var DEBUG = false; // DEBUG mode
+
   var module = angular.module('kibana.services');
 
   module.service('filterSrv', function(dashboard, ejsResource, sjsResource) {
@@ -21,7 +23,6 @@ define([
     // For convenience
     // var ejs = ejsResource(config.elasticsearch);
     var solrserver = dashboard.current.solr.server + dashboard.current.solr.core_name || config.solr + config.solr_core;
-    // var sjs = sjsResource(config.solr + config.solr_core);
     var sjs = sjsResource(solrserver);
     
     var _f = dashboard.current.services.filter;
@@ -140,7 +141,7 @@ define([
       // Loop through the list to find the time field, usually it should be in self.list[0]
       _.each(self.list, function(v,k) {
 
-        console.debug('filterSrv: v=',v,' k=',k);
+        if (DEBUG) { console.debug('filterSrv: v=',v,' k=',k); }
 
         if (v.type == 'time') {
           time_field = v.field;

@@ -167,7 +167,7 @@ function (angular, app, _, L, localRequire) {
         }
 
         var results = request.doSearch();
-          
+
         results.then(function(results) {
           $scope.panelMeta.loading = false;
 

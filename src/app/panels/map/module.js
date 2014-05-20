@@ -1,5 +1,4 @@
 /*
-
   ## Map
 
   ### Parameters
@@ -11,7 +10,6 @@
   * spyable :: Show the 'eye' icon that reveals the last Solr query
   * index_limit :: This does nothing yet. Eventually will limit the query to the first
                    N indices
-
 */
 
 define([
@@ -56,6 +54,10 @@ function (angular, app, _, $) {
         query       : '*:*',
         custom      : ''
       },
+      mode  : 'count', // mode to tell which number will be used to plot the chart.
+      field : '',
+      stats_field : '',
+      decimal_points : 0, // The number of digits after the decimal point
       map     : "world",
       colors  : ['#A0E2E2', '#265656'],
       size    : 100,
@@ -72,6 +74,10 @@ function (angular, app, _, $) {
 
     $scope.set_refresh = function (state) {
       $scope.refresh = state;
+      // if 'count' mode is selected, set decimal_points to zero automatically.
+      if ($scope.panel.mode === 'count') {
+        $scope.panel.decimal_points = 0;
+      }
     };
 
     $scope.close_edit = function() {
@@ -83,13 +89,14 @@ function (angular, app, _, $) {
     };
 
     $scope.get_data = function() {
-
       // Make sure we have everything for the request to complete
       if(dashboard.indices.length === 0) {
         return;
       }
       $scope.panelMeta.loading = true;
 
+      // Solr
+      $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       var request;
       request = $scope.sjs.Request().indices(dashboard.indices);
@@ -116,34 +123,29 @@ function (angular, app, _, $) {
       $scope.populate_modal(request);
 
       // Build Solr query
-      // var start_time = new Date(filterSrv.list[0].from).toISOString();
-      // var end_time = new Date(filterSrv.list[0].to).toISOString();
-      // Get time field from filterSrv, is the time field always at list[0]?
-      // var time_field = filterSrv.list[0].field;
-      // var fq = '&fq=' + time_field + ':[' + start_time + '%20TO%20' + end_time + ']';  // Get timefield from filterSrv
-
       var fq = '&' + filterSrv.getSolrFq();
-      // var df = '&df=message';
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0'; // for map module, we don't display results from row, but we use facets.
-      // var facet_gap = '%2B1DAY';
-      var facet = '&facet=true' +
-                  '&facet.field=' + $scope.panel.field +
-                  '&facet.limit=' + $scope.panel.size;
+      var facet = '';
+
+      if ($scope.panel.mode === 'count') {
+        facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size;
+      } else {
+        // if mode != 'count' then we need to use stats query
+        facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field;
+      }
 
       // Set the panel's query
-      // $scope.panel.queries.query = 'q=' + querySrv.list[0].query + df + wt_json + fq + rows_limit + facet + filter_fq;
       $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + fq + rows_limit + facet;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
-        // request = request.customQuery($scope.panel.queries.custom);
         request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
       } else {
         request = request.setQuery($scope.panel.queries.query);
       }
 
-      console.debug('map: $scope.panel=',$scope.panel);
+      if (DEBUG) { console.debug('map: $scope.panel=',$scope.panel); }
 
       var results = request.doSearch();
 
@@ -151,8 +153,8 @@ function (angular, app, _, $) {
       results.then(function(results) {
         $scope.panelMeta.loading = false;
         $scope.data = {}; // empty the data for new results
+        var terms = [];
 
-        // $scope.hits = results.hits.total;
         if (results.response.numFound) {
           $scope.hits = results.response.numFound;
         } else {
@@ -160,14 +162,16 @@ function (angular, app, _, $) {
           $scope.$emit('render');
           return false;
         }
-
         
-        // _.each(results.facets.map.terms, function(v) {
-        //   $scope.data[v.term.toUpperCase()] = v.count;
-        // });
-        console.debug('map: results=',results);
+        if (DEBUG) { console.debug('map: results=',results); }
 
-        var terms = results.facet_counts.facet_fields[$scope.panel.field];
+        if ($scope.panel.mode === 'count') {
+          terms = results.facet_counts.facet_fields[$scope.panel.field];
+        } else { // stats mode
+          _.each(results.stats.stats_fields[$scope.panel.stats_field].facets[$scope.panel.field], function(stats_obj,facet_field) {
+            terms.push(facet_field, stats_obj[$scope.panel.mode]);
+          });
+        }
 
         if ($scope.hits > 0) {
           for (var i=0; i < terms.length; i += 2) {
@@ -187,6 +191,8 @@ function (angular, app, _, $) {
           };
         }
 
+        if (DEBUG) { console.debug('map: $scope.data=',$scope.data); }
+
         $scope.$emit('render');
       });
     };
@@ -204,7 +210,6 @@ function (angular, app, _, $) {
     };
 
   });
-
 
   module.directive('map', function() {
     return {
@@ -242,7 +247,12 @@ function (angular, app, _, $) {
               onRegionLabelShow: function(event, label, code){
                 elem.children('.map-legend').show();
                 var count = _.isUndefined(scope.data[code]) ? 0 : scope.data[code];
-                elem.children('.map-legend').text(label.text() + ": " + count);
+                // if (scope.panel.mode === 'count') {
+                //   count = count.toFixed(0);
+                // } else {
+                //   count = count.toFixed(scope.panel.decimal_points);
+                // }
+                elem.children('.map-legend').text(label.text() + ": " + count.toFixed(scope.panel.decimal_points));
               },
               onRegionOut: function() {
                 $('.map-legend').hide();

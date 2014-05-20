@@ -1,6 +1,7 @@
   <div class="row-fluid">
     <div class="span2">
       <label class="small">Mode</label>
+      <!-- Banana: does not support 'min','mean','max', and 'total' modes yet -->
       <!-- <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['count','min','mean','max','total','value']"></select> -->
       <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['count','values']"></select>
     </div>

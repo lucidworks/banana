@@ -6,6 +6,8 @@ define([
 function (angular, _, config) {
   'use strict';
 
+  var DEBUG = false; // DEBUG mode
+
   var module = angular.module('kibana.services');
 
   module.service('querySrv', function(dashboard, ejsResource, sjsResource) {
@@ -19,17 +21,15 @@ function (angular, _, config) {
 
     // Defaults for query objects
     var _query = {
-      // query: '*',
       query: '*:*',
       alias: '',
       pin: false,
-      // type: 'lucene',
-      // df: 'df=message'
     };
 
     // For convenience
-    var ejs = ejsResource(config.elasticsearch);
-    var sjs = sjsResource(config.solr + config.solr_core);
+    // var ejs = ejsResource(config.elasticsearch);
+    var solrserver = dashboard.current.solr.server + dashboard.current.solr.core_name || config.solr + config.solr_core;
+    var sjs = sjsResource(solrserver);
     var _q = dashboard.current.services.query;
 
     this.colors = [

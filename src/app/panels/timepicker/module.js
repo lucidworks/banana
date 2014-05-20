@@ -22,6 +22,8 @@ define([
 function (angular, app, _, moment, kbn) {
   'use strict';
 
+  var DEBUG = true; // DEBUG mode
+
   var module = angular.module('kibana.panels.timepicker', []);
   app.useModule(module);
 
@@ -32,14 +34,12 @@ function (angular, app, _, moment, kbn) {
         " or if you're using time stamped indices, you need one of these"
     };
 
-
     // Set and populate defaults
     var _d = {
       status        : "Stable",
       mode          : "relative",
       time_options  : ['5m','15m','1h','6h','12h','24h','2d','7d','30d'],
       timespan      : '15m',
-      // timefield     : '@timestamp',
       timefield     : 'event_timestamp',
       timeformat    : "",
       refresh       : {
@@ -77,6 +77,7 @@ function (angular, app, _, moment, kbn) {
         };
         break;
       }
+
       $scope.time.field = $scope.panel.timefield;
       // These 3 statements basicly do everything time_apply() does
       set_timepicker($scope.time.from,$scope.time.to);
@@ -89,7 +90,6 @@ function (angular, app, _, moment, kbn) {
       }
 
       dashboard.refresh();
-
 
       // Start refresh timer if enabled
       if ($scope.panel.refresh.enable) {
@@ -143,10 +143,13 @@ function (angular, app, _, moment, kbn) {
     };
 
     var update_panel = function() {
-      // Update panel's string representation of the time object.Don't update if
+      // Update panel's string representation of the time object. Don't update if
       // we're in relative mode since we dont want to store the time object in the
       // json for relative periods
       if($scope.panel.mode !== 'relative') {
+
+        if (DEBUG) { console.debug('timepicker: update_panel() $scope.time = ',$scope.time,', $scope.timepicker = ',$scope.timepicker); }
+
         $scope.panel.time = {
           from : $scope.time.from.format("MM/DD/YYYY HH:mm:ss"),
           to : $scope.time.to.format("MM/DD/YYYY HH:mm:ss"),
@@ -184,15 +187,25 @@ function (angular, app, _, moment, kbn) {
       $scope.time_apply();
     };
 
-    //
     $scope.time_calc = function(){
       var from,to;
+
       // If time picker is defined (usually is) TOFIX: Horrible parsing
       if(!(_.isUndefined($scope.timepicker))) {
+        if (DEBUG) {
+          console.debug('timepicker: time_calc() BEFORE $scope.timepicker.from.date moment = ',moment($scope.timepicker.from.date).format('MM/DD/YYYY'));
+          console.debug('timepicker: time_calc() BEFORE $scope.timepicker.from.time = ',$scope.timepicker.from.time);
+        }
+
+        // Fix for SILK-4 and SILK-29 bugs
+        // by using moment.utc() instead of just moment()
         from = $scope.panel.mode === 'relative' ? moment(kbn.time_ago($scope.panel.timespan)) :
-          moment(moment($scope.timepicker.from.date).format('MM/DD/YYYY') + " " + $scope.timepicker.from.time,'MM/DD/YYYY HH:mm:ss');
+          moment(moment.utc($scope.timepicker.from.date).format('MM/DD/YYYY') + " " + $scope.timepicker.from.time,'MM/DD/YYYY HH:mm:ss');
         to = $scope.panel.mode !== 'absolute' ? moment() :
-          moment(moment($scope.timepicker.to.date).format('MM/DD/YYYY') + " " + $scope.timepicker.to.time,'MM/DD/YYYY HH:mm:ss');
+          moment(moment.utc($scope.timepicker.to.date).format('MM/DD/YYYY') + " " + $scope.timepicker.to.time,'MM/DD/YYYY HH:mm:ss');
+
+        if (DEBUG) { console.debug('timepicker: time_calc() AFTER calculated from = ',from,',to = ',to); }
+        
       // Otherwise (probably initialization)
       } else {
         from = $scope.panel.mode === 'relative' ? moment(kbn.time_ago($scope.panel.timespan)) :
@@ -205,9 +218,18 @@ function (angular, app, _, moment, kbn) {
         from = moment(to.valueOf() - 1000);
       }
 
-      $timeout(function(){
-        set_timepicker(from,to);
-      });
+      // Fix for SILK-4 and SILK-29 bugs
+      // This $timeout function causes the timepicker skip-back-one-day bugs.
+      // Because it will set the timepicker values to $scope.time.from and $scope.time.to, which
+      // are the calculated UTC time values, and depending on your browser timezone, these values
+      // might be minus one day. And when you press the timepicker button to update the time, it
+      // will keep decreasing the date by one day.
+      //    $scope.timepicker => time based on browser timezone
+      //    $scope.time       => calculated UTC time
+      //
+      // $timeout(function(){
+      //   set_timepicker(from,to);
+      // });
 
       return {
         from : from,
@@ -216,23 +238,39 @@ function (angular, app, _, moment, kbn) {
     };
 
     $scope.time_apply = function() {
-      $scope.panel.error = "";
       // Update internal time object
-
+      $scope.panel.error = "";
+      
       // Remove all other time filters
       filterSrv.removeByType('time');
 
+      if (DEBUG) { console.debug('timepicker: time_apply() BEFORE time_calc() $scope.time = ',$scope.time,' $scope.timepicker.from.date = ',$scope.timepicker.from.date.toString()); }
 
       $scope.time = $scope.time_calc();
       $scope.time.field = $scope.panel.timefield;
+
+      if (DEBUG) { console.debug('timepicker: time_apply() AFTER time_calc() $scope.time = ',$scope.time,' $scope.timepicker = ',$scope.timepicker); }
 
       update_panel();
       set_time_filter($scope.time);
 
       dashboard.refresh();
-
     };
-    $scope.$watch('panel.mode', $scope.time_apply);
+
+    // No need to automatically call time_apply() when changing time mode,
+    // because it will mess up the timepicker.
+    // 
+    // $scope.$watch('panel.mode', $scope.time_apply);
+
+    $scope.time_check = function() {
+      // FOR DEBUGGING timepicker weirdness with UTC time conversion.
+      if (DEBUG) {
+        console.debug('timepicker: time_check() $scope.timepicker = ',$scope.timepicker,
+          ' $scope.timepicker.from.date = ',$scope.timepicker.from.date.toString(),
+          ' moment.utc($scope.timepicker.from.date).format("MM/DD/YYYY") = ', moment.utc($scope.timepicker.from.date).format('MM/DD/YYYY')
+        );
+      }
+    };
 
     function set_time_filter(time) {
       time.type = 'time';

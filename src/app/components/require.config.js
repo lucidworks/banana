@@ -40,6 +40,7 @@ require.config({
     modernizr:                '../vendor/modernizr-2.6.1',
     elasticjs:                '../vendor/elasticjs/elastic-angular-client',
     solrjs:                   '../vendor/solrjs/solr-angular-client',
+    d3:                       '../vendor/d3',
   },
   shim: {
     underscore: {

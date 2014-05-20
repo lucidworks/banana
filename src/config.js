@@ -9,16 +9,17 @@ function (Settings) {
   return new Settings({
 
     /**
-     * URL to your elasticsearch server. You almost certainly don't
-     * want 'http://localhost:9200' here. Even if Kibana and ES are on
+     * URL to your Solr server. You almost certainly don't
+     * want 'http://localhost:8983/solr/' here. Even if Banana and Solr are on
      * the same host
      *
-     * By default this will attempt to reach ES at the same host you have
-     * elasticsearch installed on. You probably want to set it to the FQDN of your
-     * elasticsearch host
+     * By default this will attempt to reach Solr at the same host you have
+     * Banana installed on. You probably want to set it to the FQDN of your
+     * Solr host
      * @type {String}
      */
-    //elasticsearch: "http://"+window.location.hostname+":9200",
+
+    // TODO: Remove ES settings
     elasticsearch: "http://localhost:9200",
 
     // Specify Solr server and core to store the data.
@@ -26,7 +27,7 @@ function (Settings) {
     solr_core: "logstash_logs",
 
     /**
-     * The default ES index to use for storing Kibana specific object
+     * The default Solr index to use for storing Banana specific object
      * such as stored dashboards
      * @type {String}
      */
@@ -40,20 +41,18 @@ function (Settings) {
     panel_names: [
       'histogram',
       'map',
-      // 'pie',  // Deprecated, use terms panel instead
       'table',
       'filtering',
       'timepicker',
       'text',
-      // 'fields',  // Deprecated, table panel now integrates a field selector
-      'hits',  // TODO
-      // 'dashcontrol',  // Deprecated, moved to nav bar
+      'hits',
       'column',
       // 'derivequeries',  // TODO
       // 'trends',  // TODO
-      // 'bettermap',  // TODO
+      'bettermap',
       'query',
       'terms',
+      'multiseries',
       // 'dummy'  // Dummy module for testing
     ]
   });
