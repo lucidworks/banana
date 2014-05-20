@@ -15,3 +15,10 @@
       <input id="rows_limit" type="number" min="1" max="500" value="100" class="input-small" ng-model="panel.editor_size" ng-change="set_refresh(true)">
     </div>
 </div>
+
+<div class="row-fluid">
+    <div class="span3">
+        <label class="small">Heatmap Color <tip>Heatmap cells color</tip></label>
+        <select class="input-medium" ng-model="panel.color" ng-options="c for c in ['blue', 'red', 'green', 'brown','gray']"></select>
+    </div>
+</div>

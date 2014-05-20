@@ -48,6 +48,7 @@ function (angular, app, _, $, d3) {
             col_field: 'gender',
             row_size: 300,
             editor_size: 0,
+            color:'blue',
             spyable: true
         };
 
@@ -129,6 +130,7 @@ function (angular, app, _, $, d3) {
                 $scope.hcrow = [];
                 $scope.hccol = [];
                 $scope.internal_sum = [];
+                $scope.internal_range = [];
                 
                 $scope.formatData($scope.facets, $scope.flipped);
                 
@@ -177,11 +179,10 @@ function (angular, app, _, $, d3) {
 
                         $scope.internal_sum[index] += p.count;
                         $scope.internal_range[index][0] = Math.min($scope.internal_range[index][0], p.count);
-                        $scope.internal_range[index][1] = Math.max($scope.internal_range[index][0], p.count);
+                        $scope.internal_range[index][1] = Math.max($scope.internal_range[index][1], p.count);
                         
                         entry.row = i + 1;
                         entry.col = index + 1;
-//                        entry.value = Math.ceil((p.count / count) * 10.0);
                         entry.value = p.count;
                     } else {                 
                         if($scope.row_labels.indexOf(v) == -1) {
@@ -196,11 +197,10 @@ function (angular, app, _, $, d3) {
                         
                         $scope.internal_sum[index] += p.count;
                         $scope.internal_range[index][0] = Math.min($scope.internal_range[index][0], p.count);
-                        $scope.internal_range[index][1] = Math.max($scope.internal_range[index][0], p.count);
+                        $scope.internal_range[index][1] = Math.max($scope.internal_range[index][1], p.count);
                         
                         entry.col = i + 1;
                         entry.row = index + 1;
-//                        entry.value = Math.ceil((p.count / count) * 10.0);
                         entry.value = p.count;
                     }
                     
@@ -277,19 +277,27 @@ function (angular, app, _, $, d3) {
                     var data = jQuery.extend(true, [], scope.data);
                     var div = scope.flipped ? 'row' : 'col';
                     
+                    var labels_columns = [];
+                    
+                    // TEST
+                    _.each(scope.internal_range, function(d){
+                        var d_range = d3.scale.linear().domain(d).range([0,10]);
+                        labels_columns.push(d_range);
+                    });
+                    
                     data = _.map(data, function(d){
                         return{
                             row: +d.row,
                             col: +d.col,
-                            value: +((d.value / scope.internal_sum[d[div] - 1]) * 10.0)
+                            value: +labels_columns[d[div] - 1](d.value)
                         };
                     });
                     
                     var margin = {
-                        top: 150,
+                        top: 50,
                         right: 10,
                         bottom: 20,
-                        left: 100
+                        left: 75
                     };
 
                     var rowSortOrder = false;
@@ -309,7 +317,7 @@ function (angular, app, _, $, d3) {
                         .domain([0,10])
                         .range([-255,255]);
                     
-                    var color_string = 'blue';
+                    var color_string = scope.panel.color;
                     
                     function color(shift) {
                          if (shift >= 0) {return d3.hsl(color_string).darker(brightrange(shift));}
@@ -336,7 +344,7 @@ function (angular, app, _, $, d3) {
                     
                     var colorBuckets = colors.length;
                     
-                    // Colors Scale for heatmap (white to red to dark red)
+                    // Colors Scale for heatmap
                     var colorScale = d3.scale.quantile()
                         .domain([0, 10])
                         .range(colors);
