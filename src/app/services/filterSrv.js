@@ -209,6 +209,18 @@ define([
       return time_field;
     }
 
+    // Get time field for Solr query
+    this.getRangeField = function() {
+      var range_field;
+      _.each(self.list, function(v) {
+        if (v.type == 'range') {
+          range_field = v.field;
+          return;
+        }
+      });
+      return range_field;
+    }
+
     // Get start time for Solr query (e.g. facet.range.start)
     this.getStartTime = function() {
       var start_time;

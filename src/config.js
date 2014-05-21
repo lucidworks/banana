@@ -53,7 +53,7 @@ function (Settings) {
       'query',
       'terms',
       'multiseries',
-      'rangefacet',
+      'rangeFacet'
       // 'dummy'  // Dummy module for testing
     ]
   });
