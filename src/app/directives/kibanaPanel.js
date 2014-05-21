@@ -39,6 +39,9 @@ function (angular) {
             '<span bs-modal="\'app/partials/paneleditor.html\'" class="pointer">'+
             '<i class="icon-cog pointer" bs-tooltip="\'Configure\'"></i></span>'+
           '</span>' +
+          
+          '<span ng-repeat="custom in panelMeta.customs" class="row-button extra" bs-tooltip="custom.description" ng-bind-html-unsafe="custom.html" ng-show="custom.show">' +
+          '</span>' +
 
           '<span ng-repeat="task in panelMeta.modals" class="row-button extra" ng-show="task.show">' +
             '<span bs-modal="task.partial"class="pointer"><i ' +

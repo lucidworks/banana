@@ -32,8 +32,15 @@ function (angular, app, _, $, d3) {
                     src: 'app/partials/querySelect.html'
                 }
             ],
+            customs :[
+                {
+                    html: '<i class="icon-refresh pointer" ng-click="flip()"></i>',
+                    show: true,
+                    description: "Transpose Rows and Columns"
+                }
+            ],
             status: "Experimental",
-            description: "Heatmap D3 Experimental Panel"
+            description: "Heat Map for Representing Pivot Facet Counts"
         };
 
         var _d = {
@@ -48,8 +55,9 @@ function (angular, app, _, $, d3) {
             col_field: 'gender',
             row_size: 300,
             editor_size: 0,
-            color:'blue',
-            spyable: true
+            color:'gray',
+            spyable: true,
+            transpose_show: true
         };
 
         // Set panel's default values
@@ -98,6 +106,7 @@ function (angular, app, _, $, d3) {
 
             var wt_json = '&wt=json';
             var fq = '';
+//            var fq = '&' + filterSrv.getSolrFq();
             var rows_limit = '&rows=' + $scope.panel.size;
             var facet = '&facet=true';
             var facet_pivot = '&facet.pivot=' + $scope.panel.row_field + ',' + $scope.panel.col_field;
@@ -124,14 +133,7 @@ function (angular, app, _, $, d3) {
                 
                 $scope.facets = facets[key];
                 
-                $scope.data = [];
-                $scope.row_labels = [];
-                $scope.col_labels = [];
-                $scope.hcrow = [];
-                $scope.hccol = [];
-                $scope.internal_sum = [];
-                $scope.internal_range = [];
-                
+                $scope.init_arrays();
                 $scope.formatData($scope.facets, $scope.flipped);
                 
                 $scope.render();
@@ -140,14 +142,19 @@ function (angular, app, _, $, d3) {
             $scope.panelMeta.loading = false;
         };
         
-        $scope.formatData = function(facets, flipped) {
+        $scope.init_arrays = function() {
             $scope.data = [];
             $scope.row_labels = [];
             $scope.col_labels = [];
             $scope.hcrow = [];
             $scope.hccol = [];
             $scope.internal_sum = [];
-            $scope.internal_range = [];
+            $scope.internal_domain = [];
+            $scope.domain = [Number.MAX_VALUE,0];
+        }
+        
+        $scope.formatData = function(facets, flipped) {
+            $scope.init_arrays();
             
             _.each(facets, function(d, i) {
                 // build the arrays to be used 
@@ -172,14 +179,14 @@ function (angular, app, _, $, d3) {
                             $scope.col_labels.push(v);
                             $scope.hccol.push($scope.col_labels.length);
                             $scope.internal_sum.push(0);
-                            $scope.internal_range.push([Number.MAX_VALUE,0]);
+                            $scope.internal_domain.push([Number.MAX_VALUE,0]);
                         }
 
                         var index = $scope.col_labels.indexOf(v); // index won't be -1 as we count in the facets with count = 0
 
                         $scope.internal_sum[index] += p.count;
-                        $scope.internal_range[index][0] = Math.min($scope.internal_range[index][0], p.count);
-                        $scope.internal_range[index][1] = Math.max($scope.internal_range[index][1], p.count);
+                        $scope.internal_domain[index][0] = Math.min($scope.internal_domain[index][0], p.count);
+                        $scope.internal_domain[index][1] = Math.max($scope.internal_domain[index][1], p.count);
                         
                         entry.row = i + 1;
                         entry.col = index + 1;
@@ -189,20 +196,22 @@ function (angular, app, _, $, d3) {
                             $scope.row_labels.push(v);
                             $scope.hcrow.push($scope.row_labels.length);
                             $scope.internal_sum.push(0);
-                            
-                            $scope.internal_range.push([Number.MAX_VALUE,0]);
+                            $scope.internal_domain.push([Number.MAX_VALUE,0]);
                         }
                         
                         var index = $scope.row_labels.indexOf(v); // index won't be -1 as we count in the facets with count = 0
                         
                         $scope.internal_sum[index] += p.count;
-                        $scope.internal_range[index][0] = Math.min($scope.internal_range[index][0], p.count);
-                        $scope.internal_range[index][1] = Math.max($scope.internal_range[index][1], p.count);
+                        $scope.internal_domain[index][0] = Math.min($scope.internal_domain[index][0], p.count);
+                        $scope.internal_domain[index][1] = Math.max($scope.internal_domain[index][1], p.count);
                         
                         entry.col = i + 1;
                         entry.row = index + 1;
                         entry.value = p.count;
                     }
+                    
+                    $scope.domain[0] = Math.min($scope.domain[0], p.count);
+                    $scope.domain[1] = Math.max($scope.domain[1], p.count);
                     
                     $scope.data.push(entry);
                 });
@@ -278,9 +287,10 @@ function (angular, app, _, $, d3) {
                     var div = scope.flipped ? 'row' : 'col';
                     
                     var labels_columns = [];
+                    var intensity_domain = d3.scale.linear().domain(scope.domain).range([0,10]);
                     
                     // TEST
-                    _.each(scope.internal_range, function(d){
+                    _.each(scope.internal_domain, function(d){
                         var d_range = d3.scale.linear().domain(d).range([0,10]);
                         labels_columns.push(d_range);
                     });
@@ -289,33 +299,30 @@ function (angular, app, _, $, d3) {
                         return{
                             row: +d.row,
                             col: +d.col,
-                            value: +labels_columns[d[div] - 1](d.value)
+                            value: +intensity_domain(d.value)
+//                            value: +labels_columns[d[div] - 1](d.value)
                         };
                     });
                     
                     var margin = {
-                        top: 50,
+                        top: 50, // for columns
                         right: 10,
                         bottom: 20,
-                        left: 75
+                        left: 75 // for rows
                     };
 
                     var rowSortOrder = false;
                     var colSortOrder = false;
                     
-//                    var colorgroup = d3.scale.ordinal()
-//                        .domain(d3.range(3))
-//                        .range([ 'blue', 'red', 'green' ]);
-//                  
                     var brightrange = d3.scale.linear()
                         .domain([0,300])
                         .range([0,3]);
                     
-                    var domain = d3.range(11);
+                    var colr_domain = d3.range(11);
                     
                     var otherRange = d3.scale.linear()
                         .domain([0,10])
-                        .range([-255,255]);
+                        .range([-255,255]); // 255 is the max number
                     
                     var color_string = scope.panel.color;
                     
@@ -338,7 +345,7 @@ function (angular, app, _, $, d3) {
 
                     var colors = [];
                     
-                    _.each(domain, function(n){
+                    _.each(colr_domain, function(n){
                         colors.push(color(otherRange(n)).toString());
                     });
                     
@@ -435,7 +442,7 @@ function (angular, app, _, $, d3) {
                         .style("fill", function (d) {
                             return colorScale(d.value);
                         })
-                        .on("mouseover", function (d) {
+                        .on("mouseover", function (d, i) {
                             //highlight text
                             d3.select(this).classed("cell-hover", true);
                             d3.selectAll(".rowLabel").classed("text-highlight", function (r, ri) {
@@ -450,7 +457,7 @@ function (angular, app, _, $, d3) {
                             .style("left", (d3.event.layerX + 10) + "px")
                             .style("top", (d3.event.layerY - 10) + "px")
                             .select("#value")
-                            .text("lables:" + rowLabel[d.row - 1] + "," + colLabel[d.col - 1] + "\ndata:" + d.value + "\nrow-col-idx:" + d.col + "," + d.row + "\ncell-xy " + this.x.baseVal.value + ", " + this.y.baseVal.value);
+                        .text(rowLabel[d.row - 1] + "," + colLabel[d.col - 1] + " (" + scope.data[i].value + ")");
                         //Show the tooltip
                         d3.select("#tooltip").classed("hidden", false);
                     })
