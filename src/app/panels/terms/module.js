@@ -59,7 +59,8 @@ function (angular, app, _, $, kbn) {
       missing : true,
       other   : true,
       size    : 10,
-      order   : 'count',
+      // order   : 'count',
+      order   : 'descending',
       style   : { "font-size": '10pt'},
       donut   : false,
       tilt    : false,
@@ -134,6 +135,7 @@ function (angular, app, _, $, kbn) {
         facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size;
       } else {
         // if mode != 'count' then we need to use stats query
+        // stats does not support something like facet.limit, so we have to sort and limit the results manually.
         facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field;
       }
 
@@ -160,7 +162,7 @@ function (angular, app, _, $, kbn) {
         $scope.data = [];
 
         if ($scope.panel.mode === 'count') {
-          // in count mode, the y-axis min should be zero because count value cannot be negative.
+          // In count mode, the y-axis min should be zero because count value cannot be negative.
           $scope.yaxis_min = 0;
           _.each(results.facet_counts.facet_fields, function(v) {
             for (var i = 0; i < v.length; i++) {
@@ -171,18 +173,29 @@ function (angular, app, _, $, kbn) {
               if (count == 0) continue;
               var slice = { label : term, data : [[k,count]], actions: true};
               $scope.data.push(slice);
-              k++;
             };
           });
         } else {
-          // in stats mode, set y-axis min to null so jquery.flot will set the scale automatically.
+          // In stats mode, set y-axis min to null so jquery.flot will set the scale automatically.
           $scope.yaxis_min = null;
           _.each(results.stats.stats_fields[$scope.panel.stats_field].facets[$scope.panel.field], function(stats_obj,facet_field) {
             var slice = { label:facet_field, data:[[k,stats_obj[$scope.panel.mode]]], actions: true };
             $scope.data.push(slice);
-            k++
           });
         }
+
+        // Sort the results
+        if ($scope.panel.order == 'descending') {
+          $scope.data = _.sortBy($scope.data, function(d) {return -d.data[0][1];});
+        } else {
+          $scope.data = _.sortBy($scope.data, function(d) {return d.data[0][1];});
+        }
+        // Slice it according to panel.size, and then set the x-axis values with k.
+        $scope.data = $scope.data.slice(0,$scope.panel.size);
+        _.each($scope.data, function(v) {
+          v.data[0][0] = k;
+          k++;
+        });
 
         $scope.data.push({label:'Missing field',
           // data:[[k,results.facets.terms.missing]],meta:"missing",color:'#aaa',opacity:0});
