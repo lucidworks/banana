@@ -394,6 +394,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
     // TODO: add solr support
     this.elasticsearch_delete = function(id) {
+      // Set sjs.client.server to use 'kibana-int' for deleting dashboard
+      sjs.client.server(config.solr + config.kibana_index);
+
       return sjs.Document(config.kibana_index,'dashboard',id).doDelete(
         // Success
         function(result) {

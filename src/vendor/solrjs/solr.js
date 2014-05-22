@@ -8974,30 +8974,38 @@
             <p>Deletes the document from the given index and type using the 
             speciifed id.</p>
 
-            @member ejs.Document
+            @member sjs.Document
             @param {Function} successcb A callback function that handles the response.
             @param {Function} errorcb A callback function that handles errors.
             @returns {void} Returns the value of the callback when executing on the server.
             */
       doDelete: function (successcb, errorcb) {
         // make sure the user has set a client
-        if (ejs.client == null) {
+        if (sjs.client == null) {
           throw new Error("No Client Set");
         }
         
-        if (index == null || type == null || id == null) {
-          throw new Error('Index, Type, and ID must be set');
+        // if (index == null || type == null || id == null) {
+        //   throw new Error('Index, Type, and ID must be set');
+        // }
+        
+        // var url = '/' + index + '/' + type + '/' + id,
+        //   data = '',
+        //   paramStr = genParamStr();
+        
+        // if (paramStr !== '') {
+        //   url = url + '?' + paramStr;
+        // }
+
+        if (id == null) {
+          throw new Error('ID must be set');
         }
+
+        var data = '';
+        var url = '/update?commit=true&wt=json&stream.body=<delete><query>id:"'+id+'"</query></delete>';
         
-        var url = '/' + index + '/' + type + '/' + id,
-          data = '',
-          paramStr = genParamStr();
-        
-        if (paramStr !== '') {
-          url = url + '?' + paramStr;
-        }
-        
-        return ejs.client.del(url, data, successcb, errorcb);
+        // return sjs.client.del(url, data, successcb, errorcb);
+        return sjs.client.get(url, data, successcb, errorcb);
       }
 
     };
