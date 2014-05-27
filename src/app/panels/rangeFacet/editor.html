@@ -1,11 +1,5 @@
   <div class="row-fluid">
     <div class="span2">
-      <label class="small">Mode</label>
-      <!-- Banana: does not support 'min','mean','max', and 'total' modes yet -->
-      <!-- <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['count','min','mean','max','total','value']"></select> -->
-      <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['count','values']"></select>
-    </div>
-    <div class="span2">
       <label class="small">Range Field<tip>Must be numeric field</tip></label>
         <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead="fields.list" type="text" class="input-small" ng-model="panel.range_field">
     </div>
@@ -39,11 +33,6 @@
     <div class="span1"> <label class="small">Bars</label><input type="checkbox" ng-model="panel.bars" ng-checked="panel.bars"></div>
     <div class="span1"> <label class="small">Lines</label><input type="checkbox" ng-model="panel.lines" ng-checked="panel.lines"></div>
     <div class="span1"> <label class="small">Points</label><input type="checkbox" ng-model="panel.points" ng-checked="panel.points"></div>
-    <div class="span1"> <label class="small">Stack</label><input type="checkbox" ng-model="panel.stack" ng-checked="panel.stack"></div>
-    <div class="span1" ng-show="panel.stack">
-      <label style="white-space:nowrap" class="small">Percent <tip>Stack as a percentage of total</tip></label>
-      <input type="checkbox"  ng-model="panel.percentage" ng-checked="panel.percentage">
-    </div>
     <div class="span1"> <label class="small">Legend</label><input type="checkbox" ng-model="panel.legend" ng-checked="panel.legend"></div>
     <div class="span1"> <label class="small">xAxis</label><input type="checkbox" ng-model="panel['x-axis']" ng-checked="panel['x-axis']"></div>
     <div class="span1"> <label class="small">yAxis</label><input type="checkbox" ng-model="panel['y-axis']" ng-checked="panel['y-axis']"></div>
@@ -65,11 +54,7 @@
   </div>
 
   <div class="row-fluid">
-    <div class="span2">
-      <label class="small">Time correction</label>
-      <select ng-model="panel.timezone" class='input-small' ng-options="f for f in ['browser','utc']"></select>
-    </div>
-    <div class="span1"> <label class="small">Selectable</label><input type="checkbox" ng-model="panel.interactive" ng-checked="panel.interactive"></div>
+    <div class="span2"> <label class="small">Selectable</label><input type="checkbox" ng-model="panel.interactive" ng-checked="panel.interactive"></div>
     <div class="span2">
       <label class="small">Zoom Links</label><input type="checkbox" ng-model="panel.zoomlinks" ng-checked="panel.zoomlinks" />
     </div>
@@ -82,24 +67,20 @@
 
     <div class="span2">
       <label class="small">Minimum</label>
-        <input ng-change="set_refresh(true)" placeholder="Start typing" type="number" class="input-small" ng-model="panel.minimum">
+        <input ng-change="set_refresh(true)" type="number" class="input-small" ng-model="panel.minimum">
     </div>
     <div class="span2">
       <label class="small">Maximum</label>
-        <input ng-change="set_refresh(true)" placeholder="Start typing" type="number" class="input-small" ng-model="panel.maximum">
+        <input ng-change="set_refresh(true)" type="number" class="input-small" ng-model="panel.maximum">
     </div>
     <div class="span2">
       <label class="small">Interval</label>
-        <input ng-change="set_refresh(true)" placeholder="Start typing" type="number" class="input-small" ng-model="panel.gap">
+        <input ng-change="set_refresh(true)" type="number" class="input-small" ng-model="panel.gap">
     </div>
   </div>
 
   <h5>Tooltip Settings</h5>
   <div class="row-fluid" style="margin-bottom:10px;">
-    <div class="span3">
-      <label class="small">Stacked Values <tip>How should the values in stacked charts to be calculated?</tip></label>
-      <select class="input-medium" ng-model="panel.tooltip.value_type" ng-options="f for f in ['cumulative','individual']"></select>
-    </div>
     <div class="span3">
       <label class="small">Display Query <tip>If an alias is set, it will be shown in the tooltip. If not, should it show the query?</tip></label>
       <input type="checkbox" ng-model="panel.tooltip.query_as_alias" />

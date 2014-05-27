@@ -221,6 +221,19 @@ define([
       return range_field;
     }
 
+
+    // Get time field for Solr query
+    this.getRangeField = function() {
+      var range_field;
+      _.each(self.list, function(v) {
+        if (v.type == 'range') {
+          range_field = v.field;
+          return;
+        }
+      });
+      return range_field;
+    }
+
     // Get start time for Solr query (e.g. facet.range.start)
     this.getStartTime = function() {
       var start_time;
@@ -262,8 +275,26 @@ define([
       return _.pick(self.list,self.idsByType(type,inactive));
     };
 
+    this.idsByTypeAndField = function(type,field,inactive){
+      var _require = inactive ? {type:type} : {type:type, field:field, active:true};
+      return _.pluck(_.where(self.list,_require),'id');
+    }
+
+    // this method used to get the range filter with specific field
+    this.getRangeFieldFilter = function(type, field, inactive){
+      return _.pick(self.list, self.idsByTypeAndField(type, field, inactive));
+    }
+
     this.removeByType = function(type) {
       var ids = self.idsByType(type);
+      _.each(ids,function(id) {
+        self.remove(id);
+      });
+      return ids;
+    };
+
+    this.removeByTypeAndField = function(type,field) {
+      var ids = self.idsByTypeAndField(type,field);
       _.each(ids,function(id) {
         self.remove(id);
       });
@@ -274,6 +305,7 @@ define([
       var _require = inactive ? {type:type} : {type:type,active:true};
       return _.pluck(_.where(self.list,_require),'id');
     };
+
 
     // TOFIX: Error handling when there is more than one field
     this.timeField = function() {
@@ -303,8 +335,8 @@ define([
       }
     };
 
-    this.facetRange = function(){
-      var _t = _.where(self.list,{type:'range',active:true});
+    this.facetRange = function(field){
+      var _t = _.where(self.list,{type:'range', field:field, active:true});
       if(_t.length === 0) {
         return false;
       }

@@ -33,6 +33,7 @@
         display: inline-block;
     }
   </style>
+  <div ng-show='panel.showChart'>
   <div>
     <span ng-show='panel.options'>
       <a class="link underline small" ng-show='panel.options' ng-click="options=!options">
@@ -68,21 +69,14 @@
         Points
       </label>
     </div>
-    <div class="checkbox">
-      <label class="small">
-        <input type="checkbox" ng-model="panel.stack" ng-checked="panel.stack" ng-change="render()">
-        Stack
-      </label>
-    </div>
-    <span ng-show="panel.stack">
-      <div class="checkbox">
-        <label style="white-space:nowrap" class="small">
-          <input type="checkbox"  ng-model="panel.percentage" ng-checked="panel.percentage" ng-change="render()">
-          Percent
-        </label>
-      </div>
-    </span>
   </form>
   <center><img ng-show='panel.loading && _.isUndefined(data)' src="img/load_big.gif"></center>
   <div rangefacet-chart class="pointer histogram-chart" params="{{panel}}"></div>
+  </div>
+  <div ng-show='!panel.showChart'>
+    <div class="span11">
+      <h4>No range filter present</h4>
+    </div>
+    <a class='btn btn-small' ng-click="range_apply()">Create a range filter</a>
+  </div>
 </div>

@@ -109,7 +109,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       tooltip     : {
         value_type: 'cumulative',
         query_as_alias: false
-      }
+      },
+      showChart:true
     };
 
     _.defaults($scope.panel,_d);
@@ -119,6 +120,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       $scope.options = false;
       $scope.$on('refresh',function(){
         $scope.get_data();
+        if (filterSrv.idsByTypeAndField('range',$scope.panel.range_field).length > 0) {
+          $scope.panel.showChart =  true;
+        } else {
+          $scope.panel.showChart =  false;
+        }
       });
 
       $scope.get_data();
@@ -148,12 +154,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
     $scope.get_facet_range = function () {
-      var range = $scope.facet_range = filterSrv.facetRange();
+      var range = $scope.facet_range = filterSrv.facetRange($scope.panel.range_field);
       return range;
     };
 
     $scope.set_range_filter = function(){
-      filterSrv.removeByType('range');
+      filterSrv.removeByTypeAndField('range',$scope.panel.range_field);
       filterSrv.set({
         type: 'range',
         from: parseInt($scope.panel.minimum),
@@ -183,6 +189,15 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       return $scope.panel.interval;
     };
 
+    $scope.range_apply = function(){
+      filterSrv.set({
+        type: 'range',
+        from: parseInt($scope.panel.minimum),
+        to: parseInt($scope.panel.maximum),
+        field: $scope.panel.range_field
+      });
+      dashboard.refresh();
+    }
     /**
      * Fetch the data for a chunk of a queries results. Multiple segments occur when several indicies
      * need to be consulted (like timestamped logstash indicies)
@@ -473,7 +488,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     // function $scope.zoom
     // factor :: Zoom factor, so 0.5 = cuts timespan in half, 2 doubles timespan
     $scope.zoom = function(factor) {
-      var _range = filterSrv.getByType('range')[1];
+      var _range = filterSrv.facetRange($scope.panel.range_field)[1];
       if (_.isUndefined(_range))
         _range = {
           from: $scope.panel.minimum,
@@ -487,7 +502,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       var _from = (_center - (_timespan*factor)/2);
 
       if(factor > 1) {
-        filterSrv.removeByType('range');
+        filterSrv.removeByTypeAndField('range',$scope.panel.range_field);
       }
       var from = parseInt(_from);
       var to = parseInt(_to);
@@ -578,7 +593,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 bars:   {
                   show: scope.panel.bars,
                   fill: 1,
-                  barWidth: barwidth/(9*count),
+                  barWidth: barwidth/(5*scope.range_count),
                   zero: false,
                   lineWidth: 0
                 },
@@ -599,6 +614,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 show: scope.panel['x-axis'],
                 min: facet_range.from - 1,
                 max: facet_range.to + 1,
+                autoscaleMargin : scope.panel.gap,
+                minTickSize : scope.panel.gap
               },
               grid: {
                 backgroundColor: null,
@@ -697,7 +714,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         });
 
         elem.bind("plotselected", function (event, ranges) {
-          filterSrv.removeByType('range');
+          filterSrv.removeByTypeAndField('range',scope.panel.range_field);
           var from = parseInt(ranges.xaxis.from);
           var to = parseInt(ranges.xaxis.to);
           filterSrv.set({
