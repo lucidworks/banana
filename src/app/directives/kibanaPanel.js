@@ -39,8 +39,9 @@ function (angular) {
             '<span bs-modal="\'app/partials/paneleditor.html\'" class="pointer">'+
             '<i class="icon-cog pointer" bs-tooltip="\'Configure\'"></i></span>'+
           '</span>' +
-          
-          '<span ng-repeat="custom in panelMeta.customs" class="row-button extra" bs-tooltip="custom.description" ng-bind-html-unsafe="custom.html" ng-show="custom.show">' +
+
+          '<span class="row-button extra" bs-tooltip="\'Transpose Rows and Columns\'" ng-show="panelMeta.rotate">' +
+              '<i class="icon-refresh pointer" ng-click="flip()"></i>' +
           '</span>' +
 
           '<span ng-repeat="task in panelMeta.modals" class="row-button extra" ng-show="task.show">' +
@@ -53,6 +54,8 @@ function (angular) {
                 '<i class="icon-save" class="pointer"></i>' +
             '</span>' +
             '<ul class="dropdown-menu" style="padding:10px; left:-150px;">' +
+          '<h5>Number of Rows</h5><form><input type="number" value="panel.exportSize" ng-model="panel.exportSize" placeholder="{{panel.size * panel.pages}}"/>' +
+          '<input type="checkbox" ng-model="panel.exportAll"/> All Fields</form>' +
                 '<li>' +
                     '<h5>Export to File</h5>' +
                         '<ul class="unstyled">' +

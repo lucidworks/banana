@@ -77,11 +77,7 @@
       }
     </style>
     
-    <span class="pointer" bs-tooltip="Flip">
-        <i class="icon-refresh pointer" ng-click="flip()"></i>
-    </span>
-    
-    <div style='overflow:auto; height:350px;'>
+    <div ng-style="{ 'overflow':'auto', 'height':row.height }">
       <heatmap-chart>
       </heatmap-chart>
     </div>

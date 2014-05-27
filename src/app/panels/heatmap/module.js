@@ -32,15 +32,9 @@ function (angular, app, _, $, d3) {
                     src: 'app/partials/querySelect.html'
                 }
             ],
-            customs :[
-                {
-                    html: '<i class="icon-refresh pointer" ng-click="flip()"></i>',
-                    show: true,
-                    description: "Transpose Rows and Columns"
-                }
-            ],
             status: "Experimental",
-            description: "Heat Map for Representing Pivot Facet Counts"
+            description: "Heat Map for Representing Pivot Facet Counts",
+            rotate: true
         };
 
         var _d = {
@@ -149,7 +143,6 @@ function (angular, app, _, $, d3) {
             $scope.hcrow = [];
             $scope.hccol = [];
             $scope.internal_sum = [];
-            $scope.internal_domain = [];
             $scope.domain = [Number.MAX_VALUE,0];
         }
         
@@ -175,40 +168,33 @@ function (angular, app, _, $, d3) {
                     var v = p.value;
                     
                     if(!flipped) {
+                        $scope.internal_sum.push(0);
+                        
                         if($scope.col_labels.indexOf(v) == -1) {
                             $scope.col_labels.push(v);
                             $scope.hccol.push($scope.col_labels.length);
-                            $scope.internal_sum.push(0);
-                            $scope.internal_domain.push([Number.MAX_VALUE,0]);
                         }
 
                         var index = $scope.col_labels.indexOf(v); // index won't be -1 as we count in the facets with count = 0
 
                         $scope.internal_sum[index] += p.count;
-                        $scope.internal_domain[index][0] = Math.min($scope.internal_domain[index][0], p.count);
-                        $scope.internal_domain[index][1] = Math.max($scope.internal_domain[index][1], p.count);
                         
                         entry.row = i + 1;
                         entry.col = index + 1;
-                        entry.value = p.count;
                     } else {                 
                         if($scope.row_labels.indexOf(v) == -1) {
                             $scope.row_labels.push(v);
                             $scope.hcrow.push($scope.row_labels.length);
-                            $scope.internal_sum.push(0);
-                            $scope.internal_domain.push([Number.MAX_VALUE,0]);
                         }
                         
                         var index = $scope.row_labels.indexOf(v); // index won't be -1 as we count in the facets with count = 0
                         
                         $scope.internal_sum[index] += p.count;
-                        $scope.internal_domain[index][0] = Math.min($scope.internal_domain[index][0], p.count);
-                        $scope.internal_domain[index][1] = Math.max($scope.internal_domain[index][1], p.count);
                         
                         entry.col = i + 1;
                         entry.row = index + 1;
-                        entry.value = p.count;
                     }
+                    entry.value = p.count;
                     
                     $scope.domain[0] = Math.min($scope.domain[0], p.count);
                     $scope.domain[1] = Math.max($scope.domain[1], p.count);
@@ -300,15 +286,14 @@ function (angular, app, _, $, d3) {
                             row: +d.row,
                             col: +d.col,
                             value: +intensity_domain(d.value)
-//                            value: +labels_columns[d[div] - 1](d.value)
                         };
                     });
                     
                     var margin = {
-                        top: 50, // for columns
+                        top: 70, // for columns
                         right: 10,
                         bottom: 20,
-                        left: 75 // for rows
+                        left: 100 // for rows
                     };
 
                     var rowSortOrder = false;
@@ -369,7 +354,10 @@ function (angular, app, _, $, d3) {
                         .enter()
                         .append("text")
                         .text(function (d) {
-                            return d;
+                            if(d.length > 8)
+                                return d.substring(0,8)+'..';
+                            else
+                                return d;
                         })
                         .attr("x", 0)
                         .attr("y", function (d, i) {
@@ -382,9 +370,22 @@ function (angular, app, _, $, d3) {
                         })
                         .on("mouseover", function (d) {
                             d3.select(this).classed("text-hover", true);
+                            
+                            d3.select("#tooltip")
+                            .style("left", (d3.event.layerX + 10) + "px")
+                            .style("top", (d3.event.layerY - 10) + "px")
+                            .select("#value")
+                            .text(d);
+                            //Show the tooltip
+                            d3.select("#tooltip").classed("hidden", false);
                         })
                         .on("mouseout", function (d) {
                             d3.select(this).classed("text-hover", false);
+                            
+                            d3.select(this).classed("cell-hover", false);
+                            d3.selectAll(".rowLabel").classed("text-highlight", false);
+                            d3.selectAll(".colLabel").classed("text-highlight", false);
+                            d3.select("#tooltip").classed("hidden", true);
                         })
                         .on("click", function (d, i) {
                             rowSortOrder = !rowSortOrder;
@@ -398,7 +399,10 @@ function (angular, app, _, $, d3) {
                         .enter()
                         .append("text")
                         .text(function (d) {
-                            return d;
+                            if(d.length > 6)
+                                return d.substring(0,6)+'..';
+                            else
+                                return d; 
                         })
                         .attr("x", 0)
                         .attr("y", function (d, i) {
@@ -411,9 +415,22 @@ function (angular, app, _, $, d3) {
                         })
                         .on("mouseover", function (d) {
                             d3.select(this).classed("text-hover", true);
+                            
+                            d3.select("#tooltip")
+                            .style("left", (d3.event.layerX + 10) + "px")
+                            .style("top", (d3.event.layerY - 10) + "px")
+                            .select("#value")
+                            .text(d);
+                            //Show the tooltip
+                            d3.select("#tooltip").classed("hidden", false);
                         })
                         .on("mouseout", function (d) {
                             d3.select(this).classed("text-hover", false);
+                            
+                            d3.select(this).classed("cell-hover", false);
+                            d3.selectAll(".rowLabel").classed("text-highlight", false);
+                            d3.selectAll(".colLabel").classed("text-highlight", false);
+                            d3.select("#tooltip").classed("hidden", true);
                         })
                         .on("click", function (d, i) {
                             colSortOrder = !colSortOrder;
