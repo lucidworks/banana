@@ -172,6 +172,14 @@ define([
           } else if (v.mandate == 'either') {
             filter_either.push(v.query);
           }
+        } else if (v.type == 'range') {
+          if (v.mandate == 'must') {
+            filter_fq = filter_fq + '&fq=' + v.field + ':[' + v.from +' TO '+ v.to +']';
+          } else if (v.mandate == 'mustNot') {
+            filter_fq = filter_fq + '&fq=-' + v.field + ':[' + v.from +' TO '+ v.to +']';
+          } else if (v.mandate == 'either') {
+            filter_either.push(v.field + ':[' + v.from +' TO '+ v.to +']');
+          }
         } else {
           // Unsupport filter type
           return false;
@@ -282,6 +290,17 @@ define([
         return false;
       }
     };
+
+    this.facetRange = function(){
+      var _t = _.where(self.list,{type:'range',active:true});
+      if(_t.length === 0) {
+        return false;
+      }
+      return {
+          from: _.max(_.pluck(_t,'from')),
+          to: _.min(_.pluck(_t,'to'))
+      };
+    }
 
     this.remove = function(id) {
       if(!_.isUndefined(self.list[id])) {
