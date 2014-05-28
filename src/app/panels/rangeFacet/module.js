@@ -149,12 +149,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       return range;
     };
 
-    $scope.set_range_filter = function(){
+    $scope.set_range_filter = function(from,to){
       filterSrv.removeByTypeAndField('range',$scope.panel.range_field);
       filterSrv.set({
         type: 'range',
-        from: parseInt($scope.panel.minimum),
-        to: parseInt($scope.panel.maximum),
+        from: parseInt(from),
+        to: parseInt(to),
         field: $scope.panel.range_field
       });
       dashboard.refresh();
@@ -162,8 +162,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
     // set the configrations in settings 
     $scope.set_configrations = function(from,to){
-      $scope.panel.minimum = from;
-      $scope.panel.maximum = to;
+      $scope.panel.minimum = parseInt(from);
+      $scope.panel.maximum = parseInt(to);
     }
 
     $scope.get_interval = function () {
@@ -419,20 +419,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       var _to = (_center + (_timespan*factor)/2);
       var _from = (_center - (_timespan*factor)/2);
 
-      if(factor > 1) {
-        filterSrv.removeByTypeAndField('range',$scope.panel.range_field);
-      }
-      var from = parseInt(_from);
-      var to = parseInt(_to);
-      filterSrv.set({
-        type: 'range',
-        from: from,
-        to: to,
-        field: $scope.panel.range_field
-      });
-      $scope.set_configrations(from,to)
+      $scope.set_range_filter(_from, _to);
+      $scope.set_configrations(_from, _to);
       dashboard.refresh();
-
     };
 
     // I really don't like this function, too much dom manip. Break out into directive?
@@ -448,7 +437,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       if($scope.refresh) {
         $scope.get_data();
       }
-      $scope.set_range_filter();
+      $scope.set_range_filter($scope.panel.minimum,$scope.panel.maximum);
       $scope.refresh =  false;
       $scope.$emit('render');
     };
@@ -470,7 +459,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           render_panel();
         });
 
-        scope.set_range_filter();
+        scope.set_range_filter(scope.panel.minimum,scope.panel.maximum);
         // Re-render if the window is resized
         angular.element(window).bind('resize', function(){
           render_panel();
@@ -617,16 +606,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         });
 
         elem.bind("plotselected", function (event, ranges) {
-          filterSrv.removeByTypeAndField('range',scope.panel.range_field);
-          var from = parseInt(ranges.xaxis.from);
-          var to = parseInt(ranges.xaxis.to);
-          filterSrv.set({
-            type  : 'range',
-            from  : from,
-            to    : to,
-            field : scope.panel.range_field
-          });
-          scope.set_configrations(from,to)
+          scope.set_range_filter(ranges.xaxis.from, ranges.xaxis.to);
+          scope.set_configrations(ranges.xaxis.from, ranges.xaxis.to)
           dashboard.refresh();
         });
       }
