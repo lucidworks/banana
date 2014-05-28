@@ -209,20 +209,7 @@ define([
       return time_field;
     }
 
-    // Get time field for Solr query
-    this.getRangeField = function() {
-      var range_field;
-      _.each(self.list, function(v) {
-        if (v.type == 'range') {
-          range_field = v.field;
-          return;
-        }
-      });
-      return range_field;
-    }
-
-
-    // Get time field for Solr query
+    // Get range field for Solr query
     this.getRangeField = function() {
       var range_field;
       _.each(self.list, function(v) {
@@ -275,6 +262,7 @@ define([
       return _.pick(self.list,self.idsByType(type,inactive));
     };
 
+    // get the ids of filters using type and field
     this.idsByTypeAndField = function(type,field,inactive){
       var _require = inactive ? {type:type} : {type:type, field:field, active:true};
       return _.pluck(_.where(self.list,_require),'id');
@@ -293,6 +281,7 @@ define([
       return ids;
     };
 
+    // remove filter by type and field
     this.removeByTypeAndField = function(type,field) {
       var ids = self.idsByTypeAndField(type,field);
       _.each(ids,function(id) {
@@ -335,6 +324,7 @@ define([
       }
     };
 
+    //get the facet range using specific field
     this.facetRange = function(field){
       var _t = _.where(self.list,{type:'range', field:field, active:true});
       if(_t.length === 0) {

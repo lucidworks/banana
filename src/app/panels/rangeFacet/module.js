@@ -131,19 +131,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
     };
 
-    $scope.set_interval = function(interval) {
-      if(interval !== 'auto') {
-        $scope.panel.auto_int = false;
-        $scope.panel.interval = interval;
-      } else {
-        $scope.panel.auto_int = true;
-      }
-    };
-
-    $scope.interval_label = function(interval) {
-      return $scope.panel.auto_int && interval === $scope.panel.interval ? interval+" (auto)" : interval;
-    };
-
     /**
      * The time range effecting the panel
      * @return {[type]} [description]
@@ -153,6 +140,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       return range;
     };
 
+    /**
+     * The facet range effecting the panel
+     * return type {from:number, to:number}
+     */
     $scope.get_facet_range = function () {
       var range = $scope.facet_range = filterSrv.facetRange($scope.panel.range_field);
       return range;
@@ -169,6 +160,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       dashboard.refresh();
     }
 
+    // set the configrations in settings 
     $scope.set_configrations = function(from,to){
       $scope.panel.minimum = from;
       $scope.panel.maximum = to;
@@ -189,6 +181,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       return $scope.panel.interval;
     };
 
+    //set the range filter from old configrations
     $scope.range_apply = function(){
       filterSrv.set({
         type: 'range',
@@ -275,33 +268,14 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0'; // for RangeFacet, we do not need the actual response doc, so set rows=0
-      var facet_gap = $scope.sjs.convertFacetGap($scope.panel.interval);
       var facet = '&facet=true' +
                   '&facet.range=' + $scope.panel.range_field +
                   '&facet.range.start=' + $scope.panel.minimum +
                   '&facet.range.end=' + (parseInt($scope.panel.maximum)+1) +
                   '&facet.range.gap=' + $scope.panel.gap;
-      var values_mode_query = '';
-
-      // For mode = value
-      if($scope.panel.mode === 'values') {
-        if (!$scope.panel.value_field) {
-            $scope.panel.error = "In " + $scope.panel.mode + " mode a field must be specified";
-            return;
-        }
-
-        values_mode_query = '&fl=' + $scope.panel.time_field + ' ' + $scope.panel.value_field;
-        rows_limit = '&rows=' + $scope.panel.max_rows;
-        facet = '';
-
-        // if Group By Field is specified
-        if ($scope.panel.group_field) {
-          values_mode_query += '&group=true&group.field=' + $scope.panel.group_field + '&group.limit=' + $scope.panel.max_rows;
-        }
-      }
 
       // Set the panel's query
-      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet + values_mode_query;
+      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet ;
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
         request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
@@ -394,79 +368,23 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             $scope.range_count = 0
             // Solr facet counts response is in one big array.
             // So no need to get each segment like Elasticsearch does.
-            if ($scope.panel.mode === 'count') {
-              // Entries from facet_ranges counts
-              var entries = results.facet_counts.facet_ranges[$scope.panel.range_field].counts;
-              for (var j = 0; j < entries.length; j++) {
-                var entry_time = entries[j]; // convert to millisec
-                j++;
-                var entry_count = entries[j];
-                time_series.addValue(entry_time, entry_count);
-                hits += entry_count; // The series level hits counter
-                $scope.hits += entry_count; // Entire dataset level hits counter
-                $scope.range_count += 1
-              };
-            } else if ($scope.panel.mode === 'values') {
-              if ($scope.panel.group_field) {
-                // Group By Field is specified
-                var groups = results.grouped[$scope.panel.group_field].groups;
+            // Entries from facet_ranges counts
+            var entries = results.facet_counts.facet_ranges[$scope.panel.range_field].counts;
+            for (var j = 0; j < entries.length; j++) {
+              var entry_time = entries[j]; // convert to millisec
+              j++;
+              var entry_count = entries[j];
+              time_series.addValue(entry_time, entry_count);
+              hits += entry_count; // The series level hits counter
+              $scope.hits += entry_count; // Entire dataset level hits counter
+              $scope.range_count += 1 // count the number of ranges to help later in bar width
+            }; 
 
-                for (var j=0; j < groups.length; j++) {
-                  var docs = groups[j].doclist.docs;
-                  var group_time_series = new timeSeries.ZeroFilled({
-                    interval: _interval,
-                    start_date: _range && _range.from,
-                    end_date: _range && _range.to,
-                    fill_style: 'minimal'
-                  });
-                  hits = 0;
-
-                  // loop through each group results
-                  for (var k=0; k < docs.length; k++) {
-                    var entry_time = new Date(docs[k][$scope.panel.time_field]).getTime(); // convert to millisec
-                    var entry_value = docs[k][$scope.panel.value_field];
-                    group_time_series.addValue(entry_time, entry_value);
-                    hits += 1;
-                    $scope.hits += 1;
-                  }
-
-                  $scope.data[j] = {
-                    // info: querySrv.list[id],
-                    // Need to define chart info here according to the results, cannot use querySrv.list[id]
-                    info: {
-                      alias: groups[j].groupValue,
-                      color: querySrv.colors[j],
-
-                    },
-                    time_series: group_time_series,
-                    hits: hits
-                  };
-                }
-              } else { // Group By Field is not specified
-                var entries = results.response.docs;
-                for (var j=0; j < entries.length; j++) {
-                  var entry_time = new Date(entries[j][$scope.panel.time_field]).getTime(); // convert to millisec
-                  var entry_value = entries[j][$scope.panel.value_field];
-                  time_series.addValue(entry_time, entry_value);
-                  hits += 1;
-                  $scope.hits += 1;
-                }
-                
-                $scope.data[i] = {
-                  info: querySrv.list[id],
-                  time_series: time_series,
-                  hits: hits
-                };
-              }
-            }
-            
-            if ($scope.panel.mode !== 'values') {
-              $scope.data[i] = {
-                info: querySrv.list[id],
-                time_series: time_series,
-                hits: hits
-              };
-            }
+            $scope.data[i] = {
+              info: querySrv.list[id],
+              time_series: time_series,
+              hits: hits
+            };
 
             i++;
           });
@@ -573,7 +491,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
           // Set barwidth based on specified interval
           var barwidth = scope.panel.maximum-scope.panel.minimum;
-          var count = scope.range_count > 15 ? scope.range_count : 15;
+          // var count = scope.range_count > 15 ? scope.range_count : 15;
           var stack = scope.panel.stack ? true : null;
           var facet_range = scope.get_facet_range();
           // Populate element
@@ -669,21 +587,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             // TODO: Need to fix bug => "Invalid dimensions for plot, width = 0, height = 200"
             console.log(e);
           }
-        }
-
-        function time_format(interval) {
-          var _int = kbn.interval_to_seconds(interval);
-          if(_int >= 2628000) {
-            return "%m/%y";
-          }
-          if(_int >= 86400) {
-            return "%m/%d/%y";
-          }
-          if(_int >= 60) {
-            return "%H:%M<br>%m/%d";
-          }
-
-          return "%H:%M:%S";
         }
 
         var $tooltip = $('<div>');
