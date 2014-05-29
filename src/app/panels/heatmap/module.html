@@ -47,10 +47,12 @@
       text.text-highlight {
         fill: #c00;
       }
+        
       text.text-hover {
         fill: #00C;
       }
-      #tooltip {
+        
+      .popup {
         position: absolute;
         width: 200px;
         height: auto;
@@ -63,13 +65,14 @@
         -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
         box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
         pointer-events: none;
+        z-index: 10000;
       }
 
-      #tooltip.hidden {
+      .popup.hidden {
         display: none;
       }
 
-      #tooltip p {
+      .popup p {
         margin: 0;
         font-family: sans-serif;
         font-size: 12px;

@@ -51,7 +51,8 @@ function (angular, app, _, $, d3) {
             editor_size: 0,
             color:'gray',
             spyable: true,
-            transpose_show: true
+            transpose_show: true,
+            transposed: false
         };
 
         // Set panel's default values
@@ -59,11 +60,15 @@ function (angular, app, _, $, d3) {
 
         $scope.init = function () {
             $scope.panel.editor_size = $scope.panel.row_size;
-            $scope.flipped = false;
+            $scope.generated_id = "tooltip_" + $scope.randomNumberRange(1,1000000);
             $scope.$on('refresh', function () {
                 $scope.get_data();
             });
             $scope.get_data();
+        };
+        
+        $scope.randomNumberRange = function(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min);
         };
 
         $scope.get_data = function () {
@@ -99,8 +104,7 @@ function (angular, app, _, $, d3) {
             // --------------------- END OF ELASTIC SEARCH PART ---------------------------------------
 
             var wt_json = '&wt=json';
-            var fq = '';
-//            var fq = '&' + filterSrv.getSolrFq();
+            var fq = '&' + filterSrv.getSolrFq();
             var rows_limit = '&rows=' + $scope.panel.size;
             var facet = '&facet=true';
             var facet_pivot = '&facet.pivot=' + $scope.panel.row_field + ',' + $scope.panel.col_field;
@@ -128,7 +132,7 @@ function (angular, app, _, $, d3) {
                 $scope.facets = facets[key];
                 
                 $scope.init_arrays();
-                $scope.formatData($scope.facets, $scope.flipped);
+                $scope.formatData($scope.facets, $scope.panel.transposed);
                 
                 $scope.render();
             });
@@ -205,8 +209,8 @@ function (angular, app, _, $, d3) {
         };
         
         $scope.flip = function() {
-            $scope.flipped = !$scope.flipped;
-            $scope.formatData($scope.facets, $scope.flipped);
+            $scope.panel.transposed = !$scope.panel.transposed;
+            $scope.formatData($scope.facets, $scope.panel.transposed);
             $scope.render();
         };
         
@@ -223,6 +227,7 @@ function (angular, app, _, $, d3) {
                 alert('invalid rows number');
             }
             $scope.refresh = false;
+            $scope.formatData($scope.facets, $scope.panel.transposed);
             $scope.$emit('render');
         };
 
@@ -266,11 +271,11 @@ function (angular, app, _, $, d3) {
                 
                 // Function for rendering panel
                 function render_panel() {
-                    element.html('<div id="tooltip" class="hidden"><p><span id="value"></p></div>'); // make the ui element empty to re-fill it
+                    element.html('<div id="' + scope.generated_id +'" class="popup hidden"><p><span id="value"></p></div>'); // make the ui element empty to re-fill it
                     var el = element[0];
                     
                     var data = jQuery.extend(true, [], scope.data);
-                    var div = scope.flipped ? 'row' : 'col';
+                    var div = scope.panel.transposed ? 'row' : 'col';
                     
                     var labels_columns = [];
                     var intensity_domain = d3.scale.linear().domain(scope.domain).range([0,10]);
@@ -371,13 +376,13 @@ function (angular, app, _, $, d3) {
                         .on("mouseover", function (d) {
                             d3.select(this).classed("text-hover", true);
                             
-                            d3.select("#tooltip")
-                            .style("left", (d3.event.layerX + 10) + "px")
-                            .style("top", (d3.event.layerY - 10) + "px")
+                            d3.select("#" + scope.generated_id)
+                            .style("left", (d3.event.layerX - 120) + "px")
+                            .style("top", (d3.event.layerY - 20) + "px")
                             .select("#value")
                             .text(d);
-                            //Show the tooltip
-                            d3.select("#tooltip").classed("hidden", false);
+                            //Show the popup
+                            d3.select("#" + scope.generated_id).classed("hidden", false);
                         })
                         .on("mouseout", function (d) {
                             d3.select(this).classed("text-hover", false);
@@ -385,7 +390,7 @@ function (angular, app, _, $, d3) {
                             d3.select(this).classed("cell-hover", false);
                             d3.selectAll(".rowLabel").classed("text-highlight", false);
                             d3.selectAll(".colLabel").classed("text-highlight", false);
-                            d3.select("#tooltip").classed("hidden", true);
+                            d3.select("#" + scope.generated_id).classed("hidden", true);
                         })
                         .on("click", function (d, i) {
                             rowSortOrder = !rowSortOrder;
@@ -416,13 +421,13 @@ function (angular, app, _, $, d3) {
                         .on("mouseover", function (d) {
                             d3.select(this).classed("text-hover", true);
                             
-                            d3.select("#tooltip")
-                            .style("left", (d3.event.layerX + 10) + "px")
-                            .style("top", (d3.event.layerY - 10) + "px")
+                            d3.select("#" + scope.generated_id)
+                            .style("left", (d3.event.layerX - 120) + "px")
+                            .style("top", (d3.event.layerY - 20) + "px")
                             .select("#value")
                             .text(d);
-                            //Show the tooltip
-                            d3.select("#tooltip").classed("hidden", false);
+                            //Show the popup
+                            d3.select("#" + scope.generated_id).classed("hidden", false);
                         })
                         .on("mouseout", function (d) {
                             d3.select(this).classed("text-hover", false);
@@ -430,7 +435,7 @@ function (angular, app, _, $, d3) {
                             d3.select(this).classed("cell-hover", false);
                             d3.selectAll(".rowLabel").classed("text-highlight", false);
                             d3.selectAll(".colLabel").classed("text-highlight", false);
-                            d3.select("#tooltip").classed("hidden", true);
+                            d3.select("#" + scope.generated_id).classed("hidden", true);
                         })
                         .on("click", function (d, i) {
                             colSortOrder = !colSortOrder;
@@ -469,20 +474,20 @@ function (angular, app, _, $, d3) {
                                 return ci == (d.col - 1);
                         });
 
-                            //Update the tooltip position and value
-                        d3.select("#tooltip")
-                            .style("left", (d3.event.layerX + 10) + "px")
-                            .style("top", (d3.event.layerY - 10) + "px")
+                            //Update the popup position and value
+                        d3.select("#" + scope.generated_id)
+                            .style("left", (d3.event.layerX - 120) + "px")
+                            .style("top", (d3.event.layerY - 20) + "px")
                             .select("#value")
-                        .text(rowLabel[d.row - 1] + "," + colLabel[d.col - 1] + " (" + scope.data[i].value + ")");
-                        //Show the tooltip
-                        d3.select("#tooltip").classed("hidden", false);
+                            .text(rowLabel[d.row - 1] + "," + colLabel[d.col - 1] + " (" + scope.data[i].value + ")");
+                        //Show the popup
+                        d3.select("#" + scope.generated_id).classed("hidden", false);
                     })
                     .on("mouseout", function () {
                         d3.select(this).classed("cell-hover", false);
                         d3.selectAll(".rowLabel").classed("text-highlight", false);
                         d3.selectAll(".colLabel").classed("text-highlight", false);
-                        d3.select("#tooltip").classed("hidden", true);
+                        d3.select("#" + scope.generated_id).classed("hidden", true);
                     }); 
                     
                     
@@ -555,7 +560,6 @@ function (angular, app, _, $, d3) {
                                         d3.select(".r" + (cell_d.row - 1))
                                             .classed("text-selection", true)
                                             .classed("text-selected", true);
-
                                         d3.select(".c" + (cell_d.col - 1))
                                             .classed("text-selection", true)
                                             .classed("text-selected", true);
