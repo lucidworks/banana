@@ -54,7 +54,7 @@ function (angular, app, _) {
     };
 
     $scope.isEditable = function(filter) {
-      var uneditable = ['time'];
+      var uneditable = ['time','range'];
       if(_.contains(uneditable,filter.type)) {
         return false;
       } else {
