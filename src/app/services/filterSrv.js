@@ -185,10 +185,13 @@ define([
           return false;
         }
       });
-      // Return false for undefined time field
+
+      // For undefined time field, return filter_fq and strip-off the prefix '&'.
+      // This will enable the dashboard without timepicker to function properly.
       if (!start_time || !end_time || !time_field) {
-        return false;
+        return filter_fq.replace(/^&/,'');
       }
+
       // parse filter_either array values, if exists
       if (filter_either.length > 0) {
         filter_fq = filter_fq + '&fq=(' + filter_either.join(' OR ') + ')';
