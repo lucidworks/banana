@@ -199,8 +199,6 @@ function (angular, app, _, kbn, moment) {
       var _segment = _.isUndefined(segment) ? 0 : segment;
       $scope.segment = _segment;
 
-      if (DEBUG) { console.debug('table: Begin of get_data():\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\t_segment='+_segment,'\n\tdashboard.indices[_segment]=',dashboard.indices[_segment],'\n\tdashboard=',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv); }
-
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);

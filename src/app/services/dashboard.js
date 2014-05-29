@@ -317,8 +317,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
           alertSrv.set('Error',"Could not contact Solr at "+config.solr+
             ". Please ensure that Solr is reachable from your system." ,'error');
         } else {
-          alertSrv.set('Error',"Could not find "+id+". If you"+
-            " are using a proxy, ensure it is configured correctly",'error');
+          alertSrv.set('Error','Could not find dashboard named "'+id+'". Please ensure that the dashboard name is correct or exists in the system.','error');
         }
         return false;
       }).success(function(data) {

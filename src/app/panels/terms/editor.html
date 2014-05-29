@@ -10,13 +10,14 @@
   <div class="span3">
     <label class="small">Order</label>
     <!-- <select class="input-medium" ng-model="panel.order" ng-options="f for f in ['count','term','reverse_count','reverse_term']" ng-change="set_refresh(true)"></select></span> -->
-    <!-- TODO: rethink how to do panel.order -->
     <select class="input-medium" ng-model="panel.order" ng-options="f for f in ['descending','ascending']" ng-change="set_refresh(true)"></select>
   </div>
+<!-- 
   <div class="span4">
     <label class="small">Exclude Terms(s) (comma seperated)</label>
     <input array-join type="text" ng-model='panel.exclude'></input>
   </div>
+-->
 </div>
 <div class="row-fluid">
   <div class="span2">
