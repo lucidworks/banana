@@ -1,4 +1,4 @@
-Portions Copyright 2013-2014 LucidWorks, Inc.
+Portions Copyright 2013-2014 LucidWorks, Inc.  
 Copyright 2012-2013 Elasticsearch BV
 
 Licensed under the Apache License, Version 2.0 (the "License"); you
