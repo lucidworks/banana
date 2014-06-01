@@ -16,12 +16,12 @@ define([
   function(angular, app, _, kbn) {
     'use strict';
 
-    var module = angular.module('kibana.panels.trends', []);
+    var module = angular.module('kibana.panels.ticker', []);
     app.useModule(module);
 
     var DEBUG = true;
 
-    module.controller('trends', function($scope, kbnIndex, querySrv, dashboard, filterSrv) {
+    module.controller('ticker', function($scope, kbnIndex, querySrv, dashboard, filterSrv) {
 
       $scope.panelMeta = {
         modals: [{
