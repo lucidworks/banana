@@ -371,7 +371,7 @@ function (angular, app, _, $, d3) {
                         .style("text-anchor", "end")
                         .attr("transform", "translate(-6," + cellSize / 1.5 + ")")
                         .attr("class", function (d, i) {
-                            return "rowLabel mono r" + i;
+                            return "rowLabel_" + scope.generated_id + " mono r" + i;
                         })
                         .on("mouseover", function (d) {
                             d3.select(this).classed("text-hover", true);
@@ -388,8 +388,8 @@ function (angular, app, _, $, d3) {
                             d3.select(this).classed("text-hover", false);
                             
                             d3.select(this).classed("cell-hover", false);
-                            d3.selectAll(".rowLabel").classed("text-highlight", false);
-                            d3.selectAll(".colLabel").classed("text-highlight", false);
+                            d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", false);
+                            d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", false);
                             d3.select("#" + scope.generated_id).classed("hidden", true);
                         })
                         .on("click", function (d, i) {
@@ -416,7 +416,7 @@ function (angular, app, _, $, d3) {
                         .style("text-anchor", "left")
                         .attr("transform", "translate(" + cellSize / 2 + ",-6) rotate (-90)")
                         .attr("class", function (d, i) {
-                            return "colLabel mono c" + i;
+                            return "colLabel_" + scope.generated_id + " mono c" + i;
                         })
                         .on("mouseover", function (d) {
                             d3.select(this).classed("text-hover", true);
@@ -433,8 +433,8 @@ function (angular, app, _, $, d3) {
                             d3.select(this).classed("text-hover", false);
                             
                             d3.select(this).classed("cell-hover", false);
-                            d3.selectAll(".rowLabel").classed("text-highlight", false);
-                            d3.selectAll(".colLabel").classed("text-highlight", false);
+                            d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", false);
+                            d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", false);
                             d3.select("#" + scope.generated_id).classed("hidden", true);
                         })
                         .on("click", function (d, i) {
@@ -457,7 +457,7 @@ function (angular, app, _, $, d3) {
                             return hcrow.indexOf(d.row) * cellSize;
                         })
                         .attr("class", function (d) {
-                            return "cell cell-border cr" + (d.row - 1) + " cc" + (d.col - 1);
+                            return "cell_" + scope.generated_id  +  " cell-border cr" + (d.row - 1) + " cc" + (d.col - 1);
                         })
                         .attr("width", cellSize)
                         .attr("height", cellSize)
@@ -467,10 +467,10 @@ function (angular, app, _, $, d3) {
                         .on("mouseover", function (d, i) {
                             //highlight text
                             d3.select(this).classed("cell-hover", true);
-                            d3.selectAll(".rowLabel").classed("text-highlight", function (r, ri) {
+                            d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", function (r, ri) {
                                 return ri == (d.row - 1);
                             });
-                            d3.selectAll(".colLabel").classed("text-highlight", function (c, ci) {
+                            d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", function (c, ci) {
                                 return ci == (d.col - 1);
                         });
 
@@ -485,8 +485,8 @@ function (angular, app, _, $, d3) {
                     })
                     .on("mouseout", function () {
                         d3.select(this).classed("cell-hover", false);
-                        d3.selectAll(".rowLabel").classed("text-highlight", false);
-                        d3.selectAll(".colLabel").classed("text-highlight", false);
+                        d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", false);
+                        d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", false);
                         d3.select("#" + scope.generated_id).classed("hidden", true);
                     }); 
                     
@@ -496,8 +496,8 @@ function (angular, app, _, $, d3) {
                         .on("mousedown", function () {
                             if (!d3.event.altKey) {
                                 d3.selectAll(".cell-selected").classed("cell-selected", false);
-                                d3.selectAll(".rowLabel").classed("text-selected", false);
-                                d3.selectAll(".colLabel").classed("text-selected", false);
+                                d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-selected", false);
+                                d3.selectAll(".colLabel_" + scope.generated_id).classed("text-selected", false);
                             }
                             var p = d3.mouse(this);
                             sa.append("rect")
@@ -581,8 +581,8 @@ function (angular, app, _, $, d3) {
                                 sa.selectAll("rect.selection").remove();
                                 // remove temporary selection marker class
                                 d3.selectAll('.cell-selection').classed("cell-selection", false);
-                                d3.selectAll(".rowLabel").classed("text-selected", false);
-                                d3.selectAll(".colLabel").classed("text-selected", false);
+                                d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-selected", false);
+                                d3.selectAll(".colLabel_" + scope.generated_id).classed("text-selected", false);
                             }
                         });                    
                     // -------------------------------------------------------------------------------
@@ -603,11 +603,11 @@ function (angular, app, _, $, d3) {
                                     return log2r[a] - log2r[b];
                                 }
                             });
-                            t.selectAll(".cell")
+                            t.selectAll(".cell_" + scope.generated_id)
                                 .attr("x", function (d) {
                                     return sorted.indexOf(d.col - 1) * cellSize;
                                 });
-                            t.selectAll(".colLabel")
+                            t.selectAll(".colLabel_" + scope.generated_id)
                                 .attr("y", function (d, i) {
                                     return sorted.indexOf(i) * cellSize;
                                 });
@@ -619,11 +619,11 @@ function (angular, app, _, $, d3) {
                                     return log2r[a] - log2r[b];
                                 }
                             });
-                            t.selectAll(".cell")
+                            t.selectAll(".cell_" + scope.generated_id)
                                 .attr("y", function (d) {
                                     return sorted.indexOf(d.row - 1) * cellSize;
                                 });
-                            t.selectAll(".rowLabel")
+                            t.selectAll(".rowLabel_" + scope.generated_id)
                                 .attr("y", function (d, i) {
                                     return sorted.indexOf(i) * cellSize;
                                 });

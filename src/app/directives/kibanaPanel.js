@@ -40,8 +40,8 @@ function (angular) {
             '<i class="icon-cog pointer" bs-tooltip="\'Configure\'"></i></span>'+
           '</span>' +
 
-          '<span class="row-button extra" bs-tooltip="\'Transpose Rows and Columns\'" ng-show="panelMeta.rotate">' +
-              '<i class="icon-refresh pointer" ng-click="flip()"></i>' +
+          '<span class="row-button extra" ng-show="panelMeta.rotate">' +
+          '<span class="rotate-icon pointer" bs-tooltip="\'Transpose Rows and Columns\'" ng-click="flip()"></span>' +
           '</span>' +
 
           '<span ng-repeat="task in panelMeta.modals" class="row-button extra" ng-show="task.show">' +
