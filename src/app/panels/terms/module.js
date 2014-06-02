@@ -38,9 +38,8 @@ function (angular, app, _, $, kbn) {
       editorTabs : [
         {title:'Queries', src:'app/partials/querySelect.html'}
       ],
-      status  : "Beta",
-      description : "Displays the results of a Solr facet as a pie chart, bar chart, or a "+
-        "table"
+      status  : "Stable",
+      description : "Displays the results of a Solr facet as a pie chart, bar chart, or a table. Newly added functionality displays min/max/mean/sum of a stats field, faceted by the Solr facet field, again as a pie chart, bar chart or a table."
     };
 
     // Set and populate defaults
