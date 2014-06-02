@@ -43,32 +43,6 @@ function (angular, app, _, kbn, moment) {
           show: $scope.panel.spyable
         }
       ],
-//      dropdowns : [
-//          {
-//              description: "Export",
-//              icon: "icon-save",
-//              list: [
-//                  {
-//                      "text": "<h5>Export to File</h5>"
-//                  },
-//                  {
-//                      "text" : "<i class='icon-download'></i> csv format",
-//                      "href": "",
-//                      "click": "exportfile('csv')"
-//                  },
-//                  {
-//                      "text": "<i class='icon-download'></i> json format",
-//                      "href": "",
-//                      "click": "exportfile('json')"
-//                  },
-//                  {
-//                      "text": "<i class='icon-download'></i> xml format",
-//                      "href": "",
-//                      "click": "exportfile('xml')"
-//                  }
-//              ]
-//          }
-//      ],
       editorTabs : [
         {
           title:'Paging',
@@ -81,8 +55,7 @@ function (angular, app, _, kbn, moment) {
       ],
       exportfile: true,
       status: "Stable",
-      description: "A paginated table of records matching your query or queries. Click on a row to "+
-        "expand it and review all of the fields associated with that document. <p>"
+      description: "A paginated table of records matching your query (including any filters that may have been applied). Click on a row to expand it and review all of the fields associated with that document. Provides the capability to export your result set to CSV, XML or JSON for further processing using other systems."
     };
 
     // Set and populate defaults

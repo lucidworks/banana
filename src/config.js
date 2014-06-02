@@ -45,7 +45,7 @@ function (Settings) {
       'bettermap',
       'query',
       'terms',
-      'multiseries',
+      // 'multiseries',
       'rangeFacet'
       // 'dummy'  // Dummy module for testing
     ]

@@ -67,10 +67,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           src:'app/partials/querySelect.html'
         }
       ],
-      status  : "Experimental",
-      description : "A bucketed time series chart of the current query or queries. Uses the "+
-        "Solr facet range. If using time stamped indices this panel will query"+
-        " them sequentially to attempt to apply the lighest possible load to your Solr cluster"
+      status  : "Beta",
+      description : "Histogram view across any numeric field using Solr’s range.facet functionality. Works similar to the time series histogram, allowing selection of ranges, and zooming in/out to the desired numeric range. Range selections in panel are reflected across the entire dashboard."
     };
 
     // Set and populate defaults
