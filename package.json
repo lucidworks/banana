@@ -1,10 +1,12 @@
+// NOTE: This file is not completed for use yet.
+
 {
   "author": {
-    "name": "Rashid Khan",
-    "company": "Elasticsearch BV"
+    "name": "Andrew Thanalertvisuti",
+    "company": "LucidWorks, Inc."
   },
-  "name": "kibana",
-  "version": "3.0.0m3pre",
+  "name": "banana",
+  "version": "1.3",
   "devDependencies": {
     "rjs-build-analysis": "0.0.3",
     "grunt": "~0.4.1",
