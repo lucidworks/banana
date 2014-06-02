@@ -348,7 +348,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       });
     };
 
-    // TODO: Rename to solr_save
     this.elasticsearch_save = function(type,title,ttl) {
       // Clone object so we can modify it without influencing the existing obejct
       var save = _.clone(self.current);
@@ -391,7 +390,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       );
     };
 
-    // TODO: add solr support
     this.elasticsearch_delete = function(id) {
       // Set sjs.client.server to use 'banana-int' for deleting dashboard
       sjs.client.server(config.solr + config.banana_index);

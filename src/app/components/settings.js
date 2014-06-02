@@ -10,7 +10,6 @@ function (_) {
      * @type {Object}
      */
     var defaults = {
-      // elasticsearch : "http://"+window.location.hostname+":9200",
       solr: "http://"+window.location.hostname+":8983/solr/",
       solr_core: "logstash_logs",
       panel_names   : [],
