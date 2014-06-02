@@ -300,7 +300,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
     this.elasticsearch_load = function(type,id) {
       return $http({
-        url: config.solr + config.kibana_index + '/select?wt=json&q=title:"' + id + '"',
+        url: config.solr + config.banana_index + '/select?wt=json&q=title:"' + id + '"',
         method: "GET",
         transformResponse: function(response) {
           response = angular.fromJson(response);
@@ -361,7 +361,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
       // Create request with id as title. Rethink this.
       // Use id instead of _id, because it is the default field of Solr schema-less.
-      var request = sjs.Document(config.kibana_index,type,id).source({
+      var request = sjs.Document(config.banana_index,type,id).source({
         // _id: id,
         id: id,
         user: 'guest',
@@ -372,8 +372,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
       request = type === 'temp' && ttl ? request.ttl(ttl) : request;
 
-      // Solr: set sjs.client.server to use 'kibana-int' for saving dashboard
-      sjs.client.server(config.solr + config.kibana_index);
+      // Solr: set sjs.client.server to use 'banana-int' for saving dashboard
+      sjs.client.server(config.solr + config.banana_index);
 
       return request.doIndex(
         // Success
@@ -393,10 +393,10 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
     // TODO: add solr support
     this.elasticsearch_delete = function(id) {
-      // Set sjs.client.server to use 'kibana-int' for deleting dashboard
-      sjs.client.server(config.solr + config.kibana_index);
+      // Set sjs.client.server to use 'banana-int' for deleting dashboard
+      sjs.client.server(config.solr + config.banana_index);
 
-      return sjs.Document(config.kibana_index,'dashboard',id).doDelete(
+      return sjs.Document(config.banana_index,'dashboard',id).doDelete(
         // Success
         function(result) {
           return result;
@@ -411,8 +411,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     // Solr
     this.elasticsearch_list = function(query,count) {
       // set indices and type
-      sjs.client.server(config.solr + config.kibana_index);
-      var request = sjs.Request().indices(config.kibana_index).types('dashboard');
+      sjs.client.server(config.solr + config.banana_index);
+      var request = sjs.Request().indices(config.banana_index).types('dashboard');
 
       // Need to set sjs.client.server back to use 'logstash_logs' collection
       // But cannot do it here, it will interrupt other modules.

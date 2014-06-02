@@ -10,13 +10,11 @@ function (_) {
      * @type {Object}
      */
     var defaults = {
-      // TODO: add solr support
-      elasticsearch : "http://"+window.location.hostname+":9200",
+      // elasticsearch : "http://"+window.location.hostname+":9200",
       solr: "http://"+window.location.hostname+":8983/solr/",
-      // solr_server: "http://"+window.location.hostname+":8983/solr",
       solr_core: "logstash_logs",
       panel_names   : [],
-      kibana_index  : 'kibana-int'
+      banana_index  : 'banana-int'
     };
 
     // This initializes a new hash on purpose, to avoid adding parameters to
