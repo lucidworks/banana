@@ -68,9 +68,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         }
       ],
       status  : "Stable",
-      description : "A bucketed time series chart of the current query or queries. Uses the "+
-        "Solr facet range. If using time stamped indices this panel will query"+
-        " them sequentially to attempt to apply the lighest possible load to your Solr cluster"
+      description : "A bucketed time series chart of the current query, including all applied time and non-time filters, when used in <i>count</i> mode. Uses Solr’s facet.range query parameters. In <i>values</i> mode, it plots the value of a specific field over time, and allows the user to group field values by a second field."
     };
 
     // Set and populate defaults
