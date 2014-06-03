@@ -16,12 +16,12 @@ define([
   function(angular, app, _, kbn) {
     'use strict';
 
-    var module = angular.module('kibana.panels.trends', []);
+    var module = angular.module('kibana.panels.ticker', []);
     app.useModule(module);
 
     var DEBUG = true;
 
-    module.controller('trends', function($scope, kbnIndex, querySrv, dashboard, filterSrv) {
+    module.controller('ticker', function($scope, kbnIndex, querySrv, dashboard, filterSrv) {
 
       $scope.panelMeta = {
         modals: [{
@@ -158,7 +158,7 @@ define([
 
         // Build SOLR query
         var time_field = filterSrv.getTimeField();
-        var fq = '&' + filterSrv.getSolrFq();
+        var fq = '&' + filterSrv.getSolrFq(true);
         var wt_json = '&wt=json';
         var rows_limit = '&rows=0'; // for trends, we do not need the actual response doc, so set rows=0
 
@@ -171,6 +171,7 @@ define([
           '&facet.range.start=' + $scope.time.from.toISOString() +
           '&facet.range.end=' + $scope.time.to.toISOString() +
           '&facet.range.gap=' + facet_first_gap +
+          '&facet.range.hardend=true' +
           '&facet.range.other=between';
 
         // time ago
@@ -180,6 +181,7 @@ define([
           '&facet.range.start=' + $scope.old_time.from.toISOString() +
           '&facet.range.end=' + $scope.old_time.to.toISOString() +
           '&facet.range.gap=' + facet_second_gap +
+          '&facet.range.hardend=true' +
           '&facet.range.other=between';
 
         var first_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_first_range;

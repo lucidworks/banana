@@ -1,4 +1,7 @@
 /* jshint node:true */
+
+// NOTE: This file is not completed for use yet.
+
 'use strict';
 module.exports = function (grunt) {
 
