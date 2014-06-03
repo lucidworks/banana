@@ -133,7 +133,9 @@ define([
     };
 
     // Return fq string for constructing a query to send to Solr.
-    this.getSolrFq = function() {
+    // noTime param use only in ticker panel so the filter query will return without
+    // time filter query
+    this.getSolrFq = function(noTime) {
       var start_time, end_time, time_field;
       var filter_fq ='';
       var filter_either = [];
@@ -197,7 +199,11 @@ define([
         filter_fq = filter_fq + '&fq=(' + filter_either.join(' OR ') + ')';
       }
 
-      return 'fq=' + time_field + ':[' + start_time + '%20TO%20' + end_time + ']' + filter_fq;
+      if (noTime) {
+        return filter_fq;
+      } else {
+        return 'fq=' + time_field + ':[' + start_time + '%20TO%20' + end_time + ']' + filter_fq;
+      }
     };
 
     // Get time field for Solr query

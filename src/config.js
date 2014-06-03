@@ -41,7 +41,7 @@ function (Settings) {
       'hits',
       'column',
       // 'derivequeries',  // TODO
-      'trends',
+      'ticker',
       'bettermap',
       'query',
       'terms',
