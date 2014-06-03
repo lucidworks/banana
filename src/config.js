@@ -46,7 +46,8 @@ function (Settings) {
       'query',
       'terms',
       // 'multiseries',
-      'rangeFacet'
+      'rangeFacet',
+      'heatmap'
       // 'dummy'  // Dummy module for testing
     ]
   });
