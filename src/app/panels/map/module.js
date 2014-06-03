@@ -41,9 +41,7 @@ function (angular, app, _, $) {
         }
       ],
       status  : "Stable",
-      description : "Displays a map of shaded regions using a field containing a 2 letter country "+
-       ", or US state, code. Regions with more hit are shaded darker. Node that this does use the"+
-       " Solr terms facet, so it is important that you set it to the correct field."
+      description : "Displays a map of shaded regions using a field containing a 2 letter country code or US state code. Regions with more hits are shaded darker. It uses Solr faceting, so it is important that you set field values to the appropriate 2-letter codes at index time. Recent additions provide the ability to compute mean/max/min/sum of a numeric field by country or state."
     };
 
     // Set and populate defaults
