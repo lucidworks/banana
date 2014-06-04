@@ -33,7 +33,7 @@ function (angular, app, _, $, d3) {
                 }
             ],
             status: "Experimental",
-            description: "Heat Map for Representing Pivot Facet Counts",
+            description: "Heatmap representation of Solr Pivot Facet Counts.",
             rotate: true
         };
 
