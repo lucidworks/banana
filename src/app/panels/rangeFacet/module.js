@@ -1,24 +1,15 @@
 /*
 
-  ## Histogram
+  ## RangeFacet
 
   ### Parameters
-  * auto_int :: Auto calculate data point interval?
-  * resolution ::  If auto_int is enables, shoot for this many data points, rounding to
-                    sane intervals
-  * interval :: Datapoint interval in elasticsearch date math format (eg 1d, 1w, 1y, 5y)
   * fill :: Only applies to line charts. Level of area shading from 0-10
   * linewidth ::  Only applies to line charts. How thick the line should be in pixels
                   While the editor only exposes 0-10, this can be any numeric value.
                   Set to 0 and you'll get something like a scatter plot
-  * timezone :: This isn't totally functional yet. Currently only supports browser and utc.
-                browser will adjust the x-axis labels to match the timezone of the user's
-                browser
   * spyable ::  Dislay the 'eye' icon that show the last elasticsearch query
   * zoomlinks :: Show the zoom links?
   * bars :: Show bars in the chart
-  * stack :: Stack multiple queries. This generally a crappy way to represent things.
-             You probably should just use a line chart without stacking
   * points :: Should circles at the data points on the chart
   * lines :: Line chart? Sweet.
   * legend :: Show the legend?
@@ -84,13 +75,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       max_rows    : 100000,  // maximum number of rows returned from Solr (also use this for group.limit to simplify UI setting)
       value_field : null,
       group_field : null,
-      auto_int    : true,
-      resolution  : 100,
-      interval    : '5m',
-      intervals   : ['auto','1s','1m','5m','10m','30m','1h','3h','12h','1d','1w','1M','1y'],
       fill        : 0,
       linewidth   : 3,
-      timezone    : 'browser', // browser, utc or a standard timezone
       spyable     : true,
       zoomlinks   : true,
       bars        : true,
@@ -128,16 +114,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       $scope.get_data();
 
     };
-
-    /**
-     * The time range effecting the panel
-     * @return {[type]} [description]
-     */
-    $scope.get_time_range = function () {
-      var range = $scope.range = filterSrv.timeRange('min');
-      return range;
-    };
-
     /**
      * The facet range effecting the panel
      * return type {from:number, to:number}
@@ -164,21 +140,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       $scope.panel.maximum = parseInt(to);
     }
 
-    $scope.get_interval = function () {
-      var interval = $scope.panel.interval,
-                      range;
-      if ($scope.panel.auto_int) {
-        range = $scope.get_time_range();
-        if (range) {
-          interval = kbn.secondsToHms(
-            kbn.calculate_interval(range.from, range.to, $scope.panel.resolution, 0) / 1000
-          );
-        }
-      }
-      $scope.panel.interval = interval || '10m';
-      return $scope.panel.interval;
-    };
-
     //set the range filter from old configrations
     $scope.range_apply = function(){
       filterSrv.set({
@@ -194,7 +155,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
      * need to be consulted (like timestamped logstash indicies)
      *
      * The results of this function are stored on the scope's data property. This property will be an
-     * array of objects with the properties info, time_series, and hits. These objects are used in the
+     * array of objects with the properties info, numeric_series, and hits. These objects are used in the
      * render_panel function to create the historgram.
      *
      * !!! Solr does not need to fetch the data in chunk because it uses a facet search and retrieve
@@ -213,13 +174,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       // Make sure we have everything for the request to complete
       if(dashboard.indices.length === 0) {
         return;
-      }
-      var _range = $scope.get_time_range();
-      var _interval = $scope.get_interval(_range);
-
-      if ($scope.panel.auto_int) {
-        $scope.panel.interval = kbn.secondsToHms(
-          kbn.calculate_interval(_range.from,_range.to,$scope.panel.resolution,0)/1000);
       }
 
       $scope.panelMeta.loading = true;
@@ -250,7 +204,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           }
           facet = facet.keyField($scope.panel.time_field).valueField($scope.panel.value_field);
         }
-        facet = facet.interval(_interval).facetFilter($scope.sjs.QueryFilter(query));
+        facet = facet.facetFilter($scope.sjs.QueryFilter(query));
 
         request = request.facet(facet).size(0);
       });
@@ -309,7 +263,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       // Populate scope when we have results
       results.then(function(results) {
-        _range = $scope.get_facet_range()
+        var _range = $scope.get_facet_range()
         if (DEBUG) { console.debug('RangeFacet:\n\trequest='+request+'\n\tresults=',results); }
 
         $scope.panelMeta.loading = false;
@@ -334,7 +288,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         // TODO: We probably DON'T NEED THIS unless we have to support multiple queries in query module.
         if($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
           var i = 0,
-            time_series,
+            numeric_series,
             hits;
 
           _.each($scope.panel.queries.ids, function(id) {
@@ -345,17 +299,16 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             // we need to initialize the data variable on the first run,
             // and when we are working on the first segment of the data.
             if(_.isUndefined($scope.data[i]) || segment === 0) {
-              time_series = new timeSeries.ZeroFilled({
-                interval: _interval,
+              numeric_series = new timeSeries.ZeroFilled({
                 start_date: _range && _range.from,
                 end_date: _range && _range.to,
                 fill_style: 'minimal'
               });
               hits = 0;
-              if (DEBUG) { console.debug('\tfirst run: i='+i+', time_series=',time_series); }
+              if (DEBUG) { console.debug('\tfirst run: i='+i+', numeric_series=',numeric_series); }
             } else {
-              if (DEBUG) { console.debug('\tNot first run: i='+i+', $scope.data[i].time_series=',$scope.data[i].time_series,', hits='+$scope.data[i].hits); }
-              time_series = $scope.data[i].time_series;
+              if (DEBUG) { console.debug('\tNot first run: i='+i+', $scope.data[i].numeric_series=',$scope.data[i].numeric_series,', hits='+$scope.data[i].hits); }
+              numeric_series = $scope.data[i].numeric_series;
               // Bug fix for wrong event count:
               //   Solr don't need to accumulate hits count since it can get total count from facet query.
               //   Therefore, I need to set hits and $scope.hits to zero.
@@ -372,7 +325,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               var entry_time = entries[j]; // convert to millisec
               j++;
               var entry_count = entries[j];
-              time_series.addValue(entry_time, entry_count);
+              numeric_series.addValue(entry_time, entry_count);
               hits += entry_count; // The series level hits counter
               $scope.hits += entry_count; // Entire dataset level hits counter
               $scope.range_count += 1 // count the number of ranges to help later in bar width
@@ -380,7 +333,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
             $scope.data[i] = {
               info: querySrv.list[id],
-              time_series: time_series,
+              numeric_series: numeric_series,
               hits: hits
             };
 
@@ -539,7 +492,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             var required_times = [];
             if (scope.data.length > 1) {
               required_times = Array.prototype.concat.apply([], _.map(scope.data, function (query) {
-                return query.time_series.getOrderedTimes();
+                return query.numeric_series.getOrderedTimes();
               }));
               required_times = _.uniq(required_times.sort(function (a, b) {
                 // decending numeric sort
@@ -548,7 +501,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             }
 
             for (var i = 0; i < scope.data.length; i++) {
-              scope.data[i].data = scope.data[i].time_series.getFlotPairs(required_times);
+              scope.data[i].data = scope.data[i].numeric_series.getFlotPairs(required_times);
             }
 
             // ISSUE: SOL-76
