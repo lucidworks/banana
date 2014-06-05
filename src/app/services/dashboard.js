@@ -470,6 +470,14 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         return false;
       });
     };
+
+    this.numberWithCommas = function(x) {
+      if (x)
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      else
+        return x
+    }
+
   });
 
 });

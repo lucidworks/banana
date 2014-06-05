@@ -665,7 +665,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             }
             $tooltip
               .html(
-                group + value + " @ " + moment(item.datapoint[0]).format('MM/DD HH:mm:ss')
+                group + dashboard.numberWithCommas(value) + " @ " + moment(item.datapoint[0]).format('MM/DD HH:mm:ss')
               )
               .place_tt(pos.pageX, pos.pageY);
           } else {
