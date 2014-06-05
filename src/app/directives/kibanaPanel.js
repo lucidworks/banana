@@ -40,7 +40,7 @@ function (angular) {
             '<i class="icon-cog pointer" bs-tooltip="\'Configure\'"></i></span>'+
           '</span>' +
 
-          '<span class="row-button extra" ng-show="panelMeta.rotate">' +
+          '<span class="row-button extra" ng-show="panel.transpose_show">' +
           '<span class="rotate-icon pointer" bs-tooltip="\'Transpose Rows and Columns\'" ng-click="flip()"></span>' +
           '</span>' +
 
