@@ -67,6 +67,7 @@ function (angular, app, _, $, kbn) {
       arrangement : 'horizontal',
       chart       : 'bar',
       counter_pos : 'above',
+      lastColor : '',
       spyable     : true,
     };
     _.defaults($scope.panel,_d);
@@ -255,7 +256,7 @@ function (angular, app, _, $, kbn) {
 
   });
 
-  module.directive('termsChart', function(querySrv,dashboard) {
+  module.directive('termsChart', function(querySrv,dashboard,filterSrv) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
@@ -285,7 +286,12 @@ function (angular, app, _, $, kbn) {
           _.without(chartData,_.findWhere(chartData,{meta:'other'}));
 
           if (DEBUG) { console.debug('terms: render_panel() => chartData = ',chartData); }
-
+          var colors = [];
+          if (filterSrv.idsByTypeAndField('terms',scope.panel.field).length > 0) {
+            colors.push(scope.panel.lastColor);
+          } else {
+            colors = querySrv.colors
+          }
           // Populate element.
           require(['jquery.flot.pie'], function(){
             // Populate element
@@ -309,7 +315,7 @@ function (angular, app, _, $, kbn) {
                     hoverable: true,
                     clickable: true
                   },
-                  colors: querySrv.colors
+                  colors: colors
                 });
               }
               if(scope.panel.chart === 'pie') {
@@ -345,7 +351,7 @@ function (angular, app, _, $, kbn) {
                   },
                   //grid: { hoverable: true, clickable: true },
                   grid:   { hoverable: true, clickable: true },
-                  colors: querySrv.colors
+                  colors: colors
                 });
               }
 
@@ -368,6 +374,7 @@ function (angular, app, _, $, kbn) {
         elem.bind("plotclick", function (event, pos, object) {
           if(object) {
             scope.build_search(scope.data[object.seriesIndex]);
+            scope.panel.lastColor = object.series.color;
           }
         });
 
