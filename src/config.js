@@ -47,7 +47,8 @@ function (Settings) {
       'terms',
       // 'multiseries',
       'rangeFacet',
-      'heatmap'
+      'heatmap',
+      'scatterplot'
       // 'dummy'  // Dummy module for testing
     ]
   });
