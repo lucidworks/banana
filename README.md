@@ -20,6 +20,7 @@ Banana 1.3 improves on its already powerful capability to visualize and interpre
 5. The _Export_ functionality in the the _Table Module_ has been optimized for vastly improved performance and now allows you to export only a subset of the fields in the returned documents.
 6. Previous versions required a _Timepicker_ and time fields set in all panels for them to work. We have cleaned up the code so that it will now work without a _Timepicker_ and a time filter, which will help visualize non-time series data. The time field provided in the _Timepicker_ is used by all panels.
 7. General improvements in the UI and in-product help documentation makes Banana 1.3 easier to use.
+8. The directory structure is now cleaned up and legacy files carried over are now removed. Instructions for enabling CORS in Solr and for setting the schema/config for banana's internal collections are now  contained in the _resources_directory. 
 
 ## Banana 1.2: Released on 11 May 2014
 
