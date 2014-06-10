@@ -1,6 +1,6 @@
 # Banana
 
-The Banana project was forked from Kibana 3 ([http://three.kibana.org](http://three.kibana.org)), and works with  all kinds of time series data stored in Apache Solr. It uses Kibana's powerful dashboard configuration capabilities, ports key panels to work with Solr, and provides significant additional capabilities, including new panels that leverage D3.js. 
+The Banana project was forked from Kibana 3 ([http://three.kibana.org](http://three.kibana.org)), and works with all kinds of time series data stored in Apache Solr. It uses Kibana's powerful dashboard configuration capabilities, ports key panels to work with Solr, and provides significant additional capabilities, including new panels that leverage D3.js. 
 
 The goal is to create a rich and flexible UI, enabling users to rapidly develop end-to-end applications that leverage the power of Apache Solr.
 
@@ -11,9 +11,9 @@ Pull the repo from the "release" branch; version 1.3 will be tagged as banana-1.
 
 ## Banana 1.3: Released on 10 June 2014
 
-Banana 1.3 improves on its already powerful capability to visualize and interpret generalized time series data (banana is not only used to search log files, but also visualize social media streams, call center logs, medical records, etc.). It starts leveraging the power of D3.js (data-driven documents) and provides new panels and enhancements, while also allowing visualization of non-time series data. Key new features include:
+Banana 1.3 improves on its already powerful capability to visualize and interpret generalized time series data (banana is not only used to search log files, but also visualize social media streams, call center logs, medical records, and etc.). It starts leveraging the power of D3.js (data-driven documents) and provides new panels and enhancements, while also allowing visualization of non-time series data. Key new features include:
 
-1. Stats and aggregations are now available in the _Terms_ and _Map_ panels. In addition to count mode, you can now visualize stats such as mean, stdev, max, min, sum, etc.
+1. Stats and aggregations are now available in the _Terms_ and _Map_ panels. In addition to count mode, you can now visualize stats such as mean, max, min, sum, etc.
 2. A new _Range Facet_ panel allows you to visualize and graphically explore distributions on numeric fields, with selections being reflected across the entire dashboard.
 3. A new _Heatmap_ panel provides for visualization of the powerful pivot faceting capability of Solr.
 4. A new _Ticker_ panel provides a stock ticker like representation of trends in your time series data.
@@ -158,6 +158,3 @@ If you have any questions, please contact Andrew Thanalertvisuti (andrew.thanale
 
 Kibana is a trademark of Elasticsearch BV  
 Logstash is a trademark of Elasticsearch BV
-
-
-
