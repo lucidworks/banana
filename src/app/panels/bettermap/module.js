@@ -45,11 +45,7 @@ function (angular, app, _, L, localRequire) {
         }
       ],
       status  : "Experimental",
-      description : "Displays geo points in clustered groups on a map. The cavaet for this panel is"+
-        " that, for better or worse, it does NOT use the terms facet and it <b>does</b> query "+
-        "sequentially. This however means that it transfers more data and is generally heavier to"+
-        " compute, while showing less actual data. If you have a time filter, it will attempt to"+
-        " show to most recent points in your search, up to your defined limit"
+      description : "Displays geo points in clustered groups on a map. For better or worse, this panel does NOT use the geo-faceting capabilities of Solr. This means that it transfers more data and is generally heavier to compute, while showing less actual data. If you have a time filter, it will attempt to show to most recent points in your search, up to your defined limit. It is best used after filtering the results through other queries and filter queries, or when you want to inspect a recent sample of points."
     };
 
     // Set and populate defaults
@@ -103,8 +99,7 @@ function (angular, app, _, L, localRequire) {
           return;
         }
         
-        // check if [lon,lat] field is defined
-        // Used for Now Multi-valued field, Looking forward to support (solr spatial search)
+        // check if [lat,lon] field is defined
         if(_.isUndefined($scope.panel.field)) {
           $scope.panel.error = "Please select a field that contains geo point in [lon,lat] format";
           return;
@@ -118,7 +113,6 @@ function (angular, app, _, L, localRequire) {
         // var request = $scope.sjs.Request().indices(dashboard.indices);
 
         $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
-        // This could probably be changed to a BoolFilter
         var boolQuery = $scope.sjs.BoolQuery();
         _.each($scope.panel.queries.ids,function(id) {
           boolQuery = boolQuery.should(querySrv.getEjsObj(id));
@@ -152,9 +146,10 @@ function (angular, app, _, L, localRequire) {
         } else { // default
           rows_limit = '&rows=25';
         }
-            
+          
+        // FIXED LatLong Query
         if($scope.panel.lat_start && $scope.panel.lat_end && $scope.panel.lon_start && $scope.panel.lon_end && $scope.panel.field) {
-          fq += '&fq=' + $scope.panel.field + '_0_coordinate:[' + $scope.panel.lat_start + ' TO ' + $scope.panel.lat_end + '] AND ' + $scope.panel.field + '_1_coordinate:[' + $scope.panel.lon_start + ' TO ' + $scope.panel.lon_end + ']';
+          fq += '&fq=' + $scope.panel.field + ':[' + $scope.panel.lat_start + ',' + $scope.panel.lon_start + ' TO ' + $scope.panel.lat_end + ',' + $scope.panel.lon_end + ']';
         }
 
         // Set the panel's query
@@ -168,8 +163,7 @@ function (angular, app, _, L, localRequire) {
         }
 
         var results = request.doSearch();
-        // Populate scope when we have results
-        // Using promises
+
         results.then(function(results) {
           $scope.panelMeta.loading = false;
 
@@ -188,8 +182,9 @@ function (angular, app, _, L, localRequire) {
           if($scope.query_id === query_id) {
             // Keep only what we need for the set
             $scope.data = $scope.data.slice(0,$scope.panel.size).concat(_.map(results.response.docs, function(hit) {
+              var latlon = hit[$scope.panel.field].split(',');
               return {
-                coordinates : new L.LatLng(hit[$scope.panel.field + '_0_coordinate'],hit[$scope.panel.field + '_1_coordinate']),
+                coordinates : new L.LatLng(latlon[0],latlon[1]),
                 tooltip : hit[$scope.panel.tooltip]
               };
             }));

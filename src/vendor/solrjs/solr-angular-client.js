@@ -61,13 +61,12 @@ angular.module('solrjs.service', [])
         }
 
         path = url + path;
-
-        if (DEBUG) { console.debug('solr-angular-client: url=',url,', path=',path,', data=',data); }
-
+        if (DEBUG) { console.debug('solr-angular-client: POST url=',url,', path=',path,', data=',data); }
         return promiseThen($http.post(path, data, config), successcb, errorcb);
       },
       get: function (path, data, successcb, errorcb) {
         path = url + path;
+        if (DEBUG) { console.debug('solr-angular-client: GET url=',url,', path=',path,', data=',data); }
         return promiseThen($http.get(path, data), successcb, errorcb);
       },
       put: function (path, data, successcb, errorcb) {

@@ -300,7 +300,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
     this.elasticsearch_load = function(type,id) {
       return $http({
-        url: config.solr + config.kibana_index + '/select?wt=json&q=title:"' + id + '"',
+        url: config.solr + config.banana_index + '/select?wt=json&q=title:"' + id + '"',
         method: "GET",
         transformResponse: function(response) {
           response = angular.fromJson(response);
@@ -317,8 +317,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
           alertSrv.set('Error',"Could not contact Solr at "+config.solr+
             ". Please ensure that Solr is reachable from your system." ,'error');
         } else {
-          alertSrv.set('Error',"Could not find "+id+". If you"+
-            " are using a proxy, ensure it is configured correctly",'error');
+          alertSrv.set('Error','Could not find dashboard named "'+id+'". Please ensure that the dashboard name is correct or exists in the system.','error');
         }
         return false;
       }).success(function(data) {
@@ -349,7 +348,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       });
     };
 
-    // TODO: Rename to solr_save
     this.elasticsearch_save = function(type,title,ttl) {
       // Clone object so we can modify it without influencing the existing obejct
       var save = _.clone(self.current);
@@ -362,7 +360,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
       // Create request with id as title. Rethink this.
       // Use id instead of _id, because it is the default field of Solr schema-less.
-      var request = sjs.Document(config.kibana_index,type,id).source({
+      var request = sjs.Document(config.banana_index,type,id).source({
         // _id: id,
         id: id,
         user: 'guest',
@@ -373,8 +371,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
       request = type === 'temp' && ttl ? request.ttl(ttl) : request;
 
-      // Solr: set sjs.client.server to use 'kibana-int' for saving dashboard
-      sjs.client.server(config.solr + config.kibana_index);
+      // Solr: set sjs.client.server to use 'banana-int' for saving dashboard
+      sjs.client.server(config.solr + config.banana_index);
 
       return request.doIndex(
         // Success
@@ -392,9 +390,11 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       );
     };
 
-    // TODO: add solr support
     this.elasticsearch_delete = function(id) {
-      return sjs.Document(config.kibana_index,'dashboard',id).doDelete(
+      // Set sjs.client.server to use 'banana-int' for deleting dashboard
+      sjs.client.server(config.solr + config.banana_index);
+
+      return sjs.Document(config.banana_index,'dashboard',id).doDelete(
         // Success
         function(result) {
           return result;
@@ -409,8 +409,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     // Solr
     this.elasticsearch_list = function(query,count) {
       // set indices and type
-      sjs.client.server(config.solr + config.kibana_index);
-      var request = sjs.Request().indices(config.kibana_index).types('dashboard');
+      sjs.client.server(config.solr + config.banana_index);
+      var request = sjs.Request().indices(config.banana_index).types('dashboard');
 
       // Need to set sjs.client.server back to use 'logstash_logs' collection
       // But cannot do it here, it will interrupt other modules.
@@ -470,6 +470,14 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         return false;
       });
     };
+
+    this.numberWithCommas = function(x) {
+      if (x)
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      else
+        return x
+    }
+
   });
 
 });

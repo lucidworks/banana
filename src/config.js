@@ -1,7 +1,7 @@
 /**
- * These is the app's configuration, If you need to configure
- * the default dashboard, please see dashboards/default
+ * This file contains the basic configuration settings for the banana webapp. 
  */
+ 
 define(['settings'],
 function (Settings) {
   "use strict";
@@ -9,53 +9,65 @@ function (Settings) {
   return new Settings({
 
     /**
-     * URL to your Solr server. You almost certainly don't
-     * want 'http://localhost:8983/solr/' here. Even if Banana and Solr are on
-     * the same host
+     * The default solr server and collection.
+     * 
+     * Banana is designed such that one instance of the webapp can act as a query engine 
+     * for multiple instances of Solr and multiple Solr collections. In this file, you can 
+     * specify the default Solr server and the collection that stores the data to be 
+     * visualized. Each dashboard that you create can (and typically will) override this 
+     * setting.
      *
-     * By default this will attempt to reach Solr at the same host you have
-     * Banana installed on. You probably want to set it to the FQDN of your
-     * Solr host
+     * Note that the solr server address you specify must be resolvable from the browser
+     * i.e., from your users' machine. You probably want to set it to the FQDN and port 
+     * number of your Solr host or the proxy that controls access to your Solr host. 
+     * By default it is set to localhost:8983, which frequently 
+     * works for development and testing, when you are running Solr, Banana and the 
+     * browser on one development/testing machine.
+     *
+     * After configuring this file, we also suggest you edit the solr server and collection 
+     * in the default dashboard (app/dashboards/default.json), which is a guided 
+     * self-starter for building dashboards. You can later replace the pre-defined 
+     * default.json with the dashboard you want your users to see when they first access 
+     * your banana web application.
      * @type {String}
      */
-    // TODO: Remove ES related settings
-    //elasticsearch: "http://"+window.location.hostname+":9200",
-    elasticsearch: "http://localhost:9200",
-
-    // Specify Solr server and core to store the data.
     solr: "http://localhost:8983/solr/",
     solr_core: "logstash_logs",
 
     /**
-     * The default Solr index to use for storing Banana specific object
-     * such as stored dashboards
+     * The default Solr index to use for storing objects internal to Banana, such as 
+     * stored dashboards. If you have been using a collection named kibana-int 
+     * to save your dashboards (the default provided in Banana 1.2 and earlier), then you
+     * simply need to replace the string "banana-int" with "kibana-int" and your old 
+     * dashboards will be accessible. 
+     *
+     * This banana-int (or equivalent) collection must be created and available in the 
+     * default solr server specified above, which serves as the persistence store for data 
+     * internal to banana.
      * @type {String}
      */
-    kibana_index: "kibana-int",
+    banana_index: "banana-int",
 
     /**
      * Panel modules available. Panels will only be loaded when they are defined in the
-     * dashboard, but this list is used in the "add panel" interface.
+     * dashboard. This list is used to populate the drop-down in the "add panel" interface.
      * @type {Array}
      */
     panel_names: [
       'histogram',
       'map',
-      // 'pie',  // Deprecated, use terms panel instead
       'table',
       'filtering',
       'timepicker',
       'text',
-      // 'fields',  // Deprecated, table panel now integrates a field selector
-      'hits',  // TODO
-      // 'dashcontrol',  // Deprecated, moved to nav bar
+      'hits',
       'column',
-      // 'derivequeries',  // TODO
-      // 'trends',  // TODO
+      'ticker',
       'bettermap',
       'query',
       'terms',
-      // 'dummy'  // Dummy module for testing
+      'rangeFacet',
+      'heatmap'
     ]
   });
 });

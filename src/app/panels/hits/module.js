@@ -42,8 +42,7 @@ define([
         {title:'Queries', src:'app/partials/querySelect.html'}
       ],
       status  : "Stable",
-      description : "The total hits for a query or set of queries. Can be a pie chart, bar chart, "+
-        "list, or absolute total of all queries combined"
+      description : "The total hits for the current query including all the applied filters."
     };
 
     // Set and populate defaults

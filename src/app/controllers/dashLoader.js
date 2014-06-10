@@ -61,7 +61,6 @@ function (angular, _) {
       ).then(
         function(result) {
         if (DEBUG) { console.debug('dashLoader: result = ',result); }
-
         // Solr
         if(!_.isUndefined(result.response.docs[0].id)) {
         alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
@@ -75,12 +74,12 @@ function (angular, _) {
       });
     };
 
-    // TODO
     $scope.elasticsearch_delete = function(id) {
       dashboard.elasticsearch_delete(id).then(
         function(result) {
+          if (DEBUG) { console.debug("dashLoader: result=",result); }
           if(!_.isUndefined(result)) {
-            if(result.found) {
+            if (result.responseHeader.status == 0) {
               alertSrv.set('Dashboard Deleted',id+' has been deleted','success',5000);
               // Find the deleted dashboard in the cached list and remove it
               // var toDelete = _.where($scope.elasticsearch.dashboards,{_id:id})[0];
@@ -100,8 +99,6 @@ function (angular, _) {
       dashboard.elasticsearch_list(query,$scope.loader.load_elasticsearch_size).then(
         function(result) {
         if (DEBUG) { console.debug("dashLoader: result=",result); }
-
-        // Solr
         if (!_.isUndefined(result.response.docs)) {
           $scope.hits = result.response.numFound;
           $scope.elasticsearch.dashboards = result.response.docs;

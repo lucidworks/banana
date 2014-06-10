@@ -43,32 +43,6 @@ function (angular, app, _, kbn, moment) {
           show: $scope.panel.spyable
         }
       ],
-//      dropdowns : [
-//          {
-//              description: "Export",
-//              icon: "icon-save",
-//              list: [
-//                  {
-//                      "text": "<h5>Export to File</h5>"
-//                  },
-//                  {
-//                      "text" : "<i class='icon-download'></i> csv format",
-//                      "href": "",
-//                      "click": "exportfile('csv')"
-//                  },
-//                  {
-//                      "text": "<i class='icon-download'></i> json format",
-//                      "href": "",
-//                      "click": "exportfile('json')"
-//                  },
-//                  {
-//                      "text": "<i class='icon-download'></i> xml format",
-//                      "href": "",
-//                      "click": "exportfile('xml')"
-//                  }
-//              ]
-//          }
-//      ],
       editorTabs : [
         {
           title:'Paging',
@@ -81,8 +55,7 @@ function (angular, app, _, kbn, moment) {
       ],
       exportfile: true,
       status: "Stable",
-      description: "A paginated table of records matching your query or queries. Click on a row to "+
-        "expand it and review all of the fields associated with that document. <p>"
+      description: "A paginated table of records matching your query (including any filters that may have been applied). Click on a row to expand it and review all of the fields associated with that document. Provides the capability to export your result set to CSV, XML or JSON for further processing using other systems."
     };
 
     // Set and populate defaults
@@ -111,8 +84,9 @@ function (angular, app, _, kbn, moment) {
       trimFactor: 300,
       normTimes : true,
       spyable : true,
-      time_field : 'event_timestamp',
-      saveOption : 'json'
+      saveOption : 'json',
+      exportSize: 100,
+      exportAll: true
     };
     _.defaults($scope.panel,_d);
 
@@ -122,7 +96,9 @@ function (angular, app, _, kbn, moment) {
       $scope.sjs = $scope.sjs || sjsResource(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       $scope.$on('refresh',function(){$scope.get_data();});
-
+    
+      $scope.panel.exportSize = $scope.panel.size * $scope.panel.pages;
+        
       $scope.fields = fields;
       $scope.get_data();
     };
@@ -222,8 +198,6 @@ function (angular, app, _, kbn, moment) {
       var _segment = _.isUndefined(segment) ? 0 : segment;
       $scope.segment = _segment;
 
-      if (DEBUG) { console.debug('table: Begin of get_data():\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\t_segment='+_segment,'\n\tdashboard.indices[_segment]=',dashboard.indices[_segment],'\n\tdashboard=',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv); }
-
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
@@ -268,8 +242,8 @@ function (angular, app, _, kbn, moment) {
       }
 
       // Set the panel's query
-      $scope.panel.queries.basic_query = querySrv.getQuery(0) + fq + sorting + rows_limit;
-      $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json;
+      $scope.panel.queries.basic_query = querySrv.getQuery(0) + fq + sorting;
+      $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json + rows_limit;
 
       if (DEBUG) { console.debug('table: query=',$scope.panel.queries.query); }
 
@@ -343,7 +317,15 @@ function (angular, app, _, kbn, moment) {
 
     $scope.exportfile = function(filetype) {
       var omitHeader = '&omitHeader=true';
-      var exportQuery = $scope.panel.queries.basic_query + '&wt=' + filetype + omitHeader;
+      var rows_limit = '&rows=' + ($scope.panel.exportSize || ($scope.panel.size * $scope.panel.pages));
+      var fl = '';
+      if (!$scope.panel.exportAll) {
+          fl = '&fl=';
+          for(var i = 0; i < $scope.panel.fields.length; i++) {
+              fl += $scope.panel.fields[i] + (i !== $scope.panel.fields.length - 1 ? ',' : '');
+          }
+      }
+      var exportQuery = $scope.panel.queries.basic_query + '&wt=' + filetype + omitHeader + rows_limit + fl;
       var request = $scope.panel_request;
       request = request.setQuery(exportQuery);
       var response = request.doSearch();

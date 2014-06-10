@@ -38,9 +38,8 @@ function (angular, app, _, $, kbn) {
       editorTabs : [
         {title:'Queries', src:'app/partials/querySelect.html'}
       ],
-      status  : "Beta",
-      description : "Displays the results of a Solr facet as a pie chart, bar chart, or a "+
-        "table"
+      status  : "Stable",
+      description : "Displays the results of a Solr facet as a pie chart, bar chart, or a table. Newly added functionality displays min/max/mean/sum of a stats field, faceted by the Solr facet field, again as a pie chart, bar chart or a table."
     };
 
     // Set and populate defaults
@@ -51,12 +50,16 @@ function (angular, app, _, $, kbn) {
         query       : '*:*',
         custom      : ''
       },
-      field   : 'type',
+      mode    : 'count', // mode to tell which number will be used to plot the chart.
+      field   : '',
+      stats_field : '',
+      decimal_points : 0, // The number of digits after the decimal point
       exclude : [],
       missing : true,
       other   : true,
       size    : 10,
-      order   : 'count',
+      // order   : 'count',
+      order   : 'descending',
       style   : { "font-size": '10pt'},
       donut   : false,
       tilt    : false,
@@ -65,7 +68,6 @@ function (angular, app, _, $, kbn) {
       chart       : 'bar',
       counter_pos : 'above',
       spyable     : true,
-      time_field  : 'event_timestamp'
     };
     _.defaults($scope.panel,_d);
 
@@ -76,7 +78,6 @@ function (angular, app, _, $, kbn) {
         $scope.get_data();
       });
       $scope.get_data();
-
     };
 
     $scope.get_data = function() {
@@ -122,19 +123,20 @@ function (angular, app, _, $, kbn) {
 
       // Build Solr query
       var fq = '&' + filterSrv.getSolrFq();
-      var time_field = filterSrv.getTimeField();
-      var start_time = filterSrv.getStartTime();
-      var end_time = filterSrv.getEndTime();
+      // var start_time = filterSrv.getStartTime();
+      // var end_time = filterSrv.getEndTime();
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0' // for terms, we do not need the actual response doc, so set rows=0
-      var facet_gap = '%2B1DAY';
-      var facet = '&facet=true' +
-                  '&facet.field=' + $scope.panel.field +
-                  '&facet.range=' + time_field +
-                  '&facet.range.start=' + start_time +
-                  '&facet.range.end=' + end_time +
-                  '&facet.range.gap=' + facet_gap +
-                  '&facet.limit=' + $scope.panel.size;
+      // var facet_gap = '%2B1DAY';
+      var facet = '';
+
+      if ($scope.panel.mode === 'count') {
+        facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size;
+      } else {
+        // if mode != 'count' then we need to use stats query
+        // stats does not support something like facet.limit, so we have to sort and limit the results manually.
+        facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field;
+      }
 
       // Set the panel's query
       $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet;
@@ -158,17 +160,40 @@ function (angular, app, _, $, kbn) {
 
         $scope.data = [];
 
-        _.each(results.facet_counts.facet_fields, function(v) {
-          for (var i = 0; i < v.length; i++) {
-            var term = v[i];
-            i++;
-            var count = v[i];
-            // if count = 0, do not add it to the chart, just skip it
-            if (count == 0) continue;
-            var slice = { label : term, data : [[k,count]], actions: true};
+        if ($scope.panel.mode === 'count') {
+          // In count mode, the y-axis min should be zero because count value cannot be negative.
+          $scope.yaxis_min = 0;
+          _.each(results.facet_counts.facet_fields, function(v) {
+            for (var i = 0; i < v.length; i++) {
+              var term = v[i];
+              i++;
+              var count = v[i];
+              // if count = 0, do not add it to the chart, just skip it
+              if (count == 0) continue;
+              var slice = { label : term, data : [[k,count]], actions: true};
+              $scope.data.push(slice);
+            };
+          });
+        } else {
+          // In stats mode, set y-axis min to null so jquery.flot will set the scale automatically.
+          $scope.yaxis_min = null;
+          _.each(results.stats.stats_fields[$scope.panel.stats_field].facets[$scope.panel.field], function(stats_obj,facet_field) {
+            var slice = { label:facet_field, data:[[k,stats_obj[$scope.panel.mode]]], actions: true };
             $scope.data.push(slice);
-            k = k + 1;  
-          };
+          });
+        }
+
+        // Sort the results
+        if ($scope.panel.order == 'descending') {
+          $scope.data = _.sortBy($scope.data, function(d) {return -d.data[0][1];});
+        } else {
+          $scope.data = _.sortBy($scope.data, function(d) {return d.data[0][1];});
+        }
+        // Slice it according to panel.size, and then set the x-axis values with k.
+        $scope.data = $scope.data.slice(0,$scope.panel.size);
+        _.each($scope.data, function(v) {
+          v.data[0][0] = k;
+          k++;
         });
 
         $scope.data.push({label:'Missing field',
@@ -179,6 +204,8 @@ function (angular, app, _, $, kbn) {
           // data:[[k+1,results.facets.terms.other]],meta:"other",color:'#444'});
           // TODO: Hard coded to 0 for now. Solr faceting does not provide 'other' value. 
           data:[[k+1,0]],meta:"other",color:'#444'});
+
+        if (DEBUG) { console.debug('terms: $scope.data = ',$scope.data); }
 
         $scope.$emit('render');
       });
@@ -199,6 +226,10 @@ function (angular, app, _, $, kbn) {
 
     $scope.set_refresh = function (state) {
       $scope.refresh = state;
+      // if 'count' mode is selected, set decimal_points to zero automatically.
+      if ($scope.panel.mode === 'count') {
+        $scope.panel.decimal_points = 0;
+      }
     };
 
     $scope.close_edit = function() {
@@ -224,7 +255,7 @@ function (angular, app, _, $, kbn) {
 
   });
 
-  module.directive('termsChart', function(querySrv) {
+  module.directive('termsChart', function(querySrv,dashboard) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
@@ -253,6 +284,8 @@ function (angular, app, _, $, kbn) {
           chartData = scope.panel.other ? chartData :
           _.without(chartData,_.findWhere(chartData,{meta:'other'}));
 
+          if (DEBUG) { console.debug('terms: render_panel() => chartData = ',chartData); }
+
           // Populate element.
           require(['jquery.flot.pie'], function(){
             // Populate element
@@ -266,7 +299,8 @@ function (angular, app, _, $, kbn) {
                     bars:   { show: true,  fill: 1, barWidth: 0.8, horizontal: false },
                     shadowSize: 1
                   },
-                  yaxis: { show: true, min: 0, color: "#c8c8c8" },
+                  // yaxis: { show: true, min: 0, color: "#c8c8c8" },
+                  yaxis: { show: true, min: scope.yaxis_min, color: "#c8c8c8" },
                   xaxis: { show: false },
                   grid: {
                     borderWidth: 0,
@@ -279,6 +313,7 @@ function (angular, app, _, $, kbn) {
                 });
               }
               if(scope.panel.chart === 'pie') {
+
                 var labelFormat = function(label, series){
                   return '<div ng-click="build_search(panel.field,\''+label+'\')'+
                     ' "style="font-size:8pt;text-align:center;padding:2px;color:white;">'+
@@ -339,11 +374,19 @@ function (angular, app, _, $, kbn) {
         var $tooltip = $('<div>');
         elem.bind("plothover", function (event, pos, item) {
           if (item) {
+            // if (DEBUG) { console.debug('terms: plothover item = ',item); }
             var value = scope.panel.chart === 'bar' ? item.datapoint[1] : item.datapoint[1][0][1];
+
+            // if (scope.panel.mode === 'count') {
+            //   value = value.toFixed(0);
+            // } else {
+            //   value = value.toFixed(scope.panel.decimal_points);
+            // }
+
             $tooltip
               .html(
                 kbn.query_color_dot(item.series.color, 20) + ' ' +
-                item.series.label + " (" + value.toFixed(0)+")"
+                item.series.label + " (" + dashboard.numberWithCommas(value.toFixed(scope.panel.decimal_points)) +")"
               )
               .place_tt(pos.pageX, pos.pageY);
           } else {

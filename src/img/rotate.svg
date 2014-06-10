@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" width="100" height="100" viewBox="0 0 100.00 100.00" enable-background="new 0 0 100.00 100.00" xml:space="preserve">
+	<path fill="#000000" fill-opacity="1" stroke-width="0.2" stroke-linejoin="round" d="M 57.143,10.7142C 68.4003,10.7142 78.5518,15.4491 85.7144,23.036L 85.7144,3.57133L 96.4286,14.2857L 96.4287,42.857L 67.8572,42.857L 57.143,32.1427L 77.1082,32.1427C 72.2036,26.6628 65.076,23.2142 57.143,23.2142L 53.5715,23.4502L 53.5715,10.8743L 57.143,10.7142 Z "/>
+	<path fill="#000000" fill-opacity="1" stroke-width="0.2" stroke-linejoin="round" d="M 53.5715,92.857L 53.5715,85.7142L 64.2858,85.7142L 64.2858,92.857L 53.5715,92.857 Z "/>
+	<rect x="71.4287" y="85.7142" fill="#000000" fill-opacity="1" stroke-width="0.2" stroke-linejoin="round" width="10.7143" height="7.14285"/>
+	<rect x="89.2858" y="82.1427" fill="#000000" fill-opacity="1" stroke-width="0.2" stroke-linejoin="round" width="7.14286" height="10.7143"/>
+	<rect x="89.2858" y="64.2856" fill="#000000" fill-opacity="1" stroke-width="0.2" stroke-linejoin="round" width="7.14287" height="10.7143"/>
+	<path fill="#000000" fill-opacity="1" stroke-width="0.2" stroke-linejoin="round" d="M 89.2858,46.4285L 96.4286,46.4285L 96.4287,57.1428L 89.2858,57.1428L 89.2858,46.4285 Z "/>
+	<rect x="71.4287" y="46.4285" fill="#000000" fill-opacity="1" stroke-width="0.2" stroke-linejoin="round" width="10.7143" height="7.14285"/>
+	<path fill="#000000" fill-opacity="1" stroke-width="0.2" stroke-linejoin="round" d="M 53.5714,53.5715L 53.5714,46.4286L 64.2858,46.4285L 64.2858,53.5714L 53.5714,53.5715 Z "/>
+	<path fill="#000000" fill-opacity="1" stroke-width="0.2" stroke-linejoin="round" d="M 3.57152,10.7143L 50,10.7143L 50.0001,92.857L 3.57154,92.857L 3.57152,10.7143 Z M 10.7144,17.8571L 10.7144,85.7142L 42.8572,85.7142L 42.8571,17.8572L 10.7144,17.8571 Z "/>
+</svg>

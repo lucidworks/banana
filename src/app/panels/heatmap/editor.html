@@ -1,0 +1,27 @@
+<div class="row-fluid">
+  <div class="span4">
+    <form>
+      <h6>Row Field</h6>
+      <input bs-typeahead="fields.list" type="text" class="input-medium" ng-model="panel.row_field" ng-change="set_refresh(true)">
+    </form>
+  </div>
+  <div class="span4">
+    <form>
+      <h6>Column Field</h6>
+      <input bs-typeahead="fields.list" type="text" class="input-medium" ng-model="panel.col_field" ng-change="set_refresh(true)">
+    </form>
+  </div>
+    <div class="span4"><h6>Rows Limit <tip>Maximum number of rows to be fetched and displayed</tip></h6>
+      <input id="rows_limit" type="number" min="1" max="500" value="100" class="input-small" ng-model="panel.editor_size" ng-change="set_refresh(true)">
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span3">
+        <label class="small">Heatmap Color <tip>Base color for Heatmap. Intensity of the chosen color in a cell is proportional to the respective pivot facet count for that cell</tip></label>
+        <select class="input-medium" ng-model="panel.color" ng-options="c for c in ['gray','blue', 'red', 'green', 'brown']"></select>
+    </div>
+    <div class="span1">
+        <h6>Transposed</h6><input type="checkbox" ng-model="panel.transposed" ng-checked="panel.transposed">
+    </div>
+</div>

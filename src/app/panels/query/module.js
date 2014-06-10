@@ -21,8 +21,7 @@ define([
   module.controller('query', function($scope, querySrv, $rootScope) {
     $scope.panelMeta = {
       status  : "Stable",
-      description : "Manage all of the queries on the dashboard. You almost certainly need one of "+
-        "these somewhere. This panel allows you to add, remove, label, pin and color queries"
+      description : "Provide a search bar for free-form queries. You almost certainly want one of these somewhere prominent on your dashboard."
     };
 
     // Set and populate defaults

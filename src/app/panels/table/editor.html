@@ -11,6 +11,7 @@
       <span style="margin-left:3px" ng-click="toggle_field(field)" ng-repeat="field in $parent.panel.fields" class="label pointer remove">{{field}} </span>
     </div>
   </div>
+<!-- 
   <div class="row-fluid">
     <div class="span4">
       <form class="input-append">
@@ -24,6 +25,7 @@
       <span style="margin-left:3px" ng-click="toggle_highlight(field);set_refresh(true)" ng-repeat="field in $parent.panel.highlight" class="label remove pointer">{{field}} </span>
     </div>
   </div>
+-->
   <h5>Options</h5>
   <div class="row-fluid">
     <div class="span1">
@@ -34,8 +36,8 @@
     </div>
     <div class="span3" style="white-space:nowrap" ng-show='panel.sortable'>
       <h6>Sort</h6>
-      <input ng-show="all_fields.length<=0 || !all_fields"style="width:85%" ng-model="panel.sort[0]" bs-typeahead="fields.list" type="text"></input>
-      <select ng-show="all_fields.length>0"style="width:85%" ng-model="panel.sort[0]" ng-options="f for f in all_fields"></select>
+      <input ng-show="all_fields.length<=0 || !all_fields"style="width:85%" ng-model="panel.sort[0]" ng-change="set_refresh(true)" bs-typeahead="fields.list" type="text"></input>
+      <select ng-show="all_fields.length>0"style="width:85%" ng-model="panel.sort[0]" ng-change="set_refresh(true)" ng-options="f for f in all_fields"></select>
       <i ng-click="set_sort(panel.sort[0])" ng-class="{'icon-chevron-up': panel.sort[1] == 'asc','icon-chevron-down': panel.sort[1] == 'desc'}"></i>
     </div>
     <div class="span2">
@@ -45,9 +47,5 @@
     <div class="span2">
       <h6>Trim Factor <tip>Trim fields to this long divided by # of rows</tip></h6>
       <input type="number" class="input-small" ng-model="panel.trimFactor">
-    </div>
-    <div class="span2">
-      <h6>Time Field</h6>
-      <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead="fields.list" type="text" class="input-small" ng-model="panel.time_field">
-    </div>
+    </div>    
   </div>

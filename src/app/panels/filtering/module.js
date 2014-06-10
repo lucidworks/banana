@@ -17,9 +17,8 @@ function (angular, app, _) {
   module.controller('filtering', function($scope, filterSrv, $rootScope, dashboard) {
 
     $scope.panelMeta = {
-      status  : "Beta",
-      description : "A controllable list of all filters currently applied to the dashboard. You "+
-        "almost certainly want one of these on your dashboard somewhere."
+      status  : "Stable",
+      description : "A controllable list of all filters currently applied to the dashboard. You need one of these on your dashboard somewhere in order for all the panels to work properly while you are interacting with your data."
     };
 
     // Set and populate defaults
@@ -54,7 +53,7 @@ function (angular, app, _) {
     };
 
     $scope.isEditable = function(filter) {
-      var uneditable = ['time'];
+      var uneditable = ['time','range'];
       if(_.contains(uneditable,filter.type)) {
         return false;
       } else {
