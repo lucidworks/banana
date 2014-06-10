@@ -83,13 +83,13 @@ define([
             // --------------------- END OF ELASTIC SEARCH PART ---------------------------------------
 
             // Construct Solr query
-            // var fq = '&' + filterSrv.getSolrFq();
+            var fq = '&' + filterSrv.getSolrFq();
             var wt_json = '&wt=json';
             var fl = '&fl=' + $scope.panel.xaxis + ',' + $scope.panel.yaxis + ',' + $scope.panel.field_type;
             var rows_limit = '&rows=' + $scope.panel.max_rows;
             //var sort = '&sort=' + $scope.panel.field + ' asc';
 
-            $scope.panel.queries.query = querySrv.getQuery(0) + fl + wt_json + rows_limit;
+            $scope.panel.queries.query = querySrv.getQuery(0) + fq + fl + wt_json + rows_limit;
 
             // Set the additional custom query
             if ($scope.panel.queries.custom != null) {
@@ -105,6 +105,7 @@ define([
             results.then(function(results) {
                 // build $scope.data array
                 $scope.data = results.response.docs;
+
                 $scope.render();
             });
 
@@ -247,37 +248,40 @@ define([
                         .style("fill", function(d) {
                             return color(d[scope.panel.field_type]);
                         }).on("mouseover", function(d) {
+                            var field_type = d[scope.panel.field_type] ? d[scope.panel.field_type] : "";
                             $tooltip
                                 .html('<i class="icon-circle" style="color:' + color(d[scope.panel.field_type]) + ';"></i>' + ' ' +
-                                    d[scope.panel.field_type] + " (" + d[scope.panel.xaxis] + ", " + d[scope.panel.yaxis] + ")<br>")
+                                    field_type + " (" + d[scope.panel.xaxis] + ", " + d[scope.panel.yaxis] + ")<br>")
                                 .place_tt(d3.event.pageX, d3.event.pageY);
                         })
                         .on("mouseout", function(d) {
                             $tooltip.detach();
-                        });;
-
-                    var legend = svg.selectAll(".legend")
-                        .data(color.domain())
-                        .enter().append("g")
-                        .attr("class", "legend")
-                        .attr("transform", function(d, i) {
-                            return "translate(0," + i * 20 + ")";
                         });
+                    if (scope.panel.field_type) {
 
-                    legend.append("rect")
-                        .attr("x", width - 18)
-                        .attr("width", 18)
-                        .attr("height", 18)
-                        .style("fill", color);
+                        var legend = svg.selectAll(".legend")
+                            .data(color.domain())
+                            .enter().append("g")
+                            .attr("class", "legend")
+                            .attr("transform", function(d, i) {
+                                return "translate(0," + i * 20 + ")";
+                            });
 
-                    legend.append("text")
-                        .attr("x", width - 24)
-                        .attr("y", 9)
-                        .attr("dy", ".35em")
-                        .style("text-anchor", "end")
-                        .text(function(d) {
-                            return d;
-                        });
+                        legend.append("rect")
+                            .attr("x", width - 18)
+                            .attr("width", 18)
+                            .attr("height", 18)
+                            .style("fill", color);
+
+                        legend.append("text")
+                            .attr("x", width - 24)
+                            .attr("y", 9)
+                            .attr("dy", ".35em")
+                            .style("text-anchor", "end")
+                            .text(function(d) {
+                                return d;
+                            });
+                    }
 
                 }
                 render_panel();
