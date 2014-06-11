@@ -5,13 +5,13 @@
     <table class="small" ng-show="panel.arrangement == 'vertical'">
       <tr ng-repeat="term in legend">
         <td><i class="icon-circle" ng-style="{color:term.color}"></i></td> <td style="padding-right:10px;padding-left:10px;">{{term.label}}</td>
-        <td>{{term.data[0][1].toFixed(panel.decimal_points)}}</td>
+        <td>{{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}</td>
       </tr>
     </table>
 
     <!-- horizontal legend above -->
     <div class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="term in legend" style="float:left;padding-left: 10px;">
-      <span><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{term.data[0][1].toFixed(panel.decimal_points)}}) </span>
+      <span><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}) </span>
     </div><br>
 
   </div>

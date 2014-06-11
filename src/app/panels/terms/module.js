@@ -255,7 +255,7 @@ function (angular, app, _, $, kbn) {
 
   });
 
-  module.directive('termsChart', function(querySrv) {
+  module.directive('termsChart', function(querySrv,dashboard) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
@@ -386,7 +386,7 @@ function (angular, app, _, $, kbn) {
             $tooltip
               .html(
                 kbn.query_color_dot(item.series.color, 20) + ' ' +
-                item.series.label + " (" + value.toFixed(scope.panel.decimal_points) +")"
+                item.series.label + " (" + dashboard.numberWithCommas(value.toFixed(scope.panel.decimal_points)) +")"
               )
               .place_tt(pos.pageX, pos.pageY);
           } else {

@@ -1,14 +1,26 @@
 # Banana
 
-The Banana project was forked from Kibana 3 ([http://three.kibana.org](http://three.kibana.org)), and works with  all kinds of time series data stored in Apache Solr. It uses Kibana's powerful dashboard configuration capabilities, ports key panels to work with Solr, and provides significant additional capabilities. 
+The Banana project was forked from Kibana 3 ([http://three.kibana.org](http://three.kibana.org)), and works with all kinds of time series data stored in Apache Solr. It uses Kibana's powerful dashboard configuration capabilities, ports key panels to work with Solr, and provides significant additional capabilities, including new panels that leverage D3.js. 
 
-The goal is to create a rich and flexible UI, enabling users to rapidly develop end-to-end applications that leverage the power of Solr.
+The goal is to create a rich and flexible UI, enabling users to rapidly develop end-to-end applications that leverage the power of Apache Solr.
 
  
 ## IMPORTANT
 
-Pull the repo from the "release" branch; version 1.2 will be tagged as banana-1.2.
+Pull the repo from the "release" branch; version 1.3 will be tagged as banana-1.3.
 
+## Banana 1.3: Released on 10 June 2014
+
+Banana 1.3 improves on its already powerful capability to visualize and interpret generalized time series data (banana is not only used to search log files, but also visualize social media streams, call center logs, medical records, and etc.). It starts leveraging the power of D3.js (data-driven documents) and provides new panels and enhancements, while also allowing visualization of non-time series data. Key new features include:
+
+1. Stats and aggregations are now available in the _Terms_ and _Map_ panels. In addition to count mode, you can now visualize stats such as mean, max, min, sum, etc.
+2. A new _Range Facet_ panel allows you to visualize and graphically explore distributions on numeric fields, with selections being reflected across the entire dashboard.
+3. A new _Heatmap_ panel provides for visualization of the powerful pivot faceting capability of Solr.
+4. A new _Ticker_ panel provides a stock ticker like representation of trends in your time series data.
+5. The _Export_ functionality in the the _Table Module_ has been optimized for vastly improved performance and now allows you to export only a subset of the fields in the returned documents.
+6. Previous versions required a _Timepicker_ and time fields set in all panels for them to work. We have cleaned up the code so that it will now work without a _Timepicker_ and a time filter, which will help visualize non-time series data. The time field provided in the _Timepicker_ is used by all panels.
+7. General improvements in the UI and in-product help documentation makes Banana 1.3 easier to use.
+8. The directory structure is now cleaned up and legacy files carried over are now removed. Instructions for enabling CORS in Solr and for setting the schema/config for banana's internal collections are now  contained in the _resources_ directory. 
 
 ## Banana 1.2: Released on 11 May 2014
 
@@ -146,6 +158,3 @@ If you have any questions, please contact Andrew Thanalertvisuti (andrew.thanale
 
 Kibana is a trademark of Elasticsearch BV  
 Logstash is a trademark of Elasticsearch BV
-
-
-

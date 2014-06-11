@@ -548,7 +548,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             }
             $tooltip
               .html(
-                group + value + " [" + item.datapoint[0]+" - "+ (item.datapoint[0] + (scope.panel.gap-1)) +"]"
+                group + dashboard.numberWithCommas(value) + " [" + item.datapoint[0]+" - "+ (item.datapoint[0] + (scope.panel.gap-1)) +"]"
               )
               .place_tt(pos.pageX, pos.pageY);
           } else {
