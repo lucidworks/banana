@@ -119,8 +119,8 @@ __Q__: How do I secure my solr endpoint so that users do not have access to it?
 __A__: The simplest solution is to use a Apache or nginx reverse proxy (See for example https://groups.google.com/forum/#!topic/ajax-solr/pLtYfm83I98).
 
 
-__Q__ : Can I use banana for non-time series data?  
-__A__:  Yes, from version 1.3 onwards, non-time series data are also supported.
+__Q__: Can I use banana for non-time series data?  
+__A__: Yes, from version 1.3 onwards, non-time series data are also supported.
 
 
 ## Resources
@@ -135,7 +135,7 @@ __A__:  Yes, from version 1.3 onwards, non-time series data are also supported.
 
 ## Support
 
-Banana uses the dashboard configuration capabilities of Kibana (from which it is forked) and ports key panels to work with Solr. Moreover, it provides many additional capabilities like heatmaps, range facets, panel specific filters, global parameters, and visualization of "group-by" style queries. We are continuing to add many new panels that go well beyond what is available in Kibana, helping users build complete applications that leverage the data stored in Apache Solr, HDFS and variety of sources in the enterprise. 
+Banana uses the dashboard configuration capabilities of Kibana (from which it is forked) and ports key panels to work with Solr. Moreover, it provides many additional capabilities like heatmaps, range facets, panel specific filters, global parameters, and visualization of "group-by" style queries. We are continuing to add many new panels that go well beyond what is available in Kibana, helping users build complete applications that leverage the data stored in Apache Solr, HDFS and a variety of sources in the enterprise. 
 
 If you have any questions, please contact Andrew Thanalertvisuti (andrew.thanalertvisuti@lucidworks.com) or Ravi Krishnamurthy (ravi.krishnamurthy@lucidworks.com).
 
