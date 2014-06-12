@@ -60,6 +60,7 @@ If you created dashboards for Banana 1.0, you did not have a global filtering pa
 * A webserver. 
 * A browser reachable Solr server. The Solr endpoint must be open, or a proxy configured to allow access to it.
 
+### Installation Options
 
 #### Run Banana Web App within your existing Solr instance
 Run Solr at least once to create the webapp directories  
@@ -108,9 +109,9 @@ Banana is a an Angular.JS app and can be run in any webserver that has access to
 
 #### Storing Dashboards in Solr
 
-If you want to save and load dashboards from Solr, create a collection using the configuration files provided in either resources/banana-int-solr-4.4 (for Solr 4.4) or resources/banana-int-solr-4.5 (for Solr 4.5 and above). If you are using Solr Cloud, you will need to upload the configuration into ZooKeeper and then create the collection using that configuration.
+If you want to save and load dashboards from Solr, create a collection using the configuration files provided in either the _resources/banana-int-solr-4.4_ (for Solr 4.4) directory or the _resources/banana-int-solr-4.5_ directory (for Solr 4.5 and above). If you are using Solr Cloud, you will need to upload the configuration into ZooKeeper and then create the collection using that configuration.
 
-The Solr server configured in config.js will serve as the default node for each dashboard; you can configure each dashboard to point to a different Solr endpoint as long as your webserver and Solr put out the correct CORS headers. See the README file under the directory resources/enable-cors for a guide.
+The Solr server configured in config.js will serve as the default node for each dashboard; you can configure each dashboard to point to a different Solr endpoint as long as your webserver and Solr put out the correct CORS headers. See the README file under the  _resources/enable-cors_ directory for a guide.
 
 ## FAQ
 
