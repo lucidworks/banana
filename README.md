@@ -123,14 +123,24 @@ __Q__ : Can I use banana for non-time series data?
 __A__:  Yes, from version 1.3 onwards, non-time series data are also supported.
 
 
-### Support
+## Resources
+
+
+1.	LucidWorks SILK: http://www.lucidworks.com/lucidworks-silk/
+2.	Webinar of LucidWorks SILK: http://programs.lucidworks.com/SiLK-introduction_Register.html.
+3.	LogStash: http://logstash.net/
+4.	SILK Use Cases: https://github.com/LucidWorks/silkusecases. Provides example configuration files, schemas and dashboards required to build applications that use Solr and Banana.
+
+
+
+## Support
 
 Banana uses the dashboard configuration capabilities of Kibana (from which it is forked) and ports key panels to work with Solr; it provides many additional capabilities like heatmaps, range facets, panel specific filters, global parameters, and visualization of "group-by" style queries. We are in the continuing to add many new panels that go well beyond what is available in Kibana, helping users build complete applications that leverage the data stored in Apache Solr and HDFS. 
 
 If you have any questions, please contact Andrew Thanalertvisuti (andrew.thanalertvisuti@lucidworks.com) or Ravi Krishnamurthy (ravi.krishnamurthy@lucidworks.com).
 
 
-###Trademarks
+## Trademarks
 
 Kibana is a trademark of Elasticsearch BV  
 Logstash is a trademark of Elasticsearch BV
