@@ -127,7 +127,7 @@ __A__:  Yes, from version 1.3 onwards, non-time series data are also supported.
 
 
 1.	LucidWorks SILK: http://www.lucidworks.com/lucidworks-silk/
-2.	Webinar of LucidWorks SILK: http://programs.lucidworks.com/SiLK-introduction_Register.html.
+2.	Webinar on LucidWorks SILK: http://programs.lucidworks.com/SiLK-introduction_Register.html.
 3.	LogStash: http://logstash.net/
 4.	SILK Use Cases: https://github.com/LucidWorks/silkusecases. Provides example configuration files, schemas and dashboards required to build applications that use Solr and Banana.
 
