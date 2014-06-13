@@ -104,7 +104,7 @@ Browse to http://localhost:8983/banana  (or the FQDN of your solr server).
 	
 #### Banana Web App run in a WebServer
 
-Banana is a an Angular.JS app and can be run in any webserver that has access to Solr. You will need to enable CORS on the Solr instances that you query, or configure a proxy that makes requests to banana and Solr as same-origin. We typically recommend the latter approach.
+Banana is a an AngularJS app and can be run in any webserver that has access to Solr. You will need to enable CORS on the Solr instances that you query, or configure a proxy that makes requests to banana and Solr as same-origin. We typically recommend the latter approach.
 
 
 #### Storing Dashboards in Solr
