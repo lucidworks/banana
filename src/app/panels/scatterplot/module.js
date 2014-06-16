@@ -84,7 +84,7 @@ define([
 
             // Construct Solr query
             var fq = '&' + filterSrv.getSolrFq();
-            var wt_json = '&wt=json';
+            var wt_json = '&wt=csv';
             var fl = '&fl=' + $scope.panel.xaxis + ',' + $scope.panel.yaxis + ',' + $scope.panel.field_type;
             var rows_limit = '&rows=' + $scope.panel.max_rows;
             //var sort = '&sort=' + $scope.panel.field + ' asc';
@@ -104,8 +104,9 @@ define([
             // Populate scope when we have results
             results.then(function(results) {
                 // build $scope.data array
-                $scope.data = results.response.docs;
-
+                //$scope.data = results.response.docs;
+                $scope.data = d3.csv.parse(results);
+                // $scope.data = results;
                 $scope.render();
             });
 
@@ -159,7 +160,8 @@ define([
                     var el = element[0];
 
                     // deepcopy of the data in the scope
-                    var data = jQuery.extend(true, [], scope.data);
+                    
+                    //var data = jQuery.extend(true, [], scope.data);
 
                     var parent_width = element.parent().width(),
                         height = parseInt(scope.row.height),
@@ -199,16 +201,16 @@ define([
                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
                     // add the tooltip area to the webpage
                     var $tooltip = $('<div>');
-
-                    data.forEach(function(d) {
+                    console.log(scope.data)
+                    scope.data.forEach(function(d) {
                         d[scope.panel.yaxis] = +d[scope.panel.yaxis];
                         d[scope.panel.xaxis] = +d[scope.panel.xaxis];
                     });
 
-                    x.domain(d3.extent(data, function(d) {
+                    x.domain(d3.extent(scope.data, function(d) {
                         return d[scope.panel.xaxis];
                     })).nice();
-                    y.domain(d3.extent(data, function(d) {
+                    y.domain(d3.extent(scope.data, function(d) {
                         return d[scope.panel.yaxis];
                     })).nice();
 
@@ -235,7 +237,7 @@ define([
                         .text(scope.panel.yaxis)
 
                     svg.selectAll(".dot")
-                        .data(data)
+                        .data(scope.data)
                         .enter().append("circle")
                         .attr("class", "dot")
                         .attr("r", 3.5)
@@ -284,7 +286,7 @@ define([
                     }
 
                 }
-                render_panel();
+                //render_panel();
             }
         };
     });
