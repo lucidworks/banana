@@ -52,6 +52,13 @@ define([
     this.set = function(filter,id) {
       _.defaults(filter,{mandate:'must'});
       filter.active = true;
+
+      // Need to url encode the filter query
+      if (filter.query) {
+        filter.query = encodeURIComponent(filter.query);
+        console.log('filterSrv: encodeURIComponent(filter.query) = ',filter.query);
+      }
+
       if(!_.isUndefined(id)) {
         if(!_.isUndefined(self.list[id])) {
           _.extend(self.list[id],filter);
