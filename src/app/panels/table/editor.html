@@ -34,7 +34,7 @@
     <div class="span1">
       <h6>Sorting</h6><input type="checkbox" ng-model="panel.sortable" ng-checked="panel.sortable">
     </div>
-    <div class="span3" style="white-space:nowrap" ng-show='panel.sortable'>
+    <div class="span3" style="white-space:nowrap" ng-show="panel.sortable">
       <h6>Sort</h6>
       <input ng-show="all_fields.length<=0 || !all_fields"style="width:85%" ng-model="panel.sort[0]" ng-change="set_refresh(true)" bs-typeahead="fields.list" type="text"></input>
       <select ng-show="all_fields.length>0"style="width:85%" ng-model="panel.sort[0]" ng-change="set_refresh(true)" ng-options="f for f in all_fields"></select>
@@ -48,4 +48,32 @@
       <h6>Trim Factor <tip>Trim fields to this long divided by # of rows</tip></h6>
       <input type="number" class="input-small" ng-model="panel.trimFactor">
     </div>    
+  </div>
+  <div class="row-fluid">
+    <div class="span3">
+      <h6>Add Hyperlink Column <tip>Add a column that will contain hyperlinks to access another resources such as URLs.</tip></h6>
+      <input type="checkbox" ng-model="panel.enableHyperlink" ng-checked="panel.enableHyperlink">
+    </div>
+    <div class="span3" ng-show="panel.enableHyperlink">
+      <h6>Link Column Header</h6>
+      <input type="text" class="input-small" placeholder="Link" ng-model="panel.hyperlinkColumnHeader">
+    </div>
+    <div class="span3" ng-show="panel.enableHyperlink">
+      <h6>Display Links as Icons</h6>
+      <input type="checkbox" ng-model="panel.displayLinkIcons" ng-checked="panel.displayLinkIcons">
+    </div>
+    <div class="span3" ng-show="panel.enableHyperlink && panel.displayLinkIcons">
+      <h6>Column for Links</h6>
+      <input type="text" class="input-small" ng-model="panel.hyperlinkColumnForLinks" bs-typeahead="fields.list">
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span3" ng-show="panel.enableHyperlink && !panel.displayLinkIcons">
+      <h6>Column for Link Text</h6>
+      <input type="text" class="input-small" ng-model="panel.hyperlinkColumnForText" bs-typeahead="fields.list">
+    </div>
+    <div class="span3" ng-show="panel.enableHyperlink && !panel.displayLinkIcons">
+      <h6>Column for Links</h6>
+      <input type="text" class="input-small" ng-model="panel.hyperlinkColumnForLinks" bs-typeahead="fields.list">
+    </div>
   </div>
