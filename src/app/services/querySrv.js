@@ -117,7 +117,9 @@ function (angular, _, config) {
 
     // Get query string for Solr with defType param and default fields (df).
     this.getQuery = function(id) {
-      var solr_q = 'q=' + self.list[id].query;
+      // var solr_q = 'q=' + self.list[id].query;
+      // Need to url encode the query
+      var solr_q = 'q=' + encodeURIComponent(self.list[id].query);
 
       // if (self.list[id].type) {
       //   solr_q += '&defType=' + self.list[id].type;
