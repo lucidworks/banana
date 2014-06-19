@@ -32,7 +32,7 @@
       <h6>Header</h6><input type="checkbox" ng-model="panel.header" ng-checked="panel.header">
     </div>
     <div class="span1">
-      <h6>Sorting</h6><input type="checkbox" ng-model="panel.sortable" ng-checked="panel.sortable">
+      <h6>Sorting</h6><input type="checkbox" ng-model="panel.sortable" ng-checked="panel.sortable" ng-change="get_data();">
     </div>
     <div class="span3" style="white-space:nowrap" ng-show='panel.sortable'>
       <h6>Sort</h6>
