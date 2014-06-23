@@ -86,7 +86,8 @@ function (angular, app, _, kbn, moment) {
       spyable : true,
       saveOption : 'json',
       exportSize: 100,
-      exportAll: true
+      exportAll: true,
+      displayLinkIcon: true
     };
     _.defaults($scope.panel,_d);
 
