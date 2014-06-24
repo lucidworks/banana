@@ -25,7 +25,7 @@ function (angular, app, _, $, kbn) {
   var module = angular.module('kibana.panels.terms', []);
   app.useModule(module);
 
-  module.controller('terms', function($scope, querySrv, dashboard, filterSrv) {
+  module.controller('terms', function($scope, querySrv, dashboard, filterSrv, alertSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -74,11 +74,22 @@ function (angular, app, _, $, kbn) {
 
     $scope.init = function () {
       $scope.hits = 0;
-
+      $scope.testMultivalued();
       $scope.$on('refresh',function(){
         $scope.get_data();
       });
       $scope.get_data();
+    };
+
+    $scope.testMultivalued = function() {
+      if($scope.panel.field && $scope.panel.field !== '' && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
+        $scope.panel.error = "Can't proceed with Multivalued field";
+        return;
+      }
+      if($scope.panel.stats_field && $scope.panel.stats_field !== '' && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
+        $scope.panel.error = "Can't proceed with Multivalued field";
+        return;
+      }
     };
 
     $scope.get_data = function() {
@@ -235,6 +246,7 @@ function (angular, app, _, $, kbn) {
 
     $scope.close_edit = function() {
       if($scope.refresh) {
+        $scope.testMultivalued();
         $scope.get_data();
       }
       $scope.refresh =  false;
