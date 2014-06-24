@@ -231,7 +231,7 @@ function (angular, app, _, kbn, moment) {
       var rows_limit;
       var sorting = '';
 
-      if ($scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined) {
+      if ($scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined && $scope.panel.sortable) {
         sorting = '&sort=' + $scope.panel.sort[0] + ' ' + $scope.panel.sort[1];
       }
 
