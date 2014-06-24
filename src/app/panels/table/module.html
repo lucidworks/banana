@@ -16,11 +16,12 @@
             <a class="pointer" data-unique="1" bs-popover="'app/panels/table/micropanel.html'" data-placement="right" ng-click="toggle_micropanel(field,true)" ng-class="{label: _.contains(panel.fields,field)}">{{field}}</a>
           </li>
         </ul>
-
       </div>
     </div>
+
     <div style="{{panel.overflow}}:{{panel.height || row.height}};" ng-class="{'span9':panel.field_list,'span12':!panel.field_list}" class="table-doc-table">
       <i class="pull-left icon-chevron-sign-right pointer" ng-click="panel.field_list = !panel.field_list" bs-tooltip="'Show field list'" ng-show="!panel.field_list"></i>
+
       <div class="row-fluid" ng-show="panel.paging">
         <div class="span1 offset1" style="text-align:right">
           <i ng-click="panel.offset = 0" ng-show="panel.offset > 0" class='icon-circle-arrow-left pointer'></i>
@@ -34,12 +35,12 @@
           <i ng-click="panel.offset = (panel.offset + panel.size)" ng-show="data.length > panel.offset+panel.size" class='icon-arrow-right pointer'></i>
         </div>
       </div>
+
       <table class="table-hover table table-condensed" ng-style="panel.style">
         <thead ng-show="panel.header">
           <th ng-show="panel.fields.length<1">message (select columns from the list to the left)</th>
           <th style="white-space:nowrap" ng-repeat="field in panel.fields">
             <i ng-show="!$first" class="pointer link icon-caret-left" ng-click="_.move(panel.fields,$index,$index-1)"></i>
-
             <span  class="pointer" ng-click="set_sort(field)" ng-show='panel.sortable'>
               {{field}}
               <i ng-show='field == panel.sort[0]' class="pointer link" ng-class="{'icon-chevron-up': panel.sort[1] == 'asc','icon-chevron-down': panel.sort[1] == 'desc'}"></i>
@@ -47,12 +48,16 @@
             <span ng-show='!panel.sortable'>{{field}}</span>
             <i ng-show="!$last" class="pointer link icon-caret-right" ng-click="_.move(panel.fields,$index,$index+1)"></i>
           </th>
-
+          <th ng-show="panel.enableHyperlink" style="white-space:nowrap">{{panel.hyperlinkColumnHeader}}</th>
         </thead>
+
         <tbody ng-repeat="event in data | slice:panel.offset:panel.offset+panel.size" ng-class-odd="'odd'">
           <tr ng-click="toggle_details(event)" class="pointer">
             <td ng-show="panel.fields.length<1">{{event.kibana._source|stringify|tableTruncate:panel.trimFactor:1}}</td>
             <td ng-show="panel.fields.length>0" ng-repeat="field in panel.fields" ng-bind-html-unsafe="(event.kibana.highlight[field]||event.kibana._source[field]) |tableHighlight | tableTruncate:panel.trimFactor:panel.fields.length"></td>
+            <!-- Hyperlink column -->
+            <td ng-click="" ng-show="panel.enableHyperlink && panel.displayLinkIcon" ng-bind-html-unsafe="event.kibana._source[panel.hyperlinkColumnForURI] |urlLinkAsIcon"></td>
+            <td ng-show="panel.enableHyperlink && !panel.displayLinkIcon" ng-bind-html-unsafe="event.kibana._source[panel.hyperlinkColumnForURI] |urlLink"></td>
           </tr>
           <tr ng-show="event.kibana.details">
             <td colspan={{panel.fields.length}} ng-switch="event.kibana.view">
@@ -86,6 +91,7 @@
           </tr>
         </tbody>
       </table>
+
       <div class="row-fluid" ng-show="panel.paging">
         <div class="span1 offset3" style="text-align:right">
           <i ng-click="panel.offset = 0" ng-show="panel.offset > 0" class='icon-circle-arrow-left pointer'></i>
