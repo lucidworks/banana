@@ -150,6 +150,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       });
       dashboard.refresh();
     }
+    
     /**
      * Fetch the data for a chunk of a queries results. Multiple segments occur when several indicies
      * need to be consulted (like timestamped logstash indicies)
