@@ -11,11 +11,11 @@
     #myAccordion {
         width: 90%
     }
-    .icon-chevron-down{
+    .icon-chevron-down {
         float: right;
         text-decoration:none;
     }
-    .icon-chevron-up{
+    .icon-chevron-up {
         float: right;
         text-decoration:none;
     }
@@ -68,11 +68,16 @@
                 <thead ng-show="panel.header">
                 </thead>
                 <tbody ng-repeat="event in data | slice:panel.offset:panel.offset+panel.size" ng-class-odd="'odd'">
-                    <tr ng-click="toggle_details(event)" class="pointer">
+                    <tr ng-click="toggle_details(event)">
                         <!--                         <td>
                             {{event.kibana._source|stringify|tableTruncate:panel.trimFactor:1}}
                         </td> -->
-                        <td ng-bind-html-unsafe="(event.kibana._source[panel.header_field]) | tableTruncate:panel.trimFactor:1">
+                        <td>
+                            <a href="{{event.kibana._source[panel.header_field]}}"> {{event.kibana._source[panel.header_field] | tableTruncate:panel.trimFactor:1}} </a>
+                            <br><br>
+                            <div ng-show="highlight_flag" ng-bind-html-unsafe="(highlighting[highlightingKeys[$index]][panel.body_field]) | tableTruncate:panel.trimFactor:1 | tableHighlight"></div>
+                            <div ng-show="!highlight_flag" ng-bind-html-unsafe="(event.kibana._source[panel.body_field]) | tableTruncate:panel.trimFactor:1"></div>
+                        </td>
                         </td>
 
                     </tr>

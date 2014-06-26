@@ -8,7 +8,7 @@
         </form>
     </div>
     <div class="span8">
-        <h6>Columns
+        <h6>Facets
             <small>Click to remove</small>
         </h6>
         <span style="margin-left:3px" ng-click="toggle_field(field)" ng-repeat="field in $parent.panel.fields" class="label pointer remove">{{field}}</span>
@@ -49,6 +49,12 @@
             <tip>The field that will be shown as title field for document</tip>
         </h6>
         <input bs-typeahead="fields.list" type="text" class="input-small" ng-model="panel.header_field">
+    </div>
+    <div class="span2">
+        <h6>Body Field
+            <tip>The field that will be shown as body field for document</tip>
+        </h6>
+        <input bs-typeahead="fields.list" type="text" class="input-small" ng-model="panel.body_field">
     </div>
     <div class="span2">
         <h6>Facet Limit

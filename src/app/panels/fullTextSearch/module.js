@@ -264,7 +264,7 @@ define([
         }
 
         //set highlight part in sole query 
-        var highlight = '&hl=true&hl.fl=dest'
+        var highlight = '&hl=true&hl.fl=' + $scope.panel.body_field
 
         // Set the panel's query
 
@@ -314,7 +314,7 @@ define([
               var _h = _.clone(hit);
               _h.kibana = {
                 _source: kbn.flatten_json(hit),
-                highlight: kbn.flatten_json(hit.highlight || {})
+                highlight: kbn.flatten_json(hit.highlighting || {})
               };
 
               return _h;
@@ -323,6 +323,12 @@ define([
             // Solr does not need to accumulate hits count because it can get total count
             // from a single faceted query.
             $scope.hits = results.response.numFound;
+            $scope.highlighting = results.highlighting;
+            $scope.highlightingKeys = Object.keys(results.highlighting);
+            if($.isEmptyObject($scope.highlighting[$scope.highlightingKeys[0]]))
+              $scope.highlight_flag = false;
+            else
+              $scope.highlight_flag = true;
             var facet_results = results.facet_counts.facet_fields;
             var facet_data = {};
             _.each($scope.panel.fields, function(field) {
@@ -463,9 +469,6 @@ define([
       return function(text) {
         if (!_.isUndefined(text) && !_.isNull(text) && text.toString().length > 0) {
           return text.toString().
-          replace(/&/g, '&amp;').
-          replace(/</g, '&lt;').
-          replace(/>/g, '&gt;').
           replace(/\r?\n/g, '<br/>').
           replace(/<em>/g, '<code class="highlight">').
           replace(/<\/em>/g, '</code>');
