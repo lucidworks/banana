@@ -19,6 +19,16 @@
         float: right;
         text-decoration:none;
     }
+    .highlight-code {
+        padding: 2px 4px;
+        color: #d14;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        white-space: nowrap;
+        font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
+        border-radius: 3px;
+    }
+
     </style>
     <div class="row-fluid">
     </div>
@@ -26,7 +36,7 @@
     <div class="row-fluid">
         <div ng-class="{'span3':panel.field_list}" ng-show="panel.field_list">
             <div class="sidebar-nav">
-                <h5>Facet Fields <i class=" icon-chevron-sign-left pointer " ng-click="panel.field_list = !panel.field_list" bs-tooltip="'Hide field list'" ng-show="panel.field_list"></i>
+                <h5>Limit Your Search <i class=" icon-chevron-sign-left pointer " ng-click="panel.field_list = !panel.field_list" bs-tooltip="'Hide field list'" ng-show="panel.field_list"></i>
                 </h5>
                 <div id="myAccordion" class="accordion">
                     <div class="accordion-group" ng-repeat="field in panel.fields">
@@ -68,15 +78,17 @@
                 <thead ng-show="panel.header">
                 </thead>
                 <tbody ng-repeat="event in data | slice:panel.offset:panel.offset+panel.size" ng-class-odd="'odd'">
-                    <tr ng-click="toggle_details(event)">
+                    <tr>
                         <!--                         <td>
                             {{event.kibana._source|stringify|tableTruncate:panel.trimFactor:1}}
                         </td> -->
                         <td>
-                            <a href="{{event.kibana._source[panel.header_field]}}"> {{event.kibana._source[panel.header_field] | tableTruncate:panel.trimFactor:1}} </a>
-                            <br><br>
-                            <div ng-show="highlight_flag" ng-bind-html-unsafe="(highlighting[highlightingKeys[$index]][panel.body_field]) | tableTruncate:panel.trimFactor:1 | tableHighlight"></div>
-                            <div ng-show="!highlight_flag" ng-bind-html-unsafe="(event.kibana._source[panel.body_field]) | tableTruncate:panel.trimFactor:1"></div>
+                            <i class=" icon-chevron-sign-down pointer " bs-tooltip="'Show document'" style="float: right;" ng-click="toggle_details(event)"></i>
+                            <a href="{{event.kibana._source[panel.url_field]}}" target="_blank"> {{event.kibana._source[panel.header_field] | tableTruncate:panel.trimFactor:1}} </a>
+                            <br>
+                            <div ng-show="highlight_flag" ng-bind-html-unsafe="(highlighting[highlightingKeys[$index]][panel.body_field]) | tableTruncate:panel.trimFactor:3 | tableHighlight"></div>
+                            <div ng-show="!highlight_flag" ng-bind-html-unsafe="(event.kibana._source[panel.body_field]) | tableTruncate:panel.trimFactor:3"></div>
+                            <br>
                         </td>
                         </td>
 

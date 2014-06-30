@@ -470,8 +470,8 @@ define([
         if (!_.isUndefined(text) && !_.isNull(text) && text.toString().length > 0) {
           return text.toString().
           replace(/\r?\n/g, '<br/>').
-          replace(/<em>/g, '<code class="highlight">').
-          replace(/<\/em>/g, '</code>');
+          replace(/<em>/g, '<span class="highlight-code"><b>').
+          replace(/<\/em>/g, '</b></span>');
         }
         return '';
       };
