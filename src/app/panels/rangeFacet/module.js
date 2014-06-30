@@ -77,6 +77,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       group_field : null,
       fill        : 0,
       linewidth   : 3,
+      auto_int    : true,
+      resolution  : 200,
+      interval    : '10',
+      intervals   : ['auto','1','2','5','10','20','50','100','200'],
       spyable     : true,
       zoomlinks   : true,
       bars        : true,
@@ -114,6 +118,20 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       $scope.get_data();
 
     };
+
+    $scope.set_interval = function(interval) {
+      if(interval !== 'auto') {
+        $scope.panel.auto_int = false;
+        $scope.panel.interval = interval;
+      } else {
+        $scope.panel.auto_int = true;
+      }
+    };
+
+    $scope.interval_label = function(interval) {
+      return $scope.panel.auto_int && interval === $scope.panel.interval ? interval+" (auto)" : interval;
+    };
+
     /**
      * The facet range effecting the panel
      * return type {from:number, to:number}
@@ -121,6 +139,22 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     $scope.get_facet_range = function () {
       var range = $scope.facet_range = filterSrv.facetRange($scope.panel.range_field);
       return range;
+    };
+
+    /*
+     * get interval to be used
+     */
+    $scope.get_interval = function () {
+      var interval = $scope.panel.interval,
+                      range;
+      if ($scope.panel.auto_int) {
+        range = $scope.get_facet_range();
+        if (range) {
+          interval = kbn.calculate_gap(range.from, range.to, $scope.panel.resolution, 0);
+        }
+      }
+      $scope.panel.interval = interval || '10';
+      return $scope.panel.interval;
     };
 
     $scope.set_range_filter = function(from,to){
@@ -177,6 +211,13 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         return;
       }
 
+      var _range = $scope.get_facet_range();
+      var _interval = $scope.get_interval(_range);
+
+      if ($scope.panel.auto_int) {
+        $scope.panel.interval = kbn.calculate_gap(_range.from, _range.to, $scope.panel.resolution, 0);
+      }
+
       $scope.panelMeta.loading = true;
 
       // Solr
@@ -225,7 +266,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                   '&facet.range=' + $scope.panel.range_field +
                   '&facet.range.start=' + $scope.panel.minimum +
                   '&facet.range.end=' + (parseInt($scope.panel.maximum)+1) +
-                  '&facet.range.gap=' + $scope.panel.gap;
+                  '&facet.range.gap=' + $scope.panel.interval;
 
       // Set the panel's query
       $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet ;
@@ -431,7 +472,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           } catch(e) {return;}
 
           // Set barwidth based on specified interval
-          var barwidth = scope.panel.maximum-scope.panel.minimum;
+          var barwidth = scope.panel.maximum - scope.panel.minimum;
           // var count = scope.range_count > 15 ? scope.range_count : 15;
           var stack = scope.panel.stack ? true : null;
           var facet_range = scope.get_facet_range();
@@ -452,7 +493,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 bars:   {
                   show: scope.panel.bars,
                   fill: 1,
-                  barWidth: barwidth/(5*scope.range_count),
+                  barWidth: barwidth/(1.8*scope.range_count),
                   zero: false,
                   lineWidth: 0
                 },
@@ -473,8 +514,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 show: scope.panel['x-axis'],
                 min: facet_range.from - 1,
                 max: facet_range.to + 1,
-                autoscaleMargin : scope.panel.gap,
-                minTickSize : scope.panel.gap
+                autoscaleMargin : scope.panel.interval,
+                minTickSize : scope.panel.interval
               },
               grid: {
                 backgroundColor: null,
@@ -549,7 +590,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             }
             $tooltip
               .html(
-                group + dashboard.numberWithCommas(value) + " [" + item.datapoint[0]+" - "+ (item.datapoint[0] + (scope.panel.gap-1)) +"]"
+                group + dashboard.numberWithCommas(value) + " [" + item.datapoint[0]+" - "+ (item.datapoint[0] + (scope.panel.interval-1)) +"]"
               )
               .place_tt(pos.pageX, pos.pageY);
           } else {
