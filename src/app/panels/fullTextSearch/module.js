@@ -456,6 +456,15 @@ define([
         dashboard.refresh();
       }
 
+      $scope.filter_close = function (field){
+        return filterSrv.idsByTypeAndField('terms',field).length > 0
+      }
+
+      $scope.delete_filter = function(type,field){
+        filterSrv.removeByTypeAndField(type,field);
+        dashboard.refresh();
+      }
+
       $('.accordion').on('show hide', function(n) {
         $(n.target).siblings('.accordion-heading').find('.accordion-toggle i').toggleClass('icon-chevron-up icon-chevron-down');
       });
