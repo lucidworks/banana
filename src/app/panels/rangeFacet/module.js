@@ -80,7 +80,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       auto_int    : true,
       resolution  : 200,
       interval    : '10',
-      intervals   : ['auto','1','2','5','10','20','50','100','200'],
+      resolutions : [5,10,25,50,75,100],
       spyable     : true,
       zoomlinks   : true,
       bars        : true,
@@ -119,6 +119,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
     };
 
+    $scope.set_precision = function(precision) {
+      $scope.panel.resolution = precision;
+    };
+
     $scope.set_interval = function(interval) {
       if(interval !== 'auto') {
         $scope.panel.auto_int = false;
@@ -129,7 +133,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
     $scope.interval_label = function(interval) {
-      return $scope.panel.auto_int && interval === $scope.panel.interval ? interval+" (auto)" : interval;
+      // return $scope.panel.auto_int && interval === $scope.panel.interval ? interval+" (auto)" : interval;
+      return interval;
     };
 
     /**

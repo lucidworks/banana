@@ -49,7 +49,7 @@
     <label class="small">Auto-interval</label><input type="checkbox" ng-model="panel.auto_int" ng-checked="panel.auto_int" />
   </div>
   <div class="span2" ng-show='panel.auto_int'>
-    <label class="small">Resolution <tip>Shoot for this many data points, rounding to sane intervals</tip></label>
+    <label class="small">Precision <tip>Shoot for this many data points, rounding to sane intervals</tip></label>
     <input type="number" class='input-mini' ng-model="panel.resolution" ng-change='set_refresh(true)'/>
   </div>
   <div class="span2" ng-hide='panel.auto_int'>
