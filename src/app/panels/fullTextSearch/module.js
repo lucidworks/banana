@@ -13,6 +13,8 @@
   * trimFactor :: If line is > this many characters, divided by the number of columns, trim it.
   * sortable :: Allow sorting?
   * title field :: control the title field that will be show for every document
+  * body field :: the field that will be shown as description for each document
+  * URL field :: url that will be linked to title field
   * facet limit :: number of values that will be show per field
 
 */
@@ -48,8 +50,8 @@ define([
           src: 'app/partials/querySelect.html'
         }],
         exportfile: true,
-        status: "Stable",
-        description: "A paginated table of records matching your query (including any filters that may have been applied). Click on a row to expand it and review all of the fields associated with that document. Provides the capability to export your result set to CSV, XML or JSON for further processing using other systems."
+        status: "Experimental",
+        description: "This panel provide full text search functionality for data"
       };
 
       // Set and populate defaults
@@ -447,6 +449,7 @@ define([
         return obj;
       };
 
+      // Set term filter when click on the one of facet values
       $scope.set_facet_filter = function(field, value) {
         filterSrv.set({
           type: 'terms',
@@ -456,17 +459,24 @@ define([
         dashboard.refresh();
       }
 
+      // return the length of the filters with specific field 
+      // that will be used to detect if the filter is present or not to show close icon beside the facet
       $scope.filter_close = function (field){
         return filterSrv.idsByTypeAndField('terms',field).length > 0
       }
 
+      // call close filter when click in close icon 
       $scope.delete_filter = function(type,field){
         filterSrv.removeByTypeAndField(type,field);
         dashboard.refresh();
       }
 
+      // TODO Refactor this jquery code
+      // jquery code used to toggle the arrow from up to down when facet is opened
+      // also it is used to highlight the header field in faceting
       $('.accordion').on('show hide', function(n) {
         $(n.target).siblings('.accordion-heading').find('.accordion-toggle i').toggleClass('icon-chevron-up icon-chevron-down');
+        $(n.target).siblings('.accordion-heading').toggleClass('bold');
       });
 
     });

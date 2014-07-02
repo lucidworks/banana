@@ -28,6 +28,13 @@
         font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
         border-radius: 3px;
     }
+    .tab { 
+        margin-left: 10px; 
+    } 
+    .bold{ 
+        font-weight: bold; 
+        background: #B8B8B8  ;
+    }
 
     </style>
     <div class="row-fluid">
@@ -49,7 +56,7 @@
                             <div class="accordion-inner">
                                 <div ng-repeat="item in facet_data[field]">
                                     <div ng-show="facet_data[field][$index]['count']>0 && $index < panel.facet_limit">
-                                        <a href=""  ng-click="set_facet_filter(field,facet_data[field][$index]['value']);">{{facet_data[field][$index]['value']}} ({{facet_data[field][$index]['count']}})</a>
+                                        <a href=""  ng-click="set_facet_filter(field,facet_data[field][$index]['value']);" class="tab">{{facet_data[field][$index]['value']}} ({{facet_data[field][$index]['count']}})</a>
                                         <a ng-show="filter_close(field)" confirm-click="delete_filter('terms',field)" confirmation="Are you sure you want to delete filter?" style="float:right;"><i class="icon-remove"></i></a>
                                     </div>
                                 </div>
