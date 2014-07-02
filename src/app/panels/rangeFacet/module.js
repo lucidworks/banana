@@ -78,7 +78,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       fill        : 0,
       linewidth   : 3,
       auto_int    : true,
-      resolution  : 200,
+      resolution  : 100,
       interval    : '10',
       resolutions : [5,10,25,50,75,100],
       spyable     : true,
