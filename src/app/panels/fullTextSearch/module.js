@@ -67,7 +67,6 @@ define([
         size: 100, // Per page
         pages: 5, // Pages available
         offset: 0,
-        sort: ['timestamp', 'desc'],
         group: "default",
         style: {
           'font-size': '9pt'
@@ -75,7 +74,7 @@ define([
         overflow: 'min-height',
         fields: [],
         highlight: [],
-        sortable: true,
+        sortable: false,
         header: true,
         paging: true,
         field_list: true,
@@ -235,7 +234,6 @@ define([
             .postTags('@end-highlight@')
         )
           .size($scope.panel.size * $scope.panel.pages) // Set the size of query result
-        .sort($scope.panel.sort[0], $scope.panel.sort[1]);
 
         $scope.panel_request = request;
 
@@ -254,7 +252,7 @@ define([
         var rows_limit;
         var sorting = '';
 
-        if ($scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined) {
+        if ($scope.panel.sortable && $scope.panel.sort && $scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined) {
           sorting = '&sort=' + $scope.panel.sort[0] + ' ' + $scope.panel.sort[1];
         }
 
@@ -265,8 +263,13 @@ define([
           rows_limit = '&rows=25';
         }
 
-        //set highlight part in sole query 
-        var highlight = '&hl=true&hl.fl=' + $scope.panel.body_field
+        //set highlight part in sole query
+        var highlight
+        if ($scope.panel.body_field)
+          highlight = '&hl=true&hl.fl=' + $scope.panel.body_field;
+        else
+          highlight = "";
+
 
         // Set the panel's query
 
@@ -325,12 +328,14 @@ define([
             // Solr does not need to accumulate hits count because it can get total count
             // from a single faceted query.
             $scope.hits = results.response.numFound;
-            $scope.highlighting = results.highlighting;
-            $scope.highlightingKeys = Object.keys(results.highlighting);
-            if($.isEmptyObject($scope.highlighting[$scope.highlightingKeys[0]]))
-              $scope.highlight_flag = false;
-            else
-              $scope.highlight_flag = true;
+            if (results.highlighting) {
+              $scope.highlighting = results.highlighting;
+              $scope.highlightingKeys = Object.keys(results.highlighting);
+              if ($.isEmptyObject($scope.highlighting[$scope.highlightingKeys[0]]))
+                $scope.highlight_flag = false;
+              else
+                $scope.highlight_flag = true;
+            }
             var facet_results = results.facet_counts.facet_fields;
             var facet_data = {};
             _.each($scope.panel.fields, function(field) {
@@ -359,7 +364,7 @@ define([
           // If we're not sorting in reverse chrono order, query every index for
           // size*pages results
           // Otherwise, only get size*pages results then stop querying
-          if (($scope.data.length < $scope.panel.size * $scope.panel.pages || !((_.contains(filterSrv.timeField(), $scope.panel.sort[0])) && $scope.panel.sort[1] === 'desc')) &&
+          if ($scope.panel.sortable && ($scope.data.length < $scope.panel.size * $scope.panel.pages || !((_.contains(filterSrv.timeField(), $scope.panel.sort[0])) && $scope.panel.sort[1] === 'desc')) &&
             _segment + 1 < dashboard.indices.length) {
             $scope.get_data(_segment + 1, $scope.query_id);
 
@@ -461,13 +466,13 @@ define([
 
       // return the length of the filters with specific field 
       // that will be used to detect if the filter is present or not to show close icon beside the facet
-      $scope.filter_close = function (field){
-        return filterSrv.idsByTypeAndField('terms',field).length > 0
+      $scope.filter_close = function(field) {
+        return filterSrv.idsByTypeAndField('terms', field).length > 0
       }
 
       // call close filter when click in close icon 
-      $scope.delete_filter = function(type,field){
-        filterSrv.removeByTypeAndField(type,field);
+      $scope.delete_filter = function(type, field) {
+        filterSrv.removeByTypeAndField(type, field);
         dashboard.refresh();
       }
 

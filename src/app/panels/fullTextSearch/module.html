@@ -41,7 +41,7 @@
     </div>
 
     <div class="row-fluid">
-        <div ng-class="{'span3':panel.field_list}" ng-show="panel.field_list">
+        <div ng-class="{'span3':panel.field_list}" ng-show="panel.fields.length>0 && panel.field_list">
             <div class="sidebar-nav">
                 <h5>Limit Your Search <i class=" icon-chevron-sign-left pointer " ng-click="panel.field_list = !panel.field_list" bs-tooltip="'Hide field list'" ng-show="panel.field_list"></i>
                 </h5>
@@ -68,7 +68,7 @@
             </div>
         </div>
 
-        <div style="{{panel.overflow}}:{{panel.height || row.height}};" ng-class="{'span9':panel.field_list,'span12':!panel.field_list}" class="table-doc-table">
+        <div style="{{panel.overflow}}:{{panel.height || row.height}};" ng-class="{'span9':panel.fields.length>0&&panel.field_list ,'span12':panel.fields.length==0}" class="table-doc-table">
             <i class="pull-left icon-chevron-sign-right pointer" ng-click="panel.field_list = !panel.field_list" bs-tooltip="'Show field list'" ng-show="!panel.field_list"></i>
             <div class="row-fluid" ng-show="panel.paging">
                 <div class="span1 offset1" style="text-align:right">
