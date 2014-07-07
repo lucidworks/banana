@@ -81,6 +81,18 @@ function (angular, app, _, $, kbn) {
       $scope.get_data();
     };
 
+    $scope.testMultivalued = function() {
+      if($scope.panel.field && $scope.panel.field !== '' && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
+        $scope.panel.error = "Can't proceed with Multivalued field";
+        return;
+      }
+
+      if($scope.panel.stats_field && $scope.panel.stats_field !== '' && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
+        $scope.panel.error = "Can't proceed with Multivalued field";
+        return;
+      }
+    };
+
     $scope.get_data = function() {
       // Make sure we have everything for the request to complete
       if(dashboard.indices.length === 0) {
@@ -88,11 +100,8 @@ function (angular, app, _, $, kbn) {
       }
 
       $scope.panelMeta.loading = true;
-      var request,
-        results,
-        boolQuery;
+      var request, results, boolQuery;
 
-      //Solr
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       if (DEBUG) { console.debug('terms:\n\tdashboard',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv); }
