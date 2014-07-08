@@ -62,9 +62,9 @@ function (angular, _) {
         function(result) {
         if (DEBUG) { console.debug('dashLoader: result = ',result); }
         // Solr
-        if(!_.isUndefined(result.response.docs[0].id)) {
-        alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
-          result.response.docs[0].id + '"','success',5000);
+        if(result.responseHeader.status === 0) {
+          alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
+            ($scope.elasticsearch.title || dashboard.current.title) + '"','success',5000);
           if(type === 'temp') {
             $scope.share = dashboard.share_link(dashboard.current.title,'temp',result.response.docs[0].id);
           }

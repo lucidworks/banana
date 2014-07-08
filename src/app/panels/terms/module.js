@@ -25,7 +25,7 @@ function (angular, app, _, $, kbn) {
   var module = angular.module('kibana.panels.terms', []);
   app.useModule(module);
 
-  module.controller('terms', function($scope, querySrv, dashboard, filterSrv) {
+  module.controller('terms', function($scope, querySrv, dashboard, filterSrv, alertSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -74,7 +74,7 @@ function (angular, app, _, $, kbn) {
 
     $scope.init = function () {
       $scope.hits = 0;
-
+      $scope.testMultivalued();
       $scope.$on('refresh',function(){
         $scope.get_data();
       });
@@ -244,6 +244,7 @@ function (angular, app, _, $, kbn) {
 
     $scope.close_edit = function() {
       if($scope.refresh) {
+        $scope.testMultivalued();
         $scope.get_data();
       }
       $scope.refresh =  false;
