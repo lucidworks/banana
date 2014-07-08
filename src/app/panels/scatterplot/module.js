@@ -8,7 +8,7 @@ define([
     'app',
     'underscore',
     'jquery',
-    'd3'
+    'd3',
 ], function(angular, app, _, $, d3) {
     'use strict';
 
@@ -51,6 +51,7 @@ define([
         };
 
         _.defaults($scope.panel, _d);
+
 
         $scope.init = function() {
             $scope.$on('refresh', function() {
@@ -160,11 +161,13 @@ define([
                     var el = element[0];
 
                     // deepcopy of the data in the scope
-                    
+
                     //var data = jQuery.extend(true, [], scope.data);
 
                     var parent_width = element.parent().width(),
                         height = parseInt(scope.row.height),
+                        padding = 50,
+                        paddingy = 20,
                         aspectRatio = 400 / 600;
 
                     var margin = {
@@ -177,7 +180,7 @@ define([
                         height = height - margin.top - margin.bottom;
 
                     var x = d3.scale.linear()
-                        .range([0, width]);
+                        .range([0, width - padding * 2]);
 
                     var y = d3.scale.linear()
                         .range([height, 0]);
@@ -220,7 +223,7 @@ define([
                         .call(xAxis)
                         .append("text")
                         .attr("class", "label")
-                        .attr("x", width)
+                        .attr("x", width - padding * 2)
                         .attr("y", -6)
                         .style("text-anchor", "end")
                         .text(scope.panel.xaxis);
@@ -260,7 +263,6 @@ define([
                             $tooltip.detach();
                         });
                     if (scope.panel.field_type) {
-
                         var legend = svg.selectAll(".legend")
                             .data(color.domain())
                             .enter().append("g")
@@ -268,13 +270,6 @@ define([
                             .attr("transform", function(d, i) {
                                 return "translate(0," + i * 20 + ")";
                             });
-
-                        legend.append("rect")
-                            .attr("x", width - 18)
-                            .attr("width", 18)
-                            .attr("height", 18)
-                            .style("fill", color);
-
                         legend.append("text")
                             .attr("x", width - 24)
                             .attr("y", 9)
@@ -283,10 +278,17 @@ define([
                             .text(function(d) {
                                 return d;
                             });
+
+                        legend.append("rect")
+                            .attr("x", width - 18)
+                            .attr("width", 18)
+                            .attr("height", 18)
+                            .style("fill", color);
+
+
                     }
 
                 }
-                //render_panel();
             }
         };
     });
