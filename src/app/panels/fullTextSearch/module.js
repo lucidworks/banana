@@ -68,6 +68,7 @@ define([
         pages: 5, // Pages available
         offset: 0,
         group: "default",
+        sort:[],
         style: {
           'font-size': '9pt'
         },
