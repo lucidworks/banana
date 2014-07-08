@@ -13,6 +13,7 @@ function (angular, _) {
 
     this.list = ['_type'];
     this.mapping = {};
+    this.typeList = {};
 
     $rootScope.$watch(function(){return dashboard.indices;},function(n) {
       if(!_.isUndefined(n) && n.length) {
@@ -35,6 +36,7 @@ function (angular, _) {
       var fields = [];
       _.each(m, function(types) {
         _.each(types, function(v) {
+          self.typeList = v;
           fields = _.union(fields,_.keys(v));
         });
       });
@@ -133,7 +135,7 @@ function (angular, _) {
         // });
 
         _.each(p.data.fields, function(v,k) {
-          mapping[log_index][logs][k] = {'type':v.type};
+          mapping[log_index][logs][k] = {'type':v.type, 'schema': v.schema};
         });
 
         return mapping;

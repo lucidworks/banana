@@ -35,6 +35,16 @@ function (angular, app, _) {
       dashboard.refresh();
     };
 
+    $scope.add = function(query) {
+      query = query || '*';
+      filterSrv.set({
+        editing   : true,
+        type      : 'querystring',
+        query     : query,
+        mandate   : 'must'
+      },undefined,true);
+    };
+
     $scope.toggle = function(id) {
       filterSrv.list[id].active = !filterSrv.list[id].active;
       dashboard.refresh();
