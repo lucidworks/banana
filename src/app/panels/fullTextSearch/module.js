@@ -68,7 +68,7 @@ define([
         pages: 5, // Pages available
         offset: 0,
         group: "default",
-        sort:[],
+        sort: [],
         style: {
           'font-size': '9pt'
         },
@@ -138,12 +138,13 @@ define([
       };
 
       $scope.toggle_field = function(field) {
-        if (_.indexOf($scope.panel.fields, field) > -1) {
-          $scope.panel.fields = _.without($scope.panel.fields, field);
-        } else {
-          $scope.panel.fields.push(field);
-          $scope.get_data();
-        }
+        if (_.contains(fields.list, field))
+          if (_.indexOf($scope.panel.fields, field) > -1) {
+            $scope.panel.fields = _.without($scope.panel.fields, field);
+          } else {
+            $scope.panel.fields.push(field);
+            $scope.get_data();
+          }
       };
 
       $scope.toggle_highlight = function(field) {
@@ -493,10 +494,24 @@ define([
     module.filter('tableHighlight', function() {
       return function(text) {
         if (!_.isUndefined(text) && !_.isNull(text) && text.toString().length > 0) {
-          return text.toString().
-          replace(/\r?\n/g, '<br/>').
+          var ret = text.toString().
+          replace(/^\s*\n/gm, '<br>').
           replace(/<em>/g, '<span class="highlight-code"><b>').
           replace(/<\/em>/g, '</b></span>');
+
+          if (ret.lastIndexOf('<br>', 0) === 0)
+            return ret.replace(/<br>/, "");
+          else
+            return ret
+        }
+        return '';
+      };
+    });
+
+    module.filter('tablebody', function() {
+      return function(text) {
+        if (!_.isUndefined(text) && !_.isNull(text) && text.toString().length > 0) {
+          return text.toString().replace(/^\s*\n/gm, '<br>');
         }
         return '';
       };
