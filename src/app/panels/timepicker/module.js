@@ -17,9 +17,10 @@ define([
   'app',
   'underscore',
   'moment',
-  'kbn'
+  'kbn',
+  'jquery'
 ],
-function (angular, app, _, moment, kbn) {
+function (angular, app, _, moment, kbn, $) {
   'use strict';
 
   var DEBUG = true; // DEBUG mode
@@ -101,9 +102,17 @@ function (angular, app, _, moment, kbn) {
         if(filterSrv.idsByType('time').length > 0) {
           var time = filterSrv.timeRange('min');
 
-          if($scope.time.from.diff(moment.utc(time.from),'seconds') !== 0 ||
-            $scope.time.to.diff(moment.utc(time.to),'seconds') !== 0)
-          {
+          // if($scope.time.from.diff(moment.utc(time.from),'seconds') !== 0 ||
+          //   $scope.time.to.diff(moment.utc(time.to),'seconds') !== 0) {
+          if ( ($scope.time.from.diff(moment.utc(time.from),'seconds') !== 0 ||
+            $scope.time.to.diff(moment.utc(time.to),'seconds') !== 0) &&
+            ($scope.time.from instanceof Date && $scope.time.to instanceof Date) ) {
+            // TODO:
+            // This causes the time in filterSrv to be set to timepicker
+            // and when filterSrv's time is in string (e.g. NOW), it will cause
+            // error in timepicker for display.
+            console.debug('timepicker: on refresh, set_mode(), and filterSrv.length > 0');
+
             $scope.set_mode('absolute');
 
             // These 3 statements basicly do everything time_apply() does
@@ -277,16 +286,80 @@ function (angular, app, _, moment, kbn) {
       // Clear all time filters, set a new one
       filterSrv.removeByType('time');
       $scope.panel.filter_id = filterSrv.set(compile_time(time));
+
+      console.debug("timepicker: after filterSrv.set() filterSrv = ", filterSrv);
+
       return $scope.panel.filter_id;
     }
 
     // Prefer to pass around Date() objects since interacting with
     // moment objects in libraries that are expecting Date()s can be tricky
     function compile_time(time) {
-      time = _.clone(time);
-      time.from = time.from.toDate();
-      time.to   = time.to.toDate();
-      return time;
+      // TODO
+      // We need to compile the relative string time here.
+
+      // time = _.clone(time);
+      // time.from = time.from.toDate();
+      // time.to = time.to.toDate();
+      // return time;
+
+      // Create another copy of time obj for setting the filter.
+      // var filterTime = {};
+      // filterTime.type = time.type;
+      // filterTime.field = time.field;
+
+      // Clone time obj
+      var filterTime = $.extend(true, {}, time);
+      
+      // Get the time suffix (ie.s/m/h/d/w/M/y)
+      // var timeSuffix = timespan.substr(-1);
+      var timeNumber = $scope.panel.timespan.substr(0, $scope.panel.timespan.length-1);
+      var timeUnit;
+      switch ($scope.panel.timespan.substr(-1)) {
+        case 's':
+          timeUnit = 'SECOND';
+          break;
+        case 'm':
+          timeUnit = 'MINUTE';
+          break;
+        case 'h':
+          timeUnit = 'HOUR';
+          break;
+        case 'd':
+          timeUnit = 'DAY';
+          break;
+        case 'w':
+          // Convert weeks into days
+          timeNumber = timeNumber * 7;
+          timeUnit = 'DAY';
+          break;
+        case 'y':
+          timeUnit = 'YEAR';
+          break;
+      }
+      
+      
+      if ($scope.panel.mode == 'relative') {
+        console.debug("timepicker: compile_time mode == relative");
+        // filterTime.from = "NOW/DAY-7DAYS";
+        // filterTime.to = "NOW/DAY%2B1DAY";
+        
+        filterTime.from = 'NOW/' + timeUnit + '-' + timeNumber + timeUnit;
+        filterTime.to   = 'NOW/' + timeUnit + '%2B1' + timeUnit;
+      } else if ($scope.panel.mode == 'since') {
+        console.debug("timepicker: compile_time mode == since");
+
+        // TODO: remove below 
+        filterTime.from = filterTime.from.toDate().toISOString() + '/SECOND';
+        filterTime.to   = '*';
+      } else if ($scope.panel.mode == 'absolute') {
+        console.debug("timepicker: compile_time mode == absolute");
+
+        filterTime.from = filterTime.from.toDate();
+        filterTime.to   = filterTime.to.toDate();
+      }
+
+      return filterTime;
     }
 
     function set_timepicker(from,to) {

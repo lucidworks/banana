@@ -155,8 +155,19 @@ define([
 
         if (v.type == 'time') {
           time_field = v.field;
-          start_time = new Date(v.from).toISOString();
-          end_time = new Date(v.to).toISOString();
+          // Check for type of timestamps
+          // In case of relative timestamps, they will be string, not Date obj.
+          if (v.from instanceof Date) {
+            start_time = new Date(v.from).toISOString();
+          } else {
+            start_time = v.from;
+          }
+
+          if (v.to instanceof Date) {
+            end_time = new Date(v.to).toISOString();
+          } else {
+            end_time = v.to;
+          }
         } else if (v.type == 'terms') {
           if (v.mandate == 'must') {
             filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
@@ -243,7 +254,11 @@ define([
       var start_time;
       _.each(self.list, function(v) {
         if (v.type == 'time') {
-          start_time = new Date(v.from).toISOString();
+          if (v.from instanceof Date) {
+            start_time = new Date(v.from).toISOString();
+          } else {
+            start_time = v.from;            
+          }
           return;
         }
       });
@@ -255,7 +270,11 @@ define([
       var end_time;
       _.each(self.list, function(v) {
         if (v.type == 'time') {
-          end_time = new Date(v.to).toISOString();
+          if (v.to instanceof Date) {
+            end_time = new Date(v.to).toISOString();
+          } else {
+            end_time = v.to;
+          }
           return;
         }
       });
