@@ -318,9 +318,10 @@ function (angular, app, _, moment, kbn, $) {
         console.debug("timepicker: compile_time mode == relative");
         // Get the time suffix (ie.s/m/h/d/w/M/y)
         // var timeSuffix = timespan.substr(-1);
+        var timeShorthand = $scope.panel.timespan.substr(-1);
         var timeNumber = $scope.panel.timespan.substr(0, $scope.panel.timespan.length-1);
         var timeUnit;
-        switch ($scope.panel.timespan.substr(-1)) {
+        switch (timeShorthand) {
           case 's':
             timeUnit = 'SECOND';
             break;
@@ -345,8 +346,17 @@ function (angular, app, _, moment, kbn, $) {
 
         filterTime.from = 'NOW/' + timeUnit + '-' + timeNumber + timeUnit;
         filterTime.to   = 'NOW/' + timeUnit + '%2B1' + timeUnit;
+        // Add Date objects representation of from and to, for use with histogram panel
+        // where it needs Date objects for plotting x-axis on a chart.
+        filterTime.fromDateObj = moment().subtract(timeShorthand,timeNumber).toDate();
+        filterTime.toDateObj = new Date();
       } else if ($scope.panel.mode == 'since') {
-        console.debug("timepicker: compile_time mode == since");
+        console.debug("timepicker: compile_time mode == since, filterTime = ",filterTime);
+
+        // Add Date objects representation of from and to, for use with histogram panel
+        // where it needs Date objects for plotting x-axis on a chart.
+        filterTime.fromDateObj = filterTime.from.toDate();
+        filterTime.toDateObj = new Date();
 
         filterTime.from = filterTime.from.toDate().toISOString() + '/SECOND';
         filterTime.to   = '*';

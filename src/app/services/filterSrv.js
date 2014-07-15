@@ -344,12 +344,39 @@ define([
       if(_t.length === 0) {
         return false;
       }
+
+      console.debug('filterSrv: timeRange() _t = ',_t,' _t[_t.length-1].from instanceof Date ',_t[_t.length-1].from instanceof Date);
+
       switch(mode) {
       case "min":
-        return {
-          from: new Date(_.max(_.pluck(_t,'from'))),
-          to: new Date(_.min(_.pluck(_t,'to')))
-        };
+
+        console.debug('filterSrv: timeRange() mode == min');
+
+        if (!(_t[_t.length-1].from instanceof Date) || !(_t[_t.length-1].to instanceof Date)) {
+
+          console.debug('filterSrv: _t[_t.length-1].from or _t[_t.length-1].to is not Date');
+
+          // TODO
+          // Convert string time to Date obj.
+
+          // return
+          //   from => Date obj in utc
+          //   to => Date obj in utc
+          return {
+            from: _t[_t.length-1].fromDateObj,
+            to: _t[_t.length-1].toDateObj
+          };
+        } else {
+          return {
+            from: new Date(_.max(_.pluck(_t,'from'))),
+            to: new Date(_.min(_.pluck(_t,'to')))
+          };
+        }
+        // return {
+        //   from: new Date(_.max(_.pluck(_t,'from'))),
+        //   to: new Date(_.min(_.pluck(_t,'to')))
+        // };
+
       case "max":
         return {
           from: new Date(_.min(_.pluck(_t,'from'))),

@@ -151,6 +151,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       if ($scope.panel.auto_int) {
         range = $scope.get_time_range();
         if (range) {
+
+          console.debug('histogram: get_interval() range = ',range);
+
           interval = kbn.secondsToHms(
             kbn.calculate_interval(range.from, range.to, $scope.panel.resolution, 0) / 1000
           );
@@ -235,14 +238,24 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       var start_time = filterSrv.getStartTime();
       var end_time = filterSrv.getEndTime();
 
+      // facet.range.end does NOT accept * as a value, need to convert it to NOW
+      if (end_time == '*') {
+        end_time = 'NOW';
+      }
+
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0'; // for histogram, we do not need the actual response doc, so set rows=0
       var facet_gap = $scope.sjs.convertFacetGap($scope.panel.interval);
       var facet = '&facet=true' +
                   '&facet.range=' + time_field +
-                  '&facet.range.start=' + start_time + '/DAY' +
-                  '&facet.range.end=' + end_time + '%2B1DAY/DAY' +
+                  '&facet.range.start=' + start_time +
+                  '&facet.range.end=' + end_time +
                   '&facet.range.gap=' + facet_gap;
+      // var facet = '&facet=true' +
+      //             '&facet.range=' + time_field +
+      //             '&facet.range.start=' + start_time + '/DAY' +
+      //             '&facet.range.end=' + end_time + '%2B1DAY/DAY' +
+      //             '&facet.range.gap=' + facet_gap;
       var values_mode_query = '';
 
       // For mode = value
@@ -649,6 +662,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         var $tooltip = $('<div>');
         elem.bind("plothover", function (event, pos, item) {
           var group, value;
+
+          // console.debug('histogram: plothover item = ',item);
+
           if (item) {
             if (item.series.info.alias || scope.panel.tooltip.query_as_alias) {
               group = '<small style="font-size:0.9em;">' +
@@ -666,6 +682,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             $tooltip
               .html(
                 group + dashboard.numberWithCommas(value) + " @ " + moment(item.datapoint[0]).format('MM/DD HH:mm:ss')
+                // group + dashboard.numberWithCommas(value) + " @ " + moment(item.datapoint[0])
               )
               .place_tt(pos.pageX, pos.pageY);
           } else {
@@ -676,8 +693,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         elem.bind("plotselected", function (event, ranges) {
           filterSrv.set({
             type  : 'time',
-            from  : moment.utc(ranges.xaxis.from),
-            to    : moment.utc(ranges.xaxis.to),
+            // from  : moment.utc(ranges.xaxis.from),
+            // to    : moment.utc(ranges.xaxis.to),
+            from  : moment.utc(ranges.xaxis.from).toDate(),
+            to    : moment.utc(ranges.xaxis.to).toDate(),
             field : scope.panel.time_field
           });
           dashboard.refresh();
