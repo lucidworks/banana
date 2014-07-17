@@ -102,19 +102,18 @@ function (angular, app, _, moment, kbn, $) {
         if(filterSrv.idsByType('time').length > 0) {
           var time = filterSrv.timeRange('min');
 
-          // if($scope.time.from.diff(moment.utc(time.from),'seconds') !== 0 ||
-          //   $scope.time.to.diff(moment.utc(time.to),'seconds') !== 0) {
-          if ( ($scope.time.from.diff(moment.utc(time.from),'seconds') !== 0 ||
-            $scope.time.to.diff(moment.utc(time.to),'seconds') !== 0) &&
-            ($scope.time.from instanceof Date && $scope.time.to instanceof Date) ) {
-            // TODO:
-            // This causes the time in filterSrv to be set to timepicker
-            // and when filterSrv's time is in string (e.g. NOW), it will cause
-            // error in timepicker for display.
-            console.debug('timepicker: on refresh, set_mode(), and filterSrv.length > 0');
+          console.debug('timepicker: on refresh, time = ',time);
+          console.debug('timepicker: on refresh, $scope.time = ',$scope.time);
+          console.debug('timepicker: $scope.time.from.diff(moment.utc(time.from),"seconds") = ',$scope.time.from.diff(moment.utc(time.from),'seconds'));
+          console.debug('timepicker: $scope.time.from instanceof Date = ',$scope.time.from instanceof Date);
+          console.debug('timepicker: $scope.time.from = ',Object.prototype.toString.call($scope.time.from));
 
+          if($scope.time.from.diff(moment.utc(time.from),'seconds') !== 0 ||
+            $scope.time.to.diff(moment.utc(time.to),'seconds') !== 0) {
+          // if ( ($scope.time.from.diff(moment.utc(time.from),'seconds') !== 0 ||
+          //   $scope.time.to.diff(moment.utc(time.to),'seconds') !== 0) &&
+          //   ($scope.time.from instanceof Date && $scope.time.to instanceof Date) ) {
             $scope.set_mode('absolute');
-
             // These 3 statements basicly do everything time_apply() does
             set_timepicker(moment(time.from),moment(time.to));
             $scope.time = $scope.time_calc();
@@ -208,8 +207,17 @@ function (angular, app, _, moment, kbn, $) {
 
         // Fix for SILK-4 and SILK-29 bugs
         // by using moment.utc() instead of just moment()
-        from = $scope.panel.mode === 'relative' ? moment(kbn.time_ago($scope.panel.timespan)) :
+
+        // TODO
+        // Need to account for leap year by using moment.subtract()
+        // Get the time suffix (ie.s/m/h/d/w/M/y)
+        var timeShorthand = $scope.panel.timespan.substr(-1);
+        var timeNumber = $scope.panel.timespan.substr(0, $scope.panel.timespan.length-1);
+
+        from = $scope.panel.mode === 'relative' ? moment().subtract(timeShorthand,timeNumber) :
           moment(moment.utc($scope.timepicker.from.date).format('MM/DD/YYYY') + " " + $scope.timepicker.from.time,'MM/DD/YYYY HH:mm:ss');
+        // from = $scope.panel.mode === 'relative' ? moment(kbn.time_ago($scope.panel.timespan)) :
+        //   moment(moment.utc($scope.timepicker.from.date).format('MM/DD/YYYY') + " " + $scope.timepicker.from.time,'MM/DD/YYYY HH:mm:ss');
         to = $scope.panel.mode !== 'absolute' ? moment() :
           moment(moment.utc($scope.timepicker.to.date).format('MM/DD/YYYY') + " " + $scope.timepicker.to.time,'MM/DD/YYYY HH:mm:ss');
 
@@ -286,38 +294,16 @@ function (angular, app, _, moment, kbn, $) {
       // Clear all time filters, set a new one
       filterSrv.removeByType('time');
       $scope.panel.filter_id = filterSrv.set(compile_time(time));
-
-      console.debug("timepicker: after filterSrv.set() filterSrv = ", filterSrv);
-
       return $scope.panel.filter_id;
     }
 
     // Prefer to pass around Date() objects since interacting with
     // moment objects in libraries that are expecting Date()s can be tricky
     function compile_time(time) {
-      // TODO
-      // We need to compile the relative string time here.
-
-      // time = _.clone(time);
-      // time.from = time.from.toDate();
-      // time.to = time.to.toDate();
-      // return time;
-
-      // Create another copy of time obj for setting the filter.
-      // var filterTime = {};
-      // filterTime.type = time.type;
-      // filterTime.field = time.field;
-
       // Clone time obj
       var filterTime = $.extend(true, {}, time);
-      
-      
-      
-      
       if ($scope.panel.mode == 'relative') {
-        console.debug("timepicker: compile_time mode == relative");
         // Get the time suffix (ie.s/m/h/d/w/M/y)
-        // var timeSuffix = timespan.substr(-1);
         var timeShorthand = $scope.panel.timespan.substr(-1);
         var timeNumber = $scope.panel.timespan.substr(0, $scope.panel.timespan.length-1);
         var timeUnit;
@@ -343,7 +329,6 @@ function (angular, app, _, moment, kbn, $) {
             timeUnit = 'YEAR';
             break;
         }
-
         filterTime.from = 'NOW/' + timeUnit + '-' + timeNumber + timeUnit;
         filterTime.to   = 'NOW/' + timeUnit + '%2B1' + timeUnit;
         // Add Date objects representation of from and to, for use with histogram panel
@@ -351,18 +336,13 @@ function (angular, app, _, moment, kbn, $) {
         filterTime.fromDateObj = moment().subtract(timeShorthand,timeNumber).toDate();
         filterTime.toDateObj = new Date();
       } else if ($scope.panel.mode == 'since') {
-        console.debug("timepicker: compile_time mode == since, filterTime = ",filterTime);
-
         // Add Date objects representation of from and to, for use with histogram panel
         // where it needs Date objects for plotting x-axis on a chart.
         filterTime.fromDateObj = filterTime.from.toDate();
         filterTime.toDateObj = new Date();
-
         filterTime.from = filterTime.from.toDate().toISOString() + '/SECOND';
         filterTime.to   = '*';
       } else if ($scope.panel.mode == 'absolute') {
-        console.debug("timepicker: compile_time mode == absolute");
-
         filterTime.from = filterTime.from.toDate();
         filterTime.to   = filterTime.to.toDate();
       }

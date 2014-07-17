@@ -151,9 +151,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       if ($scope.panel.auto_int) {
         range = $scope.get_time_range();
         if (range) {
-
-          console.debug('histogram: get_interval() range = ',range);
-
           interval = kbn.secondsToHms(
             kbn.calculate_interval(range.from, range.to, $scope.panel.resolution, 0) / 1000
           );
@@ -251,11 +248,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                   '&facet.range.start=' + start_time +
                   '&facet.range.end=' + end_time +
                   '&facet.range.gap=' + facet_gap;
-      // var facet = '&facet=true' +
-      //             '&facet.range=' + time_field +
-      //             '&facet.range.start=' + start_time + '/DAY' +
-      //             '&facet.range.end=' + end_time + '%2B1DAY/DAY' +
-      //             '&facet.range.gap=' + facet_gap;
       var values_mode_query = '';
 
       // For mode = value
@@ -662,9 +654,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         var $tooltip = $('<div>');
         elem.bind("plothover", function (event, pos, item) {
           var group, value;
-
-          // console.debug('histogram: plothover item = ',item);
-
           if (item) {
             if (item.series.info.alias || scope.panel.tooltip.query_as_alias) {
               group = '<small style="font-size:0.9em;">' +
