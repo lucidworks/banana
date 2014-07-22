@@ -85,7 +85,8 @@ define([
         saveOption: 'json',
         exportSize: 100,
         exportAll: true,
-        facet_limit: 10
+        facet_limit: 10,
+        foundResults: true,
       };
       _.defaults($scope.panel, _d);
 
@@ -137,14 +138,17 @@ define([
         $scope.get_data();
       };
 
-      $scope.toggle_field = function(field) {
-        if (_.contains(fields.list, field))
-          if (_.indexOf($scope.panel.fields, field) > -1) {
-            $scope.panel.fields = _.without($scope.panel.fields, field);
-          } else {
-            $scope.panel.fields.push(field);
-            $scope.get_data();
-          }
+      $scope.add_facet_field = function(field) {
+        if (_.contains(fields.list, field) && _.indexOf($scope.panel.fields, field) == -1) {
+          $scope.panel.fields.push(field);
+          $scope.get_data();
+        }
+      };
+
+      $scope.remove_facet_field = function(field) {
+        if (_.contains(fields.list, field) && _.indexOf($scope.panel.fields, field) > -1) {
+          $scope.panel.fields = _.without($scope.panel.fields, field);
+        }
       };
 
       $scope.toggle_highlight = function(field) {
@@ -295,6 +299,7 @@ define([
         // Populate scope when we have results
         results.then(function(results) {
           $scope.panelMeta.loading = false;
+          $scope.panel.offset = 0;
 
           if (_segment === 0) {
             $scope.hits = 0;
@@ -330,6 +335,7 @@ define([
             // Solr does not need to accumulate hits count because it can get total count
             // from a single faceted query.
             $scope.hits = results.response.numFound;
+            $scope.panel.foundResults = $scope.hits == 0 ? false : true;
             if (results.highlighting) {
               $scope.highlighting = results.highlighting;
               $scope.highlightingKeys = Object.keys(results.highlighting);
@@ -519,7 +525,7 @@ define([
 
     module.filter('tableTruncate', function() {
       return function(text, length, factor) {
-        if (!_.isUndefined(text) && !_.isNull(text) && text.toString().length > 0) {
+        if (!_.isUndefined(text) && !_.isNull(text) && text.toString().length > 0 && length != 0 && factor != 0) {
           return text.length > length / factor ? text.substr(0, length / factor) + '...' : text;
         }
         return '';

@@ -57,7 +57,7 @@
                                 <div ng-repeat="item in facet_data[field]">
                                     <div ng-show="facet_data[field][$index]['count']>0 && $index < panel.facet_limit">
                                         <a href=""  ng-click="set_facet_filter(field,facet_data[field][$index]['value']);" class="tab">{{facet_data[field][$index]['value']}} ({{facet_data[field][$index]['count']}})</a>
-                                        <a ng-show="filter_close(field)" confirm-click="delete_filter('terms',field)" confirmation="Are you sure you want to delete filter?" style="float:right;"><i class="icon-remove"></i></a>
+                                        <a ng-show="filter_close(field)" ng-click="delete_filter('terms',field)" style="float:right;"><i class="icon-remove"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -67,8 +67,8 @@
 
             </div>
         </div>
-
-        <div style="{{panel.overflow}}:{{panel.height || row.height}};" ng-class="{'span9':panel.fields.length>0&&panel.field_list ,'span12':panel.fields.length==0}" class="table-doc-table">
+        <div ng-show="!panel.foundResults" style="text-align:center"> <strong>Empty Results</strong></div>
+        <div style="{{panel.overflow}}:{{panel.height || row.height}};" ng-class="{'span9':panel.fields.length>0&&panel.field_list ,'span12':panel.fields.length==0}" class="table-doc-table" ng-show="panel.foundResults">
             <i class="pull-left icon-chevron-sign-right pointer" ng-click="panel.field_list = !panel.field_list" bs-tooltip="'Show field list'" ng-show="!panel.field_list"></i>
             <div class="row-fluid" ng-show="panel.paging">
                 <div class="span1 offset1" style="text-align:right">
@@ -76,7 +76,7 @@
                     <i ng-click="panel.offset = (panel.offset - panel.size)" ng-show="panel.offset > 0" class='icon-arrow-left pointer'></i>
                 </div>
                 <div class="span8" style="text-align:center">
-                    <strong>{{panel.offset}}</strong> to
+                    <strong>{{panel.offset + 1 }}</strong> to
                     <strong>{{dashboard.numberWithCommas(panel.offset + data.slice(panel.offset,panel.offset+panel.size).length)}}</strong>
                     <small>of {{dashboard.numberWithCommas(data.length)}} available for paging</small>
                 </div>
@@ -96,7 +96,7 @@
                             <i class=" icon-chevron-sign-down pointer " bs-tooltip="'Show document'" style="float: right;" ng-click="toggle_details(event)"></i>
                             <a href="{{event.kibana._source[panel.url_field]}}" target="_blank"> {{event.kibana._source[panel.header_field] | tableTruncate:panel.trimFactor:1}} </a>
                             <br>
-                            <div ng-show="highlight_flag" ng-bind-html="(highlighting[highlightingKeys[$index]][panel.body_field]) | tableTruncate:panel.trimFactor:3 | tableHighlight"></div>
+                            <div ng-show="highlight_flag" ng-bind-html="(highlighting[highlightingKeys[panel.offset + $index]][panel.body_field]) | tableTruncate:panel.trimFactor:3 | tableHighlight"></div>
                             <div ng-show="!highlight_flag" ng-bind-html-unsafe="(event.kibana._source[panel.body_field]) | tableTruncate:panel.trimFactor:3"></div>
                             <br>
                         </td>
@@ -125,8 +125,9 @@
                                         <i class='icon-ban-circle pointer' ng-click="build_search(key,value,true)" bs-tooltip="'Add filter to NOT match this value'"></i>
                                         <!-- <i class="pointer icon-th" ng-click="toggle_field(key)" bs-tooltip="'Toggle table column'"></i> -->
                                     </td>
-                                    <!-- At some point we need to create a more efficient way of applying the filter pipeline -->
-                                    <td style="white-space:pre-wrap" ng-bind-html-unsafe="value|noXml|urlLink|stringify|tablebody"></td>
+                                    <!-- At some point we need to create a more efficient way of applying the filter pipeline 
+                                    -->
+                                    <td style="white-space:pre-wrap" ng-bind-html-unsafe="value|noXml|urlLink|stringify|tablebody|tableTruncate:panel.trimFactor:1"></td>
                                 </tr>
                             </table>
                             <pre style="white-space:pre-wrap" ng-bind-html="without_kibana(event)|tableJson:2" ng-switch-when="json"></pre>
@@ -141,7 +142,7 @@
                     <i ng-click="panel.offset = (panel.offset - panel.size)" ng-show="panel.offset > 0" class='icon-arrow-left pointer'></i>
                 </div>
                 <div class="span4" style="text-align:center">
-                    <strong>{{panel.offset}}</strong> to
+                    <strong>{{panel.offset+1}}</strong> to
                     <strong>{{dashboard.numberWithCommas(panel.offset + data.slice(panel.offset,panel.offset+panel.size).length)}}</strong>
                     <small>of {{dashboard.numberWithCommas(data.length)}} available for paging</small>
                 </div>
