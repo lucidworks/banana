@@ -7,6 +7,17 @@ The goal is to create a rich and flexible UI, enabling users to rapidly develop 
  
 ## IMPORTANT
 
+Pull the repo from the "release" branch; version 1.4 will be tagged as banana-1.4.
+
+## Banana 1.4: Released on 25 July 2014
+
+The following are key new features in this release:
+
+1. Performance optimization by better utilizing Solr's caches in _Timepicker Module_ with Relative time mode or Since time mode.
+2. A new _Full Text Search_ panel allows you to visualize your non time-series data with faceting and highlighting capabilities of Solr.
+3. In _Table Module_, the sorting option can be turned off in order to speed up the search results returned from Solr.
+4. Improvement in _Range Facet_ panel with the ability to set the chart's precision automatically or manually.
+
 Pull the repo from the "release" branch; version 1.3 will be tagged as banana-1.3.
 
 ## Banana 1.3: Released on 10 June 2014
