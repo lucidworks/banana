@@ -18,8 +18,6 @@ The following are key new features in this release:
 3. In _Table Module_, the sorting option can be turned off in order to speed up the search results returned from Solr.
 4. Improvement in _Range Facet_ panel with the ability to set the chart's precision automatically or manually.
 
-Pull the repo from the "release" branch; version 1.3 will be tagged as banana-1.3.
-
 ## Banana 1.3: Released on 10 June 2014
 
 Banana 1.3 improves on its already powerful capability to visualize and interpret generalized time series data (banana is not only used to search log files, but also visualize social media streams, call center logs, medical records, and etc.). It starts leveraging the power of D3.js (data-driven documents) and provides new panels and enhancements, while also allowing visualization of non-time series data. Key new features include:
