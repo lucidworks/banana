@@ -26,7 +26,7 @@ define([
   var module = angular.module('kibana.panels.hits', []);
   app.useModule(module);
 
-  var DEBUG = true; // DEBUG mode
+  var DEBUG = false; // DEBUG mode
 
   module.controller('hits', function($scope, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {

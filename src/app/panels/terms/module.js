@@ -20,7 +20,7 @@ define([
 function (angular, app, _, $, kbn) {
   'use strict';
 
-  var DEBUG = true; // DEBUG mode
+  var DEBUG = false; // DEBUG mode
 
   var module = angular.module('kibana.panels.terms', []);
   app.useModule(module);

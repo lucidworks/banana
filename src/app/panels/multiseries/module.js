@@ -15,7 +15,7 @@ define([
     var module = angular.module('kibana.panels.multiseries', []);
     app.useModule(module);
 
-    var DEBUG = true; //still in debug mode
+    var DEBUG = false; // DEBUG mode
 
     module.controller('multiseries', function ($scope, dashboard, querySrv, filterSrv) {
         $scope.panelMeta = {

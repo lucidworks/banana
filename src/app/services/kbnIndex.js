@@ -7,7 +7,7 @@ define([
 function (angular, _, config, moment) {
   'use strict';
 
-  var DEBUG = true; //DEBUG mode
+  var DEBUG = false; // DEBUG mode
 
   var module = angular.module('kibana.services');
 

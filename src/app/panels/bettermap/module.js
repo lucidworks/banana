@@ -23,7 +23,7 @@ define([
 function (angular, app, _, L, localRequire) {
   'use strict';
 
-  var DEBUG = true; // DEBUG mode
+  var DEBUG = false; // DEBUG mode
 
   var module = angular.module('kibana.panels.bettermap', []);
   app.useModule(module);

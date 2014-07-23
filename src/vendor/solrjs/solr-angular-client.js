@@ -16,7 +16,7 @@ angular.module('solrjs.service', [])
 
   return function (url) {
 
-    var DEBUG = true; // DEBUG mode
+    var DEBUG = false; // DEBUG mode
 
     var
       // use existing sjs object if it exists

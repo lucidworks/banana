@@ -23,7 +23,7 @@ define([
 function (angular, app, _, moment, kbn, $) {
   'use strict';
 
-  var DEBUG = true; // DEBUG mode
+  var DEBUG = false; // DEBUG mode
 
   var module = angular.module('kibana.panels.timepicker', []);
   app.useModule(module);
@@ -101,18 +101,8 @@ function (angular, app, _, moment, kbn, $) {
       $scope.$on('refresh', function() {
         if(filterSrv.idsByType('time').length > 0) {
           var time = filterSrv.timeRange('min');
-
-          console.debug('timepicker: on refresh, time = ',time);
-          console.debug('timepicker: on refresh, $scope.time = ',$scope.time);
-          console.debug('timepicker: $scope.time.from.diff(moment.utc(time.from),"seconds") = ',$scope.time.from.diff(moment.utc(time.from),'seconds'));
-          console.debug('timepicker: $scope.time.from instanceof Date = ',$scope.time.from instanceof Date);
-          console.debug('timepicker: $scope.time.from = ',Object.prototype.toString.call($scope.time.from));
-
           if($scope.time.from.diff(moment.utc(time.from),'seconds') !== 0 ||
             $scope.time.to.diff(moment.utc(time.to),'seconds') !== 0) {
-          // if ( ($scope.time.from.diff(moment.utc(time.from),'seconds') !== 0 ||
-          //   $scope.time.to.diff(moment.utc(time.to),'seconds') !== 0) &&
-          //   ($scope.time.from instanceof Date && $scope.time.to instanceof Date) ) {
             $scope.set_mode('absolute');
             // These 3 statements basicly do everything time_apply() does
             set_timepicker(moment(time.from),moment(time.to));
@@ -205,10 +195,7 @@ function (angular, app, _, moment, kbn, $) {
           console.debug('timepicker: time_calc() BEFORE $scope.timepicker.from.time = ',$scope.timepicker.from.time);
         }
 
-        // Fix for SILK-4 and SILK-29 bugs
-        // by using moment.utc() instead of just moment()
-
-        // TODO
+        // Fix for SILK-4 and SILK-29 bugs: by using moment.utc() instead of just moment()
         // Need to account for leap year by using moment.subtract()
         // Get the time suffix (ie.s/m/h/d/w/M/y)
         var timeShorthand = $scope.panel.timespan.substr(-1);
