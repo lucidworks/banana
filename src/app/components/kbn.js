@@ -97,6 +97,27 @@ function($, _) {
   };
 
    /**
+     * Calculate range facet interval
+     *
+     * from::           Integer containing the start of range
+     * to::             Integer containing the end of range
+     * size::           Calculate to approximately this many bars
+     * user_interval::  User specified histogram interval
+     *
+     */
+  kbn.calculate_gap = function(from,to,size,user_interval) {
+    return user_interval === 0 ? kbn.round_gap((to - from)/size) : user_interval;
+  };
+
+   /**
+     * Round the value of interval to fit this defined resolution
+     *
+     */
+  kbn.round_gap = function(interval) {
+    return Math.round(interval) + 1;
+  };
+
+   /**
      * Calculate a graph interval
      *
      * from::           Date object containing the start time

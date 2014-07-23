@@ -48,10 +48,18 @@ define([
     };
 
     // This is used both for adding filters and modifying them.
-    // If an id is passed, the filter at that id is updated
+    // If an id is passed, the filter at that id is updated.
     this.set = function(filter,id) {
       _.defaults(filter,{mandate:'must'});
       filter.active = true;
+
+      // Need to url encode the filter query or value
+      if (filter.query) {
+        filter.query = encodeURIComponent(filter.query);
+      } else if (filter.value) {
+        filter.value = encodeURIComponent(filter.value);
+      }
+
       if(!_.isUndefined(id)) {
         if(!_.isUndefined(self.list[id])) {
           _.extend(self.list[id],filter);

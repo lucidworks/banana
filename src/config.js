@@ -67,7 +67,10 @@ function (Settings) {
       'query',
       'terms',
       'rangeFacet',
-      'heatmap'
+      'heatmap',
+      'scatterplot',
+      'fullTextSearch'
+      // 'dummy'  // Dummy module for testing
     ]
   });
 });

@@ -25,7 +25,7 @@ function (angular, app, _, $, kbn) {
   var module = angular.module('kibana.panels.terms', []);
   app.useModule(module);
 
-  module.controller('terms', function($scope, querySrv, dashboard, filterSrv) {
+  module.controller('terms', function($scope, querySrv, dashboard, filterSrv, alertSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -67,17 +67,30 @@ function (angular, app, _, $, kbn) {
       arrangement : 'horizontal',
       chart       : 'bar',
       counter_pos : 'above',
+      lastColor : '',
       spyable     : true,
     };
     _.defaults($scope.panel,_d);
 
     $scope.init = function () {
       $scope.hits = 0;
-
+      $scope.testMultivalued();
       $scope.$on('refresh',function(){
         $scope.get_data();
       });
       $scope.get_data();
+    };
+
+    $scope.testMultivalued = function() {
+      if($scope.panel.field && $scope.panel.field !== '' && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
+        $scope.panel.error = "Can't proceed with Multivalued field";
+        return;
+      }
+
+      if($scope.panel.stats_field && $scope.panel.stats_field !== '' && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
+        $scope.panel.error = "Can't proceed with Multivalued field";
+        return;
+      }
     };
 
     $scope.get_data = function() {
@@ -87,11 +100,8 @@ function (angular, app, _, $, kbn) {
       }
 
       $scope.panelMeta.loading = true;
-      var request,
-        results,
-        boolQuery;
+      var request, results, boolQuery;
 
-      //Solr
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       if (DEBUG) { console.debug('terms:\n\tdashboard',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv); }
@@ -234,6 +244,7 @@ function (angular, app, _, $, kbn) {
 
     $scope.close_edit = function() {
       if($scope.refresh) {
+        $scope.testMultivalued();
         $scope.get_data();
       }
       $scope.refresh =  false;
@@ -255,7 +266,7 @@ function (angular, app, _, $, kbn) {
 
   });
 
-  module.directive('termsChart', function(querySrv,dashboard) {
+  module.directive('termsChart', function(querySrv,dashboard,filterSrv) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
@@ -285,7 +296,12 @@ function (angular, app, _, $, kbn) {
           _.without(chartData,_.findWhere(chartData,{meta:'other'}));
 
           if (DEBUG) { console.debug('terms: render_panel() => chartData = ',chartData); }
-
+          var colors = [];
+          if (filterSrv.idsByTypeAndField('terms',scope.panel.field).length > 0) {
+            colors.push(scope.panel.lastColor);
+          } else {
+            colors = querySrv.colors
+          }
           // Populate element.
           require(['jquery.flot.pie'], function(){
             // Populate element
@@ -309,7 +325,7 @@ function (angular, app, _, $, kbn) {
                     hoverable: true,
                     clickable: true
                   },
-                  colors: querySrv.colors
+                  colors: colors
                 });
               }
               if(scope.panel.chart === 'pie') {
@@ -345,7 +361,7 @@ function (angular, app, _, $, kbn) {
                   },
                   //grid: { hoverable: true, clickable: true },
                   grid:   { hoverable: true, clickable: true },
-                  colors: querySrv.colors
+                  colors: colors
                 });
               }
 
@@ -368,6 +384,7 @@ function (angular, app, _, $, kbn) {
         elem.bind("plotclick", function (event, pos, object) {
           if(object) {
             scope.build_search(scope.data[object.seriesIndex]);
+            scope.panel.lastColor = object.series.color;
           }
         });
 

@@ -86,7 +86,8 @@ function (angular, app, _, kbn, moment) {
       spyable : true,
       saveOption : 'json',
       exportSize: 100,
-      exportAll: true
+      exportAll: true,
+      displayLinkIcon: true
     };
     _.defaults($scope.panel,_d);
 
@@ -201,28 +202,28 @@ function (angular, app, _, kbn, moment) {
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
-      var boolQuery = $scope.sjs.BoolQuery();
-      _.each($scope.panel.queries.ids,function(id) {
-        boolQuery = boolQuery.should(querySrv.getEjsObj(id));
-      });
+      // var boolQuery = $scope.sjs.BoolQuery();
+      // _.each($scope.panel.queries.ids,function(id) {
+      //   boolQuery = boolQuery.should(querySrv.getEjsObj(id));
+      // });
 
-      request = request.query(
-        $scope.sjs.FilteredQuery(
-          boolQuery,
-          filterSrv.getBoolFilter(filterSrv.ids)  // search time range is provided here.
-        ))
-        .highlight(
-          $scope.sjs.Highlight($scope.panel.highlight)
-          .fragmentSize(2147483647) // Max size of a 32bit unsigned int
-          .preTags('@start-highlight@')
-          .postTags('@end-highlight@')
-        )
-        .size($scope.panel.size*$scope.panel.pages) // Set the size of query result
-        .sort($scope.panel.sort[0],$scope.panel.sort[1]);
+      // request = request.query(
+      //   $scope.sjs.FilteredQuery(
+      //     boolQuery,
+      //     filterSrv.getBoolFilter(filterSrv.ids)  // search time range is provided here.
+      //   ))
+      //   .highlight(
+      //     $scope.sjs.Highlight($scope.panel.highlight)
+      //     .fragmentSize(2147483647) // Max size of a 32bit unsigned int
+      //     .preTags('@start-highlight@')
+      //     .postTags('@end-highlight@')
+      //   )
+      //   .size($scope.panel.size*$scope.panel.pages) // Set the size of query result
+      //   .sort($scope.panel.sort[0],$scope.panel.sort[1]);
 
       $scope.panel_request = request;
 
-      if (DEBUG) { console.debug('table:\n\trequest=',request,'\n\trequest.toString()=',request.toString()); }
+      if (DEBUG) { console.debug('table:\n\trequest.toString()=',request.toString()); }
 
       var fq = '&' + filterSrv.getSolrFq();
       var query_size = $scope.panel.size * $scope.panel.pages;
@@ -230,7 +231,7 @@ function (angular, app, _, kbn, moment) {
       var rows_limit;
       var sorting = '';
 
-      if ($scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined) {
+      if ($scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined && $scope.panel.sortable) {
         sorting = '&sort=' + $scope.panel.sort[0] + ' ' + $scope.panel.sort[1];
       }
 
