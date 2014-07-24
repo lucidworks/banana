@@ -15,7 +15,7 @@ define([
         var module = angular.module('kibana.panels.heatmap', []);
         app.useModule(module);
 
-        var DEBUG = true;
+        var DEBUG = false;
 
         module.controller('heatmap', function ($scope, dashboard, querySrv, filterSrv) {
             $scope.panelMeta = {

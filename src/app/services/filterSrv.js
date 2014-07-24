@@ -155,8 +155,19 @@ define([
 
         if (v.type == 'time') {
           time_field = v.field;
-          start_time = new Date(v.from).toISOString();
-          end_time = new Date(v.to).toISOString();
+          // Check for type of timestamps
+          // In case of relative timestamps, they will be string, not Date obj.
+          if (v.from instanceof Date) {
+            start_time = new Date(v.from).toISOString();
+          } else {
+            start_time = v.from;
+          }
+
+          if (v.to instanceof Date) {
+            end_time = new Date(v.to).toISOString();
+          } else {
+            end_time = v.to;
+          }
         } else if (v.type == 'terms') {
           if (v.mandate == 'must') {
             filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
@@ -243,7 +254,11 @@ define([
       var start_time;
       _.each(self.list, function(v) {
         if (v.type == 'time') {
-          start_time = new Date(v.from).toISOString();
+          if (v.from instanceof Date) {
+            start_time = new Date(v.from).toISOString();
+          } else {
+            start_time = v.from;            
+          }
           return;
         }
       });
@@ -255,7 +270,11 @@ define([
       var end_time;
       _.each(self.list, function(v) {
         if (v.type == 'time') {
-          end_time = new Date(v.to).toISOString();
+          if (v.to instanceof Date) {
+            end_time = new Date(v.to).toISOString();
+          } else {
+            end_time = v.to;
+          }
           return;
         }
       });
@@ -312,7 +331,6 @@ define([
       return _.pluck(_.where(self.list,_require),'id');
     };
 
-
     // TOFIX: Error handling when there is more than one field
     this.timeField = function() {
       return _.pluck(self.getByType('time'),'field');
@@ -327,10 +345,18 @@ define([
       }
       switch(mode) {
       case "min":
-        return {
-          from: new Date(_.max(_.pluck(_t,'from'))),
-          to: new Date(_.min(_.pluck(_t,'to')))
-        };
+        // If time is not Date obj (e.g. String time for Relative time mode or Since time mode)
+        if (!(_t[_t.length-1].from instanceof Date) || !(_t[_t.length-1].to instanceof Date)) {
+          return {
+            from: _t[_t.length-1].fromDateObj,
+            to: _t[_t.length-1].toDateObj
+          };
+        } else {
+          return {
+            from: new Date(_.max(_.pluck(_t,'from'))),
+            to: new Date(_.min(_.pluck(_t,'to')))
+          };
+        }
       case "max":
         return {
           from: new Date(_.min(_.pluck(_t,'from'))),
@@ -365,7 +391,6 @@ define([
         return false;
       }
     };
-
 
     var nextId = function() {
       if(_f.idQueue.length > 0) {

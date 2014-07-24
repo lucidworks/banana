@@ -10,7 +10,7 @@
 (function () {
   'use strict';
 
-  var DEBUG = true; // DEBUG mode
+  var DEBUG = false; // DEBUG mode
 
   var 
     // save reference to global object

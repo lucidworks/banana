@@ -3,7 +3,7 @@
         <form class="input-append">
             <h6>Add Facets</h6>
             <input bs-typeahead="fields.list" type="text" class="input-small" ng-model='newfield'>
-            <button class="btn" ng-click="toggle_field(newfield);newfield=''"><i class="icon-plus"></i>
+            <button class="btn" ng-click="add_facet_field(newfield);newfield=''"><i class="icon-plus"></i>
             </button>
         </form>
     </div>
@@ -11,7 +11,7 @@
         <h6>Facets
             <small>Click to remove</small>
         </h6>
-        <span style="margin-left:3px" ng-click="toggle_field(field)" ng-repeat="field in $parent.panel.fields" class="label pointer remove">{{field}}</span>
+        <span style="margin-left:3px" ng-click="remove_facet_field(field)" ng-repeat="field in $parent.panel.fields" class="label pointer remove">{{field}}</span>
     </div>
 </div>
 
