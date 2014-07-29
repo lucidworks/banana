@@ -69,6 +69,7 @@ function (angular, app, _, $, kbn) {
       counter_pos : 'above',
       lastColor : '',
       spyable     : true,
+      chartColors : querySrv.colors
     };
     _.defaults($scope.panel,_d);
 
@@ -107,37 +108,33 @@ function (angular, app, _, $, kbn) {
       if (DEBUG) { console.debug('terms:\n\tdashboard',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv); }
 
       request = $scope.sjs.Request().indices(dashboard.indices);
-
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
       // This could probably be changed to a BoolFilter
-      boolQuery = $scope.sjs.BoolQuery();
-      _.each($scope.panel.queries.ids,function(id) {
-        boolQuery = boolQuery.should(querySrv.getEjsObj(id));
-      });
+      // boolQuery = $scope.sjs.BoolQuery();
+      // _.each($scope.panel.queries.ids,function(id) {
+      //   boolQuery = boolQuery.should(querySrv.getEjsObj(id));
+      // });
 
       // Terms mode
-      request = request
-        .facet($scope.sjs.TermsFacet('terms')
-          .field($scope.panel.field)
-          .size($scope.panel.size)
-          .order($scope.panel.order)
-          .exclude($scope.panel.exclude)
-          .facetFilter($scope.sjs.QueryFilter(
-            $scope.sjs.FilteredQuery(
-              boolQuery,
-              filterSrv.getBoolFilter(filterSrv.ids)
-              )))).size(0);
+      // request = request
+      //   .facet($scope.sjs.TermsFacet('terms')
+      //     .field($scope.panel.field)
+      //     .size($scope.panel.size)
+      //     .order($scope.panel.order)
+      //     .exclude($scope.panel.exclude)
+      //     .facetFilter($scope.sjs.QueryFilter(
+      //       $scope.sjs.FilteredQuery(
+      //         boolQuery,
+      //         filterSrv.getBoolFilter(filterSrv.ids)
+      //         )))).size(0);
 
       // Populate the inspector panel
       $scope.inspector = angular.toJson(JSON.parse(request.toString()),true);
 
       // Build Solr query
       var fq = '&' + filterSrv.getSolrFq();
-      // var start_time = filterSrv.getStartTime();
-      // var end_time = filterSrv.getEndTime();
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0' // for terms, we do not need the actual response doc, so set rows=0
-      // var facet_gap = '%2B1DAY';
       var facet = '';
 
       if ($scope.panel.mode === 'count') {
@@ -164,6 +161,27 @@ function (angular, app, _, $, kbn) {
       results.then(function(results) {
         if (DEBUG) { console.debug('terms: results=',results); }
 
+        // Function for validating HTML color by assign it to a dummy <div id="colorTest">
+        // and let the browser do the work of validation.
+        var isValidHTMLColor = function(color) {
+          var valid = $('#colorTest').css('color');
+          $('#colorTest').css('color', color);
+
+          if (valid == $('#colorTest').css('color')) {
+            return false;
+          } else {
+            return true;
+          }
+        };
+
+        // Function for customizing chart color by using field values as colors.
+        var addSliceColor = function(slice,color) {
+          if ($scope.panel.useColorFromField && isValidHTMLColor(color)) {
+            slice.color = color;
+          }
+          return slice;
+        };
+
         var k = 0;
         $scope.panelMeta.loading = false;
         $scope.hits = results.response.numFound;
@@ -181,6 +199,7 @@ function (angular, app, _, $, kbn) {
               // if count = 0, do not add it to the chart, just skip it
               if (count == 0) continue;
               var slice = { label : term, data : [[k,count]], actions: true};
+              slice = addSliceColor(slice,term);
               $scope.data.push(slice);
             };
           });
@@ -284,6 +303,7 @@ function (angular, app, _, $, kbn) {
         // Function for rendering panel
         function render_panel() {
           var plot, chartData;
+          var colors = [];
 
           // IE doesn't work without this
           elem.css({height:scope.panel.height||scope.row.height});
@@ -296,12 +316,13 @@ function (angular, app, _, $, kbn) {
           _.without(chartData,_.findWhere(chartData,{meta:'other'}));
 
           if (DEBUG) { console.debug('terms: render_panel() => chartData = ',chartData); }
-          var colors = [];
+
           if (filterSrv.idsByTypeAndField('terms',scope.panel.field).length > 0) {
             colors.push(scope.panel.lastColor);
           } else {
-            colors = querySrv.colors
+            colors = scope.panel.chartColors
           }
+
           // Populate element.
           require(['jquery.flot.pie'], function(){
             // Populate element
@@ -391,15 +412,12 @@ function (angular, app, _, $, kbn) {
         var $tooltip = $('<div>');
         elem.bind("plothover", function (event, pos, item) {
           if (item) {
-            // if (DEBUG) { console.debug('terms: plothover item = ',item); }
             var value = scope.panel.chart === 'bar' ? item.datapoint[1] : item.datapoint[1][0][1];
-
             // if (scope.panel.mode === 'count') {
             //   value = value.toFixed(0);
             // } else {
             //   value = value.toFixed(scope.panel.decimal_points);
             // }
-
             $tooltip
               .html(
                 kbn.query_color_dot(item.series.color, 20) + ' ' +
