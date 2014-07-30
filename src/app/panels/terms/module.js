@@ -69,6 +69,7 @@ function (angular, app, _, $, kbn) {
       counter_pos : 'above',
       lastColor : '',
       spyable     : true,
+      error : '',
       chartColors : querySrv.colors
     };
     _.defaults($scope.panel,_d);
@@ -164,6 +165,8 @@ function (angular, app, _, $, kbn) {
         // Function for validating HTML color by assign it to a dummy <div id="colorTest">
         // and let the browser do the work of validation.
         var isValidHTMLColor = function(color) {
+          // clear attr first, before comparison
+          $('#colorTest').removeAttr('style');
           var valid = $('#colorTest').css('color');
           $('#colorTest').css('color', color);
 
