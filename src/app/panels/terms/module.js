@@ -326,7 +326,6 @@ function (angular, app, _, $, kbn) {
             colors = scope.panel.chartColors
           }
 
-          // Populate element.
           require(['jquery.flot.pie'], function(){
             // Populate element
             try {

@@ -88,6 +88,7 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
         return text;
       }
     };
+
     return function(text) {
       return _.isArray(text)
         ? _.map(text, urlLink)
@@ -123,6 +124,7 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
         return text;
       }
     };
+
     return function(text) {
       return _.isArray(text)
         ? _.map(text, urlLink)
@@ -148,5 +150,4 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
             return input.substring(0,1).toUpperCase()+input.substring(1);
     }
   });
-
 });

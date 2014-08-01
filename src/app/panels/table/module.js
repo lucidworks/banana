@@ -87,7 +87,10 @@ function (angular, app, _, kbn, moment) {
       saveOption : 'json',
       exportSize: 100,
       exportAll: true,
-      displayLinkIcon: true
+      displayLinkIcon: true,
+      imageFields : [],      // fields to be displayed as <img>
+      imgFieldWidth: 'auto', // width of <img> (if enabled)
+      imgFieldHeight: '85px' // height of <img> (if enabled)
     };
     _.defaults($scope.panel,_d);
 
@@ -95,11 +98,8 @@ function (angular, app, _, kbn, moment) {
       $scope.Math = Math;
       // Solr
       $scope.sjs = $scope.sjs || sjsResource(dashboard.current.solr.server + dashboard.current.solr.core_name);
-
       $scope.$on('refresh',function(){$scope.get_data();});
-    
-      $scope.panel.exportSize = $scope.panel.size * $scope.panel.pages;
-        
+      $scope.panel.exportSize = $scope.panel.size * $scope.panel.pages; 
       $scope.fields = fields;
       $scope.get_data();
     };
@@ -223,7 +223,7 @@ function (angular, app, _, kbn, moment) {
 
       $scope.panel_request = request;
 
-      if (DEBUG) { console.debug('table:\n\trequest.toString()=',request.toString()); }
+      // if (DEBUG) { console.debug('table:\n\trequest.toString()=',request.toString()); }
 
       var fq = '&' + filterSrv.getSolrFq();
       var query_size = $scope.panel.size * $scope.panel.pages;
@@ -270,7 +270,7 @@ function (angular, app, _, kbn, moment) {
           $scope.data = [];
         }
 
-        if(DEBUG) { console.debug('table:\n\tresults=',results,'\n\t_segment=',_segment,', $scope.hits=',$scope.hits,', $scope.data=',$scope.data,', query_id=',query_id,'\n\t$scope.panel',$scope.panel); }
+        if (DEBUG) { console.debug('table:\n\tresults=',results,'\n\t_segment=',_segment,', $scope.hits=',$scope.hits,', $scope.data=',$scope.data,', query_id=',query_id,'\n\t$scope.panel',$scope.panel); }
 
         // Check for error and abort if found
         if(!(_.isUndefined(results.error))) {
@@ -387,7 +387,6 @@ function (angular, app, _, kbn, moment) {
       }
       return obj;
     };
-
   });
 
   // This also escapes some xml sequences
@@ -407,7 +406,12 @@ function (angular, app, _, kbn, moment) {
   });
 
   module.filter('tableTruncate', function() {
-    return function(text,length,factor) {
+    return function(text,length,factor,field,imageFields) {
+      // If image field, then do not truncate, otherwise we will get invalid URIs.
+      if (typeof field != 'undefined' && imageFields.length>0 && _.contains(imageFields, field)) {
+        return text;
+      }
+
       if (!_.isUndefined(text) && !_.isNull(text) && text.toString().length > 0) {
         return text.length > length/factor ? text.substr(0,length/factor)+'...' : text;
       }
@@ -462,4 +466,13 @@ function (angular, app, _, kbn, moment) {
     };
   });
 
+  // This filter will check the input field to see if it should be displayed as <img src="data">
+  module.filter('tableDisplayImageField', function() {
+    return function(data, field, imageFields, width, height) {
+      if (typeof field != 'undefined' && imageFields.length>0 && _.contains(imageFields, field)) {
+        return '<img style="width:' + width + '; height:' + height + ';" src="'+data+'">';
+      }
+      return data;
+    }
+  });
 });
