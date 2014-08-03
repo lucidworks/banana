@@ -46,7 +46,7 @@ define([
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
 
-  var DEBUG = true; // DEBUG mode
+  var DEBUG = false; // DEBUG mode
 
   var module = angular.module('kibana.panels.histogram', []);
   app.useModule(module);

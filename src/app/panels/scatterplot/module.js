@@ -15,7 +15,7 @@ define([
     var module = angular.module('kibana.panels.scatterplot', []);
     app.useModule(module);
 
-    var DEBUG = true; //still in debug mode
+    var DEBUG = false; // DEBUG mode
 
     module.controller('scatterplot', function($scope, dashboard, querySrv, filterSrv) {
         $scope.panelMeta = {
@@ -204,7 +204,7 @@ define([
                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
                     // add the tooltip area to the webpage
                     var $tooltip = $('<div>');
-                    console.log(scope.data)
+
                     scope.data.forEach(function(d) {
                         d[scope.panel.yaxis] = +d[scope.panel.yaxis];
                         d[scope.panel.xaxis] = +d[scope.panel.xaxis];

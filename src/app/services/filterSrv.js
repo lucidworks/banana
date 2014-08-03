@@ -331,7 +331,6 @@ define([
       return _.pluck(_.where(self.list,_require),'id');
     };
 
-
     // TOFIX: Error handling when there is more than one field
     this.timeField = function() {
       return _.pluck(self.getByType('time'),'field');
@@ -344,24 +343,10 @@ define([
       if(_t.length === 0) {
         return false;
       }
-
-      console.debug('filterSrv: timeRange() _t = ',_t,' _t[_t.length-1].from instanceof Date ',_t[_t.length-1].from instanceof Date);
-
       switch(mode) {
       case "min":
-
-        console.debug('filterSrv: timeRange() mode == min');
-
+        // If time is not Date obj (e.g. String time for Relative time mode or Since time mode)
         if (!(_t[_t.length-1].from instanceof Date) || !(_t[_t.length-1].to instanceof Date)) {
-
-          console.debug('filterSrv: _t[_t.length-1].from or _t[_t.length-1].to is not Date');
-
-          // TODO
-          // Convert string time to Date obj.
-
-          // return
-          //   from => Date obj in utc
-          //   to => Date obj in utc
           return {
             from: _t[_t.length-1].fromDateObj,
             to: _t[_t.length-1].toDateObj
@@ -372,11 +357,6 @@ define([
             to: new Date(_.min(_.pluck(_t,'to')))
           };
         }
-        // return {
-        //   from: new Date(_.max(_.pluck(_t,'from'))),
-        //   to: new Date(_.min(_.pluck(_t,'to')))
-        // };
-
       case "max":
         return {
           from: new Date(_.min(_.pluck(_t,'from'))),
@@ -411,7 +391,6 @@ define([
         return false;
       }
     };
-
 
     var nextId = function() {
       if(_f.idQueue.length > 0) {

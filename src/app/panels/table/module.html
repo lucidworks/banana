@@ -48,17 +48,23 @@
             <span ng-show='!panel.sortable'>{{field}}</span>
             <i ng-show="!$last" class="pointer link icon-caret-right" ng-click="_.move(panel.fields,$index,$index+1)"></i>
           </th>
+          <!-- Hyperlink column header -->
           <th ng-show="panel.enableHyperlink" style="white-space:nowrap">{{panel.hyperlinkColumnHeader}}</th>
         </thead>
 
         <tbody ng-repeat="event in data | slice:panel.offset:panel.offset+panel.size" ng-class-odd="'odd'">
           <tr ng-click="toggle_details(event)" class="pointer">
             <td ng-show="panel.fields.length<1">{{event.kibana._source|stringify|tableTruncate:panel.trimFactor:1}}</td>
-            <td ng-show="panel.fields.length>0" ng-repeat="field in panel.fields" ng-bind-html-unsafe="(event.kibana.highlight[field]||event.kibana._source[field]) |tableHighlight | tableTruncate:panel.trimFactor:panel.fields.length"></td>
+            
+            <!-- Table columns -->
+            <td ng-show="panel.fields.length>0" ng-repeat="field in panel.fields" ng-bind-html-unsafe="(event.kibana.highlight[field]||event.kibana._source[field]) |tableHighlight |tableTruncate:panel.trimFactor:panel.fields.length:field:panel.imageFields |tableDisplayImageField:field:panel.imageFields:panel.imgFieldWidth:panel.imgFieldHeight"></td>
+            
             <!-- Hyperlink column -->
             <td ng-click="" ng-show="panel.enableHyperlink && panel.displayLinkIcon" ng-bind-html-unsafe="event.kibana._source[panel.hyperlinkColumnForURI] |urlLinkAsIcon"></td>
             <td ng-show="panel.enableHyperlink && !panel.displayLinkIcon" ng-bind-html-unsafe="event.kibana._source[panel.hyperlinkColumnForURI] |urlLink"></td>
+            <!-- end Hyperlink column -->
           </tr>
+
           <tr ng-show="event.kibana.details">
             <td colspan={{panel.fields.length}} ng-switch="event.kibana.view">
               <span>

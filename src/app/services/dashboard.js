@@ -11,7 +11,7 @@ define([
 function (angular, $, kbn, _, config, moment, Modernizr) {
   'use strict';
 
-  var DEBUG = true; // DEBUG mode
+  var DEBUG = false; // DEBUG mode
 
   var module = angular.module('kibana.services');
 
