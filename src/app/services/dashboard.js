@@ -57,6 +57,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
     // An elasticJS client to use
     var ejs = ejsResource(config.elasticsearch);
+    
     // Solr
     var sjs = sjsResource(config.solr + config.solr_core);
 
