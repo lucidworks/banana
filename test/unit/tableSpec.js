@@ -1,6 +1,17 @@
 'use strict';
 
-define(['angular','app','underscore','kbn','moment','angular-mocks','solrjs','elasticjs','tablePanel'], function(angular, app, _, kbn, moment) {
+define([
+	'angular',
+	'app',
+	'underscore',
+	'kbn',
+	'moment',
+	'angular-mocks',
+	'solrjs',
+	'elasticjs',
+	'tablePanel'
+],
+function(angular, app, _, kbn, moment) {
 	// This is just an example test.	
 	describe('just checking', function() {
 		it('works for app', function() {
@@ -17,8 +28,8 @@ define(['angular','app','underscore','kbn','moment','angular-mocks','solrjs','el
 		// Need to load these modules before start testing
 		beforeEach(function() {
 			module('kibana');
-			module('kibana.controllers');
 			module('kibana.services');
+			module('kibana.controllers');
 			module('kibana.directives');
 			module('kibana.filters');
 			module('elasticjs.service');
