@@ -37,51 +37,53 @@ function(angular, app, _, kbn, moment) {
 			module('kibana.panels.table');
 		});
 
-		it('should defined table controller', inject(function($controller) {
+		it('should defined table controller', inject(function($controller, fields, querySrv, dashboard, filterSrv, sjsResource) {
 			var scope = {};
 
 			// Need to define scope.panel here, otherwise we will get an undefined exception
 			// on 'spyable' property.
 			scope.panel = {
-	      status  : "Stable",
-	      queries     : {
-	        mode        : 'all',
-	        ids         : [],
-	        query       : '*:*',
-	        basic_query : '',
-	        custom      : ''
-	      },
-	      size    : 100, // Per page
-	      pages   : 5,   // Pages available
-	      offset  : 0,
-	      sort    : ['event_timestamp','desc'],
-	      group   : "default",
-	      style   : {'font-size': '9pt'},
-	      overflow: 'min-height',
-	      fields  : [],
-	      highlight : [],
-	      sortable: true,
-	      header  : true,
-	      paging  : true,
-	      field_list: true,
-	      trimFactor: 300,
-	      normTimes : true,
-	      spyable : true,
-	      saveOption : 'json',
-	      exportSize: 100,
-	      exportAll: true,
-	      displayLinkIcon: true,
-	      imageFields : [],      // fields to be displayed as <img>
-	      imgFieldWidth: 'auto', // width of <img> (if enabled)
-	      imgFieldHeight: '85px' // height of <img> (if enabled)
-	    };
+		      status  : "Stable",
+		      queries     : {
+		        mode        : 'all',
+		        ids         : [],
+		        query       : '*:*',
+		        basic_query : '',
+		        custom      : ''
+		      },
+		      size    : 100, // Per page
+		      pages   : 5,   // Pages available
+		      offset  : 0,
+		      sort    : ['event_timestamp','desc'],
+		      group   : "default",
+		      style   : {'font-size': '9pt'},
+		      overflow: 'min-height',
+		      fields  : [],
+		      highlight : [],
+		      sortable: true,
+		      header  : true,
+		      paging  : true,
+		      field_list: true,
+		      trimFactor: 300,
+		      normTimes : true,
+		      spyable : true,
+		      saveOption : 'json',
+		      exportSize: 100,
+		      exportAll: true,
+		      displayLinkIcon: true,
+		      imageFields : [],      // fields to be displayed as <img>
+		      imgFieldWidth: 'auto', // width of <img> (if enabled)
+		      imgFieldHeight: '85px' // height of <img> (if enabled)
+		    };
 
-	    var ctrl = $controller('table', {$scope:scope});
-			expect(ctrl).toBeDefined();
+		    var ctrl = $controller('table', {$scope:scope, fields: fields, querySrv: querySrv, dashboard: dashboard, filterSrv: filterSrv, sjsResource: sjsResource});
+				expect(ctrl).toBeDefined();
 
-			scope.set_refresh(true);
-			expect(scope.refresh).toBeTruthy();
-		}));
+				scope.set_refresh(true);
+				expect(scope.refresh).toBeTruthy();
+				scope.init();
+				expect(scope.data.length).toEqual(500);
+			}));
 	});
 
 });

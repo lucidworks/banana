@@ -14,7 +14,7 @@ Object.keys(window.__karma__.files).forEach(function(file) {
   // }
 
   // List of test files:
-  allTestFiles.push('/base/test/unit/tableSpec.js');
+  allTestFiles.push('/base/test/unit/hitsSpec.js');
 });
 
 require.config({
@@ -61,7 +61,8 @@ require.config({
     solrjs:                   '../vendor/solrjs/solr-angular-client',
     d3:                       '../vendor/d3',
 
-    tablePanel: 'panels/table/module'
+    tablePanel: 'panels/table/module',
+    hitsPanel : 'panels/hits/module'
   },
 
   shim: {
