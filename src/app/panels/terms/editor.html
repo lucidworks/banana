@@ -16,12 +16,12 @@
     <label class="small">Use field values as chart's colors <tip placement="bottom">If the field values are not valid HTML colors (either color names or hexadecimal colors), the default colors for chart will be used for the data series instead.</tip></label>
     <input type="checkbox" ng-model="panel.useColorFromField" ng-checked="panel.useColorFromField" ng-change="set_refresh(true)">
   </div>
-<!-- 
+ 
   <div class="span4">
     <label class="small">Exclude Terms(s) (comma seperated)</label>
-    <input array-join type="text" ng-model='panel.exclude'></input>
+    <input array-join type="text" ng-model='panel.exclude' ng-change="set_refresh(true)"></input>
   </div>
--->
+
 </div>
 <div class="row-fluid">
   <div class="span2">
