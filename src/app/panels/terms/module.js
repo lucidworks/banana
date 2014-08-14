@@ -145,9 +145,17 @@ function (angular, app, _, $, kbn) {
         // stats does not support something like facet.limit, so we have to sort and limit the results manually.
         facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field;
       }
+      
+      var exclude_length = $scope.panel.exclude.length; 
+      var exclude_filter = '';
+      if(exclude_length > 0){
+        for (var i = 0; i < exclude_length; i++) {
+          exclude_filter += '&fq=-' + $scope.panel.field +":"+ $scope.panel.exclude[i];
+        };
+      }
 
       // Set the panel's query
-      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet;
+      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + exclude_filter + facet;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {

@@ -520,7 +520,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 min: facet_range.from - 1,
                 max: facet_range.to + 1,
                 autoscaleMargin : scope.panel.interval,
-                minTickSize : scope.panel.interval
+                minTickSize : scope.panel.interval,
+                tickDecimals: 0
               },
               grid: {
                 backgroundColor: null,
