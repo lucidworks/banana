@@ -66,7 +66,7 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
       //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
       r2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim,
       //Change email addresses to mailto:: links.
-      r3 = /(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})/gim;
+      r3 = /([a-zA-Z_0-9\.]+?@[a-zA-Z_0-9\.]+)/gim;
 
     var urlLink = function(text) {
       var t1,t2,t3;
