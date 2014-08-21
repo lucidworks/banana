@@ -69,7 +69,8 @@ function (Settings) {
       'rangeFacet',
       'heatmap',
       'scatterplot',
-      'fullTextSearch'
+      'fullTextSearch',
+      'facet'
       // 'dummy'  // Dummy module for testing
     ]
   });
