@@ -47,7 +47,7 @@
       <i class='icon-circle' ng-style="{color: series.info.color}"></i>
       <span class='small histogram-legend-item'>{{series.info.alias}} ({{dashboard.numberWithCommas(series.hits)}})</span>
     </span>
-    <span ng-show="panel.legend" class="small"><span ng-show="panel.value_field && panel.mode != 'count'">{{panel.value_field}}</span> {{panel.mode}} per <strong>{{panel.interval}}</strong> | (<strong>{{dashboard.numberWithCommas(hits)}}</strong> hits)</span>
+    <span ng-show="panel.legend" class="small"><span ng-show="panel.value_field && panel.mode != 'count'">{{panel.value_field}}</span> {{panel.mode}} per <strong>{{panel.interval}}</strong> | (<strong>{{dashboard.numberWithCommas(hits)}}</strong> hits) | Time correction : {{panel.timezone}}</span>
   </div>
   <form class="form-inline bordered histogram-options" ng-show="options">
     <span class="checkbox">
