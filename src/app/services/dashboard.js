@@ -29,7 +29,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       services: {},
       loader: {
         dropdown_collections: false,
-        save_gist: false,
+        save_gist: true,
         save_elasticsearch: true,
         save_local: true,
         save_default: true,
