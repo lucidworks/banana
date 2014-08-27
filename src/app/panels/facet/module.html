@@ -47,7 +47,7 @@
                             {{field}} <i class="icon-chevron-down"></i>
                             </a>
                 </div>
-                <div class="accordion-body" ng-class="panel.toggle_element!=field&&'collapse'" id="collapse_{{field}}">
+                <div class="accordion-body collapse" id="collapse_{{field}}">
                     <div class="accordion-inner">
                         <div ng-repeat="item in facet_data[field]">
                             <div ng-show="facet_data[field][$index]['count']>0 && $index < panel.facet_limit">

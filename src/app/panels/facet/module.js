@@ -1,20 +1,10 @@
 /*
 
-  ## Full Text Search
+  ## Facet Panel
 
   ### Parameters
-  * size :: Number of events per page to show
-  * pages :: Number of pages to show. size * pages = number of cached events.
-             Bigger = more memory usage byh the browser
-  * offset :: Position from which to start in the array of hits
-  * sort :: An array with 2 elements. sort[0]: field, sort[1]: direction ('asc' or 'desc')
   * style :: hash of css properties
   * fields :: fields to be faceted on
-  * trimFactor :: If line is > this many characters, divided by the number of columns, trim it.
-  * sortable :: Allow sorting?
-  * title field :: control the title field that will be show for every document
-  * body field :: the field that will be shown as description for each document
-  * URL field :: url that will be linked to title field
   * facet limit :: number of values that will be show per field
 
 */
@@ -24,12 +14,12 @@ define([
     'underscore',
     'kbn',
     'moment',
-    'bootstrap'
+    'bootstrap',
   ],
   function(angular, app, _, kbn, moment) {
     'use strict';
     var DEBUG = false; // DEBUG mode
-    var module = angular.module('kibana.panels.facet', []);
+    var module = angular.module('kibana.panels.facet',[]);
     app.useModule(module);
     module.controller('facet', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
       $scope.panelMeta = {
@@ -45,7 +35,7 @@ define([
         }],
         exportfile: false,
         status: "Experimental",
-        description: "This panel provide full text search functionality for data"
+        description: "This panel provide facet functionality for any field in the data"
       };
 
       // Set and populate defaults
@@ -58,27 +48,14 @@ define([
           basic_query: '',
           custom: ''
         },
-        size: 100, // Per page
-        pages: 5, // Pages available
-        offset: 0,
         group: "default",
-        sort: [],
         style: {
           'font-size': '9pt'
         },
         overflow: 'min-height',
         fields: [],
-        highlight: [],
-        sortable: false,
-        header: true,
-        paging: true,
         field_list: true,
-        trimFactor: 300,
-        normTimes: true,
         spyable: true,
-        saveOption: 'json',
-        exportSize: 100,
-        exportAll: true,
         facet_limit: 10,
         foundResults: true,
         header_title: "Limit Your Search",
@@ -103,27 +80,6 @@ define([
 
       $scope.percent = kbn.to_percent;
 
-      $scope.toggle_micropanel = function(field, groups) {
-        var docs = _.map($scope.data, function(_d) {
-          return _d.kibana._source;
-        });
-        var topFieldValues = kbn.top_field_values(docs, field, 10, groups);
-        $scope.micropanel = {
-          field: field,
-          grouped: groups,
-          values: topFieldValues.counts,
-          hasArrays: topFieldValues.hasArrays,
-          related: kbn.get_related_fields(docs, field),
-          count: _.countBy(docs, function(doc) {
-            return _.contains(_.keys(doc), field);
-          })['true']
-        };
-      };
-
-      $scope.micropanelColor = function(index) {
-        var _c = ['bar-success', 'bar-warning', 'bar-danger', 'bar-info', 'bar-primary'];
-        return index > _c.length ? '' : _c[index];
-      };
 
       $scope.add_facet_field = function(field) {
         if (_.contains(fields.list, field) && _.indexOf($scope.panel.fields, field) == -1) {
@@ -136,53 +92,6 @@ define([
         if (_.contains(fields.list, field) && _.indexOf($scope.panel.fields, field) > -1) {
           $scope.panel.fields = _.without($scope.panel.fields, field);
         }
-      };
-
-      $scope.toggle_details = function(row) {
-        row.kibana.details = row.kibana.details ? false : true;
-        row.kibana.view = row.kibana.view || 'table';
-        //row.kibana.details = !row.kibana.details ? $scope.without_kibana(row) : false;
-      };
-
-      $scope.page = function(page) {
-        $scope.panel.offset = page * $scope.panel.size;
-        $scope.get_data();
-      };
-
-      $scope.build_search = function(field, value, negate) {
-        var query;
-        // This needs to be abstracted somewhere
-        if (_.isArray(value)) {
-          // TODO: I don't think Solr has "AND" operator in query.
-          query = "(" + _.map(value, function(v) {
-            return angular.toJson(v);
-          }).join(" AND ") + ")";
-        } else if (_.isUndefined(value)) {
-          query = '*:*';
-          negate = !negate;
-        } else {
-          query = angular.toJson(value);
-        }
-        // TODO: Need to take a look here, not sure if need change.
-        filterSrv.set({
-          type: 'field',
-          field: field,
-          query: query,
-          mandate: (negate ? 'mustNot' : 'must')
-        });
-
-        $scope.panel.offset = 0;
-        dashboard.refresh();
-      };
-
-      $scope.fieldExists = function(field, mandate) {
-        // TODO: Need to take a look here.
-        filterSrv.set({
-          type: 'exists',
-          field: field,
-          mandate: mandate
-        });
-        dashboard.refresh();
       };
 
       $scope.get_data = function(segment, query_id) {
@@ -211,19 +120,12 @@ define([
           $scope.sjs.FilteredQuery(
             boolQuery,
             filterSrv.getBoolFilter(filterSrv.ids) // search time range is provided here.
-          ))
-          .highlight(
-            $scope.sjs.Highlight($scope.panel.highlight)
-            .fragmentSize(2147483647) // Max size of a 32bit unsigned int
-            .preTags('@start-highlight@')
-            .postTags('@end-highlight@')
-        )
-          .size($scope.panel.size * $scope.panel.pages) // Set the size of query result
+          )).size($scope.panel.size * $scope.panel.pages) // Set the size of query result
 
         $scope.panel_request = request;
 
         if (DEBUG) {
-          console.debug('Full Text Search:\n\trequest=', request, '\n\trequest.toString()=', request.toString());
+          console.debug('Facet:\n\trequest=', request, '\n\trequest.toString()=', request.toString());
         }
 
         var fq = '&' + filterSrv.getSolrFq();
@@ -237,33 +139,14 @@ define([
         var rows_limit;
         var sorting = '';
 
-        if ($scope.panel.sortable && $scope.panel.sort && $scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined) {
-          sorting = '&sort=' + $scope.panel.sort[0] + ' ' + $scope.panel.sort[1];
-        }
-
-        // set the size of query result
-        if (query_size !== undefined && query_size !== 0) {
-          rows_limit = '&rows=' + query_size;
-        } else { // default
-          rows_limit = '&rows=25';
-        }
-
-        //set highlight part in sole query
-        var highlight
-        if ($scope.panel.body_field)
-          highlight = '&hl=true&hl.fl=' + $scope.panel.body_field;
-        else
-          highlight = "";
-
-
         // Set the panel's query
 
         //var query = $scope.panel.searchQuery == null ? querySrv.getQuery(0) : 'q=' + $scope.panel.searchQuery
-        $scope.panel.queries.basic_query = querySrv.getQuery(0) + fq + facet + facet_fields + sorting;
-        $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json + rows_limit + highlight;
+        $scope.panel.queries.basic_query = querySrv.getQuery(0) + fq + facet + facet_fields;
+        $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json;
 
         if (DEBUG) {
-          console.debug('Full Text Search: query=', $scope.panel.queries.query);
+          console.debug('Facet: query=', $scope.panel.queries.query);
         }
 
         // Set the additional custom query
@@ -290,7 +173,7 @@ define([
           }
 
           if (DEBUG) {
-            console.debug('Full Text Search:\n\tresults=', results, '\n\t_segment=', _segment, ', $scope.hits=', $scope.hits, ', $scope.data=', $scope.data, ', query_id=', query_id, '\n\t$scope.panel', $scope.panel);
+            console.debug('Facet :\n\tresults=', results, '\n\t_segment=', _segment, ', $scope.hits=', $scope.hits, ', $scope.data=', $scope.data, ', query_id=', query_id, '\n\t$scope.panel', $scope.panel);
           }
 
           // Check for error and abort if found
@@ -336,14 +219,9 @@ define([
             });
             $scope.facet_data = facet_data;
 
-
-
             if (DEBUG) {
-              console.debug('Full Text Search: $scope.hits=', $scope.hits, ', $scope.data=', $scope.data);
+              console.debug('Facet: $scope.hits=', $scope.hits, ', $scope.data=', $scope.data);
             }
-
-            // Keep only what we need for the set
-            $scope.data = $scope.data.slice(0, $scope.panel.size * $scope.panel.pages);
           } else {
             return;
           }
@@ -421,9 +299,5 @@ define([
         $(n.target).siblings('.accordion-heading').find('.accordion-toggle i').toggleClass('icon-chevron-up icon-chevron-down');
         $(n.target).siblings('.accordion-heading').toggleClass('bold');
       });
-
-
-
     });
-
-});
+  });
