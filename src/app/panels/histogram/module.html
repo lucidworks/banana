@@ -1,4 +1,4 @@
-<div ng-controller='histogram' ng-init="init()" style="min-height:{{panel.height || row.height}}">
+<div ng-controller="histogram" ng-init="init()" style="min-height:{{panel.height || row.height}}">
   <style>
     .histogram-legend {
       display:inline-block;
@@ -33,21 +33,21 @@
         display: inline-block;
     }
   </style>
-  <div>
-    <span ng-show='panel.options'>
-      <a class="link underline small" ng-show='panel.options' ng-click="options=!options">
-        <i ng-show="!options" class="icon-caret-right"></i><i ng-show="options" class="icon-caret-down"></i> View
-      </a> |&nbsp
+  <div class="row">
+    <span ng-show="panel.options" style="margin-left:10px;">
+      <a class="link underline small" ng-show="panel.options" ng-click="options=!options">
+        <i ng-show="!options" class="fa fa-caret-right"></i><i ng-show="options" class="fa fa-caret-down"></i> View
+      </a> |&nbsp;
     </span>
-    <span ng-show='panel.zoomlinks && data'>
-      <!--<a class='small' ng-click='zoom(0.5)'><i class='icon-zoom-in'></i> Zoom In</a>-->
-      <a class='small' ng-click='zoom(2)'><i class='icon-zoom-out'></i> Zoom Out</a> |&nbsp
+    <span ng-show="panel.zoomlinks &amp;&amp; data">
+      <!--<a class='small' ng-click='zoom(0.5)'><i class='fa fa-zoom-in'></i> Zoom In</a>-->
+      <a class="small" ng-click="zoom(2)"><i class="fa fa-zoom-out"></i> Zoom Out</a> |&nbsp;
     </span>
-    <span ng-show="panel.legend" ng-repeat='series in data' class="histogram-legend">
-      <i class='icon-circle' ng-style="{color: series.info.color}"></i>
-      <span class='small histogram-legend-item'>{{series.info.alias}} ({{dashboard.numberWithCommas(series.hits)}})</span>
+    <span ng-show="panel.legend" ng-repeat="series in data" class="histogram-legend">
+      <i class="fa fa-circle" ng-style="{color: series.info.color}"></i>
+      <span class="small histogram-legend-item">{{series.info.alias}} ({{dashboard.numberWithCommas(series.hits)}})</span>
     </span>
-    <span ng-show="panel.legend" class="small"><span ng-show="panel.value_field && panel.mode != 'count'">{{panel.value_field}}</span> {{panel.mode}} per <strong>{{panel.interval}}</strong> | (<strong>{{dashboard.numberWithCommas(hits)}}</strong> hits)</span>
+    <span ng-show="panel.legend" class="small"><span ng-show="panel.value_field &amp;&amp; panel.mode != 'count'">{{panel.value_field}}</span> {{panel.mode}} per <strong>{{panel.interval}}</strong> | (<strong>{{dashboard.numberWithCommas(hits)}}</strong> hits) | Time correction : {{panel.timezone}}</span>
   </div>
   <form class="form-inline bordered histogram-options" ng-show="options">
     <span class="checkbox">
@@ -77,7 +77,7 @@
     <span ng-show="panel.stack">
       <div class="checkbox">
         <label style="white-space:nowrap" class="small">
-          <input type="checkbox"  ng-model="panel.percentage" ng-checked="panel.percentage" ng-change="render()">
+          <input type="checkbox" ng-model="panel.percentage" ng-checked="panel.percentage" ng-change="render()">
           Percent
         </label>
       </div>
@@ -86,6 +86,6 @@
       <label class="small">Interval</label> <select ng-change="set_interval(panel.interval);get_data();" class="input-small" ng-model="panel.interval" ng-options="interval_label(time) for time in _.union([panel.interval],panel.intervals)"></select>
     </span>
   </form>
-  <center><img ng-show='panel.loading && _.isUndefined(data)' src="img/load_big.gif"></center>
-  <div histogram-chart class="pointer histogram-chart" params="{{panel}}"></div>
+  <center><img ng-show="panel.loading &amp;&amp; _.isUndefined(data)" src="img/load_big.gif"></center>
+  <div histogram-chart="" class="pointer histogram-chart" params="{{panel}}"></div>
 </div>

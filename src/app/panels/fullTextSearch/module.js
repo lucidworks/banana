@@ -38,7 +38,7 @@ define([
       $scope.panelMeta = {
         modals: [{
           description: "Inspect",
-          icon: "icon-info-sign",
+          icon: "fa fa-info",
           partial: "app/partials/inspector.html",
           show: $scope.panel.spyable
         }],
@@ -488,7 +488,7 @@ define([
       // jquery code used to toggle the arrow from up to down when facet is opened
       // also it is used to highlight the header field in faceting
       $('.accordion').on('show hide', function(n) {
-        $(n.target).siblings('.accordion-heading').find('.accordion-toggle i').toggleClass('icon-chevron-up icon-chevron-down');
+        $(n.target).siblings('.accordion-heading').find('.accordion-toggle i').toggleClass('fa fa-chevron-up fa fa-chevron-down');
         $(n.target).siblings('.accordion-heading').toggleClass('bold');
       });
 

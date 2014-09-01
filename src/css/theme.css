@@ -1,0 +1,63 @@
+.panelCont{outline:1px solid #e6e6e6;border-top:1px solid #fff;padding:0 10px 10px 10px;background:#f2f2f2;margin:0}
+#events{font-size:12px}.version{font-size:85%}.legend{color:#000}
+.editor-title{margin-right:10px;font-size:1.7em;font-weight:bold;text-transform:capitalize}
+.editor-title small{opacity:.5;font-size:.7em;font-weight:normal}
+.bordered{border:1px solid #ddd}
+.spy{position:absolute;right:0;top:0}
+.navbar-inner{border-width:0;padding-left:0;padding-right:0}
+.kibana-row{margin-bottom:10px}
+.row-button{border-left:1px solid #fff;border-right:1px solid #e6e6e6;padding:2px 7px 0 7px;float:left}
+.row-text{text-transform:uppercase;font-weight:bold;font-size:.8em}
+.row-close{outline:1px solid #e6e6e6;border-top:1px solid #fff;padding:0;margin:0;min-height:24px!important;line-height:24px;background:#f7f7f7}
+.row-open{text-align:right;left:-28px;position:absolute;font-size:13pt;font-weight:200}
+.row-open i{font-size:10pt}.odd{background-color:#f9f9f9}
+.nomargin{margin:0}[ng\:cloak],[ng-cloak],.ng-cloak{display:none!important}
+.table tbody+tbody{border-top:0}
+.panel-error{opacity:.9;position:absolute;z-index:1000}
+.panel-loading{position:absolute;top:0;left:0;z-index:800}
+.ui-draggable-dragging{display:block;visibility:visible;opacity:1;z-index:9999}
+.panel-title{border:0;margin-left:-11px}
+.panel div.panel-extra div.panel-extra-container{margin-right:-11px}
+.panel div.panel-extra{font-size:.9em;}
+.panel div.panel-extra .extra{float:right!important;border-bottom:1px solid #fff}
+.dragInProgress{background-color:#fcfcfc;border:1px solid #ddd}.link{cursor:pointer}
+.pointer:hover{color:#1ab2ff}.pointer{cursor:pointer}.link:hover{color:#1ab2ff}
+ul.list-unstyled li a.pointer{cursor: pointer;font-size: 14px;}
+ul.list-unstyled li {cursor: pointer;margin: 9px 0px;}
+ul.list-unstyled li a.label{background-color: #918A8A}
+.popover{max-width:480px}.modal{width:770px;margin-left:-385px;top:10px!important}
+.tiny{font-size:50%}.smaller{font-size:70%}.small{font-size:85%}
+.large{font-size:120%}
+.strong{font-weight:bold}.normal{font-weight:normal}
+.light{font-weight:200}
+.input-append label{font-size:inherit!important}
+.input-smaller{width:81px;float: left;margin-left: 5px;}.string{color:#404040}
+.onput-mini{width: 75px}
+.number{color:#4196bf}
+.boolean{color:#c7a366}
+.key{color:#c05c5a}
+.typeahead{z-index:1051}
+.btn-active{background-color:#e6e6e6;background-image:none;box-shadow:0 2px 4px rgba(0,0,0,0.15) inset,0 1px 2px rgba(0,0,0,0.05);outline:0 none}
+.remove:hover{background-color:#bd362f}
+.faded{opacity:.2}
+div.flot-text{color:#333!important}
+.dashboard-notice{z-index:8000;margin-left:0;padding:3px 0 3px 0;width:100%;color:#333;padding-left:20px}
+
+.panelCont div.form-horizontal {clear: both;}
+.timepicker-block{float: left;}
+.to-txt{float: left;margin: 7px 0 0 10px;}
+.timepicker-block button{margin-left: 5px;}
+.settime-liks{padding: 6px 7px;}
+.search-query-input{clear: both;margin-top: 5px !important;position: relative;top: 6px;}
+.search-query-input input{width: 100% !important;border-radius: 30px;}
+.modal.top.am-fade{
+	top: 50% !important;
+	margin: 0 auto !important;
+}
+.modal-backdrop.am-fade{
+	background-color: rgba(0, 0, 0, 0.71);
+}
+.navbar.navbar-static-top.navbar-default .dropdown-menu{
+	left: -428% !important;
+	width: 240px;
+}

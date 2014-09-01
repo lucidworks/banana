@@ -21,7 +21,7 @@ define([
         $scope.panelMeta = {
             modals: [{
                 description: "Inspect",
-                icon: "icon-info-sign",
+                icon: "fa fa-info",
                 partial: "app/partials/inspector.html",
                 show: $scope.panel.spyable
             }],
@@ -255,7 +255,7 @@ define([
                         }).on("mouseover", function(d) {
                             var field_type = d[scope.panel.field_type] ? d[scope.panel.field_type] : "";
                             $tooltip
-                                .html('<i class="icon-circle" style="color:' + color(d[scope.panel.field_type]) + ';"></i>' + ' ' +
+                                .html('<i class="fa fa-circle" style="color:' + color(d[scope.panel.field_type]) + ';"></i>' + ' ' +
                                     field_type + " (" + d[scope.panel.xaxis] + ", " + d[scope.panel.yaxis] + ")<br>")
                                 .place_tt(d3.event.pageX, d3.event.pageY);
                         })

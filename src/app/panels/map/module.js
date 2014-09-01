@@ -35,7 +35,7 @@ function (angular, app, _, $) {
       modals : [
         {
           description: "Inspect",
-          icon: "icon-info-sign",
+          icon: "fa fa-info",
           partial: "app/partials/inspector.html",
           show: $scope.panel.spyable
         }
