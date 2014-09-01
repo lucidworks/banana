@@ -1,0 +1,30 @@
+<div class="row-fluid">
+    <div class="span4">
+        <form class="input-append">
+            <h6>Add Facets</h6>
+            <input bs-typeahead="fields.list" type="text" class="input-small" ng-model='newfield'>
+            <button class="btn" ng-click="add_facet_field(newfield);newfield=''"><i class="icon-plus"></i>
+            </button>
+        </form>
+    </div>
+    <div class="span8">
+        <h6>Facets
+            <small>Click to remove</small>
+        </h6>
+        <span style="margin-left:3px" ng-click="remove_facet_field(field)" ng-repeat="field in $parent.panel.fields" class="label pointer remove">{{field}}</span>
+    </div>
+</div>
+
+<h5>Options</h5>
+<div class="row-fluid">
+    <div class="span4">
+        <h6> Title </h6>
+        <input type="text" class="input-small" ng-model="panel.header_title">
+    </div>
+    <div class="span2">
+        <h6>Facet Limit
+            <tip>Number of values per field that will be facted</tip>
+        </h6>
+        <input bs-typeahead="fields.list" type="number" class="input-small" ng-model="panel.facet_limit">
+    </div>
+</div>

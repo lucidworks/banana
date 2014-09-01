@@ -16,7 +16,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
   var module = angular.module('kibana.services');
 
   module.service('dashboard', function($routeParams, $http, $rootScope, $injector, $location,
-    ejsResource, sjsResource, timer, kbnIndex, alertSrv
+    sjsResource, timer, kbnIndex, alertSrv
   ) {
     // A hash of defaults to use when loading a dashboard
     var _dash = {
@@ -29,7 +29,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       services: {},
       loader: {
         dropdown_collections: false,
-        save_gist: false,
+        save_gist: true,
         save_elasticsearch: true,
         save_local: true,
         save_default: true,
@@ -54,9 +54,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         global_params: ''
       }
     };
-
-    // An elasticJS client to use
-    var ejs = ejsResource(config.elasticsearch);
     
     // Solr
     var sjs = sjsResource(config.solr + config.solr_core);
