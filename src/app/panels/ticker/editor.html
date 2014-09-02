@@ -1,16 +1,16 @@
 <div>
   <h4>Settings</h4>
-  <div class="row-fluid">
-    <div class="span3" ng-hide='panel.auto_int'>
+  <div class="row">
+    <div class="col-sm-3 col-md-3" ng-hide="panel.auto_int">
       <label class="small">Use Solr date math format here (eg 1d, 4w, 3m, 1y)</label>
     </div>
-    <div class="span3">
+    <div class="col-sm-3 col-md-3">
        <label class="small">Time Ago</label>
-        <input type="text" class="input-small" ng-model="panel.ago" ng-change="set_refresh(true)">
+        <input type="text" class="input-small form-control" ng-model="panel.ago" ng-change="set_refresh(true)">
     </div>
-    <div class="span2">
+    <div class="col-sm-2 col-md-2">
       <label class="small">Font Size</label>
-      <select class="input-small" ng-model="panel.style['font-size']" ng-options="f for f in ['7pt','8pt','9pt','10pt','12pt','14pt','16pt','18pt','20pt','24pt','28pt','32pt','36pt','42pt','48pt','52pt','60pt','72pt']"></select></span>
+      <select class="input-small" ng-model="panel.style['font-size']" ng-options="f for f in ['7pt','8pt','9pt','10pt','12pt','14pt','16pt','18pt','20pt','24pt','28pt','32pt','36pt','42pt','48pt','52pt','60pt','72pt']"></select>
     </div>
 <!-- 
     <div class="span3">

@@ -56,7 +56,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       modals : [
         {
           description: "Inspect",
-          icon: "icon-info-sign",
+          icon: "fa fa-info",
           partial: "app/partials/inspector.html",
           show: $scope.panel.spyable
         }
@@ -657,7 +657,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           if (item) {
             if (item.series.info.alias || scope.panel.tooltip.query_as_alias) {
               group = '<small style="font-size:0.9em;">' +
-                '<i class="icon-circle" style="color:'+item.series.color+';"></i>' + ' ' +
+                '<i class="fa fa-circle" style="color:'+item.series.color+';"></i>' + ' ' +
                 (item.series.info.alias || item.series.info.query)+
               '</small><br>';
             } else {
@@ -670,7 +670,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             }
             $tooltip
               .html(
-                group + dashboard.numberWithCommas(value) + " @ " + moment(item.datapoint[0]).format('MM/DD HH:mm:ss')
+                group + dashboard.numberWithCommas(value) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(item.datapoint[0]).format('MM/DD HH:mm:ss') : moment(item.datapoint[0]).format('MM/DD HH:mm:ss'))
                 // group + dashboard.numberWithCommas(value) + " @ " + moment(item.datapoint[0])
               )
               .place_tt(pos.pageX, pos.pageY);

@@ -47,7 +47,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       modals : [
         {
           description: "Inspect",
-          icon: "icon-info-sign",
+          icon: "fa fa-info",
           partial: "app/partials/inspector.html",
           show: $scope.panel.spyable
         }
@@ -520,7 +520,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 min: facet_range.from - 1,
                 max: facet_range.to + 1,
                 autoscaleMargin : scope.panel.interval,
-                minTickSize : scope.panel.interval
+                minTickSize : scope.panel.interval,
+                tickDecimals: 0
               },
               grid: {
                 backgroundColor: null,
@@ -582,7 +583,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           if (item) {
             if (item.series.info.alias || scope.panel.tooltip.query_as_alias) {
               group = '<small style="font-size:0.9em;">' +
-                '<i class="icon-circle" style="color:'+item.series.color+';"></i>' + ' ' +
+                '<i class="fa fa-circle" style="color:'+item.series.color+';"></i>' + ' ' +
                 (item.series.info.alias || item.series.info.query)+
               '</small><br>';
             } else {

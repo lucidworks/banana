@@ -1,22 +1,22 @@
 <div>
-  <div class="row-fluid">
-    <div class="span1">
+  <div class="row">
+    <div class="col-sm-1 col-md-1">
       <label class="small">Length</label>
-      <input type="number" style="width:80%" ng-model="panel.size" ng-change="set_refresh(true)">
+      <input type="number" style="width:80%" ng-model="panel.size" ng-change="set_refresh(true)" class="form-control">
     </div>
-    <div class="span3">
+    <div class="col-sm-3 col-md-3">
       <label class="small">Field</label>
-      <input type="text" bs-typeahead="fields.list" style="width:80%" ng-change="set_refresh(true)" ng-model='panel.field'></select>
+      <input type="text" bs-typeahead="fields.list" style="width:80%" ng-change="set_refresh(true)" ng-model="panel.field" class="form-control">
     </div>
-    <div class="span3">
+    <div class="col-sm-3 col-md-3">
       <label class="small">Query Mode</label>
-      <select style="width:80%" ng-change="set_refresh(true)" ng-model='panel.mode' ng-options="f for f in ['terms only','AND', 'OR']"></select>
+      <select style="width:80%" ng-change="set_refresh(true)" ng-model="panel.mode" ng-options="f for f in ['terms only','AND', 'OR']"></select>
     </div>
-    <div class="span4">
+    <div class="col-sm-4 col-md-4">
       <label class="small">Exclude Terms(s) (comma seperated)</label>
-      <input array-join type="text" style="width:90%" ng-change="set_refresh(true)" ng-model='panel.exclude'></input>
+      <input array-join="" type="text" style="width:90%" ng-change="set_refresh(true)" ng-model="panel.exclude" class="form-control">
     </div>
-    <div class="span1">
+    <div class="col-sm-1 col-md-1">
       <label class="small"> Rest </label><input type="checkbox" ng-model="panel.rest" ng-checked="panel.rest" ng-change="set_refresh(true)">
     </div>
   </div>
