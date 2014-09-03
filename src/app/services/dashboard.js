@@ -55,7 +55,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       }
     };
     
-    // Solr
     var sjs = sjsResource(config.solr + config.solr_core);
 
     var gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;
@@ -80,7 +79,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         var _type = $routeParams.kbnType;
         var _id = $routeParams.kbnId;
 
-        // Solr
         switch(_type) {
         case ('elasticsearch'):
           self.elasticsearch_load('dashboard',_id);
@@ -404,10 +402,11 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       );
     };
 
-    // Solr
     this.elasticsearch_list = function(query,count) {
       // set indices and type
-      sjs.client.server(config.solr + config.banana_index);
+      var solrserver = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
+      sjs.client.server(solrserver);
+
       var request = sjs.Request().indices(config.banana_index).types('dashboard');
 
       // Need to set sjs.client.server back to use 'logstash_logs' collection
@@ -473,7 +472,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       if (x)
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       else
-        return x
+        return x;
     }
 
   });

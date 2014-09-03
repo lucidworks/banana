@@ -96,9 +96,9 @@ function (angular, _) {
     };
 
     $scope.elasticsearch_dblist = function(query) {
-      dashboard.elasticsearch_list(query,$scope.loader.load_elasticsearch_size).then(
+      dashboard.elasticsearch_list(query,dashboard.current.loader.load_elasticsearch_size).then(
         function(result) {
-        if (DEBUG) { console.debug("dashLoader: result=",result); }
+        if (DEBUG) { console.debug('dashLoader: result=',result); }
         if (!_.isUndefined(result.response.docs)) {
           $scope.hits = result.response.numFound;
           $scope.elasticsearch.dashboards = result.response.docs;
