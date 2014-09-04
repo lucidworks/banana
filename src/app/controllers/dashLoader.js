@@ -9,22 +9,35 @@ function (angular, _) {
 
   var module = angular.module('kibana.controllers');
 
-  module.controller('dashLoader', function($scope, $http, timer, dashboard, alertSrv) {
+  module.controller('dashLoader', function($scope, $http, $log, timer, dashboard, alertSrv) {
     $scope.loader = dashboard.current.loader;
 
     $scope.init = function() {
       $scope.gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;
       $scope.gist = $scope.gist || {};
       $scope.elasticsearch = $scope.elasticsearch || {};
+      $scope.resetNewDefaults();
       // $scope.elasticsearch is used throught out this file, dashLoader.html and others.
       // So we'll keep using it for now before refactoring it to $scope.solr.
       // $scope.solr = $scope.solr || {};
     };
 
+    // This function should be replaced by one-way binding feature of AngularJS 1.3
+    $scope.resetNewDefaults = function() {
+      $scope.new = {
+        server: 'http://localhost:8983/solr/',
+        core_name: 'searchlogs',
+        time_field: 'event_timestamp'
+      };
+    };
+    
     $scope.showDropdown = function(type) {
       // var _l = $scope.loader;
       var _l = dashboard.current.loader || $scope.loader;
 
+      if(type === 'new') {
+        return (_l.load_elasticsearch || _l.load_gist || _l.load_local);
+      }
       if(type === 'load') {
         return (_l.load_elasticsearch || _l.load_gist || _l.load_local);
       }
@@ -35,6 +48,36 @@ function (angular, _) {
         return (_l.save_temp);
       }
       return false;
+    };
+    
+    $scope.create_new = function(type) {
+
+      $log.log('Creating new dashboard of type: ' + type);
+
+      $http.get('app/dashboards/' + type + '.json?' + new Date().getTime()).
+        success(function(data) {
+          data.solr.server = $scope.new.server;
+          data.solr.core_name = $scope.new.core_name;
+          // If time series dashboard, update all timefield references in the default dashboard
+          if (type === 'default') {
+            data.services.filter.list[0].field = $scope.new.time_field;
+            // Iterate over panels and update timefield
+            for (var i = 0; i < data.rows.length; i++)
+              for (var j = 0; j < data.rows[i].panels.length; j++) {
+                if (data.rows[i].panels[j].timefield)
+                  data.rows[i].panels[j].timefield = $scope.new.time_field;
+                else if (data.rows[i].panels[j].time_field)
+                  data.rows[i].panels[j].time_field = $scope.new.time_field;
+              }
+          }
+          dashboard.dash_load(data);
+          
+          // Reset new dashboard defaults
+          $scope.resetNewDefaults();
+        }).
+        error(function(data, status) {
+          alertSrv.set('Error','Unable to load default dashboard','error');
+        });
     };
 
     $scope.set_default = function() {
