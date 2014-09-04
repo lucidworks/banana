@@ -73,7 +73,7 @@ function (angular, config, _) {
     };
 
     $scope.setEditorTabs = function(panelMeta) {
-      $scope.editorTabs = ['General','Panel'];
+      $scope.editorTabs = ['General','Panel','Info'];
       if(!_.isUndefined(panelMeta.editorTabs)) {
         $scope.editorTabs =  _.union($scope.editorTabs,_.pluck(panelMeta.editorTabs,'title'));
       }

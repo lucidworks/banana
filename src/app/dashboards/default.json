@@ -342,7 +342,7 @@
   "failover": false,
   "panel_hints": true,
   "loader": {
-    "save_gist": false,
+    "save_gist": true,
     "save_elasticsearch": true,
     "save_local": true,
     "save_default": true,
