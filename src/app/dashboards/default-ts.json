@@ -10,7 +10,7 @@
       ],
       "list": {
         "0": {
-          "query": "*",
+          "query": "*:*",
           "alias": "",
           "color": "#7EB26D",
           "id": 0,
@@ -31,7 +31,7 @@
         "0": {
           "from": "NOW/MINUTE-15MINUTE",
           "to": "NOW/MINUTE%2B1MINUTE",
-          "field": "event_timestamp",
+          "field": "",
           "type": "time",
           "fromDateObj": "2014-08-20T12:53:56.895Z",
           "toDateObj": "2014-08-20T13:08:56.895Z",
@@ -56,7 +56,7 @@
       "panels": [
         {
           "error": "",
-          "span": 6,
+          "span": 5,
           "editable": true,
           "type": "timepicker",
           "loadingEditor": false,
@@ -69,7 +69,6 @@
             "6h",
             "12h",
             "24h",
-            "2d",
             "7d",
             "30d",
             "90d",
@@ -89,21 +88,45 @@
         },
         {
           "error": false,
-          "span": 6,
+          "span": 4,
           "editable": true,
           "group": [
             "default"
           ],
           "type": "query",
           "label": "Search",
-          "history": [
-            "*"
-          ],
+          "history": [],
           "remember": 10,
           "pinned": true,
-          "query": "*",
+          "query": "*:*",
           "title": "Search",
           "def_type": ""
+        },
+        {
+          "span": 3,
+          "editable": true,
+          "type": "hits",
+          "loadingEditor": false,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&&wt=json&rows=0",
+            "basic_query": "",
+            "custom": ""
+          },
+          "style": {
+            "font-size": "14pt"
+          },
+          "arrangement": "horizontal",
+          "chart": "total",
+          "counter_pos": "above",
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "spyable": true,
+          "title": "Total Hits"
         }
       ]
     },
@@ -144,7 +167,7 @@
             "ids": [
               0
             ],
-            "query": "q=*&df=message&wt=json&rows=0&fq=event_timestamp:[NOW/MINUTE-15MINUTE%20TO%20NOW/MINUTE%2B1MINUTE]&facet=true&facet.range=event_timestamp&facet.range.start=NOW/MINUTE-15MINUTE&facet.range.end=NOW/MINUTE%2B1MINUTE&facet.range.gap=%2B10SECOND",
+            "query": "",
             "custom": ""
           },
           "max_rows": 100000,
@@ -212,17 +235,14 @@
             "ids": [
               0
             ],
-            "query": "q=*&df=message&fq=event_timestamp:[NOW/MINUTE-15MINUTE%20TO%20NOW/MINUTE%2B1MINUTE]&sort=id desc&wt=json&rows=500",
-            "basic_query": "q=*&df=message&fq=event_timestamp:[NOW/MINUTE-15MINUTE%20TO%20NOW/MINUTE%2B1MINUTE]&sort=id desc",
+            "query": "",
+            "basic_query": "",
             "custom": ""
           },
           "size": 100,
           "pages": 5,
           "offset": 0,
-          "sort": [
-            "id",
-            "desc"
-          ],
+          "sort": [],
           "group": "default",
           "style": {
             "font-size": "9pt"
@@ -230,7 +250,7 @@
           "overflow": "min-height",
           "fields": [],
           "highlight": [],
-          "sortable": true,
+          "sortable": false,
           "header": true,
           "paging": true,
           "field_list": true,
@@ -276,11 +296,7 @@
   "solr": {
     "server": "http://localhost:8983/solr/",
     "core_name": "collection1",
-    "core_list": [
-      "banana-int",
-      "collection1",
-      "searchlogs"
-    ],
+    "core_list": [],
     "global_params": "&df=message"
   }
 }

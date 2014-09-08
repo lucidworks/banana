@@ -9,7 +9,7 @@ function (angular, _) {
 
   var module = angular.module('kibana.controllers');
 
-  module.controller('dashLoader', function($scope, $http, $log, timer, dashboard, alertSrv) {
+  module.controller('dashLoader', function($scope, $http, timer, dashboard, alertSrv) {
     $scope.loader = dashboard.current.loader;
 
     $scope.init = function() {
@@ -51,25 +51,25 @@ function (angular, _) {
     };
     
     $scope.create_new = function(type) {
-
-      $log.log('Creating new dashboard of type: ' + type);
-
       $http.get('app/dashboards/' + type + '.json?' + new Date().getTime()).
         success(function(data) {
           data.solr.server = $scope.new.server;
           data.solr.core_name = $scope.new.core_name;
           // If time series dashboard, update all timefield references in the default dashboard
-          if (type === 'default') {
+          if (type === 'default-ts') {
             data.services.filter.list[0].field = $scope.new.time_field;
             // Iterate over panels and update timefield
-            for (var i = 0; i < data.rows.length; i++)
+            for (var i = 0; i < data.rows.length; i++) {
               for (var j = 0; j < data.rows[i].panels.length; j++) {
-                if (data.rows[i].panels[j].timefield)
+                if (data.rows[i].panels[j].timefield) {
                   data.rows[i].panels[j].timefield = $scope.new.time_field;
-                else if (data.rows[i].panels[j].time_field)
+                } else if (data.rows[i].panels[j].time_field) {
                   data.rows[i].panels[j].time_field = $scope.new.time_field;
+                }
               }
+            }
           }
+
           dashboard.dash_load(data);
           
           // Reset new dashboard defaults

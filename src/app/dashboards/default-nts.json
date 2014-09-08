@@ -42,19 +42,14 @@
       "panels": [
         {
           "error": false,
-          "span": 10,
+          "span": 9,
           "editable": true,
           "group": [
             "default"
           ],
           "type": "query",
           "label": "Search",
-          "history": [
-            "*:*",
-            "dell",
-            "*:dell",
-            "*"
-          ],
+          "history": [],
           "remember": 10,
           "pinned": true,
           "query": "*",
@@ -62,7 +57,7 @@
           "def_type": ""
         },
         {
-          "span": 2,
+          "span": 3,
           "editable": true,
           "type": "hits",
           "loadingEditor": false,
@@ -129,11 +124,9 @@
             "font-size": "9pt"
           },
           "overflow": "min-height",
-          "fields": [
-            "id"
-          ],
+          "fields": [],
           "highlight": [],
-          "sortable": true,
+          "sortable": false,
           "header": true,
           "paging": true,
           "spyable": true,
@@ -150,7 +143,6 @@
           "trimFactor": 300,
           "normTimes": true,
           "title": "Events",
-          "time_field": "event_timestamp",
           "saveOption": "json",
           "exportSize": 5000,
           "exportAll": true,
@@ -189,11 +181,7 @@
   "solr": {
     "server": "http://localhost:8983/solr/",
     "core_name": "searchlogs",
-    "core_list": [
-      "banana-int",
-      "collection1",
-      "searchlogs"
-    ],
+    "core_list": [],
     "global_params": ""
   }
 }
