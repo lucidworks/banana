@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-sm-3 col-md-3">
     <h6>Field <tip>Date field for x axis</tip></h6>
-    <input bs-typeahead="fields.list" type="text" class="input-small form-control" ng-model="panel.field" ng-change="set_refresh(true)">
+    <input bs-typeahead="fields.list" type="text" class="form-control" ng-model="panel.field" ng-change="set_refresh(true)">
   </div>
   <div class="col-sm-6 col-md-6">
     <h6>Fields to Compare <tip>Field to be plotted on the chart(comma separated)</tip></h6>
@@ -9,12 +9,12 @@
   </div>
   <div class="col-sm-3 col-md-3">
     <h6>Y-Axis Definition <tip>The text to be viewed on the top of Y-Axis</tip></h6>
-    <input type="text" class="input-medium form-control" ng-model="panel.yAxis" ng-change="set_refresh(true)">
+    <input type="text" class="form-control" ng-model="panel.yAxis" ng-change="set_refresh(true)">
   </div>
 </div>
 <div class="row">
   <div class="col-sm-2 col-md-2">
     <label class="small">Max Rows <tip>Maximum number of rows to retrieve for the result set.</tip></label>
-    <input ng-change="set_refresh(true)" placeholder="100000" type="number" class="input-small form-control" ng-model="panel.max_rows">
+    <input ng-change="set_refresh(true)" placeholder="100000" type="number" class="form-control" ng-model="panel.max_rows">
   </div>
 </div>

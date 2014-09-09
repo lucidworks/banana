@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-sm-2 col-md-2">
     <label class="small">Range Field <tip>Must be a numeric field</tip></label>
-      <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead="fields.list" type="text" class="input-small form-control" ng-model="panel.range_field">
+      <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead="fields.list" type="text" class="form-control" ng-model="panel.range_field">
   </div>
 </div>
 <h5>Chart Settings</h5>
@@ -17,11 +17,11 @@
 <div class="row" style="text-align:center;">
   <div class="col-sm-2 col-md-2" ng-show="panel.lines" style="width:65px;">
     <label class="small">Line Fill</label>
-    <select class="input-mini" ng-model="panel.fill" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9,10]"></select>
+    <select class="form-control" ng-model="panel.fill" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9,10]"></select>
   </div>
   <div class="col-sm-2 col-md-2" ng-show="panel.lines" style="width:65px;">
     <label class="small">Line Width</label>
-    <select class="input-mini" ng-model="panel.linewidth" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9,10]"></select>
+    <select class="form-control" ng-model="panel.linewidth" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9,10]"></select>
   </div>
   <div class="col-sm-2 col-md-2" ng-show="panel.lines" style="width:60px;">
     <label class="small">Smooth <tip>Smooth the lines by removing zero values.</tip></label>
@@ -39,26 +39,26 @@
 
   <div class="col-sm-2 col-md-2">
     <label class="small">Minimum</label>
-      <input ng-change="set_refresh(true)" type="number" class="input-small form-control" ng-model="panel.minimum">
+      <input ng-change="set_refresh(true)" type="number" class="form-control" ng-model="panel.minimum">
   </div>
   <div class="col-sm-2 col-md-2">
     <label class="small">Maximum</label>
-      <input ng-change="set_refresh(true)" type="number" class="input-small form-control" ng-model="panel.maximum">
+      <input ng-change="set_refresh(true)" type="number" class="form-control" ng-model="panel.maximum">
   </div>
   <div class="col-sm-2 col-md-2">
     <label class="small">Auto-interval</label><input type="checkbox" ng-model="panel.auto_int" ng-checked="panel.auto_int">
   </div>
   <div class="col-sm-2 col-md-2" ng-show="panel.auto_int">
     <label class="small">Precision <tip>Shoot for this many data points, rounding to sane intervals</tip></label>
-    <input type="number" class="input-mini form-control" ng-model="panel.resolution" ng-change="set_refresh(true)">
+    <input type="number" class="form-control" ng-model="panel.resolution" ng-change="set_refresh(true)">
   </div>
   <div class="col-sm-2 col-md-2" ng-hide="panel.auto_int">
     <label class="small">Interval <tip>Enter numeric interval</tip></label>
-    <input type="text" class="input-mini form-control" ng-model="panel.interval" ng-change="set_refresh(true)">
+    <input type="text" class="form-control" ng-model="panel.interval" ng-change="set_refresh(true)">
   </div>
   <div class="col-sm-2 col-md-2">
     <label class="small">Unit for legend</label>
-      <input ng-change="set_refresh(true)" type="text" class="input-small form-control" ng-model="panel.unit">
+      <input ng-change="set_refresh(true)" type="text" class="form-control" ng-model="panel.unit">
   </div>
 </div>
 <!-- 

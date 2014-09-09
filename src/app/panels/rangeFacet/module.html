@@ -70,7 +70,7 @@
       </label>
     </span>
     <span ng-show="panel.auto_int">
-      <label class="small">Precision</label> <select ng-disabled="!panel.auto_int" ng-change="set_precision(panel.resolution);get_data();" class="input-small" ng-model="panel.resolution" ng-options="interval_label(time) for time in panel.resolutions"></select>
+      <label class="small">Precision</label> <select ng-disabled="!panel.auto_int" ng-change="set_precision(panel.resolution);get_data();" class="form-control" ng-model="panel.resolution" ng-options="interval_label(time) for time in panel.resolutions"></select>
     </span>
   </form>
   <center><img ng-show="panel.loading &amp;&amp; _.isUndefined(data)" src="img/load_big.gif"></center>

@@ -1,22 +1,22 @@
 <div class="row">    
   <div class="col-sm-3 col-md-3">
     <h6>Default Mode</h6>
-    <select style="width:85%" ng-model="panel.mode" ng-options="f for f in ['relative','absolute','since']"></select>
+    <select class="form-control" ng-model="panel.mode" ng-options="f for f in ['relative','absolute','since']"></select>
   </div>
   <div class="col-sm-3 col-md-3">
     <h6>Time Field</h6>
-    <input bs-typeahead="fields.list" type="text" class="input-small form-control" ng-model="panel.timefield">
+    <!-- <input bs-typeahead="fields.list" type="text" class="form-control" ng-model="panel.timefield"> -->
   </div>
 </div>
 <div class="row">
-  <h5>Relative mode <small>settings</small></h5>  
+  <h5>Relative mode <small>settings</small></h5>
   <div class="col-sm-6 col-md-6">
     <h6>Relative time options <small>comma seperated</small></h6>
     <input type="text" array-join="" class="input-large form-control" ng-model="panel.time_options">
   </div>
   <div class="col-sm-3 col-md-3">
     <h6>Default timespan</h6>
-    <select class="input-mini" ng-model="panel.timespan" ng-options="f for f in panel.time_options"></select>
+    <select class="form-control" ng-model="panel.timespan" ng-options="f for f in panel.time_options"></select>
   </div>
 </div>
 <div class="row">
@@ -26,10 +26,10 @@
   </div>
   <div class="col-sm-2 col-md-2">
     <label class="small"> Interval (seconds) </label>
-    <input type="number" class="input-mini form-control" ng-model="panel.refresh.interval">
+    <input type="number" class="form-control" ng-model="panel.refresh.interval">
   </div>
   <div class="col-sm-3 col-md-3">
     <label class="small"> Minimum Interval (seconds) </label>
-    <input type="number" class="input-mini form-control" ng-model="panel.refresh.min">
+    <input type="number" class="form-control" ng-model="panel.refresh.min">
   </div>
 </div>

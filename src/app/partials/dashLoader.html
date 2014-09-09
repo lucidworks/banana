@@ -48,11 +48,11 @@
     <li ng-show="dashboard.current.loader.save_elasticsearch">
       <h5>Solr</h5>
       <form class="input-append">
-        <input class="input-medium form-control pull-left" style="width:80%" placeholder="{{dashboard.current.title}}" type="text" ng-model="elasticsearch.title">
+        <input class="form-control pull-left" style="width:80%" placeholder="{{dashboard.current.title}}" type="text" ng-model="elasticsearch.title">
         <button class="btn btn-default pull-right" ng-click="elasticsearch_save('dashboard', null)"><i class="fa fa-save"></i></button>
       </form>
     </li>
   </ul>
 </li>
 <!-- Configure menu -->
-<li ng-show="dashboard.current.editable " bs-tooltip="'Configure dashboard'" data-placement="bottom"><a href="#" bs-modal="'app/partials/dasheditor.html'"><i class="fa fa-cog pointer"></i></a></li>
+<li ng-show="dashboard.current.editable " bs-tooltip="'Configure dashboard'" data-placement="bottom"><a href="#" bs-modal="modal" data-content-template="app/partials/dasheditor.html"><i class="fa fa-cog pointer"></i></a></li>

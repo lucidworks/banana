@@ -19,7 +19,7 @@
 </style>
   <label class="small">Create new queries from
     <span class="panel-derive-field" ng-show="!editing" ng-click="editing=true">{{panel.field}}</span>
-    <select ng-show="editing &amp;&amp; fields.list.length>1" class="input-medium" ng-model="panel.field" ng-options="f for f in fields.list" ng-change="editing=false" ng-blur="editing=false"></select>
+    <select ng-show="editing &amp;&amp; fields.list.length>1" class="form-control" ng-model="panel.field" ng-options="f for f in fields.list" ng-change="editing=false" ng-blur="editing=false"></select>
     <input ng-show="editing &amp;&amp; fields.list.length<2" type="text" ng-model="panel.field" ng-blur="editing=false" class="form-control"><!--2-->
     ({{panel.mode}} mode)</label>
   <div>

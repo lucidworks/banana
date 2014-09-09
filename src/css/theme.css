@@ -51,8 +51,13 @@ div.flot-text{color:#333!important}
 .search-query-input{clear: both;margin-top: 5px !important;position: relative;top: 6px;}
 .search-query-input input{width: 100% !important;border-radius: 30px;}
 .modal.top.am-fade{
-	top: 50% !important;
+/*	top: 50% !important;*/
 	margin: 0 auto !important;
+}
+.modal input[type="checkbox"]{
+  vertical-align: sub;
+  display: block;
+  margin-top: 12px;
 }
 .modal-backdrop.am-fade{
 	background-color: rgba(0, 0, 0, 0.71);
@@ -60,4 +65,17 @@ div.flot-text{color:#333!important}
 .navbar.navbar-static-top.navbar-default .dropdown-menu{
 	left: -428% !important;
 	width: 240px;
+}
+.mar-top-10{
+  margin: 10px 0px 4px 0px;
+}
+.nav-tabs > li{
+  cursor: pointer
+}
+
+.modal-footer{
+  padding: 12px 0 0px 0;
+  text-align: right;
+  border-top: 1px solid #e5e5e5;
+  margin-top: 10px;
 }

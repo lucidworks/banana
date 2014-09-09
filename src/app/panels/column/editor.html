@@ -1,7 +1,7 @@
 <div>
   <div class="row">
     <h4>Add Panel to Column</h4>
-    <select class="input-medium" ng-model="new_panel.type" ng-options="f for f in _.without(config.panel_names,'column')| stringSort" ng-change="reset_panel(new_panel.type);send_render();"></select>
+    <select class="form-control" ng-model="new_panel.type" ng-options="f for f in _.without(config.panel_names,'column')| stringSort" ng-change="reset_panel(new_panel.type);send_render();"></select>
     <small>Select Type</small>
     <div ng-show="!(_.isUndefined(new_panel.type))">
       <div column-edit="" panel="new_panel" config="config" row="row" dashboards="dashboards" type="new_panel.type"></div>
@@ -24,7 +24,7 @@
         <tbody><tr ng-repeat="app in panel.panels">
           <td>{{app.title}}</td>
           <td>{{app.type}}</td>
-          <td><input type="text" class="input-small form-control" ng-model="app.height"></td>
+          <td><input type="text" class="form-control" ng-model="app.height"></td>
           <td><i ng-click="panel.panels = _.without(panel.panels,app)" class="pointer fa fa-times"></i></td>
           <td><i ng-click="_.move(panel.panels,$index,$index-1)" ng-hide="$first" class="pointer fa fa-arrow-up"></i></td>
           <td><i ng-click="_.move(panel.panels,$index,$index+1)" ng-hide="$last" class="pointer fa fa-arrow-down"></i></td>

@@ -83,7 +83,7 @@
       </div>
     </span>
     <span>
-      <label class="small">Interval</label> <select ng-change="set_interval(panel.interval);get_data();" class="input-small" ng-model="panel.interval" ng-options="interval_label(time) for time in _.union([panel.interval],panel.intervals)"></select>
+      <label class="small">Interval</label> <select ng-change="set_interval(panel.interval);get_data();" class="form-control" ng-model="panel.interval" ng-options="interval_label(time) for time in _.union([panel.interval],panel.intervals)"></select>
     </span>
   </form>
   <center><img ng-show="panel.loading &amp;&amp; _.isUndefined(data)" src="img/load_big.gif"></center>

@@ -50,7 +50,7 @@
         <span ng-show="!filterSrv.list[id].editing" class="filter-mandate" ng-click="filterSrv.list[id].editing = true">{{filterSrv.list[id].mandate}}</span>
 
         <span ng-show="filterSrv.list[id].editing">
-          <select class="input-small" ng-model="filterSrv.list[id].mandate" ng-options="f for f in ['must','mustNot','either']"></select>
+          <select class="form-control" ng-model="filterSrv.list[id].mandate" ng-options="f for f in ['must','mustNot','either']"></select>
         </span>
 
         <i class="filter-action pointer fa fa-times" bs-tooltip="'Remove'" ng-click="remove(id)"></i>

@@ -8,10 +8,10 @@
 
   <div class="row" ng-show="editor.index == 0">
     <div class="col-sm-4 col-md-4">
-      <label class="small">Title</label><input type="text" class="input-medium form-control" ng-model="row.title">
+      <label class="small">Title</label><input type="text" class="form-control" ng-model="row.title">
     </div>
     <div class="col-sm-2 col-md-2">
-      <label class="small">Height</label><input type="text" class="input-mini form-control" ng-model="row.height">
+      <label class="small">Height</label><input type="text" class="form-control" ng-model="row.height">
     </div>
     <div class="col-sm-1 col-md-1">
       <label class="small"> Editable </label><input type="checkbox" ng-model="row.editable" ng-checked="row.editable">
@@ -36,7 +36,7 @@
         <tbody><tr ng-repeat="panel in row.panels">
           <td>{{panel.title}}</td>
           <td>{{panel.type}}</td>
-          <td><select ng-hide="panel.sizeable == false" class="input-mini" ng-model="panel.span" ng-options="size for size in [0,1,2,3,4,5,6,7,8,9,10,11,12]"></select></td>
+          <td><select ng-hide="panel.sizeable == false" class="form-control" ng-model="panel.span" ng-options="size for size in [0,1,2,3,4,5,6,7,8,9,10,11,12]"></select></td>
           <td><i ng-click="row.panels = _.without(row.panels,panel)" class="pointer fa fa-times"></i></td>
           <td><i ng-click="_.move(row.panels,$index,$index-1)" ng-hide="$first" class="pointer fa fa-arrow-up"></i></td>
           <td><i ng-click="_.move(row.panels,$index,$index+1)" ng-hide="$last" class="pointer fa fa-arrow-down"></i></td>
@@ -48,7 +48,7 @@
   <div class="row" ng-show="editor.index == 2">
     <h4>Select Panel Type</h4>
     <form class="form-inline">
-      <select class="input-medium" ng-model="panel.type" ng-options="panelType for panelType in config.panel_names|stringSort"></select>
+      <select class="form-control" ng-model="panel.type" ng-options="panelType for panelType in config.panel_names|stringSort"></select>
       <small ng-show="rowSpan(row) > 11">
         Note: This row is full, new panels will wrap to a new line. You should add another row.
       </small>

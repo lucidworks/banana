@@ -2,24 +2,24 @@
   <div class="col-sm-4 col-md-4">
     <form>
       <h6>Row Field</h6>
-      <input bs-typeahead="fields.list" type="text" class="input-medium form-control" ng-model="panel.row_field" ng-change="set_refresh(true)">
+      <input bs-typeahead="fields.list" type="text" class="form-control" ng-model="panel.row_field" ng-change="set_refresh(true)">
     </form>
   </div>
   <div class="col-sm-4 col-md-4">
     <form>
       <h6>Column Field</h6>
-      <input bs-typeahead="fields.list" type="text" class="input-medium form-control" ng-model="panel.col_field" ng-change="set_refresh(true)">
+      <input bs-typeahead="fields.list" type="text" class="form-control" ng-model="panel.col_field" ng-change="set_refresh(true)">
     </form>
   </div>
     <div class="col-sm-4 col-md-4"><h6>Rows Limit <tip>Maximum number of rows to be fetched and displayed</tip></h6>
-      <input id="rows_limit" type="number" min="1" max="500" value="100" class="input-small form-control" ng-model="panel.editor_size" ng-change="set_refresh(true)">
+      <input id="rows_limit" type="number" min="1" max="500" value="100" class="form-control" ng-model="panel.editor_size" ng-change="set_refresh(true)">
     </div>
 </div>
 
 <div class="row">
     <div class="col-sm-3 col-md-3">
         <label class="small">Heatmap Color <tip>Base color for Heatmap. Intensity of the chosen color in a cell is proportional to the respective pivot facet count for that cell</tip></label>
-        <select class="input-medium" ng-model="panel.color" ng-options="c for c in ['gray','blue', 'red', 'green', 'brown']"></select>
+        <select class="form-control" ng-model="panel.color" ng-options="c for c in ['gray','blue', 'red', 'green', 'brown']"></select>
     </div>
     <div class="col-sm-1 col-md-1">
         <h6>Transposed</h6><input type="checkbox" ng-model="panel.transposed" ng-checked="panel.transposed">

@@ -4,13 +4,13 @@
     </div>
     <div class="col-sm-2 col-md-2">
       <h6>Overflow</h6>
-      <select class="input-small" ng-model="panel.overflow" ng-options="f.value as f.key for f in [{key:'scroll',value:'height'},{key:'expand',value:'min-height'}]"></select>
+      <select class="form-control" ng-model="panel.overflow" ng-options="f.value as f.key for f in [{key:'scroll',value:'height'},{key:'expand',value:'min-height'}]"></select>
     </div>
   </div>
   <div class="row">
     <div class="col-sm-2 col-md-2">
       <h6>Per Page</h6>
-      <input type="number" class="input-mini form-control" ng-model="panel.size" ng-change="set_refresh(true)">
+      <input type="number" class="form-control" ng-model="panel.size" ng-change="set_refresh(true)">
     </div>
     <div class="col-sm-1 col-md-1">
       <h6>&nbsp;</h6>
@@ -18,7 +18,7 @@
     </center></center></div>
     <div class="col-sm-2 col-md-2">
       <h6>Page limit</h6>
-      <input type="number" class="input-mini form-control" ng-model="panel.pages" ng-change="set_refresh(true)">
+      <input type="number" class="form-control" ng-model="panel.pages" ng-change="set_refresh(true)">
     </div>
     <div class="large col-sm-2 col-md-2">
       <h6>Pageable</h6>

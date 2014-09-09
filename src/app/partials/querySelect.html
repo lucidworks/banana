@@ -13,7 +13,7 @@
   </style>
   <div class="span2" style="margin-left:0px">
     <label class="small">Queries</label>
-    <select class="input-small" ng-change="set_refresh(true);" ng-model="panel.queries.mode" ng-options="f for f in ['all','pinned','unpinned','selected']"></select>
+    <select class="form-control" ng-change="set_refresh(true);" ng-model="panel.queries.mode" ng-options="f for f in ['all','pinned','unpinned','selected']"></select>
   </div>
   <div class="span9 querySelect" ng-show="panel.queries.mode == 'selected'">
     <label class="small">Selected Queries</label>

@@ -2,20 +2,20 @@
     <div class="col-sm-2 col-md-2">
       <label class="small">Mode</label>
       <!-- Banana: does not support 'min','mean','max', and 'total' modes yet -->
-      <!-- <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['count','min','mean','max','total','value']"></select> -->
-      <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['count','values']"></select>
+      <!-- <select ng-change="set_refresh(true)" class="form-control" ng-model="panel.mode" ng-options="f for f in ['count','min','mean','max','total','value']"></select> -->
+      <select ng-change="set_refresh(true)" class="form-control" ng-model="panel.mode" ng-options="f for f in ['count','values']"></select>
     </div>
     <div class="col-sm-2 col-md-2">
       <label class="small">Time Field</label>
-        <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead="fields.list" type="text" class="input-small form-control" ng-model="panel.time_field">
+        <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead="fields.list" type="text" class="form-control" ng-model="panel.time_field">
     </div>
     <div class="col-sm-2 col-md-2" ng-show="panel.mode != 'count'">
       <label class="small">Value Field</label>
-        <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead="fields.list" type="text" class="input-small form-control" ng-model="panel.value_field">
+        <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead="fields.list" type="text" class="form-control" ng-model="panel.value_field">
     </div>
     <div class="col-sm-2 col-md-2" ng-show="panel.mode != 'count'">
       <label class="small">Max Rows <tip>Maximum number of rows to retrieve for the result set.</tip></label>
-      <input ng-change="set_refresh(true)" placeholder="100000" type="number" class="input-small form-control" ng-model="panel.max_rows">
+      <input ng-change="set_refresh(true)" placeholder="100000" type="number" class="form-control" ng-model="panel.max_rows">
     </div>
     <div class="col-sm-3 col-md-3" ng-show="panel.mode != 'count'">
       <label class="small">Note</label><small> In <strong>{{panel.mode}}</strong> mode the configured field <strong>must</strong> be a numeric type.</small>
@@ -26,11 +26,11 @@
     <div class="col-sm-4 col-md-4"></div>
     <div class="col-sm-2 col-md-2">
       <label class="small">Group By Field <tip>This field must be a single value field. Leave blank if you do not want to group the result.</tip></label>
-      <input ng-change="set_refresh(true)" placeholder="Optional" bs-typeahead="fields.list" type="text" class="input-small form-control" ng-model="panel.group_field">
+      <input ng-change="set_refresh(true)" placeholder="Optional" bs-typeahead="fields.list" type="text" class="form-control" ng-model="panel.group_field">
     </div>
     <!-- <div class="span3">
       <label class="small">Max Rows/Group <tip>Specify the number of results to return for each group.</tip></label>
-      <input ng-change="set_refresh(true)" placeholder="10" type="number" class="input-small" ng-model="panel.group_limit">
+      <input ng-change="set_refresh(true)" placeholder="10" type="number" class="form-control" ng-model="panel.group_limit">
     </div> -->
   </div>
 
@@ -52,11 +52,11 @@
   <div class="row" style="text-align:center;">
     <div class="col-sm-2 col-md-2" ng-show="panel.lines" style="width:65px;">
       <label class="small">Line Fill</label>
-      <select class="input-mini" ng-model="panel.fill" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9,10]"></select>
+      <select class="form-control" ng-model="panel.fill" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9,10]"></select>
     </div>
     <div class="col-sm-2 col-md-2" ng-show="panel.lines" style="width:65px;">
       <label class="small">Line Width</label>
-      <select class="input-mini" ng-model="panel.linewidth" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9,10]"></select>
+      <select class="form-control" ng-model="panel.linewidth" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9,10]"></select>
     </div>
     <div class="col-sm-2 col-md-2" ng-show="panel.lines" style="width:60px;">
       <label class="small">Smooth <tip>Smooth the lines by removing zero values.</tip></label>
@@ -67,7 +67,7 @@
   <div class="row">
     <div class="col-sm-2 col-md-2">
       <label class="small">Time correction</label>
-      <select ng-model="panel.timezone" class="input-small" ng-options="f for f in ['browser','utc']"></select>
+      <select ng-model="panel.timezone" class="form-control" ng-options="f for f in ['browser','utc']"></select>
     </div>
     <div class="col-sm-1 col-md-1"> <label class="small">Selectable</label><input type="checkbox" ng-model="panel.interactive" ng-checked="panel.interactive"></div>
     <div class="col-sm-2 col-md-2">
@@ -81,11 +81,11 @@
     </div>
     <div class="col-sm-2 col-md-2" ng-show="panel.auto_int">
       <label class="small">Resolution <tip>Shoot for this many data points, rounding to sane intervals</tip></label>
-      <input type="number" class="input-mini form-control" ng-model="panel.resolution" ng-change="set_refresh(true)">
+      <input type="number" class="form-control" ng-model="panel.resolution" ng-change="set_refresh(true)">
     </div>
     <div class="col-sm-2 col-md-2" ng-hide="panel.auto_int">
       <label class="small">Interval <tip>Use Solr date math format (eg 1m, 5m, 1d, 2w, 1y)</tip></label>
-      <input type="text" class="input-mini form-control" ng-model="panel.interval" ng-change="set_refresh(true)">
+      <input type="text" class="form-control" ng-model="panel.interval" ng-change="set_refresh(true)">
     </div>
   </div>
 
@@ -93,7 +93,7 @@
   <div class="row" style="margin-bottom:10px;">
     <div class="col-sm-3 col-md-3">
       <label class="small">Stacked Values <tip>How should the values in stacked charts to be calculated?</tip></label>
-      <select class="input-medium" ng-model="panel.tooltip.value_type" ng-options="f for f in ['cumulative','individual']"></select>
+      <select class="form-control" ng-model="panel.tooltip.value_type" ng-options="f for f in ['cumulative','individual']"></select>
     </div>
     <div class="col-sm-3 col-md-3">
       <label class="small">Display Query <tip>If an alias is set, it will be shown in the tooltip. If not, should it show the query?</tip></label>

@@ -4,3 +4,4 @@ dist
 bower_components
 src/app/dashboards/
 
+/.project
