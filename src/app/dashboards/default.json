@@ -194,13 +194,12 @@
           "type": "histogram",
           "loadingEditor": false,
           "mode": "count",
-          "time_field": "event_timestamp",
           "queries": {
             "mode": "all",
             "ids": [
               0
             ],
-            "query": "q=*&wt=json&rows=0&fq=event_timestamp:[2014-04-02T05:07:22.000Z%20TO%202014-04-02T05:22:22.000Z]&facet=true&facet.range=event_timestamp&facet.range.start=2014-04-02T05:07:22.000Z/DAY&facet.range.end=2014-04-02T05:22:22.000Z%2B1DAY/DAY&facet.range.gap=%2B10SECOND",
+            "query": "q=*&wt=json&rows=0",
             "custom": ""
           },
           "max_rows": 100000,
