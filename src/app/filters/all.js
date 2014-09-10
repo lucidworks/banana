@@ -1,4 +1,4 @@
-define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
+define(['angular', 'jquery', 'underscore','showdown'], function(angular, $, _,Showdown) {
   'use strict';
 
   var module = angular.module('kibana.filters');
@@ -150,4 +150,34 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
             return input.substring(0,1).toUpperCase()+input.substring(1);
     }
   });
+
+  module.filter('newlines', function() {
+    return function(input) {
+      if (input)
+        return input.replace(/\n/g, '<br/>');
+    };
+  });
+
+  module.filter('striphtml', function() {
+    return function(text) {
+      if (text)
+        return text
+          .replace(/&/g, '&amp;')
+          .replace(/>/g, '&gt;')
+          .replace(/</g, '&lt;');
+    };
+  });
+
+  module.filter('markdown', function() {
+    return function(text) {
+      if (text) {
+        var converter = new Showdown.converter();
+        var textConverted = text.replace(/&/g, '&amp;')
+          .replace(/>/g, '&gt;')
+          .replace(/</g, '&lt;');
+        return converter.makeHtml(textConverted)
+      }
+    };
+  });
+
 });
