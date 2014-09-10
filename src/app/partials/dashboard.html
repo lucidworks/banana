@@ -6,7 +6,7 @@
       <div class="row" style="padding:0px;margin:0px;position:relative;">
 
         <div class="row-close col-sm-12 col-md-12" ng-show="row.collapse" data-placement="bottom">
-          <span class="row-button" bs-modal="'app/partials/roweditor.html'">
+          <span class="row-button" bs-modal="rowEditorModal" data-content-template="app/partials/roweditor.html">
             <i bs-tooltip="'Configure row'" data-placement="right" ng-show="row.editable" class="fa fa-cog pointer"></i>
           </span>
           <span class="row-button" ng-click="toggle_row(row)" ng-show="row.collapsable">
@@ -20,7 +20,7 @@
             <i bs-tooltip="'Hide row'" data-placement="right" class="fa fa-compress" ng-click="toggle_row(row)"></i>
             <br>
           </span>
-          <span bs-modal="'app/partials/roweditor.html'" ng-show="row.editable">
+          <span bs-modal="rowEditorModal" data-content-template="app/partials/roweditor.html" ng-show="row.editable">
             <i bs-tooltip="'Configure row'" data-placement="right" class="fa fa-cog pointer"></i>
             <br>
           </span>
@@ -54,8 +54,8 @@
 
         <div ng-hide="(12-rowSpan(row)) < 1 || !dashboard.current.panel_hints" class="panel col-md-{{(12-rowSpan(row))}}" ng-class="{'dragInProgress':dashboard.panelDragging}" style="height:{{row.height}};" data-drop="true" ng-model="row.panels" data-jqyoui-options="" jqyoui-droppable="{index:row.panels.length,onDrop:'panelMoveDrop({{(12-rowSpan(row))}})',onOver:'panelMoveOver(false)',onOut:'panelMoveOut'}">
 
-          <span bs-modal="'app/partials/roweditor.html'" ng-show="row.editable &amp;&amp; !dashboard.panelDragging">
-            <i ng-hide="rowSpan(row) == 0" class="pointer fa fa-plus-sign" ng-click="editor.index = 1" bs-tooltip="'Add a panel to this row'" data-placement="right"></i>
+          <span bs-modal="rowEditorModal" data-content-template="app/partials/roweditor.html" ng-show="row.editable &amp;&amp; !dashboard.panelDragging">
+            <i ng-hide="rowSpan(row) == 0" class="pointer fa fa-plus-circle" ng-click="editor.index = 1" bs-tooltip="'Add a panel to this row'" data-placement="right"></i>
             <span ng-click="editor.index = 1" style="margin-top: 8px; margin-left: 3px" ng-show="rowSpan(row) == 0" class="btn btn-default btn-xs">Add panel to empty row
           </span>
 
@@ -66,9 +66,9 @@
   </div>
 
   <div class="row" ng-show="dashboard.current.editable">
-    <div class="col-sm-12 col-md-12" style="text-align:right;">
-      <span style="margin-left: 0px;" class="pointer btn btn-default btn-xs" bs-modal="'app/partials/dasheditor.html'">
-        <span ng-click="editor.index = 1"><i class="fa fa-plus-sign"></i> ADD A ROW</span>
+    <div class="col-sm-12 col-md-12">
+      <span style="margin-left: 0px;float:right;" class="pointer btn btn-default btn-xs" bs-modal="modal" data-content-template="app/partials/dasheditor.html">
+        <span ng-click="editor.index = 1"><i class="fa fa-plus-circle"></i> ADD A ROW</span>
       </span>
     </div>
   </div>

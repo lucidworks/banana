@@ -32,23 +32,23 @@
 
     <div ng-repeat="alert in dashAlerts.list" class="alert-{{alert.severity}} dashboard-notice" ng-show="$last" style="position:fixed">
       <button type="button" class="close" ng-click="dashAlerts.clear(alert)" style="padding-right:50px">×</button>
-      <strong>{{alert.title}}</strong> <span ng-bind-html-unsafe="alert.text"></span> <div style="padding-right:10px" class="pull-right small"> {{$index + 1}} alert(s) </div>
+      <strong>{{alert.title}}</strong>
+      <span ng-bind-html-unsafe="alert.text"></span>
+      <div style="padding-right:10px" class="pull-right small"> {{$index + 1}} alert(s) </div>
     </div>
-    <div class="navbar navbar-static-top navbar-default">
-        <div class="container-fluid"><div class="navbar-header"><span class="navbar-brand">
-            <!-- <img src="img/silklogo.png" data-placement="bottom"> -->
-            {{dashboard.current.title}}
-          </span></div>
-          
-          <ul class="nav pull-right navbar-nav" ng-controller="dashLoader" ng-init="init()" ng-include="'app/partials/dashLoader.html'">
-          </ul>
+    <div class="navbar navbar-default" role="navigation" bs-navbar>
+      <div class="navbar-header">
+        <span class="navbar-brand">
+          <!-- <img src="img/silklogo.png" data-placement="bottom"> -->
+          {{dashboard.current.title}}
+        </span>
       </div>
+      <ul class="pull-right nav navbar-nav" ng-controller="dashLoader" ng-init="init()" ng-include="'app/partials/dashLoader.html'"></ul>
     </div>
-    <div class=" main">
+    <div class="main">
       <div class="row" style="margin:0">
         <div ng-view=""></div>
       </div>
     </div>
-  
-
-</body></html>
+  </body>
+</html>

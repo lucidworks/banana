@@ -1,8 +1,7 @@
-<div class="modal-body">
   <div class="pull-right editor-title">Row settings</div>
 
   <div ng-model="editor.index" bs-tabs="">
-    <div ng-repeat="tab in ['General','Panels','Add Panel']" data-title="{{tab}}">
+    <div ng-repeat="tab in ['General','Panels','Add Panel']" data-title="{{tab}}" bs-pane>
     </div>
   </div>
 
@@ -22,7 +21,7 @@
   </div>
   <div class="row" ng-show="editor.index == 1">
     <div class="col-sm-12 col-md-12">
-      <h4>Panels <i class="fa fa-plus-sign link" bs-tooltip="'Add panel'" ng-click="editor.index = 2"></i></h4>
+      <h4>Panels <i class="fa fa-plus-circle link" bs-tooltip="'Add panel'" ng-click="editor.index = 2"></i></h4>
       <table class="table table-condensed table-striped">
         <thead>
           <tr><th>Title</th>
@@ -58,8 +57,8 @@
       <div add-panel="{{panel.type}}"></div>
     </div>
   </div>
-</div>
-<div class="modal-footer">
-  <button ng-show="panel.type &amp;&amp; editor.index == 2" ng-click="add_panel(row,panel); reset_panel(); editor.index == 1;" class="btn btn-success" ng-disabled="panel.loadingEditor">Add Panel</button>
-  <button type="button" class="btn btn-danger" ng-click="editor.index=0;dismiss();reset_panel();close_edit()">Close</button>
-</div>
+
+  <div class="modal-footer">
+    <button ng-show="panel.type &amp;&amp; editor.index == 2" ng-click="add_panel(row,panel); reset_panel(); editor.index == 1;" class="btn btn-success" ng-disabled="panel.loadingEditor">Add Panel</button>
+    <button type="button" class="btn btn-danger" ng-click="editor.index=0;$hide();reset_panel();close_edit()">Close</button>
+  </div>

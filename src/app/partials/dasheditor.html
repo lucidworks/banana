@@ -1,8 +1,7 @@
-<div class="modal-body modal-dasheditor">
   <div class="pull-right editor-title">Dashboard settings</div>
 
   <div ng-model="editor.index" bs-tabs="">
-    <div ng-repeat="tab in ['General','Rows','Controls','Solr']" data-title="{{tab}}">
+    <div ng-repeat="tab in ['General','Rows','Controls','Solr']" title="{{tab}}" bs-pane>
     </div>
   </div>
   <!-- General tab -->
@@ -159,9 +158,8 @@
       </div>
     </div>
   </div>
-</div>
 
-<div class="modal-footer">
-  <button ng-click="add_row(dashboard.current,row); reset_row();" class="btn btn-success" ng-show="editor.index == 1">Create Row</button>
-  <button type="button" class="btn btn-danger" ng-click="editor.index=0;$hide();reset_panel();dashboard.refresh()">Close</button>
-</div>
+  <div class="modal-footer">
+    <button ng-click="add_row(dashboard.current,row); reset_row();" class="btn btn-success" ng-show="editor.index == 1">Create Row</button>
+    <button type="button" class="btn btn-danger" ng-click="editor.index=0;$hide();reset_panel();dashboard.refresh()">Close</button>
+  </div>

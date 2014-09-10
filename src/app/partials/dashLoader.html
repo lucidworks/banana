@@ -1,13 +1,15 @@
 <!-- This file is responsible for nav bar of the dashboard -->
-<li class="dropdown" bs-tooltip="'Collections'" data-placement="bottom" style="padding-top:5px;" ng-show="dashboard.current.loader.dropdown_collections"><select class="span2" ng-model="dashboard.current.solr.core_name" ng-change="dashboard.refresh()" ng-options="c as c for c in dashboard.current.solr.core_list"></select></li>
+<li class="dropdown" bs-tooltip="'Collections'" data-placement="bottom" style="padding-top:5px;" ng-show="dashboard.current.loader.dropdown_collections">
+  <select class="col-md-2" ng-model="dashboard.current.solr.core_name" ng-change="dashboard.refresh()" ng-options="c as c for c in dashboard.current.solr.core_list"></select>
+</li>
 
 <li><a bs-tooltip="'Goto saved default'" data-placement="bottom" href="#/dashboard"><i class="fa fa-home"></i></a></li>
 <!-- Load menu -->
-<li class="dropdown" bs-tooltip="'Load'" data-placement="bottom" ng-show="showDropdown('load')">
+<li bs-tooltip="'Load'" data-placement="bottom" ng-show="showDropdown('load')">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" ng-click="elasticsearch_dblist('title:'+elasticsearch.query+'*')">
     <i class="fa fa-folder-open"></i>
   </a>
-  <ul class="dropdown-menu" style="padding:10px" aria-labelledby="dropdownMenu1">
+  <ul class="dropdown-menu dropdown-menu-right" role="menu" style="padding:10px" aria-labelledby="dropdownMenu1">
     <li ng-show="dashboard.current.loader.load_local">
       <h5>Local File <tip>Load dashboard JSON layout from file</tip></h5>
       <form>
@@ -36,7 +38,7 @@
   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
     <i class="fa fa-save"></i>
   </a>
-  <ul class="dropdown-menu" style="padding:10px">
+  <ul class="dropdown-menu dropdown-menu-right" style="padding:10px">
     <li ng-show="dashboard.current.loader.save_default || dashboard.current.loader.save_local">
       <h5>Locally</h5>
       <ul class="list-unstyled">
@@ -55,4 +57,8 @@
   </ul>
 </li>
 <!-- Configure menu -->
-<li ng-show="dashboard.current.editable " bs-tooltip="'Configure dashboard'" data-placement="bottom"><a href="#" bs-modal="modal" data-content-template="app/partials/dasheditor.html"><i class="fa fa-cog pointer"></i></a></li>
+<li ng-show="dashboard.current.editable">
+  <a href="#" bs-modal="dashboardEditorModal" data-content-template="app/partials/dasheditor.html">
+    <i class="fa fa-cog pointer" bs-tooltip="dashboardEditorTooltip" data-placement="bottom"></i>
+  </a>
+</li>

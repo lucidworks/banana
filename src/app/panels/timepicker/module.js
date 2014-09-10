@@ -320,7 +320,7 @@ function (angular, app, _, moment, kbn, $) {
         filterTime.to   = 'NOW/' + timeUnit + '%2B1' + timeUnit;
         // Add Date objects representation of from and to, for use with histogram panel
         // where it needs Date objects for plotting x-axis on a chart.
-        filterTime.fromDateObj = moment().subtract(timeShorthand,timeNumber).toDate();
+        filterTime.fromDateObj = moment().subtract(timeNumber,timeShorthand).toDate();
         filterTime.toDateObj = new Date();
       } else if ($scope.panel.mode == 'since') {
         // Add Date objects representation of from and to, for use with histogram panel
