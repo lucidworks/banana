@@ -96,7 +96,6 @@ function (angular, app, _, $) {
         $scope.get_data();
       }
       $scope.refresh = false;
-      $scope.$emit('render');
     };
 
     $scope.get_data = function() {
@@ -227,6 +226,9 @@ function (angular, app, _, $) {
       restrict: 'A',
       link: function(scope, elem) {
 
+        // Workaround to prevent multiple render events
+        if (elem.html() !== '') return;
+        
         elem.html('<center><img src="img/load_big.gif"></center>');
 
         // Receive render events
