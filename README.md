@@ -9,14 +9,25 @@ The goal is to create a rich and flexible UI, enabling users to rapidly develop 
 
 Pull the repo from the "release" branch; version 1.4 will be tagged as banana-1.4.
 
-## Banana 1.4: Released on 25 July 2014
+## Banana 1.4: Released on 15 September 2014
 
-The following are key new features in this release:
+Banana 1.4 contains many new features, new panels, enhancements and bug fixes to improve the overall experience and stability. Thank you our communities for all the contributions! Please keep sending us feedbacks and suggestions so we can continue to improve Banana!
+
+Key new features and improvements in this release are the followings:
 
 1. Performance optimization by better utilizing Solr's caches in _Timepicker Module_ with Relative time mode or Since time mode.
 2. A new _Full Text Search_ panel allows you to visualize your non time-series data with faceting and highlighting capabilities of Solr.
-3. In _Table Module_, the sorting option can be turned off in order to speed up the search results returned from Solr.
+3. New features and enhancements in _Table_ panel:
+    * Sorting option can be turned off in order to speed up the search results returned from Solr.
+    * A table column can be set as hyperlink column so that its values will be clickable and linked to URIs.
+    * Display images inside a table column.
 4. Improvement in _Range Facet_ panel with the ability to set the chart's precision automatically or manually.
+5. In _Terms_ panel, the chart colors can be customized by changing the default color template or using field values as colors.
+6. Allow loading and saving dashboard to Gist.
+7. Fix Solr server location for banana-int collection. Now banana-int should be located on the same Solr server as specified in Solr Settings in the Dashboard configuration. You do not have to manually edit config.js file anymore.
+8. New button on the dashboard to quickly create a new dashboard from templates. Currently, we provide two default templates: Time-series dashboard and Non time-series dashboard.
+9. _Histogram_ panel will not require time field in the setting anymore, because it will use the same time field from the _Filtering_ panel.
+10. *Usability enhancement* to all panels by allowing you to specifying custom help messages inside each panel without needing to use _Text_ panel. So now you can embed any information or instructions for each panel in the dashboard to better communicate with your users.
 
 ## Banana 1.3: Released on 10 June 2014
 
