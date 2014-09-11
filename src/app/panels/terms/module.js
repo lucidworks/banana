@@ -366,17 +366,18 @@ function (angular, app, _, $, kbn) {
                     ' "style="font-size:8pt;text-align:center;padding:2px;color:white;">'+
                     label+'<br/>'+Math.round(series.percent)+'%</div>';
                 };
-                var position = "";
-                if (scope.panel.counter_pos == "left")
-                  position = "nw";
-                else if (scope.panel.counter_pos == "right")
-                  position = "ne";
+                // DEfulat style for labels that is implmented in jquery flot
+                // var position = "";
+                // if (scope.panel.counter_pos == "left")
+                //   position = "nw";
+                // else if (scope.panel.counter_pos == "right")
+                //   position = "ne";
 
                 plot = $.plot(elem, chartData, {
                   legend: {
-                    show: scope.panel.counter_pos == 'left' || scope.panel.counter_pos == 'right' ? true : false,
-                    position: position,
-                    backgroundColor: "transparent"
+                    show: false,
+                    // position: position,
+                    // backgroundColor: "transparent"
                   },
                   series: {
                     pie: {

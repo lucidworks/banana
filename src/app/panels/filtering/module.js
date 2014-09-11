@@ -17,12 +17,19 @@ function (angular, app, _) {
   module.controller('filtering', function($scope, filterSrv, $rootScope, dashboard) {
 
     $scope.panelMeta = {
-      status  : "Stable",
-      description : "A controllable list of all filters currently applied to the dashboard. You need one of these on your dashboard somewhere in order for all the panels to work properly while you are interacting with your data."
+      modals: [{
+        description: "Inspect",
+        icon: "icon-info-sign",
+        partial: "app/partials/inspector.html",
+        show: $scope.panel.spyable
+      }],
+      status: "Stable",
+      description: "A controllable list of all filters currently applied to the dashboard. You need one of these on your dashboard somewhere in order for all the panels to work properly while you are interacting with your data."
     };
 
     // Set and populate defaults
     var _d = {
+      spyable: true
     };
     _.defaults($scope.panel,_d);
 

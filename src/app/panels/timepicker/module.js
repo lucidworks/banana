@@ -30,6 +30,12 @@ function (angular, app, _, moment, kbn, $) {
 
   module.controller('timepicker', function($scope, $rootScope, $timeout, timer, $http, dashboard, filterSrv) {
     $scope.panelMeta = {
+      modals: [{
+        description: "Inspect",
+        icon: "icon-info-sign",
+        partial: "app/partials/inspector.html",
+        show: $scope.panel.spyable
+      }],
       status  : "Stable",
       description : "A panel for controlling the time range filters. If you have time based data, "+
         " or if you're using time stamped indices, you need one of these"
@@ -37,16 +43,17 @@ function (angular, app, _, moment, kbn, $) {
 
     // Set and populate defaults
     var _d = {
-      status        : "Stable",
-      mode          : "relative",
-      time_options  : ['5m','15m','1h','6h','12h','24h','2d','7d','30d'],
-      timespan      : '15m',
-      timefield     : 'event_timestamp',
-      timeformat    : "",
-      refresh       : {
-        enable  : false,
+      status: "Stable",
+      mode: "relative",
+      time_options: ['5m', '15m', '1h', '6h', '12h', '24h', '2d', '7d', '30d'],
+      timespan: '15m',
+      timefield: 'event_timestamp',
+      timeformat: "",
+      spyable: true,
+      refresh: {
+        enable: false,
         interval: 30,
-        min     : 3
+        min: 3
       }
     };
     _.defaults($scope.panel,_d);
