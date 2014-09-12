@@ -7,7 +7,27 @@ The goal is to create a rich and flexible UI, enabling users to rapidly develop 
  
 ## IMPORTANT
 
-Pull the repo from the "release" branch; version 1.3 will be tagged as banana-1.3.
+Pull the repo from the "release" branch; version 1.4 will be tagged as banana-1.4.
+
+## Banana 1.4: Released on 15 September 2014
+
+Banana 1.4 contains many new features, new panels, enhancements and bug fixes to improve the overall user experience and stability. Thank you to our growing community for your suggestions and contributions! Please continue sending us your feedbacks, so that we can further extend and improve Banana!
+
+This release includes the following key new features and improvements:
+
+1. Banana 1.4 provides much improved performance - by better utilizing Solr's caches in _Timepicker Module_. This improvement is discernable in the Relative and Since time modes.
+2. A new _Full Text Search_ panel provides a more traditional search interface to view textual data.
+3. Enhancements to the _Table_ panel improve performance and user experience:
+    * Sorting option can now be turned off in order to speed up the search results returned from Solr.
+    * A particular column - corresponding to a URI field - can be set as the hyperlink column. When set, this value will become clickable and linked to a specific URI.
+    * You can now display images inside a table column.
+4. In the _Range Facet_ panel, users now have the ability to set the chart's precision automatically or manually.
+5. In the _Terms_ panel, chart colors can be customized by changing the default color template or by using field values as colors.
+6. It is now possible to load and save a dashboard to Gist.
+7. We have fixed the Solr server location for the banana-int collection, the internal collection that stores dashboards. Now banana-int should be located on the same Solr server as specified in Solr Settings in the Dashboard configuration. You do not have to manually edit config.js file anymore.
+8. The dashboard contains a new button that enables users to quickly create a new dashboard from templates. Currently, we provide two default templates: a time-series dashboard template and a non time-series one.
+9. The _Histogram_ panel no longer requires you to set a time field; as logically expected, it will get the time field from the _Timepicker_ panel.
+10. We have enhanced the usability by allowing you to specify custom help messages inside each panel. You no longer need to use a separate _Text_ panel for this purpose. Instead, you can now embed information and instructions within each panel in the dashboard to better communicate with your users.
 
 ## Banana 1.3: Released on 10 June 2014
 

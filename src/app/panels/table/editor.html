@@ -32,9 +32,9 @@
       <h6>Header</h6><input type="checkbox" ng-model="panel.header" ng-checked="panel.header">
     </div>
     <div class="span1">
-      <h6>Sorting</h6><input type="checkbox" ng-model="panel.sortable" ng-checked="panel.sortable">
+      <h6>Sorting</h6><input type="checkbox" ng-model="panel.sortable" ng-checked="panel.sortable" ng-change="get_data();">
     </div>
-    <div class="span3" style="white-space:nowrap" ng-show='panel.sortable'>
+    <div class="span3" style="white-space:nowrap" ng-show="panel.sortable">
       <h6>Sort</h6>
       <input ng-show="all_fields.length<=0 || !all_fields"style="width:85%" ng-model="panel.sort[0]" ng-change="set_refresh(true)" bs-typeahead="fields.list" type="text"></input>
       <select ng-show="all_fields.length>0"style="width:85%" ng-model="panel.sort[0]" ng-change="set_refresh(true)" ng-options="f for f in all_fields"></select>
@@ -49,3 +49,52 @@
       <input type="number" class="input-small" ng-model="panel.trimFactor">
     </div>    
   </div>
+
+  <div class="row-fluid">
+    <div class="span3">
+      <h6>Add Hyperlink Column <tip>Add a column that will contain hyperlinks to access another resources such as URLs.</tip></h6>
+      <input type="checkbox" ng-model="panel.enableHyperlink" ng-checked="panel.enableHyperlink">
+    </div>
+    <div class="span3" ng-show="panel.enableHyperlink">
+      <h6>Link Column Header</h6>
+      <input type="text" class="input-small" placeholder="Link" ng-model="panel.hyperlinkColumnHeader">
+    </div>
+    <div class="span3" ng-show="panel.enableHyperlink">
+      <h6>Display Links as Icons</h6>
+      <input type="checkbox" ng-model="panel.displayLinkIcon" ng-checked="panel.displayLinkIcon">
+    </div>
+    <div class="span3" ng-show="panel.enableHyperlink">
+      <h6>Column for Links</h6>
+      <input type="text" class="input-small" ng-model="panel.hyperlinkColumnForURI" bs-typeahead="fields.list">
+    </div>
+  </div>
+
+  <div class="row-fluid">
+    <div class="span3">
+      <h6>Display Images <tip>Display images in column(s) that contain URLs to images.</tip></h6>
+      <input type="checkbox" ng-model="panel.enableImageField" ng-checked="panel.enableImageField">
+    </div>
+    <div class="span4" ng-show="panel.enableImageField">
+      <h6>Image Field(s) <tip>Comma separated list of fields that contain image URL.</tip></h6>
+      <input type="text" class="input-large" bs-typeahead="fields.list" ng-model="panel.imageFields" ng-change="set_refresh(true)" ng-list>
+    </div>
+    <div class="span2" ng-show="panel.enableImageField">
+      <h6>Image Width <tip>For examples: auto, 85px, or 50%</tip></h6>
+      <input type="text" class="input-small" placeholder="e.g. auto, 85px, 50%" ng-model="panel.imgFieldWidth">
+    </div>
+    <div class="span2" ng-show="panel.enableImageField">
+      <h6>Image Height <tip>For examples: auto, 85px, or 50%</tip></h6>
+      <input type="text" class="input-small" placeholder="e.g. auto, 85px, 50%" ng-model="panel.imgFieldHeight">
+    </div>
+  </div>
+
+  <!-- <div class="row-fluid">
+    <div class="span3" ng-show="panel.enableHyperlink && !panel.displayLinkIcon">
+      <h6>Column for Link Text</h6>
+      <input type="text" class="input-small" ng-model="panel.hyperlinkColumnForText" bs-typeahead="fields.list">
+    </div>
+    <div class="span3" ng-show="panel.enableHyperlink && !panel.displayLinkIcon">
+      <h6>Column for Links</h6>
+      <input type="text" class="input-small" ng-model="panel.hyperlinkColumnForURI" bs-typeahead="fields.list">
+    </div>
+  </div> -->

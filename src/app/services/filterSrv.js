@@ -41,17 +41,27 @@ define([
       _f = dashboard.current.services.filter;
 
       _.each(self.getByType('time',true),function(time) {
-        self.list[time.id].from = new Date(time.from);
-        self.list[time.id].to = new Date(time.to);
+        self.list[time.id].from = time.from;
+        self.list[time.id].to = time.to;
+        self.list[time.id].fromDateObj = new Date(time.fromDateObj);
+        self.list[time.id].toDateObj = new Date(time.toDateObj);
       });
 
     };
 
     // This is used both for adding filters and modifying them.
-    // If an id is passed, the filter at that id is updated
+    // If an id is passed, the filter at that id is updated.
     this.set = function(filter,id) {
       _.defaults(filter,{mandate:'must'});
       filter.active = true;
+
+      // Need to url encode the filter query or value
+      if (filter.query) {
+        filter.query = encodeURIComponent(filter.query);
+      } else if (filter.value) {
+        filter.value = encodeURIComponent(filter.value);
+      }
+
       if(!_.isUndefined(id)) {
         if(!_.isUndefined(self.list[id])) {
           _.extend(self.list[id],filter);
@@ -147,8 +157,19 @@ define([
 
         if (v.type == 'time') {
           time_field = v.field;
-          start_time = new Date(v.from).toISOString();
-          end_time = new Date(v.to).toISOString();
+          // Check for type of timestamps
+          // In case of relative timestamps, they will be string, not Date obj.
+          if (v.from instanceof Date) {
+            start_time = new Date(v.from).toISOString();
+          } else {
+            start_time = v.from;
+          }
+
+          if (v.to instanceof Date) {
+            end_time = new Date(v.to).toISOString();
+          } else {
+            end_time = v.to;
+          }
         } else if (v.type == 'terms') {
           if (v.mandate == 'must') {
             filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
@@ -235,7 +256,11 @@ define([
       var start_time;
       _.each(self.list, function(v) {
         if (v.type == 'time') {
-          start_time = new Date(v.from).toISOString();
+          if (v.from instanceof Date) {
+            start_time = new Date(v.from).toISOString();
+          } else {
+            start_time = v.from;            
+          }
           return;
         }
       });
@@ -247,7 +272,11 @@ define([
       var end_time;
       _.each(self.list, function(v) {
         if (v.type == 'time') {
-          end_time = new Date(v.to).toISOString();
+          if (v.to instanceof Date) {
+            end_time = new Date(v.to).toISOString();
+          } else {
+            end_time = v.to;
+          }
           return;
         }
       });
@@ -304,7 +333,6 @@ define([
       return _.pluck(_.where(self.list,_require),'id');
     };
 
-
     // TOFIX: Error handling when there is more than one field
     this.timeField = function() {
       return _.pluck(self.getByType('time'),'field');
@@ -319,10 +347,18 @@ define([
       }
       switch(mode) {
       case "min":
-        return {
-          from: new Date(_.max(_.pluck(_t,'from'))),
-          to: new Date(_.min(_.pluck(_t,'to')))
-        };
+        // If time is not Date obj (e.g. String time for Relative time mode or Since time mode)
+        if (!(_t[_t.length-1].from instanceof Date) || !(_t[_t.length-1].to instanceof Date)) {
+          return {
+            from: _t[_t.length-1].fromDateObj,
+            to: _t[_t.length-1].toDateObj
+          };
+        } else {
+          return {
+            from: new Date(_.max(_.pluck(_t,'from'))),
+            to: new Date(_.min(_.pluck(_t,'to')))
+          };
+        }
       case "max":
         return {
           from: new Date(_.min(_.pluck(_t,'from'))),
@@ -357,7 +393,6 @@ define([
         return false;
       }
     };
-
 
     var nextId = function() {
       if(_f.idQueue.length > 0) {

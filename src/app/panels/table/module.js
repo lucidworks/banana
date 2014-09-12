@@ -86,7 +86,11 @@ function (angular, app, _, kbn, moment) {
       spyable : true,
       saveOption : 'json',
       exportSize: 100,
-      exportAll: true
+      exportAll: true,
+      displayLinkIcon: true,
+      imageFields : [],      // fields to be displayed as <img>
+      imgFieldWidth: 'auto', // width of <img> (if enabled)
+      imgFieldHeight: '85px' // height of <img> (if enabled)
     };
     _.defaults($scope.panel,_d);
 
@@ -94,11 +98,8 @@ function (angular, app, _, kbn, moment) {
       $scope.Math = Math;
       // Solr
       $scope.sjs = $scope.sjs || sjsResource(dashboard.current.solr.server + dashboard.current.solr.core_name);
-
       $scope.$on('refresh',function(){$scope.get_data();});
-    
-      $scope.panel.exportSize = $scope.panel.size * $scope.panel.pages;
-        
+      $scope.panel.exportSize = $scope.panel.size * $scope.panel.pages; 
       $scope.fields = fields;
       $scope.get_data();
     };
@@ -201,28 +202,28 @@ function (angular, app, _, kbn, moment) {
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
-      var boolQuery = $scope.sjs.BoolQuery();
-      _.each($scope.panel.queries.ids,function(id) {
-        boolQuery = boolQuery.should(querySrv.getEjsObj(id));
-      });
+      // var boolQuery = $scope.sjs.BoolQuery();
+      // _.each($scope.panel.queries.ids,function(id) {
+      //   boolQuery = boolQuery.should(querySrv.getEjsObj(id));
+      // });
 
-      request = request.query(
-        $scope.sjs.FilteredQuery(
-          boolQuery,
-          filterSrv.getBoolFilter(filterSrv.ids)  // search time range is provided here.
-        ))
-        .highlight(
-          $scope.sjs.Highlight($scope.panel.highlight)
-          .fragmentSize(2147483647) // Max size of a 32bit unsigned int
-          .preTags('@start-highlight@')
-          .postTags('@end-highlight@')
-        )
-        .size($scope.panel.size*$scope.panel.pages) // Set the size of query result
-        .sort($scope.panel.sort[0],$scope.panel.sort[1]);
+      // request = request.query(
+      //   $scope.sjs.FilteredQuery(
+      //     boolQuery,
+      //     filterSrv.getBoolFilter(filterSrv.ids)  // search time range is provided here.
+      //   ))
+      //   .highlight(
+      //     $scope.sjs.Highlight($scope.panel.highlight)
+      //     .fragmentSize(2147483647) // Max size of a 32bit unsigned int
+      //     .preTags('@start-highlight@')
+      //     .postTags('@end-highlight@')
+      //   )
+      //   .size($scope.panel.size*$scope.panel.pages) // Set the size of query result
+      //   .sort($scope.panel.sort[0],$scope.panel.sort[1]);
 
       $scope.panel_request = request;
 
-      if (DEBUG) { console.debug('table:\n\trequest=',request,'\n\trequest.toString()=',request.toString()); }
+      // if (DEBUG) { console.debug('table:\n\trequest.toString()=',request.toString()); }
 
       var fq = '&' + filterSrv.getSolrFq();
       var query_size = $scope.panel.size * $scope.panel.pages;
@@ -230,7 +231,7 @@ function (angular, app, _, kbn, moment) {
       var rows_limit;
       var sorting = '';
 
-      if ($scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined) {
+      if ($scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined && $scope.panel.sortable) {
         sorting = '&sort=' + $scope.panel.sort[0] + ' ' + $scope.panel.sort[1];
       }
 
@@ -269,7 +270,7 @@ function (angular, app, _, kbn, moment) {
           $scope.data = [];
         }
 
-        if(DEBUG) { console.debug('table:\n\tresults=',results,'\n\t_segment=',_segment,', $scope.hits=',$scope.hits,', $scope.data=',$scope.data,', query_id=',query_id,'\n\t$scope.panel',$scope.panel); }
+        if (DEBUG) { console.debug('table:\n\tresults=',results,'\n\t_segment=',_segment,', $scope.hits=',$scope.hits,', $scope.data=',$scope.data,', query_id=',query_id,'\n\t$scope.panel',$scope.panel); }
 
         // Check for error and abort if found
         if(!(_.isUndefined(results.error))) {
@@ -386,7 +387,6 @@ function (angular, app, _, kbn, moment) {
       }
       return obj;
     };
-
   });
 
   // This also escapes some xml sequences
@@ -406,7 +406,12 @@ function (angular, app, _, kbn, moment) {
   });
 
   module.filter('tableTruncate', function() {
-    return function(text,length,factor) {
+    return function(text,length,factor,field,imageFields) {
+      // If image field, then do not truncate, otherwise we will get invalid URIs.
+      if (typeof field != 'undefined' && imageFields.length>0 && _.contains(imageFields, field)) {
+        return text;
+      }
+
       if (!_.isUndefined(text) && !_.isNull(text) && text.toString().length > 0) {
         return text.length > length/factor ? text.substr(0,length/factor)+'...' : text;
       }
@@ -461,4 +466,13 @@ function (angular, app, _, kbn, moment) {
     };
   });
 
+  // This filter will check the input field to see if it should be displayed as <img src="data">
+  module.filter('tableDisplayImageField', function() {
+    return function(data, field, imageFields, width, height) {
+      if (typeof field != 'undefined' && imageFields.length>0 && _.contains(imageFields, field)) {
+        return '<img style="width:' + width + '; height:' + height + ';" src="'+data+'">';
+      }
+      return data;
+    }
+  });
 });

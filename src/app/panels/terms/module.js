@@ -25,7 +25,7 @@ function (angular, app, _, $, kbn) {
   var module = angular.module('kibana.panels.terms', []);
   app.useModule(module);
 
-  module.controller('terms', function($scope, querySrv, dashboard, filterSrv) {
+  module.controller('terms', function($scope, querySrv, dashboard, filterSrv, alertSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -67,17 +67,32 @@ function (angular, app, _, $, kbn) {
       arrangement : 'horizontal',
       chart       : 'bar',
       counter_pos : 'above',
+      lastColor : '',
       spyable     : true,
+      error : '',
+      chartColors : querySrv.colors
     };
     _.defaults($scope.panel,_d);
 
     $scope.init = function () {
       $scope.hits = 0;
-
+      $scope.testMultivalued();
       $scope.$on('refresh',function(){
         $scope.get_data();
       });
       $scope.get_data();
+    };
+
+    $scope.testMultivalued = function() {
+      if($scope.panel.field && $scope.panel.field !== '' && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
+        $scope.panel.error = "Can't proceed with Multivalued field";
+        return;
+      }
+
+      if($scope.panel.stats_field && $scope.panel.stats_field !== '' && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
+        $scope.panel.error = "Can't proceed with Multivalued field";
+        return;
+      }
     };
 
     $scope.get_data = function() {
@@ -87,47 +102,40 @@ function (angular, app, _, $, kbn) {
       }
 
       $scope.panelMeta.loading = true;
-      var request,
-        results,
-        boolQuery;
+      var request, results, boolQuery;
 
-      //Solr
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       if (DEBUG) { console.debug('terms:\n\tdashboard',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv); }
 
       request = $scope.sjs.Request().indices(dashboard.indices);
-
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
       // This could probably be changed to a BoolFilter
-      boolQuery = $scope.sjs.BoolQuery();
-      _.each($scope.panel.queries.ids,function(id) {
-        boolQuery = boolQuery.should(querySrv.getEjsObj(id));
-      });
+      // boolQuery = $scope.sjs.BoolQuery();
+      // _.each($scope.panel.queries.ids,function(id) {
+      //   boolQuery = boolQuery.should(querySrv.getEjsObj(id));
+      // });
 
       // Terms mode
-      request = request
-        .facet($scope.sjs.TermsFacet('terms')
-          .field($scope.panel.field)
-          .size($scope.panel.size)
-          .order($scope.panel.order)
-          .exclude($scope.panel.exclude)
-          .facetFilter($scope.sjs.QueryFilter(
-            $scope.sjs.FilteredQuery(
-              boolQuery,
-              filterSrv.getBoolFilter(filterSrv.ids)
-              )))).size(0);
+      // request = request
+      //   .facet($scope.sjs.TermsFacet('terms')
+      //     .field($scope.panel.field)
+      //     .size($scope.panel.size)
+      //     .order($scope.panel.order)
+      //     .exclude($scope.panel.exclude)
+      //     .facetFilter($scope.sjs.QueryFilter(
+      //       $scope.sjs.FilteredQuery(
+      //         boolQuery,
+      //         filterSrv.getBoolFilter(filterSrv.ids)
+      //         )))).size(0);
 
       // Populate the inspector panel
       $scope.inspector = angular.toJson(JSON.parse(request.toString()),true);
 
       // Build Solr query
       var fq = '&' + filterSrv.getSolrFq();
-      // var start_time = filterSrv.getStartTime();
-      // var end_time = filterSrv.getEndTime();
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0' // for terms, we do not need the actual response doc, so set rows=0
-      // var facet_gap = '%2B1DAY';
       var facet = '';
 
       if ($scope.panel.mode === 'count') {
@@ -137,9 +145,17 @@ function (angular, app, _, $, kbn) {
         // stats does not support something like facet.limit, so we have to sort and limit the results manually.
         facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field;
       }
+      
+      var exclude_length = $scope.panel.exclude.length; 
+      var exclude_filter = '';
+      if(exclude_length > 0){
+        for (var i = 0; i < exclude_length; i++) {
+          exclude_filter += '&fq=-' + $scope.panel.field +":"+ $scope.panel.exclude[i];
+        };
+      }
 
       // Set the panel's query
-      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet;
+      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + exclude_filter + facet;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
@@ -153,6 +169,29 @@ function (angular, app, _, $, kbn) {
       // Populate scope when we have results
       results.then(function(results) {
         if (DEBUG) { console.debug('terms: results=',results); }
+
+        // Function for validating HTML color by assign it to a dummy <div id="colorTest">
+        // and let the browser do the work of validation.
+        var isValidHTMLColor = function(color) {
+          // clear attr first, before comparison
+          $('#colorTest').removeAttr('style');
+          var valid = $('#colorTest').css('color');
+          $('#colorTest').css('color', color);
+
+          if (valid == $('#colorTest').css('color')) {
+            return false;
+          } else {
+            return true;
+          }
+        };
+
+        // Function for customizing chart color by using field values as colors.
+        var addSliceColor = function(slice,color) {
+          if ($scope.panel.useColorFromField && isValidHTMLColor(color)) {
+            slice.color = color;
+          }
+          return slice;
+        };
 
         var k = 0;
         $scope.panelMeta.loading = false;
@@ -171,6 +210,7 @@ function (angular, app, _, $, kbn) {
               // if count = 0, do not add it to the chart, just skip it
               if (count == 0) continue;
               var slice = { label : term, data : [[k,count]], actions: true};
+              slice = addSliceColor(slice,term);
               $scope.data.push(slice);
             };
           });
@@ -234,6 +274,7 @@ function (angular, app, _, $, kbn) {
 
     $scope.close_edit = function() {
       if($scope.refresh) {
+        $scope.testMultivalued();
         $scope.get_data();
       }
       $scope.refresh =  false;
@@ -255,7 +296,7 @@ function (angular, app, _, $, kbn) {
 
   });
 
-  module.directive('termsChart', function(querySrv,dashboard) {
+  module.directive('termsChart', function(querySrv,dashboard,filterSrv) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
@@ -273,6 +314,7 @@ function (angular, app, _, $, kbn) {
         // Function for rendering panel
         function render_panel() {
           var plot, chartData;
+          var colors = [];
 
           // IE doesn't work without this
           elem.css({height:scope.panel.height||scope.row.height});
@@ -286,7 +328,12 @@ function (angular, app, _, $, kbn) {
 
           if (DEBUG) { console.debug('terms: render_panel() => chartData = ',chartData); }
 
-          // Populate element.
+          if (filterSrv.idsByTypeAndField('terms',scope.panel.field).length > 0) {
+            colors.push(scope.panel.lastColor);
+          } else {
+            colors = scope.panel.chartColors
+          }
+
           require(['jquery.flot.pie'], function(){
             // Populate element
             try {
@@ -309,7 +356,7 @@ function (angular, app, _, $, kbn) {
                     hoverable: true,
                     clickable: true
                   },
-                  colors: querySrv.colors
+                  colors: colors
                 });
               }
               if(scope.panel.chart === 'pie') {
@@ -319,9 +366,19 @@ function (angular, app, _, $, kbn) {
                     ' "style="font-size:8pt;text-align:center;padding:2px;color:white;">'+
                     label+'<br/>'+Math.round(series.percent)+'%</div>';
                 };
+                // DEfulat style for labels that is implmented in jquery flot
+                // var position = "";
+                // if (scope.panel.counter_pos == "left")
+                //   position = "nw";
+                // else if (scope.panel.counter_pos == "right")
+                //   position = "ne";
 
                 plot = $.plot(elem, chartData, {
-                  legend: { show: false },
+                  legend: {
+                    show: false,
+                    // position: position,
+                    // backgroundColor: "transparent"
+                  },
                   series: {
                     pie: {
                       innerRadius: scope.panel.donut ? 0.4 : 0,
@@ -345,7 +402,7 @@ function (angular, app, _, $, kbn) {
                   },
                   //grid: { hoverable: true, clickable: true },
                   grid:   { hoverable: true, clickable: true },
-                  colors: querySrv.colors
+                  colors: colors
                 });
               }
 
@@ -368,21 +425,19 @@ function (angular, app, _, $, kbn) {
         elem.bind("plotclick", function (event, pos, object) {
           if(object) {
             scope.build_search(scope.data[object.seriesIndex]);
+            scope.panel.lastColor = object.series.color;
           }
         });
 
         var $tooltip = $('<div>');
         elem.bind("plothover", function (event, pos, item) {
           if (item) {
-            // if (DEBUG) { console.debug('terms: plothover item = ',item); }
             var value = scope.panel.chart === 'bar' ? item.datapoint[1] : item.datapoint[1][0][1];
-
             // if (scope.panel.mode === 'count') {
             //   value = value.toFixed(0);
             // } else {
             //   value = value.toFixed(scope.panel.decimal_points);
             // }
-
             $tooltip
               .html(
                 kbn.query_color_dot(item.series.color, 20) + ' ' +

@@ -16,7 +16,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
   var module = angular.module('kibana.services');
 
   module.service('dashboard', function($routeParams, $http, $rootScope, $injector, $location,
-    ejsResource, sjsResource, timer, kbnIndex, alertSrv
+    sjsResource, timer, kbnIndex, alertSrv
   ) {
     // A hash of defaults to use when loading a dashboard
     var _dash = {
@@ -29,7 +29,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       services: {},
       loader: {
         dropdown_collections: false,
-        save_gist: false,
+        save_gist: true,
         save_elasticsearch: true,
         save_local: true,
         save_default: true,
@@ -38,7 +38,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         save_temp_ttl: '30d',
         load_gist: true,
         load_elasticsearch: true,
-        load_elasticsearch_size: 20,
+        load_elasticsearch_size: 10,
         load_local: true,
         hide: false
       },
@@ -54,10 +54,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         global_params: ''
       }
     };
-
-    // An elasticJS client to use
-    var ejs = ejsResource(config.elasticsearch);
-    // Solr
+    
     var sjs = sjsResource(config.solr + config.solr_core);
 
     var gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;
@@ -82,7 +79,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         var _type = $routeParams.kbnType;
         var _id = $routeParams.kbnId;
 
-        // Solr
         switch(_type) {
         case ('elasticsearch'):
           self.elasticsearch_load('dashboard',_id);
@@ -406,10 +402,11 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       );
     };
 
-    // Solr
     this.elasticsearch_list = function(query,count) {
       // set indices and type
-      sjs.client.server(config.solr + config.banana_index);
+      var solrserver = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
+      sjs.client.server(solrserver);
+
       var request = sjs.Request().indices(config.banana_index).types('dashboard');
 
       // Need to set sjs.client.server back to use 'logstash_logs' collection
@@ -475,7 +472,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       if (x)
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       else
-        return x
+        return x;
     }
 
   });

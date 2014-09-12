@@ -19,7 +19,7 @@ define([
     var module = angular.module('kibana.panels.ticker', []);
     app.useModule(module);
 
-    var DEBUG = true;
+    var DEBUG = false;
 
     module.controller('ticker', function($scope, kbnIndex, querySrv, dashboard, filterSrv) {
 

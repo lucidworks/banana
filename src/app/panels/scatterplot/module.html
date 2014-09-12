@@ -1,0 +1,38 @@
+<div id="scatterplot" ng-controller="scatterplot" ng-init="init()">
+    <style>
+    scatterplot {
+        font: 10px sans-serif;
+    }
+    .axis path, .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+    .dot {
+        stroke: #000;
+    }
+    .tooltip-d3 {
+        position: absolute;
+        width: auto;
+        height: auto;
+        pointer-events: none;
+        position: absolute;
+        color: rgb(200, 200, 200);
+        padding: 10px;
+        font-size: 11pt;
+        font-weight: 200;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+        border-bottom-left-radius: 5px;
+        background-color: rgb(31, 31, 31);
+    }
+.legend {
+                padding: 5px;
+                font: 10px sans-serif;
+                background: yellow;
+                box-shadow: 2px 2px 1px #888;
+            }
+    </style>
+    <scatterplot style="position:relative"></scatterplot>
+</div>

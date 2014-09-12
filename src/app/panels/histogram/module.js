@@ -74,7 +74,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     // Set and populate defaults
     var _d = {
       mode        : 'count',
-      time_field  : 'event_timestamp',
       queries     : {
         mode        : 'all',
         ids         : [],
@@ -213,13 +212,13 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         var facet = $scope.sjs.DateHistogramFacet(id);
 
         if($scope.panel.mode === 'count') {
-          facet = facet.field($scope.panel.time_field);
+          facet = facet.field(filterSrv.getTimeField());
         } else {
           if(_.isNull($scope.panel.value_field)) {
             $scope.panel.error = "In " + $scope.panel.mode + " mode a field must be specified";
             return;
           }
-          facet = facet.keyField($scope.panel.time_field).valueField($scope.panel.value_field);
+          facet = facet.keyField(filterSrv.getTimeField()).valueField($scope.panel.value_field);
         }
         facet = facet.interval(_interval).facetFilter($scope.sjs.QueryFilter(query));
 
@@ -235,13 +234,18 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       var start_time = filterSrv.getStartTime();
       var end_time = filterSrv.getEndTime();
 
+      // facet.range.end does NOT accept * as a value, need to convert it to NOW
+      if (end_time == '*') {
+        end_time = 'NOW';
+      }
+
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0'; // for histogram, we do not need the actual response doc, so set rows=0
       var facet_gap = $scope.sjs.convertFacetGap($scope.panel.interval);
       var facet = '&facet=true' +
                   '&facet.range=' + time_field +
-                  '&facet.range.start=' + start_time + '/DAY' +
-                  '&facet.range.end=' + end_time + '%2B1DAY/DAY' +
+                  '&facet.range.start=' + start_time +
+                  '&facet.range.end=' + end_time +
                   '&facet.range.gap=' + facet_gap;
       var values_mode_query = '';
 
@@ -252,7 +256,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             return;
         }
 
-        values_mode_query = '&fl=' + $scope.panel.time_field + ' ' + $scope.panel.value_field;
+        values_mode_query = '&fl=' + time_field + ' ' + $scope.panel.value_field;
         rows_limit = '&rows=' + $scope.panel.max_rows;
         facet = '';
 
@@ -358,7 +362,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             // So no need to get each segment like Elasticsearch does.
             if ($scope.panel.mode === 'count') {
               // Entries from facet_ranges counts
-              var entries = results.facet_counts.facet_ranges[$scope.panel.time_field].counts;
+              var entries = results.facet_counts.facet_ranges[time_field].counts;
               for (var j = 0; j < entries.length; j++) {
                 var entry_time = new Date(entries[j]).getTime(); // convert to millisec
                 j++;
@@ -384,7 +388,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
                   // loop through each group results
                   for (var k=0; k < docs.length; k++) {
-                    var entry_time = new Date(docs[k][$scope.panel.time_field]).getTime(); // convert to millisec
+                    var entry_time = new Date(docs[k][time_field]).getTime(); // convert to millisec
                     var entry_value = docs[k][$scope.panel.value_field];
                     group_time_series.addValue(entry_time, entry_value);
                     hits += 1;
@@ -406,7 +410,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               } else { // Group By Field is not specified
                 var entries = results.response.docs;
                 for (var j=0; j < entries.length; j++) {
-                  var entry_time = new Date(entries[j][$scope.panel.time_field]).getTime(); // convert to millisec
+                  var entry_time = new Date(entries[j][time_field]).getTime(); // convert to millisec
                   var entry_value = entries[j][$scope.panel.value_field];
                   time_series.addValue(entry_time, entry_value);
                   hits += 1;
@@ -468,9 +472,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       }
       filterSrv.set({
         type:'time',
-        from:moment.utc(_from),
-        to:moment.utc(_to),
-        field:$scope.panel.time_field
+        from:moment.utc(_from).toDate(),
+        to:moment.utc(_to).toDate(),
+        field:filterSrv.getTimeField()
       });
 
       dashboard.refresh();
@@ -666,6 +670,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             $tooltip
               .html(
                 group + dashboard.numberWithCommas(value) + " @ " + moment(item.datapoint[0]).format('MM/DD HH:mm:ss')
+                // group + dashboard.numberWithCommas(value) + " @ " + moment(item.datapoint[0])
               )
               .place_tt(pos.pageX, pos.pageY);
           } else {
@@ -676,9 +681,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         elem.bind("plotselected", function (event, ranges) {
           filterSrv.set({
             type  : 'time',
-            from  : moment.utc(ranges.xaxis.from),
-            to    : moment.utc(ranges.xaxis.to),
-            field : scope.panel.time_field
+            // from  : moment.utc(ranges.xaxis.from),
+            // to    : moment.utc(ranges.xaxis.to),
+            from  : moment.utc(ranges.xaxis.from).toDate(),
+            to    : moment.utc(ranges.xaxis.to).toDate(),
+            field : filterSrv.getTimeField()
           });
           dashboard.refresh();
         });

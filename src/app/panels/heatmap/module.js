@@ -15,7 +15,7 @@ define([
         var module = angular.module('kibana.panels.heatmap', []);
         app.useModule(module);
 
-        var DEBUG = true;
+        var DEBUG = false;
 
         module.controller('heatmap', function ($scope, dashboard, querySrv, filterSrv) {
             $scope.panelMeta = {
@@ -230,11 +230,11 @@ define([
                     $scope.panel.row_size = $scope.panel.editor_size;
                     $scope.get_data();
                     $scope.formatData($scope.facets, $scope.panel.transposed);
+                    $scope.render();
                 } else if (!valid) {
                     alert('invalid rows number');
                 }
                 $scope.refresh = false;
-                $scope.render();
             };
 
             $scope.render = function () {
@@ -301,10 +301,10 @@ define([
                             });
 
                             var margin = {
-                                top: 70, // for columns
+                                top: 70,
                                 right: 10,
                                 bottom: 20,
-                                left: 100 // for rows
+                                left: 100
                             };
 
                             var rowSortOrder = false,
@@ -342,299 +342,178 @@ define([
                             var colorBuckets = colors.length,
                                 colorScale   = d3.scale.quantile().domain([0, 10]).range(colors);
                             
+                            var $tooltip = $('<div>');
+                        
                             var svg = d3.select(el).append("svg")
-                            .attr("width", width + margin.left + margin.right)
-                            .attr("height", height + margin.top + margin.bottom)
-                            .append("g")
-                            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                                .attr("width", width + margin.left + margin.right)
+                                .attr("height", height + margin.top + margin.bottom)
+                                .append("g")
+                                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
                             // Row Labels
                             var rowLabels = svg.append("g")
-                            .selectAll(".rowLabelg")
-                            .data(rowLabel)
-                            .enter()
-                            .append("text")
-                            .text(function (d) {
-                                if(d.length > 8)
-                                    return d.substring(0,8)+'..';
-                                else
-                                    return d;
-                            })
-                            .attr("x", 0)
-                            .attr("y", function (d, i) {
-                                return hcrow.indexOf(i + 1) * cellSize;
-                            })
-                            .style("text-anchor", "end")
-                            .attr("transform", "translate(-6," + cellSize / 1.5 + ")")
-                            .attr("class", function (d, i) {
-                                return "rowLabel_" + scope.generated_id + " mono r" + i;
-                            })
-                            .on("mouseover", function (d) {
-                                d3.select(this).classed("text-hover", true);
-                                
-                                var offsetX = d3.event.offsetX || d3.event.layerX;
-                                var p = $('#' + scope.generated_id).parent();
-                                var scrollLeft = $(p).parent().scrollLeft();
+                                .selectAll(".rowLabelg")
+                                .data(rowLabel)
+                                .enter()
+                                .append("text")
+                                .text(function (d) {
+                                    if(d.length > 8)
+                                        return d.substring(0,8)+'..';
+                                    else
+                                        return d;
+                                })
+                                .attr("x", 0)
+                                .attr("y", function (d, i) {
+                                    return hcrow.indexOf(i + 1) * cellSize;
+                                })
+                                .style("text-anchor", "end")
+                                .attr("transform", "translate(-6," + cellSize / 1.5 + ")")
+                                .attr("class", function (d, i) {
+                                    return "rowLabel_" + scope.generated_id + " mono r" + i;
+                                })
+                                .on("mouseover", function (d) {
+                                    d3.select(this).classed("text-hover", true);
+                                    $tooltip.html(d).place_tt(d3.event.pageX, d3.event.pageY);
+                                })
+                                .on("mouseout", function (d) {
+                                    d3.select(this).classed("text-hover", false);
 
-                                var layerX = Math.abs(scrollLeft - offsetX);
-
-                                var offsetY = d3.event.offsetY || d3.event.layerY;
-                                var scrollTop = $(p).parent().scrollTop();
-
-                                var layerY = Math.abs(offsetY - scrollTop);
-
-                                d3.select("#" + scope.generated_id)
-                                .style("left", (layerX) + "px")
-                                .style("top", (layerY - 20) + "px")
-                                .select("#value")
-                                .text(d);
-                                //Show the popup
-                                d3.select("#" + scope.generated_id).classed("hidden", false);
-                            })
-                            .on("mouseout", function (d) {
-                                d3.select(this).classed("text-hover", false);
-
-                                d3.select(this).classed("cell-hover", false);
-                                d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", false);
-                                d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", false);
-                                
-                                d3.select("#" + scope.generated_id).classed("hidden", true);
-                            })
-                            .on("click", function (d, i) {
-                                rowSortOrder = !rowSortOrder;
-                                sortbylabel("r", i, rowSortOrder);
-                            });
+                                    d3.select(this).classed("cell-hover", false);
+                                    d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", false);
+                                    d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", false);
+                                    
+                                    $tooltip.detach();
+                                })
+                                .on("click", function (d, i) {
+                                    rowSortOrder = !rowSortOrder;
+                                    sortbylabel("r", i, rowSortOrder);
+                                });
 
                             // Column labels
                             var colLabels = svg.append("g")
-                            .selectAll(".colLabelg")
-                            .data(colLabel)
-                            .enter()
-                            .append("text")
-                            .text(function (d) {
-                                if(d.length > 6)
-                                    return d.substring(0,6)+'..';
-                                else
-                                    return d; 
-                            })
-                            .attr("x", 0)
-                            .attr("y", function (d, i) {
-                                return hccol.indexOf(i + 1) * cellSize;
-                            })
-                            .style("text-anchor", "left")
-                            .attr("transform", "translate(" + cellSize / 2 + ",-6) rotate (-90)")
-                            .attr("class", function (d, i) {
-                                return "colLabel_" + scope.generated_id + " mono c" + i;
-                            })
-                            .on("mouseover", function (d) {
-                                d3.select(this).classed("text-hover", true);
-                                
-                                var offsetX = d3.event.offsetX || d3.event.layerX;
-                                var p = $('#' + scope.generated_id).parent();
-                                var scrollLeft = $(p).parent().scrollLeft();
+                                .selectAll(".colLabelg")
+                                .data(colLabel)
+                                .enter()
+                                .append("text")
+                                .text(function (d) {
+                                    if(d.length > 6)
+                                        return d.substring(0,6)+'..';
+                                    else
+                                        return d; 
+                                })
+                                .attr("x", 0)
+                                .attr("y", function (d, i) {
+                                    return hccol.indexOf(i + 1) * cellSize;
+                                })
+                                .style("text-anchor", "left")
+                                .attr("transform", "translate(" + cellSize / 2 + ",-6) rotate (-90)")
+                                .attr("class", function (d, i) {
+                                    return "colLabel_" + scope.generated_id + " mono c" + i;
+                                })
+                                .on("mouseover", function (d) {
+                                    d3.select(this).classed("text-hover", true);
+                                    
+                                    var offsetX = d3.event.offsetX || d3.event.layerX;
+                                    var p = $('#' + scope.generated_id).parent();
+                                    var scrollLeft = $(p).parent().scrollLeft();
 
-                                var layerX = Math.abs(scrollLeft - offsetX);
+                                    var layerX = d3.event.offsetX ? d3.event.layerX : Math.abs(scrollLeft - offsetX);
 
-                                var offsetY = d3.event.offsetY || d3.event.layerY;
-                                var scrollTop = $(p).parent().scrollTop();
+                                    var offsetY = d3.event.layerY;
+                                    var scrollTop = $(p).parent().scrollTop();
 
-                                var layerY = Math.abs(offsetY - scrollTop);
-                                
-                                d3.select("#" + scope.generated_id)
-                                .style("left", (layerX - 125) + "px")
-                                .style("top", (layerY - 22) + "px")
-                                .select("#value")
-                                .text(d);
-                                //Show the popup
-                                d3.select("#" + scope.generated_id).classed("hidden", false);
-                            })
-                            .on("mouseout", function (d) {
-                                d3.select(this).classed("text-hover", false);
+                                    var layerY = d3.event.offsetY ? d3.event.layerY : Math.abs(offsetY - scrollTop);
+                                    
+                                    $tooltip.html(d).place_tt(d3.event.pageX, d3.event.pageY);
+                                })
+                                .on("mouseout", function (d) {
+                                    d3.select(this).classed("text-hover", false);
 
-                                d3.select(this).classed("cell-hover", false);
-                                d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", false);
-                                d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", false);
-                                
-                                d3.select("#" + scope.generated_id).classed("hidden", true);
-                            })
-                            .on("click", function (d, i) {
-                                colSortOrder = !colSortOrder;
-                                sortbylabel("c", i, colSortOrder);
-                            });
+                                    d3.select(this).classed("cell-hover", false);
+                                    d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", false);
+                                    d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", false);
+
+                                    $tooltip.detach();
+                                })
+                                .on("click", function (d, i) {
+                                    colSortOrder = !colSortOrder;
+                                    sortbylabel("c", i, colSortOrder);
+                                });
                             
                             // Heatmap component
                             var heatMap = svg.append("g").attr("class", "g3")
-                            .selectAll(".cellg")
-                            .data(data, function (d) {
-                                return d.row + ":" + d.col;
-                            })
-                            .enter()
-                            .append("rect")
-                            .attr("x", function (d) {
-                                return hccol.indexOf(d.col) * cellSize;
-                            })
-                            .attr("y", function (d) {
-                                return hcrow.indexOf(d.row) * cellSize;
-                            })
-                            .attr("class", function (d) {
-                                return "cell_" + scope.generated_id  +  " cell-border cr" + (d.row - 1) + " cc" + (d.col - 1);
-                            })
-                            .attr("width", cellSize)
-                            .attr("height", cellSize)
-                            .style("fill", function (d) {
-                                return colorScale(d.value);
-                            })
-                            .on("mouseover", function (d, i) {
-                                //highlight text
-                                d3.select(this).classed("cell-hover", true);
-                                d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", function (r, ri) {
-                                    return ri == (d.row - 1);
-                                });
-                                d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", function (c, ci) {
-                                    return ci == (d.col - 1);
-                                });
-                                
-                                var offsetX = d3.event.offsetX || d3.event.layerX;
-                                var p = $('#' + scope.generated_id).parent();
-                                var scrollLeft = $(p).parent().scrollLeft();
-                                
-                                var layerX = Math.abs(scrollLeft - offsetX);
-                                
-                                var offsetY = d3.event.offsetY || d3.event.layerY;
-                                var scrollTop = $(p).parent().scrollTop();
-                                
-                                var layerY = Math.abs(offsetY - scrollTop);
-                                
-                                d3.select("#" + scope.generated_id)
-                                .style("left", (layerX - 125) + "px")
-                                .style("top", (layerY - 25) + "px")
-                                .select("#value")
-                                .text(rowLabel[d.row - 1] + "," + colLabel[d.col - 1] + " (" + scope.data[i].value + ")");
-                                //Show the popup
-                                d3.select("#" + scope.generated_id).classed("hidden", false);
-                            })
-                            .on("mouseout", function () {
-                                d3.select(this).classed("cell-hover", false);
-                                d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", false);
-                                d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", false);
-                                // hide the tooltip
-                                d3.select("#" + scope.generated_id).classed("hidden", true);
-                            }); 
-
-
-                            // -------------------------------------------------------------------------------
-                            var sa = d3.select(".g3")
-                            .on("mousedown", function () {
-                                if (!d3.event.altKey) {
-                                    d3.selectAll(".cell-selected").classed("cell-selected", false);
-                                    d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-selected", false);
-                                    d3.selectAll(".colLabel_" + scope.generated_id).classed("text-selected", false);
-                                }
-                                var p = d3.mouse(this);
-                                sa.append("rect")
-                                .attr({
-                                    rx: 0,
-                                    ry: 0,
-                                    class: "selection",
-                                    x: p[0],
-                                    y: p[1],
-                                    width: 1,
-                                    height: 1
+                                .selectAll(".cellg")
+                                .data(data, function (d) {
+                                    return d.row + ":" + d.col;
                                 })
-                            })
-                            .on("mousemove", function () {
-                                var s = sa.select("rect.selection");
-
-                                if (!s.empty()) {
-                                    var p = d3.mouse(this),
-                                        d = {
-                                            x: parseInt(s.attr("x"), 10),
-                                            y: parseInt(s.attr("y"), 10),
-                                            width: parseInt(s.attr("width"), 10),
-                                            height: parseInt(s.attr("height"), 10)
-                                        },
-                                        move = {
-                                            x: p[0] - d.x,
-                                            y: p[1] - d.y
-                                        };
-
-                                    if (move.x < 1 || (move.x * 2 < d.width)) {
-                                        d.x = p[0];
-                                        d.width -= move.x;
-                                    } else {
-                                        d.width = move.x;
-                                    }
-
-                                    if (move.y < 1 || (move.y * 2 < d.height)) {
-                                        d.y = p[1];
-                                        d.height -= move.y;
-                                    } else {
-                                        d.height = move.y;
-                                    }
-                                    s.attr(d);
-
-                                    // deselect all temporary selected state objects
-                                    d3.selectAll('.cell-selection.cell-selected').classed("cell-selected", false);
-                                    d3.selectAll(".text-selection.text-selected").classed("text-selected", false);
-
-                                    d3.selectAll('.cell').filter(function (cell_d, i) {
-                                        if (!d3.select(this).classed("cell-selected") &&
-                                            // inner circle inside selection frame
-                                            (this.x.baseVal.value) + cellSize >= d.x && (this.x.baseVal.value) <= d.x + d.width &&
-                                            (this.y.baseVal.value) + cellSize >= d.y && (this.y.baseVal.value) <= d.y + d.height
-                                           ) {
-
-                                            d3.select(this)
-                                            .classed("cell-selection", true)
-                                            .classed("cell-selected", true);
-
-                                            d3.select(".r" + (cell_d.row - 1))
-                                            .classed("text-selection", true)
-                                            .classed("text-selected", true);
-                                            d3.select(".c" + (cell_d.col - 1))
-                                            .classed("text-selection", true)
-                                            .classed("text-selected", true);
-                                        }
+                                .enter()
+                                .append("rect")
+                                .attr("x", function (d) {
+                                    return hccol.indexOf(d.col) * cellSize;
+                                })
+                                .attr("y", function (d) {
+                                    return hcrow.indexOf(d.row) * cellSize;
+                                })
+                                .attr("class", function (d) {
+                                    return "cell_" + scope.generated_id  +  " cell-border cr" + (d.row - 1) + "_" + scope.generated_id + " cc" + (d.col - 1) + "_" + scope.generated_id;
+                                })
+                                .attr("width", cellSize)
+                                .attr("height", cellSize)
+                                .style("fill", function (d) {
+                                    return colorScale(d.value);
+                                })
+                                .on("mouseover", function (d, i) {
+                                    //highlight text
+                                    d3.select(this).classed("cell-hover", true);
+                                    d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", function (r, ri) {
+                                        return ri == (d.row - 1);
                                     });
-                                }
-                            })
-                            .on("mouseup", function () {
-                                // remove selection frame
-                                sa.selectAll("rect.selection").remove();
+                                    d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", function (c, ci) {
+                                        return ci == (d.col - 1);
+                                    });
 
-                                // remove temporary selection marker class
-                                d3.selectAll('.cell-selection').classed("cell-selection", false);
-                                d3.selectAll(".text-selection").classed("text-selection", false);
-                            })
-                            .on("mouseout", function () {
-                                if (d3.event.relatedTarget.tagName == 'html') {
-                                    // remove selection frame
-                                    sa.selectAll("rect.selection").remove();
-                                    // remove temporary selection marker class
-                                    d3.selectAll('.cell-selection').classed("cell-selection", false);
-                                    d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-selected", false);
-                                    d3.selectAll(".colLabel_" + scope.generated_id).classed("text-selected", false);
-                                }
-                            });  
-                            
+                                    $tooltip.html(rowLabel[d.row - 1] + "," + colLabel[d.col - 1] + " (" + scope.data[i].value + ")").place_tt(d3.event.pageX, d3.event.pageY);
+                                })
+                                .on("mouseout", function () {
+                                    d3.select(this).classed("cell-hover", false);
+                                    d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", false);
+                                    d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", false);
+                                    
+                                    $tooltip.detach();
+                                });
+                        
                             // Function to sort the cells with respect to selected row or column
                             function sortbylabel(rORc, i, sortOrder) {
                                 // rORc .. r for row, c for column
                                 var t = svg.transition().duration(1200);
-                                var log2r = [];
+                                
+                                var values = []; // holds the values in this specific row
+                                for(var j = 0; j < col_number; j++) { values.push(0) };
+                                
                                 var sorted; // sorted is zero-based index
-                                d3.selectAll(".c" + rORc + i)
+                                d3.selectAll(".c" + rORc + i + "_" + scope.generated_id)
                                 .filter(function (ce) {
-                                    log2r.push(ce.value);
+                                    if(rORc == "r") {
+                                        values[ce.col - 1] = ce.value;
+                                    } else {
+                                        values[ce.row - 1] = ce.value;
+                                    }
                                 });
-                                if (rORc == "r") { // sort log2ratio of a gene
+                                if (rORc == "r") { // sorting by rows
+                                    // can't be col_number
+                                    // must select from already there coluns (rows)
                                     sorted = d3.range(col_number).sort(function (a, b) {
+                                        var value;
                                         if (sortOrder) {
-                                            return log2r[b] - log2r[a];
+                                            value = values[b] - values[a];
+                                            value = isNaN(value) ? Infinity : value;
                                         } else {
-                                            return log2r[a] - log2r[b];
+                                            value = values[a] - values[b];
+                                            value = isNaN(value) ? Infinity : value;
                                         }
+                                        return value;
                                     });
+                                    
                                     t.selectAll(".cell_" + scope.generated_id)
                                     .attr("x", function (d) {
                                         return sorted.indexOf(d.col - 1) * cellSize;
@@ -643,13 +522,17 @@ define([
                                     .attr("y", function (d, i) {
                                         return sorted.indexOf(i) * cellSize;
                                     });
-                                } else { // sort log2ratio of a contrast
+                                } else { // sorting by columns
                                     sorted = d3.range(row_number).sort(function (a, b) {
+                                        var value;
                                         if (sortOrder) {
-                                            return log2r[b] - log2r[a];
+                                            value = values[b] - values[a];
+                                            value = isNaN(value) ? Infinity : value;
                                         } else {
-                                            return log2r[a] - log2r[b];
+                                            value = values[a] - values[b];
+                                            value = isNaN(value) ? Infinity : value;
                                         }
+                                        return value;
                                     });
                                     t.selectAll(".cell_" + scope.generated_id)
                                     .attr("y", function (d) {
