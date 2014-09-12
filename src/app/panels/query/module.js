@@ -20,6 +20,12 @@ define([
 
   module.controller('query', function($scope, querySrv, $rootScope) {
     $scope.panelMeta = {
+      modals: [{
+        description: "Inspect",
+        icon: "icon-info-sign",
+        partial: "app/partials/inspector.html",
+        show: $scope.panel.spyable
+      }],
       status  : "Stable",
       description : "Provide a search bar for free-form queries. You almost certainly want one of these somewhere prominent on your dashboard."
     };
@@ -29,7 +35,8 @@ define([
       query   : "*:*",
       pinned  : true,
       history : [],
-      remember: 10 // max: 100, angular strap can't take a variable for items param
+      spyable : true,
+      remember: 10, // max: 100, angular strap can't take a variable for items param
     };
     _.defaults($scope.panel,_d);
 

@@ -366,9 +366,19 @@ function (angular, app, _, $, kbn) {
                     ' "style="font-size:8pt;text-align:center;padding:2px;color:white;">'+
                     label+'<br/>'+Math.round(series.percent)+'%</div>';
                 };
+                // DEfulat style for labels that is implmented in jquery flot
+                // var position = "";
+                // if (scope.panel.counter_pos == "left")
+                //   position = "nw";
+                // else if (scope.panel.counter_pos == "right")
+                //   position = "ne";
 
                 plot = $.plot(elem, chartData, {
-                  legend: { show: false },
+                  legend: {
+                    show: false,
+                    // position: position,
+                    // backgroundColor: "transparent"
+                  },
                   series: {
                     pie: {
                       innerRadius: scope.panel.donut ? 0.4 : 0,
