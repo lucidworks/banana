@@ -54,6 +54,7 @@
           "pinned": true,
           "query": "*",
           "title": "Search",
+          "spyable": true,
           "def_type": ""
         },
         {
@@ -95,6 +96,7 @@
           "error": false,
           "span": 5,
           "editable": true,
+          "spyable": true,
           "group": [
             "default"
           ],

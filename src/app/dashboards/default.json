@@ -86,7 +86,6 @@
       "editable": true,
       "collapse": false,
       "collapsable": true,
-      "spyable" : true,
       "panels": [
         {
           "error": "",

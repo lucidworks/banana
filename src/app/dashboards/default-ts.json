@@ -84,6 +84,7 @@
             "min": 3
           },
           "filter_id": 0,
+          "spyable": true,
           "title": "Time Window"
         },
         {
@@ -100,6 +101,7 @@
           "pinned": true,
           "query": "*:*",
           "title": "Search",
+          "spyable": true,
           "def_type": ""
         },
         {
@@ -141,6 +143,7 @@
           "error": false,
           "span": 12,
           "editable": true,
+          "spyable": true,
           "group": [
             "default"
           ],
