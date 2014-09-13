@@ -1,7 +1,5 @@
 /* jshint node:true */
 
-// NOTE: This file is not completed for use yet.
-
 'use strict';
 module.exports = function (grunt) {
 
@@ -11,9 +9,13 @@ module.exports = function (grunt) {
     destDir: 'dist',
     tempDir: 'tmp',
     meta: {
+      // banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
+      //   '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
+      //   '<%= pkg.homepage ? " * " + pkg.homepage + "\\n" : "" %>' +
+      //   ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
+      //   ' Licensed <%= pkg.license %> */\n\n'
       banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
         '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-        '<%= pkg.homepage ? " * " + pkg.homepage + "\\n" : "" %>' +
         ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
         ' Licensed <%= pkg.license %> */\n\n'
     },
@@ -99,7 +101,8 @@ module.exports = function (grunt) {
           'app/panels/**/*.js',
           'app/app.js',
           'vendor/angular/**/*.js',
-          'vendor/elasticjs/elastic-angular-client.js'
+          'vendor/elasticjs/elastic-angular-client.js',
+          'vendor/solrjs/solr-angular-client.js'
         ],
         dest: '<%= tempDir %>'
       }
@@ -228,6 +231,7 @@ module.exports = function (grunt) {
         'bootstrap',
         'modernizr',
         'elasticjs',
+        'solrjs',
         'timepicker',
         'datepicker',
         'underscore',
@@ -238,7 +242,8 @@ module.exports = function (grunt) {
         'directives/all',
         'jquery.flot.pie',
         'angular-sanitize',
-        'angular-dragdrop'
+        'angular-dragdrop',
+        'd3'
       ]
     }
   ];
@@ -265,7 +270,7 @@ module.exports = function (grunt) {
 
   // Concat and Minify the src directory into dist
   grunt.registerTask('build', [
-    'jshint:source',
+    // 'jshint:source',
     'clean:on_start',
     'less:dist',
     'copy:everything_but_less_to_temp',
