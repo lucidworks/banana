@@ -226,18 +226,10 @@ function (angular, app, _, $) {
       restrict: 'A',
       link: function(scope, elem) {
 
-        // Workaround to prevent multiple render events
-        if (elem.html() !== '') return;
-        
         elem.html('<center><img src="img/load_big.gif"></center>');
 
         // Receive render events
         scope.$on('render',function(){
-          render_panel();
-        });
-
-        // Or if the window is resized
-        angular.element(window).bind('resize', function(){
           render_panel();
         });
 
