@@ -198,7 +198,7 @@ function (angular, app, _, $, kbn) {
         $scope.hits = results.response.numFound;
 
         $scope.data = [];
-
+        var sum = 0;
         if ($scope.panel.mode === 'count') {
           // In count mode, the y-axis min should be zero because count value cannot be negative.
           $scope.yaxis_min = 0;
@@ -207,6 +207,7 @@ function (angular, app, _, $, kbn) {
               var term = v[i];
               i++;
               var count = v[i];
+              sum += count;
               // if count = 0, do not add it to the chart, just skip it
               if (count == 0) continue;
               var slice = { label : term, data : [[k,count]], actions: true};
@@ -243,7 +244,7 @@ function (angular, app, _, $, kbn) {
         $scope.data.push({label:'Other values',
           // data:[[k+1,results.facets.terms.other]],meta:"other",color:'#444'});
           // TODO: Hard coded to 0 for now. Solr faceting does not provide 'other' value. 
-          data:[[k+1,0]],meta:"other",color:'#444'});
+          data:[[k+1,$scope.hits-sum]],meta:"other",color:'#444'});
 
         if (DEBUG) { console.debug('terms: $scope.data = ',$scope.data); }
 
