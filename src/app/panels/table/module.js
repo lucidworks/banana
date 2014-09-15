@@ -106,7 +106,11 @@ function (angular, app, _, kbn, moment) {
       $scope.$on('refresh',function(){$scope.get_data();});
       $scope.panel.exportSize = $scope.panel.size * $scope.panel.pages; 
       $scope.fields = fields;
-      $scope.panel.important_fields = fields.list;
+      
+      // Backward compatibility with old dashboards without important fields
+      // Set important fields to all fields if important fields array is empty
+      if (_.isEmpty($scope.panel.important_fields))
+        $scope.panel.important_fields = fields.list;
       $scope.get_data();
     };
 
