@@ -96,7 +96,6 @@ function (angular, app, _, $) {
         $scope.get_data();
       }
       $scope.refresh = false;
-      $scope.$emit('render');
     };
 
     $scope.get_data = function() {
@@ -231,11 +230,6 @@ function (angular, app, _, $) {
 
         // Receive render events
         scope.$on('render',function(){
-          render_panel();
-        });
-
-        // Or if the window is resized
-        angular.element(window).bind('resize', function(){
           render_panel();
         });
 
