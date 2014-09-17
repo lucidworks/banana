@@ -45,6 +45,10 @@ function (angular, app, _, kbn, moment) {
       ],
       editorTabs : [
         {
+          title:'Fields',
+          src: 'app/panels/table/fields.html'
+        },
+        {
           title:'Paging',
           src: 'app/panels/table/pagination.html'
         },
@@ -76,6 +80,7 @@ function (angular, app, _, kbn, moment) {
       style   : {'font-size': '9pt'},
       overflow: 'min-height',
       fields  : [],
+      important_fields : [],
       highlight : [],
       sortable: true,
       header  : true,
@@ -101,6 +106,11 @@ function (angular, app, _, kbn, moment) {
       $scope.$on('refresh',function(){$scope.get_data();});
       $scope.panel.exportSize = $scope.panel.size * $scope.panel.pages; 
       $scope.fields = fields;
+      
+      // Backward compatibility with old dashboards without important fields
+      // Set important fields to all fields if important fields array is empty
+      if (_.isEmpty($scope.panel.important_fields))
+        $scope.panel.important_fields = fields.list;
       $scope.get_data();
     };
 
@@ -138,6 +148,15 @@ function (angular, app, _, kbn, moment) {
         $scope.panel.fields = _.without($scope.panel.fields,field);
       } else {
         $scope.panel.fields.push(field);
+      }
+    };
+
+    // Toggle important field that will appear to the left of table panel
+    $scope.toggle_important_field = function(field) {
+      if (_.indexOf($scope.panel.important_fields,field) > -1) {
+        $scope.panel.important_fields = _.without($scope.panel.important_fields,field);
+      } else {
+        $scope.panel.important_fields.push(field);
       }
     };
 

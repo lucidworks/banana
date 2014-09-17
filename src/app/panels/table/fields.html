@@ -1,0 +1,13 @@
+  <div class="row-fluid">
+    <div class="span4">
+      <h6>Add Field <tip>Add field to be shown on the fields list pane of the panel</tip></h6>
+      <form class="input-append">
+        <input bs-typeahead="fields.list" type="text" class="input-small" ng-model='importantfield'>
+        <button class="btn" ng-click="toggle_important_field(importantfield);importantfield=''"><i class="icon-plus"></i></button>
+      </form>
+    </div>
+    <div class="span8">
+      <h6>Fields <small>Click to remove</small></h6>
+      <span style="margin-left:3px" ng-click="toggle_important_field(field)" ng-repeat="field in $parent.panel.important_fields" class="label pointer remove">{{field}} </span>
+    </div>
+  </div>
