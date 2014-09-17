@@ -139,11 +139,11 @@ function (angular, app, _, $, kbn) {
       var facet = '';
 
       if ($scope.panel.mode === 'count') {
-        facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size;
+        facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size + '&facet.missing=true';
       } else {
         // if mode != 'count' then we need to use stats query
         // stats does not support something like facet.limit, so we have to sort and limit the results manually.
-        facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field;
+        facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field + '&facet.missing=true';
       }
       
       var exclude_length = $scope.panel.exclude.length; 
@@ -199,6 +199,7 @@ function (angular, app, _, $, kbn) {
 
         $scope.data = [];
         var sum = 0;
+        var missing =0;
         if ($scope.panel.mode === 'count') {
           // In count mode, the y-axis min should be zero because count value cannot be negative.
           $scope.yaxis_min = 0;
@@ -208,6 +209,8 @@ function (angular, app, _, $, kbn) {
               i++;
               var count = v[i];
               sum += count;
+              if(term == null)
+                missing = count
               // if count = 0, do not add it to the chart, just skip it
               if (count == 0) continue;
               var slice = { label : term, data : [[k,count]], actions: true};
@@ -240,7 +243,7 @@ function (angular, app, _, $, kbn) {
         $scope.data.push({label:'Missing field',
           // data:[[k,results.facets.terms.missing]],meta:"missing",color:'#aaa',opacity:0});
           // TODO: Hard coded to 0 for now. Solr faceting does not provide 'missing' value.
-          data:[[k,0]],meta:"missing",color:'#aaa',opacity:0});
+          data:[[k,missing]],meta:"missing",color:'#aaa',opacity:0});
         $scope.data.push({label:'Other values',
           // data:[[k+1,results.facets.terms.other]],meta:"other",color:'#444'});
           // TODO: Hard coded to 0 for now. Solr faceting does not provide 'other' value. 
