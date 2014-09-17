@@ -66,17 +66,17 @@ function (angular, app, _, $) {
     _.defaults($scope.panel,_d);
 
     $scope.init = function() {
-      $scope.testMultivalued();
+      // $scope.testMultivalued();
       $scope.$on('refresh',function(){$scope.get_data();});
       $scope.get_data();
     };
 
     $scope.testMultivalued = function() {
-      if($scope.panel.field && $scope.panel.field !== '' && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
+      if($scope.panel.field && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
         $scope.panel.error = "Can't proceed with Multivalued field";
         return;
       }
-      if($scope.panel.stats_field && $scope.panel.stats_field !== '' && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
+      if($scope.panel.stats_field && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
         $scope.panel.error = "Can't proceed with Multivalued field";
         return;
       }
@@ -92,7 +92,7 @@ function (angular, app, _, $) {
 
     $scope.close_edit = function() {
       if ($scope.refresh) {
-        $scope.testMultivalued();
+        // $scope.testMultivalued();
         $scope.get_data();
       }
       $scope.refresh = false;

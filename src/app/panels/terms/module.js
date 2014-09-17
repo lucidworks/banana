@@ -76,7 +76,7 @@ function (angular, app, _, $, kbn) {
 
     $scope.init = function () {
       $scope.hits = 0;
-      $scope.testMultivalued();
+      // $scope.testMultivalued();
       $scope.$on('refresh',function(){
         $scope.get_data();
       });
@@ -84,12 +84,13 @@ function (angular, app, _, $, kbn) {
     };
 
     $scope.testMultivalued = function() {
-      if($scope.panel.field && $scope.panel.field !== '' && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
+      // if($scope.panel.field && $scope.panel.field !== '' && $scope.fields.typeList[$scope.panel.field] && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
+      if($scope.panel.field && $scope.fields.typeList[$scope.panel.field] && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
         $scope.panel.error = "Can't proceed with Multivalued field";
         return;
       }
 
-      if($scope.panel.stats_field && $scope.panel.stats_field !== '' && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
+      if($scope.panel.stats_field && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
         $scope.panel.error = "Can't proceed with Multivalued field";
         return;
       }
@@ -169,6 +170,11 @@ function (angular, app, _, $, kbn) {
       // Populate scope when we have results
       results.then(function(results) {
         if (DEBUG) { console.debug('terms: results=',results); }
+        // Check for error and abort if found
+        if(!(_.isUndefined(results.error))) {
+          $scope.panel.error = $scope.parse_error(results.error.msg);
+          return;
+        }
 
         // Function for validating HTML color by assign it to a dummy <div id="colorTest">
         // and let the browser do the work of validation.
@@ -193,12 +199,12 @@ function (angular, app, _, $, kbn) {
           return slice;
         };
 
+        var sum = 0;
         var k = 0;
         $scope.panelMeta.loading = false;
         $scope.hits = results.response.numFound;
-
         $scope.data = [];
-        var sum = 0;
+
         if ($scope.panel.mode === 'count') {
           // In count mode, the y-axis min should be zero because count value cannot be negative.
           $scope.yaxis_min = 0;
@@ -275,7 +281,7 @@ function (angular, app, _, $, kbn) {
 
     $scope.close_edit = function() {
       if($scope.refresh) {
-        $scope.testMultivalued();
+        // $scope.testMultivalued();
         $scope.get_data();
       }
       $scope.refresh =  false;

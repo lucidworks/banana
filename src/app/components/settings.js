@@ -12,8 +12,10 @@ function (_) {
     var defaults = {
       solr: "http://"+window.location.hostname+":8983/solr/",
       solr_core: "logstash_logs",
+      banana_index  : 'banana-int',
+      USE_ADMIN_LUKE: true,
+      USE_ADMIN_CORES: true,
       panel_names   : [],
-      banana_index  : 'banana-int'
     };
 
     // This initializes a new hash on purpose, to avoid adding parameters to
