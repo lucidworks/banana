@@ -669,7 +669,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             }
             $tooltip
               .html(
-                group + dashboard.numberWithCommas(value) + " @ " + moment(item.datapoint[0]).format('MM/DD HH:mm:ss')
+                 group + dashboard.numberWithCommas(value) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(item.datapoint[0]).format('MM/DD HH:mm:ss') : moment(item.datapoint[0]).format('MM/DD HH:mm:ss'))
+                // group + dashboard.numberWithCommas(value) + " @ " + moment(item.datapoint[0]).format('MM/DD HH:mm:ss')
                 // group + dashboard.numberWithCommas(value) + " @ " + moment(item.datapoint[0])
               )
               .place_tt(pos.pageX, pos.pageY);
