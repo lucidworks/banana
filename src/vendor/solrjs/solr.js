@@ -18480,7 +18480,12 @@
 
         if (query.query !== undefined && query.query.query_string !== undefined) {
           // For loading dashboard from json files
-          queryData = 'q=' + query.query.query_string.query + '&wt=json';
+          // Check query.size
+          var rowNum = '';
+          if (query.size && query.size > 0) {
+            rowNum = '&rows=' + query.size;
+          }
+          queryData = 'q=' + query.query.query_string.query + rowNum + '&wt=json';
         }
 
         if (DEBUG) { console.debug('doSearch():\n\tqueryData = ',queryData); }

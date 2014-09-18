@@ -49,6 +49,25 @@ function (Settings) {
     banana_index: "banana-int",
 
     /**
+     * The default settings will use /admin/luke API to retrieve all fields from Solr including
+     * dynamic fields (e.g. *_s, *_t, and etc). And also, it will use /admin/cores API to retrieve
+     * all cores/collections from Solr to populate the drop-down collection picker.
+     * 
+     * You can disable the /admin APIs by setting USE_ADMIN_LUKE and USE_ADMIN_CORES flags to false.
+     * The effects are that the field list in Table panel will not be able to show the dynamic fields,
+     * and the drop-down collection picker will not work.
+     * 
+     * If USE_ADMIN_LUKE is set to false, Banana will use /schema/fields API instead and dynamic fields
+     * will not show up in the field list.
+     *
+     * If USE_ADMIN_CORES is set to false, Banana will not be able to retrieve the list of Solr collections.
+     * And also, the dashboard alert about no collections returned from Solr will be disabled.
+     * @type {Boolean}
+     */
+    USE_ADMIN_LUKE: true,
+    USE_ADMIN_CORES: true,
+
+    /**
      * Panel modules available. Panels will only be loaded when they are defined in the
      * dashboard. This list is used to populate the drop-down in the "add panel" interface.
      * @type {Array}
@@ -69,7 +88,8 @@ function (Settings) {
       'rangeFacet',
       'heatmap',
       'scatterplot',
-      'fullTextSearch'
+      'fullTextSearch',
+      'facet'
       // 'dummy'  // Dummy module for testing
     ]
   });

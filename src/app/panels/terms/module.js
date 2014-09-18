@@ -76,7 +76,7 @@ function (angular, app, _, $, kbn) {
 
     $scope.init = function () {
       $scope.hits = 0;
-      $scope.testMultivalued();
+      // $scope.testMultivalued();
       $scope.$on('refresh',function(){
         $scope.get_data();
       });
@@ -84,12 +84,13 @@ function (angular, app, _, $, kbn) {
     };
 
     $scope.testMultivalued = function() {
-      if($scope.panel.field && $scope.panel.field !== '' && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
+      // if($scope.panel.field && $scope.panel.field !== '' && $scope.fields.typeList[$scope.panel.field] && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
+      if($scope.panel.field && $scope.fields.typeList[$scope.panel.field] && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
         $scope.panel.error = "Can't proceed with Multivalued field";
         return;
       }
 
-      if($scope.panel.stats_field && $scope.panel.stats_field !== '' && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
+      if($scope.panel.stats_field && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
         $scope.panel.error = "Can't proceed with Multivalued field";
         return;
       }
@@ -139,15 +140,23 @@ function (angular, app, _, $, kbn) {
       var facet = '';
 
       if ($scope.panel.mode === 'count') {
-        facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size;
+        facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size + '&facet.missing=true';
       } else {
         // if mode != 'count' then we need to use stats query
         // stats does not support something like facet.limit, so we have to sort and limit the results manually.
-        facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field;
+        facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field + '&facet.missing=true';
+      }
+      
+      var exclude_length = $scope.panel.exclude.length; 
+      var exclude_filter = '';
+      if(exclude_length > 0){
+        for (var i = 0; i < exclude_length; i++) {
+          exclude_filter += '&fq=-' + $scope.panel.field +":"+ $scope.panel.exclude[i];
+        };
       }
 
       // Set the panel's query
-      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet;
+      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + exclude_filter + facet;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
@@ -161,6 +170,11 @@ function (angular, app, _, $, kbn) {
       // Populate scope when we have results
       results.then(function(results) {
         if (DEBUG) { console.debug('terms: results=',results); }
+        // Check for error and abort if found
+        if(!(_.isUndefined(results.error))) {
+          $scope.panel.error = $scope.parse_error(results.error.msg);
+          return;
+        }
 
         // Function for validating HTML color by assign it to a dummy <div id="colorTest">
         // and let the browser do the work of validation.
@@ -185,10 +199,11 @@ function (angular, app, _, $, kbn) {
           return slice;
         };
 
+        var sum = 0;
         var k = 0;
+        var missing =0;
         $scope.panelMeta.loading = false;
         $scope.hits = results.response.numFound;
-
         $scope.data = [];
 
         if ($scope.panel.mode === 'count') {
@@ -199,6 +214,9 @@ function (angular, app, _, $, kbn) {
               var term = v[i];
               i++;
               var count = v[i];
+              sum += count;
+              if(term == null)
+                missing = count
               // if count = 0, do not add it to the chart, just skip it
               if (count == 0) continue;
               var slice = { label : term, data : [[k,count]], actions: true};
@@ -231,11 +249,11 @@ function (angular, app, _, $, kbn) {
         $scope.data.push({label:'Missing field',
           // data:[[k,results.facets.terms.missing]],meta:"missing",color:'#aaa',opacity:0});
           // TODO: Hard coded to 0 for now. Solr faceting does not provide 'missing' value.
-          data:[[k,0]],meta:"missing",color:'#aaa',opacity:0});
+          data:[[k,missing]],meta:"missing",color:'#aaa',opacity:0});
         $scope.data.push({label:'Other values',
           // data:[[k+1,results.facets.terms.other]],meta:"other",color:'#444'});
           // TODO: Hard coded to 0 for now. Solr faceting does not provide 'other' value. 
-          data:[[k+1,0]],meta:"other",color:'#444'});
+          data:[[k+1,$scope.hits-sum]],meta:"other",color:'#444'});
 
         if (DEBUG) { console.debug('terms: $scope.data = ',$scope.data); }
 
@@ -266,7 +284,7 @@ function (angular, app, _, $, kbn) {
 
     $scope.close_edit = function() {
       if($scope.refresh) {
-        $scope.testMultivalued();
+        // $scope.testMultivalued();
         $scope.get_data();
       }
       $scope.refresh =  false;
@@ -358,9 +376,19 @@ function (angular, app, _, $, kbn) {
                     ' "style="font-size:8pt;text-align:center;padding:2px;color:white;">'+
                     label+'<br/>'+Math.round(series.percent)+'%</div>';
                 };
+                // DEfulat style for labels that is implmented in jquery flot
+                // var position = "";
+                // if (scope.panel.counter_pos == "left")
+                //   position = "nw";
+                // else if (scope.panel.counter_pos == "right")
+                //   position = "ne";
 
                 plot = $.plot(elem, chartData, {
-                  legend: { show: false },
+                  legend: {
+                    show: false,
+                    // position: position,
+                    // backgroundColor: "transparent"
+                  },
                   series: {
                     pie: {
                       innerRadius: scope.panel.donut ? 0.4 : 0,

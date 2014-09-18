@@ -1,8 +1,9 @@
 define([
   'angular',
-  'underscore'
+  'underscore',
+  'config'
 ],
-function (angular, _) {
+function (angular, _, config) {
   'use strict';
 
   var module = angular.module('kibana.services');
@@ -74,15 +75,23 @@ function (angular, _) {
     //   }
 
     this.map = function(indices) {
+      // Check USE_ADMIN_LUKE flag in config.js
+      var fieldApi = '';
+      if (config.USE_ADMIN_LUKE) {
+        fieldApi = '/admin/luke?numTerms=0&wt=json';
+      } else {
+        fieldApi = '/schema/fields';
+      }
+
       var request = $http({
         // Query ES to get mapping fields
         // url: config.elasticsearch + "/" + indices.join(',') + "/_mapping",
         // Solr
         // url: config.solr + config.solr_collection + "/schema/fields",
-
         // url: dashboard.current.solr.server + dashboard.current.solr.core_name + "/schema/fields?includeDynamic=true",
+
         // Get all fields in Solr core
-        url: dashboard.current.solr.server + dashboard.current.solr.core_name + "/admin/luke?numTerms=0&wt=json",
+        url: dashboard.current.solr.server + dashboard.current.solr.core_name + fieldApi,
         method: "GET"
       }).error(function(data, status) {
         if(status === 0) {
@@ -134,9 +143,17 @@ function (angular, _) {
         //   mapping[log_index][logs][v.name] = { 'type':v.type };
         // });
 
-        _.each(p.data.fields, function(v,k) {
-          mapping[log_index][logs][k] = {'type':v.type, 'schema': v.schema};
-        });
+        if (config.USE_ADMIN_LUKE) {
+          _.each(p.data.fields, function(v,k) {
+            // k is the field name
+            mapping[log_index][logs][k] = {'type':v.type, 'schema':v.schema};
+          });
+        } else {
+          _.each(p.data.fields, function(v,k) {
+            // k is the array index number
+            mapping[log_index][logs][v.name] = {'type':v.type, 'schema':''};
+          });
+        }
 
         return mapping;
       });

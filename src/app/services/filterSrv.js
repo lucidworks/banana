@@ -41,8 +41,10 @@ define([
       _f = dashboard.current.services.filter;
 
       _.each(self.getByType('time',true),function(time) {
-        self.list[time.id].from = new Date(time.from);
-        self.list[time.id].to = new Date(time.to);
+        self.list[time.id].from = time.from;
+        self.list[time.id].to = time.to;
+        self.list[time.id].fromDateObj = new Date(time.fromDateObj);
+        self.list[time.id].toDateObj = new Date(time.toDateObj);
       });
 
     };
