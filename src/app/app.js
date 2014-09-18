@@ -100,6 +100,8 @@ function (angular, $, _, appLevelRequire) {
     'ngAnimate',
     // '$strap.directives',
     'mgcrea.ngStrap',
+    'mgcrea.ngStrap.helpers.parseOptions',
+    'mgcrea.ngStrap.tooltip',
     'ngRoute',
     'ngSanitize',
     'ngDragDrop',

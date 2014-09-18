@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-sm-3 col-md-3">
     <h6>Field <tip>Date field for x axis</tip></h6>
-    <input bs-typeahead="fields.list" type="text" class="form-control" ng-model="panel.field" ng-change="set_refresh(true)">
+    <input bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="panel.field" ng-change="set_refresh(true)">
   </div>
   <div class="col-sm-6 col-md-6">
     <h6>Fields to Compare <tip>Field to be plotted on the chart(comma separated)</tip></h6>

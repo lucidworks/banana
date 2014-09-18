@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-sm-2 col-md-2">
     <label class="small">Range Field <tip>Must be a numeric field</tip></label>
-      <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead="fields.list" type="text" class="form-control" ng-model="panel.range_field">
+      <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="panel.range_field">
   </div>
 </div>
 <h5>Chart Settings</h5>

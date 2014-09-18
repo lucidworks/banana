@@ -2,7 +2,7 @@
     <div class="col-sm-4 col-md-4">
       <form class="input-append">
         <h6>Add Column</h6>
-        <input bs-typeahead="fields.list" type="text" class="form-control" ng-model="newfield">
+        <input bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="newfield">
         <button class="btn btn-default" ng-click="toggle_field(newfield);newfield=''"><i class="fa fa-plus"></i></button>
       </form>
     </div>
@@ -16,7 +16,7 @@
     <div class="span4">
       <form class="input-append">
         <h6>Add field</h6>
-        <input bs-typeahead="fields.list" type="text" class="form-control" ng-model='newhighlight' ng-change="set_refresh(true)">
+        <input bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model='newhighlight' ng-change="set_refresh(true)">
         <button class="btn" ng-click="toggle_highlight(newhighlight);newhighlight=''"><i class="fa fa-plus"></i></button>
       </form>
     </div>
@@ -36,7 +36,7 @@
     </div>
     <div class="col-sm-3 col-md-3" style="white-space:nowrap" ng-show="panel.sortable">
       <h6>Sort</h6>
-      <input ng-show="all_fields.length<=0 || !all_fields" style="width:85%" ng-model="panel.sort[0]" ng-change="set_refresh(true)" bs-typeahead="fields.list" type="text" class="form-control">
+      <input ng-show="all_fields.length<=0 || !all_fields" style="width:85%" ng-model="panel.sort[0]" ng-change="set_refresh(true)" bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control">
       <select ng-show="all_fields.length>0" style="width:85%" ng-model="panel.sort[0]" ng-change="set_refresh(true)" ng-options="f for f in all_fields"></select>
       <i ng-click="set_sort(panel.sort[0])" ng-class="{'fa fa-chevron-up': panel.sort[1] == 'asc','fa fa-chevron-down': panel.sort[1] == 'desc'}"></i>
     </div>
@@ -65,7 +65,7 @@
     </div>
     <div class="col-sm-3 col-md-3" ng-show="panel.enableHyperlink">
       <h6>Column for Links</h6>
-      <input type="text" class="form-control" ng-model="panel.hyperlinkColumnForURI" bs-typeahead="fields.list">
+      <input type="text" class="form-control" ng-model="panel.hyperlinkColumnForURI" bs-typeahead ng-options="field for field in fields.list">
     </div>
   </div>
 
@@ -76,7 +76,7 @@
     </div>
     <div class="col-sm-4 col-md-4" ng-show="panel.enableImageField">
       <h6>Image Field(s) <tip>Comma separated list of fields that contain image URL.</tip></h6>
-      <input type="text" class="input-large form-control" bs-typeahead="fields.list" ng-model="panel.imageFields" ng-change="set_refresh(true)" ng-list="">
+      <input type="text" class="input-large form-control" bs-typeahead ng-options="field for field in fields.list" ng-model="panel.imageFields" ng-change="set_refresh(true)" ng-list="">
     </div>
     <div class="col-sm-2 col-md-2" ng-show="panel.enableImageField">
       <h6>Image Width <tip>For examples: auto, 85px, or 50%</tip></h6>
@@ -91,10 +91,10 @@
   <!-- <div class="row-fluid">
     <div class="span3" ng-show="panel.enableHyperlink && !panel.displayLinkIcon">
       <h6>Column for Link Text</h6>
-      <input type="text" class="form-control" ng-model="panel.hyperlinkColumnForText" bs-typeahead="fields.list">
+      <input type="text" class="form-control" ng-model="panel.hyperlinkColumnForText" bs-typeahead ng-options="field for field in fields.list">
     </div>
     <div class="span3" ng-show="panel.enableHyperlink && !panel.displayLinkIcon">
       <h6>Column for Links</h6>
-      <input type="text" class="form-control" ng-model="panel.hyperlinkColumnForURI" bs-typeahead="fields.list">
+      <input type="text" class="form-control" ng-model="panel.hyperlinkColumnForURI" bs-typeahead ng-options="field for field in fields.list">
     </div>
   </div> -->

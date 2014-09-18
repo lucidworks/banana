@@ -11,10 +11,10 @@ function (angular) {
 
       var editorTemplate =
 
-        '<div class=" panel-extra row"><div class="panel-extra-container col-xs-12">' +
+        '<div class="panel-extra row"><div class="panel-extra-container col-md-12 col-xs-12">' +
 
           '<span class="extra row-button" ng-hide="panel.draggable == false">' +
-            '<span class="row-text pointer" bs-tooltip="\'Drag here to move\'"' +
+            '<span class="row-text pointer" bs-tooltip data-target="" data-title="Drag here to move"' +
             'data-drag=true data-jqyoui-options="{revert: \'invalid\',helper:\'clone\'}"'+
             ' jqyoui-draggable="'+
             '{'+
@@ -32,24 +32,24 @@ function (angular) {
           '<span class="extra row-button" ng-show="panel.editable != false">' +
             '<span confirm-click="row.panels = _.without(row.panels,panel)" '+
             'confirmation="Are you sure you want to remove this {{panel.type}} panel?" class="pointer">'+
-            '<i class="fa fa-times pointer" bs-tooltip="\'Remove\'"></i></span>'+
+            '<i class="fa fa-times pointer" bs-tooltip data-title="Remove"></i></span>'+
           '</span>' +
 
           '<span class="row-button extra" ng-show="panel.editable != false">' +
-            '<span bs-modal="modal" data-content-template="app/partials/paneleditor.html" class="pointer">'+
-            '<i class="fa fa-cog pointer" bs-tooltip="\'Configure\'"></i></span>'+
+            '<span bs-modal data-content-template="app/partials/paneleditor.html" class="pointer">'+
+            '<i class="fa fa-cog pointer" bs-tooltip data-title="Configure"></i></span>'+
           '</span>' +
 
           '<span class="row-button extra" ng-show="panel.transpose_show">' +
-          '<span class="rotate-icon pointer" bs-tooltip="\'Transpose Rows and Columns\'" ng-click="flip()"></span>' +
+          '<span class="rotate-icon pointer" bs-tooltip data-title="Transpose Rows and Columns" ng-click="flip()"></span>' +
           '</span>' +
 
           '<span ng-repeat="task in panelMeta.modals" class="row-button extra" ng-show="task.show&&panel.spyable">' +
-            '<span bs-modal="task.partial" class="pointer"><i ' +
-              'bs-tooltip="task.description" ng-class="task.icon" class="pointer"></i></span>'+
+            '<span bs-modal data-content-template="{{task.partial}}" class="pointer"><i ' +
+              'class="fa fa-info-circle pointer" bs-tooltip data-title="{{task.description}}"></i></span>'+
           '</span>' +
 
-          '<span class="dropdown row-button extra" bs-tooltip="\'Export\'" data-placement="bottom" ng-show="panelMeta.exportfile">' +
+          '<span class="dropdown row-button extra" bs-tooltip data-title="Export" data-placement="bottom" ng-show="panelMeta.exportfile">' +
             '<span class="pointer" class="dropdown-toggle" data-toggle="dropdown">' +
                 '<i class="fa fa-save" class="pointer"></i>' +
             '</span>' +

@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-sm-2 col-md-2">
     <label class="small">Field <tip>This is the facet field.</tip></label>
-    <input type="text" class="form-control" bs-typeahead="fields.list" ng-model="panel.field" ng-change="set_refresh(true)">
+    <input type="text" class="form-control" bs-typeahead ng-options="field for field in fields.list" ng-model="panel.field" ng-change="set_refresh(true)">
   </div>
   <div class="col-sm-2 col-md-2">
     <label class="small">Length <tip>Specify a maximum number of terms to display (Top N).</tip></label>
@@ -63,7 +63,7 @@
   </div>
   <div class="col-sm-2 col-md-2" ng-show="panel.mode != 'count'">
     <label class="small">Stats Field <tip>This is the field that contains numerical values.</tip></label>
-    <input type="text" class="form-control" bs-typeahead="fields.list" ng-model="panel.stats_field" ng-change="set_refresh(true)">
+    <input type="text" class="form-control" bs-typeahead ng-options="field for field in fields.list" ng-model="panel.stats_field" ng-change="set_refresh(true)">
   </div>
   <div class="col-sm-3 col-md-3">
     <label class="small">Display Precision <tip>The number of digits to display after the decimal point.</tip></label>

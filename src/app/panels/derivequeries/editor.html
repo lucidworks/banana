@@ -6,7 +6,7 @@
     </div>
     <div class="col-sm-3 col-md-3">
       <label class="small">Field</label>
-      <input type="text" bs-typeahead="fields.list" style="width:80%" ng-change="set_refresh(true)" ng-model="panel.field" class="form-control">
+      <input type="text" bs-typeahead ng-options="field for field in fields.list" style="width:80%" ng-change="set_refresh(true)" ng-model="panel.field" class="form-control">
     </div>
     <div class="col-sm-3 col-md-3">
       <label class="small">Query Mode</label>

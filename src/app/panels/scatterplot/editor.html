@@ -1,15 +1,15 @@
 <div class="row">
   <div class="col-sm-3 col-md-3">
     <h6>X-axis <tip>Must be numeric field</tip></h6>
-    <input bs-typeahead="fields.list" type="text" placeholder="Start typing" class="form-control" ng-model="panel.xaxis" ng-change="set_refresh(true)">
+    <input bs-typeahead ng-options="field for field in fields.list" type="text" placeholder="Start typing" class="form-control" ng-model="panel.xaxis" ng-change="set_refresh(true)">
   </div>
   <div class="col-sm-3 col-md-3">
     <h6>Y-axis <tip>Must be numeric field</tip></h6>
-    <input bs-typeahead="fields.list" type="text" placeholder="Start typing" class="form-control" ng-model="panel.yaxis" ng-change="set_refresh(true)">
+    <input bs-typeahead ng-options="field for field in fields.list" type="text" placeholder="Start typing" class="form-control" ng-model="panel.yaxis" ng-change="set_refresh(true)">
   </div>
   <div class="col-sm-3 col-md-3">
     <h6>type field</h6>
-    <input bs-typeahead="fields.list" type="text" placeholder="Start typing" class="form-control" ng-model="panel.field_type" ng-change="set_refresh(true)">
+    <input bs-typeahead ng-options="field for field in fields.list" type="text" placeholder="Start typing" class="form-control" ng-model="panel.field_type" ng-change="set_refresh(true)">
   </div>
   <div class="col-sm-3 col-md-3">
     <h6>Max Rows</h6>
