@@ -46,8 +46,6 @@ define([
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
 
-  var DEBUG = false; // DEBUG mode
-
   var module = angular.module('kibana.panels.histogram', []);
   app.useModule(module);
 
@@ -197,8 +195,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       // Solr
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
-      if (DEBUG) { console.debug('histogram:\n\tdashboard=',dashboard,'\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv); }
-
       var request = $scope.sjs.Request().indices(dashboard.indices[segment]);
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
       
@@ -235,7 +231,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       var end_time = filterSrv.getEndTime();
 
       // facet.range.end does NOT accept * as a value, need to convert it to NOW
-      if (end_time == '*') {
+      if (end_time === '*') {
         end_time = 'NOW';
       }
 
@@ -304,7 +300,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       // Populate scope when we have results
       results.then(function(results) {
-        if (DEBUG) { console.debug('histogram:\n\trequest='+request+'\n\tresults=',results); }
 
         $scope.panelMeta.loading = false;
         if(segment === 0) {
@@ -332,9 +327,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             hits;
 
           _.each($scope.panel.queries.ids, function(id) {
-            // var query_results = results.facets[id];
-
-            if (DEBUG) { console.debug('histogram: i=',i,', segment=',segment,', $scope=',$scope); }
 
             // we need to initialize the data variable on the first run,
             // and when we are working on the first segment of the data.
@@ -346,9 +338,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 fill_style: 'minimal'
               });
               hits = 0;
-              if (DEBUG) { console.debug('\tfirst run: i='+i+', time_series=',time_series); }
             } else {
-              if (DEBUG) { console.debug('\tNot first run: i='+i+', $scope.data[i].time_series=',$scope.data[i].time_series,', hits='+$scope.data[i].hits); }
               time_series = $scope.data[i].time_series;
               // Bug fix for wrong event count:
               //   Solr don't need to accumulate hits count since it can get total count from facet query.
@@ -360,23 +350,24 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             
             // Solr facet counts response is in one big array.
             // So no need to get each segment like Elasticsearch does.
+            var entry_time, entries, entry_value;
             if ($scope.panel.mode === 'count') {
               // Entries from facet_ranges counts
-              var entries = results.facet_counts.facet_ranges[time_field].counts;
+              entries = results.facet_counts.facet_ranges[time_field].counts;
               for (var j = 0; j < entries.length; j++) {
-                var entry_time = new Date(entries[j]).getTime(); // convert to millisec
+                entry_time = new Date(entries[j]).getTime(); // convert to millisec
                 j++;
                 var entry_count = entries[j];
                 time_series.addValue(entry_time, entry_count);
                 hits += entry_count; // The series level hits counter
                 $scope.hits += entry_count; // Entire dataset level hits counter
-              };
+              }
             } else if ($scope.panel.mode === 'values') {
               if ($scope.panel.group_field) {
                 // Group By Field is specified
                 var groups = results.grouped[$scope.panel.group_field].groups;
 
-                for (var j=0; j < groups.length; j++) {
+                for (var j=0; j < groups.length; j++) { // jshint ignore: line
                   var docs = groups[j].doclist.docs;
                   var group_time_series = new timeSeries.ZeroFilled({
                     interval: _interval,
@@ -388,8 +379,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
                   // loop through each group results
                   for (var k=0; k < docs.length; k++) {
-                    var entry_time = new Date(docs[k][time_field]).getTime(); // convert to millisec
-                    var entry_value = docs[k][$scope.panel.value_field];
+                    entry_time = new Date(docs[k][time_field]).getTime(); // convert to millisec
+                    entry_value = docs[k][$scope.panel.value_field];
                     group_time_series.addValue(entry_time, entry_value);
                     hits += 1;
                     $scope.hits += 1;
@@ -408,10 +399,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                   };
                 }
               } else { // Group By Field is not specified
-                var entries = results.response.docs;
-                for (var j=0; j < entries.length; j++) {
-                  var entry_time = new Date(entries[j][time_field]).getTime(); // convert to millisec
-                  var entry_value = entries[j][$scope.panel.value_field];
+                entries = results.response.docs;
+                for (var j=0; j < entries.length; j++) { // jshint ignore: line
+                  entry_time = new Date(entries[j][time_field]).getTime(); // convert to millisec
+                  entry_value = entries[j][$scope.panel.value_field];
                   time_series.addValue(entry_time, entry_value);
                   hits += 1;
                   $scope.hits += 1;
@@ -435,17 +426,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
             i++;
           });
-          
-          if (DEBUG) { console.debug('histogram: Before render $scope=',$scope,'$scope.panel=',$scope.panel); }
 
           // Tell the histogram directive to render.
           $scope.$emit('render');
-
-          // Don't need this for Solr unless we need to support multiple queries.
-          // If we still have segments left, get them
-          // if(segment < dashboard.indices.length-1) {
-          //   $scope.get_data(segment+1,query_id);
-          // }
         }
       });
     };
@@ -614,7 +597,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             // If 'lines_smooth' is enabled, loop through $scope.data[] and remove zero filled entries.
             // Without zero values, the line chart will appear smooth as SiLK ;-)
             if (scope.panel.lines_smooth) {
-              for (var i=0; i < scope.data.length; i++) {
+              for (var i=0; i < scope.data.length; i++) { // jshint ignore: line
                 var new_data = [];
                 for (var j=0; j < scope.data[i].data.length; j++) {
                   // if value of the timestamp !== 0, then add it to new_data
@@ -625,8 +608,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 scope.data[i].data = new_data;
               }
             }
-            
-            if (DEBUG) { console.debug('histogram:\n\tflot options = ',options,'\n\tscope.data = ',scope.data); }
 
             scope.plot = $.plot(elem, scope.data, options);
           } catch(e) {
@@ -669,7 +650,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             }
             $tooltip
               .html(
-                 group + dashboard.numberWithCommas(value) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(item.datapoint[0]).format('MM/DD HH:mm:ss') : moment(item.datapoint[0]).format('MM/DD HH:mm:ss'))
+                group + dashboard.numberWithCommas(value) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(item.datapoint[0]).format('MM/DD HH:mm:ss') : moment(item.datapoint[0]).format('MM/DD HH:mm:ss'))
                 // group + dashboard.numberWithCommas(value) + " @ " + moment(item.datapoint[0]).format('MM/DD HH:mm:ss')
                 // group + dashboard.numberWithCommas(value) + " @ " + moment(item.datapoint[0])
               )

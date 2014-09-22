@@ -45,36 +45,8 @@ function (angular, _, config) {
     };
 
     // TODO: add solr support
-    // Make a request to the server to get indices and fields
-    // For example (logstash response):
-    //   mapping = {
-    //     "logstash-2013.10.07": {
-    //       "logs": {
-    //         "properties": {        
-    //           "@timestamp": {
-    //             "format": "dateOptionalTime"
-    //             "type": "date"
-    //           },
-    //           "@version": {
-    //             "type": "string"
-    //           },
-    //           "host": {
-    //             "type": "string"
-    //           },
-    //           "message": {
-    //             "type": "string"
-    //           },
-    //           "path": {
-    //             "type": "string"
-    //           },
-    //           "type": {
-    //             "type": "string"
-    //           }
-    //         }
-    //       }
-    //   }
 
-    this.map = function(indices) {
+    this.map = function() {
       // Check USE_ADMIN_LUKE flag in config.js
       var fieldApi = '';
       if (config.USE_ADMIN_LUKE) {
@@ -84,12 +56,6 @@ function (angular, _, config) {
       }
 
       var request = $http({
-        // Query ES to get mapping fields
-        // url: config.elasticsearch + "/" + indices.join(',') + "/_mapping",
-        // Solr
-        // url: config.solr + config.solr_collection + "/schema/fields",
-        // url: dashboard.current.solr.server + dashboard.current.solr.core_name + "/schema/fields?includeDynamic=true",
-
         // Get all fields in Solr core
         url: dashboard.current.solr.server + dashboard.current.solr.core_name + fieldApi,
         method: "GET"
@@ -115,42 +81,13 @@ function (angular, _, config) {
         
         // TODO: For Solr, need to implement new mapping
 
-        // _.each(p.data, function(v,k) {
-        //   mapping[k] = {};
-        //   _.each(v, function (v,f) {
-        //     mapping[k][f] = flatten(v);
-        //   });
-        // });
-        
-        // mapping = {
-        //   'collection1': { => have to be in format: 'logstash-YYYY-MM-DD'
-        //     'logs': {
-        //       '_version_': {
-        //         'type': 'long',
-        //       },
-        //       'allText': {
-        //         'type': 'text_general'
-        //       }
-        //     }
-        //   }
-        // };
-
-        // _.each(p.data.fields, function(v,k) {
-        //   // Exclude fields: id and _version, from the filter
-        //   // if (! _.contains(['id', '_version_'], v.name)) {
-        //   //   mapping[log_index][logs][v.name] = { 'type':v.type };
-        //   // }
-        //   mapping[log_index][logs][v.name] = { 'type':v.type };
-        // });
-
         if (config.USE_ADMIN_LUKE) {
           _.each(p.data.fields, function(v,k) {
             // k is the field name
             mapping[log_index][logs][k] = {'type':v.type, 'schema':v.schema};
           });
         } else {
-          _.each(p.data.fields, function(v,k) {
-            // k is the array index number
+          _.each(p.data.fields, function(v) {
             mapping[log_index][logs][v.name] = {'type':v.type, 'schema':''};
           });
         }

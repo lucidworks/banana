@@ -29,8 +29,6 @@ define([
 function (angular, app, _, kbn, moment) {
   'use strict';
 
-  var DEBUG = false; // DEBUG mode
-
   var module = angular.module('kibana.panels.table', []);
   app.useModule(module);
   module.controller('table', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
@@ -102,15 +100,16 @@ function (angular, app, _, kbn, moment) {
     $scope.init = function () {
       $scope.Math = Math;
       // Solr
-      $scope.sjs = $scope.sjs || sjsResource(dashboard.current.solr.server + dashboard.current.solr.core_name);
+      $scope.sjs = $scope.sjs || sjsResource(dashboard.current.solr.server + dashboard.current.solr.core_name); // jshint ignore: line
       $scope.$on('refresh',function(){$scope.get_data();});
       $scope.panel.exportSize = $scope.panel.size * $scope.panel.pages; 
       $scope.fields = fields;
       
       // Backward compatibility with old dashboards without important fields
       // Set important fields to all fields if important fields array is empty
-      if (_.isEmpty($scope.panel.important_fields))
+      if (_.isEmpty($scope.panel.important_fields)) {
         $scope.panel.important_fields = fields.list;
+      }
       $scope.get_data();
     };
 
@@ -221,28 +220,8 @@ function (angular, app, _, kbn, moment) {
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
-      // var boolQuery = $scope.sjs.BoolQuery();
-      // _.each($scope.panel.queries.ids,function(id) {
-      //   boolQuery = boolQuery.should(querySrv.getEjsObj(id));
-      // });
-
-      // request = request.query(
-      //   $scope.sjs.FilteredQuery(
-      //     boolQuery,
-      //     filterSrv.getBoolFilter(filterSrv.ids)  // search time range is provided here.
-      //   ))
-      //   .highlight(
-      //     $scope.sjs.Highlight($scope.panel.highlight)
-      //     .fragmentSize(2147483647) // Max size of a 32bit unsigned int
-      //     .preTags('@start-highlight@')
-      //     .postTags('@end-highlight@')
-      //   )
-      //   .size($scope.panel.size*$scope.panel.pages) // Set the size of query result
-      //   .sort($scope.panel.sort[0],$scope.panel.sort[1]);
 
       $scope.panel_request = request;
-
-      // if (DEBUG) { console.debug('table:\n\trequest.toString()=',request.toString()); }
 
       var fq = '&' + filterSrv.getSolrFq();
       var query_size = $scope.panel.size * $scope.panel.pages;
@@ -264,8 +243,6 @@ function (angular, app, _, kbn, moment) {
       // Set the panel's query
       $scope.panel.queries.basic_query = querySrv.getQuery(0) + fq + sorting;
       $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json + rows_limit;
-
-      if (DEBUG) { console.debug('table: query=',$scope.panel.queries.query); }
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
@@ -289,8 +266,6 @@ function (angular, app, _, kbn, moment) {
           $scope.data = [];
         }
 
-        if (DEBUG) { console.debug('table:\n\tresults=',results,'\n\t_segment=',_segment,', $scope.hits=',$scope.hits,', $scope.data=',$scope.data,', query_id=',query_id,'\n\t$scope.panel',$scope.panel); }
-
         // Check for error and abort if found
         if(!(_.isUndefined(results.error))) {
           $scope.panel.error = $scope.parse_error(results.error.msg); // There's also results.error.code
@@ -313,8 +288,6 @@ function (angular, app, _, kbn, moment) {
           // from a single faceted query.
           $scope.hits = results.response.numFound;
 
-          if (DEBUG) { console.debug('table: $scope.hits=',$scope.hits,', $scope.data=',$scope.data); }
-
           // Keep only what we need for the set
           $scope.data = $scope.data.slice(0,$scope.panel.size * $scope.panel.pages);
         } else {
@@ -328,8 +301,6 @@ function (angular, app, _, kbn, moment) {
           !((_.contains(filterSrv.timeField(),$scope.panel.sort[0])) && $scope.panel.sort[1] === 'desc')) &&
           _segment+1 < dashboard.indices.length) {
           $scope.get_data(_segment+1,$scope.query_id);
-
-          if (DEBUG) { console.debug('\tnot sorting in reverse chrono order!'); }
         }
 
       });
@@ -347,7 +318,13 @@ function (angular, app, _, kbn, moment) {
       }
       var exportQuery = $scope.panel.queries.basic_query + '&wt=' + filetype + omitHeader + rows_limit + fl;
       var request = $scope.panel_request;
-      request = request.setQuery(exportQuery);
+
+      if ($scope.panel.queries.custom != null) {
+        request = request.setQuery(exportQuery + $scope.panel.queries.custom);
+      } else {
+        request = request.setQuery(exportQuery);
+      }
+      
       var response = request.doSearch();
 
       response.then(function(response) {
@@ -427,7 +404,7 @@ function (angular, app, _, kbn, moment) {
   module.filter('tableTruncate', function() {
     return function(text,length,factor,field,imageFields) {
       // If image field, then do not truncate, otherwise we will get invalid URIs.
-      if (typeof field != 'undefined' && imageFields.length>0 && _.contains(imageFields, field)) {
+      if (typeof field !== 'undefined' && imageFields.length>0 && _.contains(imageFields, field)) {
         return text;
       }
 
@@ -488,10 +465,10 @@ function (angular, app, _, kbn, moment) {
   // This filter will check the input field to see if it should be displayed as <img src="data">
   module.filter('tableDisplayImageField', function() {
     return function(data, field, imageFields, width, height) {
-      if (typeof field != 'undefined' && imageFields.length>0 && _.contains(imageFields, field)) {
+      if (typeof field !== 'undefined' && imageFields.length>0 && _.contains(imageFields, field)) {
         return '<img style="width:' + width + '; height:' + height + ';" src="'+data+'">';
       }
       return data;
-    }
+    };
   });
 });

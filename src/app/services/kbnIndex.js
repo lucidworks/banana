@@ -35,7 +35,7 @@ function (angular, _, config, moment) {
       return all_collections(solr_server).then(function (p) {
         return p;
       });
-    }
+    };
 
     // returns a promise containing an array of all collections in Solr
     // param: solr_server (e.g. http://localhost:8983/solr/)
@@ -47,7 +47,7 @@ function (angular, _, config, moment) {
       } else {
         // admin API is disabled, then cannot retrieve the collection list from Solr.
         // return an empty list
-        return new Promise(function(resolve,reject) {
+        return new Promise(function(resolve) {
           var emptyList = [];
           resolve(emptyList);
         });
@@ -131,7 +131,7 @@ function (angular, _, config, moment) {
           // extract and convert timestamp to YYYY.MM.DD
           var t = timestamp_array[i].substr(0,10).replace(/-/g,'.');
           indices.push('logstash-' + t);
-        };
+        }
 
         // indices[] should be in this format
         // indices = ['logstash-2013.11.25'];

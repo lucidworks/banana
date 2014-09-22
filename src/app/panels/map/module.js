@@ -22,8 +22,6 @@ define([
 function (angular, app, _, $) {
   'use strict';
 
-  var DEBUG = false; // DEBUG mode
-
   var module = angular.module('kibana.panels.map', []);
   app.useModule(module);
 
@@ -155,8 +153,6 @@ function (angular, app, _, $) {
         request = request.setQuery($scope.panel.queries.query);
       }
 
-      if (DEBUG) { console.debug('map: $scope.panel=',$scope.panel); }
-
       var results = request.doSearch();
 
       // Populate scope when we have results
@@ -172,8 +168,6 @@ function (angular, app, _, $) {
           $scope.$emit('render');
           return false;
         }
-        
-        if (DEBUG) { console.debug('map: results=',results); }
 
         if ($scope.panel.mode === 'count') {
           terms = results.facet_counts.facet_fields[$scope.panel.field];
@@ -198,10 +192,8 @@ function (angular, app, _, $) {
                 $scope.data[terms[i].toUpperCase()] += terms[i+1];
               }
             }
-          };
+          }
         }
-
-        if (DEBUG) { console.debug('map: $scope.data=',$scope.data); }
 
         $scope.$emit('render');
       });
