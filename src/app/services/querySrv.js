@@ -6,8 +6,6 @@ define([
 function (angular, _, config) {
   'use strict';
 
-  var DEBUG = false; // DEBUG mode
-
   var module = angular.module('kibana.services');
 
   module.service('querySrv', function(dashboard, ejsResource, sjsResource) {
@@ -105,35 +103,23 @@ function (angular, _, config) {
       switch(q.type)
       {
       case 'lucene':
-        // return ejs.QueryStringQuery(q.query || '*');
         return sjs.QueryStringQuery(q.query || '*:*');
-        // return (q.query || '*:*'); // ERROR: CANNOT return like this
       default:
-        // return _.isUndefined(q.query) ? false : ejs.QueryStringQuery(q.query || '*');
         return _.isUndefined(q.query) ? false : sjs.QueryStringQuery(q.query || '*:*');
-        // return _.isUndefined(q.query) ? false : (q.query || '*:*'); // ERROR: CANNOT return like this
       }
     };
 
     // Get query string for Solr with defType param and default fields (df).
     this.getQuery = function(id) {
-      // var solr_q = 'q=' + self.list[id].query;
       // Need to url encode the query
       var solr_q = 'q=' + encodeURIComponent(self.list[id].query);
-
-      // if (self.list[id].type) {
-      //   solr_q += '&defType=' + self.list[id].type;
-      // }
-      // if (self.list[id].df) {
-      //   solr_q += '&' + self.list[id].df;
-      // }
 
       if (dashboard.current.solr.global_params) {
         solr_q += dashboard.current.solr.global_params;
       }
 
       return  solr_q;
-    }
+    };
 
     this.findQuery = function(queryString) {
       return _.findWhere(self.list,{query:queryString});

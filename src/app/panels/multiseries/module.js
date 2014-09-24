@@ -15,8 +15,6 @@ define([
     var module = angular.module('kibana.panels.multiseries', []);
     app.useModule(module);
 
-    var DEBUG = false; // DEBUG mode
-
     module.controller('multiseries', function ($scope, dashboard, querySrv, filterSrv) {
         $scope.panelMeta = {
             modals: [
@@ -170,14 +168,15 @@ define([
                     var el = element[0];
 
                     // deepcopy of the data in the scope
-                    var data = jQuery.extend(true, [], scope.data);
+                    var data;
+                    data = jQuery.extend(true, [], scope.data); // jshint ignore: line
 
-                    if (d3.keys(data[0]).indexOf(scope.panel.field) === -1)
+                    if (d3.keys(data[0]).indexOf(scope.panel.field) === -1) {
                         return;
+                    }
                     
                     var parent_width = $("#multiseries").width(),
-                        aspectRatio = 400 / 600,
-                        fixed_height = 600;
+                        aspectRatio = 400 / 600;
 
                     var margin = {
                         top: 20,
@@ -349,7 +348,7 @@ define([
                         .style("stroke", function (d) {
                             return color(d.name);
                         })
-                        .style("fill", "transparent")
+                        .style("fill", "transparent");
 
                     city.append("text")
                         .datum(function (d) {
