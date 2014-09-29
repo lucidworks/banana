@@ -24,7 +24,7 @@ define([
         description: "Inspect",
         icon: "icon-info-sign",
         partial: "app/partials/inspector.html",
-        show: $scope.panel.spyable
+        show: true
       }],
       status  : "Stable",
       description : "Provide a search bar for free-form queries. You almost certainly want one of these somewhere prominent on your dashboard."

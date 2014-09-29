@@ -101,6 +101,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       percentage  : false,
       interactive : true,
       options     : true,
+      show_queries:true,
       tooltip     : {
         value_type: 'cumulative',
         query_as_alias: false

@@ -45,7 +45,8 @@ define([
             yAxis: 'Rates',
             fl: 'open,high,low,close',
             rightAxis: 'volume', // TODO: need to remove hard coded field (volume).
-            spyable: true
+            spyable: true,
+            show_queries:true,
         };
 
         _.defaults($scope.panel, _d);

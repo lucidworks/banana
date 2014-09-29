@@ -93,7 +93,8 @@ function (angular, app, _, kbn, moment) {
       displayLinkIcon: true,
       imageFields : [],      // fields to be displayed as <img>
       imgFieldWidth: 'auto', // width of <img> (if enabled)
-      imgFieldHeight: '85px' // height of <img> (if enabled)
+      imgFieldHeight: '85px', // height of <img> (if enabled)
+      show_queries:true,
     };
     _.defaults($scope.panel,_d);
 

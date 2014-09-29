@@ -96,7 +96,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         value_type: 'cumulative',
         query_as_alias: false
       },
-      showChart:true
+      showChart:true,
+      show_queries:true,
     };
 
     _.defaults($scope.panel,_d);

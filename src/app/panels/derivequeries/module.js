@@ -53,7 +53,8 @@ function (angular, app, _) {
       mode    : 'terms only',
       exclude : [],
       history : [],
-      remember: 10 // max: 100, angular strap can't take a variable for items param
+      remember: 10, // max: 100, angular strap can't take a variable for items param
+      show_queries:true,
     };
     _.defaults($scope.panel,_d);
 
