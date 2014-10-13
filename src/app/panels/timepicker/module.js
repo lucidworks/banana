@@ -32,7 +32,7 @@ function (angular, app, _, moment, kbn, $) {
         description: "Inspect",
         icon: "icon-info-sign",
         partial: "app/partials/inspector.html",
-        show: $scope.panel.spyable
+        show: true
       }],
       status  : "Stable",
       description : "A panel for controlling the time range filters. If you have time based data, "+

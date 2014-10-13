@@ -51,7 +51,8 @@ define([
                 color:'gray',
                 spyable: true,
                 transpose_show: true,
-                transposed: false
+                transposed: false,
+                show_queries:true,
             };
 
             // Set panel's default values
