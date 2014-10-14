@@ -115,6 +115,8 @@ define([
       var promises = [];
       $scope.data = [];
       $scope.hits =0;
+      $scope.panel.queries.query="";
+
        _.each($scope.panel.queries.ids, function(id) {
         var temp_q =  querySrv.getQuery(id) + fq + facet + wt_json + rows_limit;
         $scope.panel.queries.query += temp_q + "\n";
