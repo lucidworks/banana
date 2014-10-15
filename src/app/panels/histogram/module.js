@@ -279,12 +279,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       });
 
       if (dashboard.current.services.query.ids.length >= 1) {
-        _.each(dashboard.current.services.query.list, function(v, k) {
-          if (true) {
-            console.log('histogram:\n\tv=', v, ', k=', k);
-          }
-          // TODO
-        });
         $q.all(mypromises).then(function(results) {
           if (true) {
             console.log('histogram:\n\tmyresults=', results);
