@@ -68,6 +68,7 @@ function (angular, app, _, $, kbn) {
       counter_pos : 'above',
       lastColor : '',
       spyable     : true,
+      show_queries:true,
       error : '',
       chartColors : querySrv.colors
     };

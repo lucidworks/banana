@@ -21,7 +21,7 @@ function (angular, app, _) {
         description: "Inspect",
         icon: "icon-info-sign",
         partial: "app/partials/inspector.html",
-        show: $scope.panel.spyable
+        show: true
       }],
       status: "Stable",
       description: "A controllable list of all filters currently applied to the dashboard. You need one of these on your dashboard somewhere in order for all the panels to work properly while you are interacting with your data."

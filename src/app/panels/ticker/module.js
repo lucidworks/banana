@@ -50,7 +50,8 @@ define([
         },
         ago: '1d',
         arrangement: 'vertical',
-        spyable: true
+        spyable: true,
+        show_queries:true,
       };
       _.defaults($scope.panel, _d);
 
