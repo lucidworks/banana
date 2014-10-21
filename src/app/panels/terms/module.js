@@ -62,6 +62,7 @@ function (angular, app, _, $, kbn) {
       donut   : false,
       tilt    : false,
       labels  : true,
+      logAxis : false,
       arrangement : 'horizontal',
       chart       : 'bar',
       counter_pos : 'above',
@@ -318,15 +319,43 @@ function (angular, app, _, $, kbn) {
             try {
               // Add plot to scope so we can build out own legend
               if(scope.panel.chart === 'bar') {
+
+                var yAxisConfig = {
+                  show: true,
+                  min: scope.yaxis_min,
+                  color: "#c8c8c8"
+                };
+                if (scope.panel.logAxis) {
+                  _.defaults(yAxisConfig, {
+                    ticks: function (axis) {
+                      var res = [], i = 1,
+                        ticksNumber = 8,
+                        max = axis.max === 0 ? 0 : Math.log(axis.max),
+                        min = axis.min === 0 ? 0 : Math.log(axis.min),
+                        interval = (max - min) / ticksNumber;
+                      do {
+                        var v = interval * i;
+                        res.push(Math.exp(v));
+                        ++i;
+                      } while (v < max);
+                      return res;
+                    },
+                    transform: function (v) {
+                      return v === 0 ? 0 : Math.log(v); },
+                    inverseTransform: function (v) {
+                      return v === 0 ? 0 : Math.exp(v); }
+                  });
+                }
+
                 plot = $.plot(elem, chartData, {
                   legend: { show: false },
                   series: {
-                    lines:  { show: false, },
+                    lines:  { show: false },
                     bars:   { show: true,  fill: 1, barWidth: 0.8, horizontal: false },
                     shadowSize: 1
                   },
                   // yaxis: { show: true, min: 0, color: "#c8c8c8" },
-                  yaxis: { show: true, min: scope.yaxis_min, color: "#c8c8c8" },
+                  yaxis: yAxisConfig,
                   xaxis: { show: false },
                   grid: {
                     borderWidth: 0,
@@ -354,7 +383,7 @@ function (angular, app, _, $, kbn) {
 
                 plot = $.plot(elem, chartData, {
                   legend: {
-                    show: false,
+                    show: false
                     // position: position,
                     // backgroundColor: "transparent"
                   },
