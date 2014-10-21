@@ -26,8 +26,6 @@ define([
   var module = angular.module('kibana.panels.hits', []);
   app.useModule(module);
 
-  var DEBUG = false; // DEBUG mode
-
   module.controller('hits', function($scope, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       modals : [
@@ -75,7 +73,7 @@ define([
 
     };
 
-    $scope.get_data = function(segment,query_id) {
+    $scope.get_data = function() {
       delete $scope.panel.error;
       $scope.panelMeta.loading = true;
 
@@ -86,12 +84,6 @@ define([
 
       // Solr
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
-
-      var _segment = _.isUndefined(segment) ? 0 : segment;
-
-      if (DEBUG) {
-        console.log('hits:\n\tdashboard',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv);
-      }
 
       var request = $scope.sjs.Request().indices(dashboard.indices);
 
@@ -140,21 +132,8 @@ define([
           $scope.panel.error = $scope.parse_error(results.error);
           return;
         }
-
-        // Convert facet ids to numbers
-//        var facetIds = _.map(_.keys(results.facets),function(k){return parseInt(k, 10);});
-
-        // Make sure we're still on the same query/queries
-//        if($scope.query_id === query_id &&
-//          _.intersection(facetIds,$scope.panel.queries.ids).length === $scope.panel.queries.ids.length
-//          ) {
           var i = 0;
           var id = $scope.panel.queries.ids[0];
-//          _.each($scope.panel.queries.ids, function(id) {
-//            var v = results.facets[id];
-//            var hits = _.isUndefined($scope.data[i]) || _segment === 0 ?
-//              v.count : $scope.data[i].hits+v.count;
-//            $scope.hits += v.count;
             var hits = $scope.hits;
             // Create series
             $scope.data[i] = {
@@ -164,15 +143,7 @@ define([
               data: [[i,hits]]
             };
 
-//            i++;
-//          });
-
           $scope.$emit('render');
-//          if(_segment < dashboard.indices.length-1) {
-//            $scope.get_data(_segment+1,query_id);
-//          }
-
-//        }
       });
     };
 

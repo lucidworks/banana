@@ -21,7 +21,12 @@
     table.tableSection th, table.tableSection td {
         width: 33%;
     }
-
+    .floatleft{
+      float:left;
+    }
+    .floatright{
+      float:right;
+    }
     </style>
   <!-- START Pie or bar chart -->
   <div ng-show="panel.counter_pos == 'above' && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend'>
@@ -43,20 +48,30 @@
   <!-- keep legend from over lapping -->
   <div style="clear:both"></div>
 
-  <div ng-show="panel.chart == 'pie' || panel.chart == 'bar'" terms-chart params="{{panel}}" style="position:relative" class="pointer"></div>
+  <div style="margin-left: 10px;margin-right: 10px;" ng-show="(panel.counter_pos == 'right' || panel.counter_pos == 'left') && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend' ng-class="{'floatright':panel.counter_pos == 'right','floatleft':panel.counter_pos == 'left'}">
+    <!-- vertical legend above -->
+    <table class="small">
+      <tr ng-repeat="term in legend">
+        <td><i class="icon-circle" ng-style="{color:term.color}"></i></td> <td style="padding-right:10px;padding-left:10px;">{{term.label}}</td>
+        <td>{{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div style="overflow:hidden" ng-show="panel.chart == 'pie' || panel.chart == 'bar'" terms-chart params="{{panel}}" style="position:relative" class="pointer" ng-style="{'floatleft':panel.counter_pos == 'right'}"></div>
 
   <div ng-show="panel.counter_pos == 'below' && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend'>
     <!-- vertical legend below -->
     <table class="small" ng-show="panel.arrangement == 'vertical'">
       <tr ng-repeat="term in legend">
         <td><i class="icon-circle" ng-style="{color:term.color}"></i></i></td> <td style="padding-right:10px;padding-left:10px;">{{term.label}}</td>
-        <td>{{term.data[0][1].toFixed(panel.decimal_points)}}</td>
+        <td>{{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}</td>
       </tr>
     </table>
 
     <!-- horizontal legend below -->
     <div class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="term in legend" style="float:left;padding-left: 10px;">
-      <span><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{term.data[0][1].toFixed(panel.decimal_points)}}) </span>
+      <span><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}) </span>
     </div><br>
 
   </div>

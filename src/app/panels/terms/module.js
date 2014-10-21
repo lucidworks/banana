@@ -20,12 +20,10 @@ define([
 function (angular, app, _, $, kbn) {
   'use strict';
 
-  var DEBUG = false; // DEBUG mode
-
   var module = angular.module('kibana.panels.terms', []);
   app.useModule(module);
 
-  module.controller('terms', function($scope, querySrv, dashboard, filterSrv, alertSrv) {
+  module.controller('terms', function($scope, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -64,6 +62,7 @@ function (angular, app, _, $, kbn) {
       donut   : false,
       tilt    : false,
       labels  : true,
+      logAxis : false,
       arrangement : 'horizontal',
       chart       : 'bar',
       counter_pos : 'above',
@@ -76,7 +75,7 @@ function (angular, app, _, $, kbn) {
 
     $scope.init = function () {
       $scope.hits = 0;
-      $scope.testMultivalued();
+      // $scope.testMultivalued();
       $scope.$on('refresh',function(){
         $scope.get_data();
       });
@@ -84,12 +83,12 @@ function (angular, app, _, $, kbn) {
     };
 
     $scope.testMultivalued = function() {
-      if($scope.panel.field && $scope.panel.field !== '' && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
+      if($scope.panel.field && $scope.fields.typeList[$scope.panel.field] && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
         $scope.panel.error = "Can't proceed with Multivalued field";
         return;
       }
 
-      if($scope.panel.stats_field && $scope.panel.stats_field !== '' && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
+      if($scope.panel.stats_field && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
         $scope.panel.error = "Can't proceed with Multivalued field";
         return;
       }
@@ -102,32 +101,12 @@ function (angular, app, _, $, kbn) {
       }
 
       $scope.panelMeta.loading = true;
-      var request, results, boolQuery;
+      var request, results;
 
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
-      if (DEBUG) { console.debug('terms:\n\tdashboard',dashboard,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv); }
-
       request = $scope.sjs.Request().indices(dashboard.indices);
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
-      // This could probably be changed to a BoolFilter
-      // boolQuery = $scope.sjs.BoolQuery();
-      // _.each($scope.panel.queries.ids,function(id) {
-      //   boolQuery = boolQuery.should(querySrv.getEjsObj(id));
-      // });
-
-      // Terms mode
-      // request = request
-      //   .facet($scope.sjs.TermsFacet('terms')
-      //     .field($scope.panel.field)
-      //     .size($scope.panel.size)
-      //     .order($scope.panel.order)
-      //     .exclude($scope.panel.exclude)
-      //     .facetFilter($scope.sjs.QueryFilter(
-      //       $scope.sjs.FilteredQuery(
-      //         boolQuery,
-      //         filterSrv.getBoolFilter(filterSrv.ids)
-      //         )))).size(0);
 
       // Populate the inspector panel
       $scope.inspector = angular.toJson(JSON.parse(request.toString()),true);
@@ -135,7 +114,7 @@ function (angular, app, _, $, kbn) {
       // Build Solr query
       var fq = '&' + filterSrv.getSolrFq();
       var wt_json = '&wt=json';
-      var rows_limit = '&rows=0' // for terms, we do not need the actual response doc, so set rows=0
+      var rows_limit = '&rows=0'; // for terms, we do not need the actual response doc, so set rows=0
       var facet = '';
 
       if ($scope.panel.mode === 'count') {
@@ -151,7 +130,7 @@ function (angular, app, _, $, kbn) {
       if(exclude_length > 0){
         for (var i = 0; i < exclude_length; i++) {
           exclude_filter += '&fq=-' + $scope.panel.field +":"+ $scope.panel.exclude[i];
-        };
+        }
       }
 
       // Set the panel's query
@@ -168,7 +147,11 @@ function (angular, app, _, $, kbn) {
 
       // Populate scope when we have results
       results.then(function(results) {
-        if (DEBUG) { console.debug('terms: results=',results); }
+        // Check for error and abort if found
+        if(!(_.isUndefined(results.error))) {
+          $scope.panel.error = $scope.parse_error(results.error.msg);
+          return;
+        }
 
         // Function for validating HTML color by assign it to a dummy <div id="colorTest">
         // and let the browser do the work of validation.
@@ -178,7 +161,7 @@ function (angular, app, _, $, kbn) {
           var valid = $('#colorTest').css('color');
           $('#colorTest').css('color', color);
 
-          if (valid == $('#colorTest').css('color')) {
+          if (valid === $('#colorTest').css('color')) {
             return false;
           } else {
             return true;
@@ -193,10 +176,10 @@ function (angular, app, _, $, kbn) {
           return slice;
         };
 
+        var sum = 0;
         var k = 0;
         $scope.panelMeta.loading = false;
         $scope.hits = results.response.numFound;
-
         $scope.data = [];
 
         if ($scope.panel.mode === 'count') {
@@ -207,12 +190,13 @@ function (angular, app, _, $, kbn) {
               var term = v[i];
               i++;
               var count = v[i];
+              sum += count;
               // if count = 0, do not add it to the chart, just skip it
-              if (count == 0) continue;
+              if (count === 0) { continue; }
               var slice = { label : term, data : [[k,count]], actions: true};
               slice = addSliceColor(slice,term);
               $scope.data.push(slice);
-            };
+            }
           });
         } else {
           // In stats mode, set y-axis min to null so jquery.flot will set the scale automatically.
@@ -224,7 +208,7 @@ function (angular, app, _, $, kbn) {
         }
 
         // Sort the results
-        if ($scope.panel.order == 'descending') {
+        if ($scope.panel.order === 'descending') {
           $scope.data = _.sortBy($scope.data, function(d) {return -d.data[0][1];});
         } else {
           $scope.data = _.sortBy($scope.data, function(d) {return d.data[0][1];});
@@ -243,9 +227,7 @@ function (angular, app, _, $, kbn) {
         $scope.data.push({label:'Other values',
           // data:[[k+1,results.facets.terms.other]],meta:"other",color:'#444'});
           // TODO: Hard coded to 0 for now. Solr faceting does not provide 'other' value. 
-          data:[[k+1,0]],meta:"other",color:'#444'});
-
-        if (DEBUG) { console.debug('terms: $scope.data = ',$scope.data); }
+          data:[[k+1,$scope.hits-sum]],meta:"other",color:'#444'});
 
         $scope.$emit('render');
       });
@@ -274,7 +256,7 @@ function (angular, app, _, $, kbn) {
 
     $scope.close_edit = function() {
       if($scope.refresh) {
-        $scope.testMultivalued();
+        // $scope.testMultivalued();
         $scope.get_data();
       }
       $scope.refresh =  false;
@@ -326,12 +308,10 @@ function (angular, app, _, $, kbn) {
           chartData = scope.panel.other ? chartData :
           _.without(chartData,_.findWhere(chartData,{meta:'other'}));
 
-          if (DEBUG) { console.debug('terms: render_panel() => chartData = ',chartData); }
-
           if (filterSrv.idsByTypeAndField('terms',scope.panel.field).length > 0) {
             colors.push(scope.panel.lastColor);
           } else {
-            colors = scope.panel.chartColors
+            colors = scope.panel.chartColors;
           }
 
           require(['jquery.flot.pie'], function(){
@@ -339,15 +319,43 @@ function (angular, app, _, $, kbn) {
             try {
               // Add plot to scope so we can build out own legend
               if(scope.panel.chart === 'bar') {
+
+                var yAxisConfig = {
+                  show: true,
+                  min: scope.yaxis_min,
+                  color: "#c8c8c8"
+                };
+                if (scope.panel.logAxis) {
+                  _.defaults(yAxisConfig, {
+                    ticks: function (axis) {
+                      var res = [], i = 1,
+                        ticksNumber = 8,
+                        max = axis.max === 0 ? 0 : Math.log(axis.max),
+                        min = axis.min === 0 ? 0 : Math.log(axis.min),
+                        interval = (max - min) / ticksNumber;
+                      do {
+                        var v = interval * i;
+                        res.push(Math.exp(v));
+                        ++i;
+                      } while (v < max);
+                      return res;
+                    },
+                    transform: function (v) {
+                      return v === 0 ? 0 : Math.log(v); },
+                    inverseTransform: function (v) {
+                      return v === 0 ? 0 : Math.exp(v); }
+                  });
+                }
+
                 plot = $.plot(elem, chartData, {
                   legend: { show: false },
                   series: {
-                    lines:  { show: false, },
+                    lines:  { show: false },
                     bars:   { show: true,  fill: 1, barWidth: 0.8, horizontal: false },
                     shadowSize: 1
                   },
                   // yaxis: { show: true, min: 0, color: "#c8c8c8" },
-                  yaxis: { show: true, min: scope.yaxis_min, color: "#c8c8c8" },
+                  yaxis: yAxisConfig,
                   xaxis: { show: false },
                   grid: {
                     borderWidth: 0,
@@ -375,7 +383,7 @@ function (angular, app, _, $, kbn) {
 
                 plot = $.plot(elem, chartData, {
                   legend: {
-                    show: false,
+                    show: false
                     // position: position,
                     // backgroundColor: "transparent"
                   },

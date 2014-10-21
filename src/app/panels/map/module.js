@@ -22,8 +22,6 @@ define([
 function (angular, app, _, $) {
   'use strict';
 
-  var DEBUG = false; // DEBUG mode
-
   var module = angular.module('kibana.panels.map', []);
   app.useModule(module);
 
@@ -66,17 +64,17 @@ function (angular, app, _, $) {
     _.defaults($scope.panel,_d);
 
     $scope.init = function() {
-      $scope.testMultivalued();
+      // $scope.testMultivalued();
       $scope.$on('refresh',function(){$scope.get_data();});
       $scope.get_data();
     };
 
     $scope.testMultivalued = function() {
-      if($scope.panel.field && $scope.panel.field !== '' && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
+      if($scope.panel.field && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
         $scope.panel.error = "Can't proceed with Multivalued field";
         return;
       }
-      if($scope.panel.stats_field && $scope.panel.stats_field !== '' && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
+      if($scope.panel.stats_field && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
         $scope.panel.error = "Can't proceed with Multivalued field";
         return;
       }
@@ -92,11 +90,10 @@ function (angular, app, _, $) {
 
     $scope.close_edit = function() {
       if ($scope.refresh) {
-        $scope.testMultivalued();
+        // $scope.testMultivalued();
         $scope.get_data();
       }
       $scope.refresh = false;
-      $scope.$emit('render');
     };
 
     $scope.get_data = function() {
@@ -156,8 +153,6 @@ function (angular, app, _, $) {
         request = request.setQuery($scope.panel.queries.query);
       }
 
-      if (DEBUG) { console.debug('map: $scope.panel=',$scope.panel); }
-
       var results = request.doSearch();
 
       // Populate scope when we have results
@@ -173,8 +168,6 @@ function (angular, app, _, $) {
           $scope.$emit('render');
           return false;
         }
-        
-        if (DEBUG) { console.debug('map: results=',results); }
 
         if ($scope.panel.mode === 'count') {
           terms = results.facet_counts.facet_fields[$scope.panel.field];
@@ -199,10 +192,8 @@ function (angular, app, _, $) {
                 $scope.data[terms[i].toUpperCase()] += terms[i+1];
               }
             }
-          };
+          }
         }
-
-        if (DEBUG) { console.debug('map: $scope.data=',$scope.data); }
 
         $scope.$emit('render');
       });
@@ -231,11 +222,6 @@ function (angular, app, _, $) {
 
         // Receive render events
         scope.$on('render',function(){
-          render_panel();
-        });
-
-        // Or if the window is resized
-        angular.element(window).bind('resize', function(){
           render_panel();
         });
 

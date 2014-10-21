@@ -70,18 +70,17 @@ function (angular, app, _, require) {
 
   module.filter('newlines', function(){
     return function (input) {
-      if(input)
-      return input.replace(/\n/g, '<br/>');
+      if(input) {
+        return input.replace(/\n/g, '<br/>');
+      }
     };
   });
 
   module.filter('striphtml', function () {
     return function(text) {
-      if(text)
-      return text
-        .replace(/&/g, '&amp;')
-        .replace(/>/g, '&gt;')
-        .replace(/</g, '&lt;');
+      if(text) {
+        return text.replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;');
+      }
     };
   });
 });

@@ -15,8 +15,6 @@ define([
         var module = angular.module('kibana.panels.heatmap', []);
         app.useModule(module);
 
-        var DEBUG = false;
-
         module.controller('heatmap', function ($scope, dashboard, querySrv, filterSrv) {
             $scope.panelMeta = {
                 modals: [
@@ -74,7 +72,6 @@ define([
             };
 
             $scope.get_data = function () {
-//                $scope.require(['./d3-tip/d3tip'], function(){
                 // Show progress by displaying a spinning wheel icon on panel
                 $scope.panelMeta.loading = true;
 
@@ -100,10 +97,6 @@ define([
                 .size($scope.panel.size); // Set the size of query result
 
                 $scope.populate_modal(request);
-
-                if (DEBUG) {
-                    console.log('heatmap:\n\trequest=', request, '\n\trequest.toString()=', request.toString());
-                }
                 // --------------------- END OF ELASTIC SEARCH PART ---------------------------------------
 
                 var wt_json = '&wt=json';
@@ -141,7 +134,6 @@ define([
                 });
                 // Hide the spinning wheel icon
                 $scope.panelMeta.loading = false;
-//                }); // end of require
             };
 
             $scope.init_arrays = function() {
@@ -152,14 +144,13 @@ define([
                 $scope.hccol = [];
                 $scope.internal_sum = [];
                 $scope.domain = [Number.MAX_VALUE,0];
-            }
+            };
 
             $scope.formatData = function(facets, flipped) {
                 $scope.init_arrays();
 
                 _.each(facets, function(d, i) {
                     // build the arrays to be used 
-                    var count = d.count;
 
                     if(!flipped) {
                         $scope.row_labels.push(d.value);
@@ -169,33 +160,34 @@ define([
                         $scope.hccol.push($scope.col_labels.length);                    
                     }
 
-                    _.each(d.pivot, function(p, j) {
+                    _.each(d.pivot, function(p) {
                         // columns in each row
                         var entry = {};
 
                         var v = p.value;
+                        var index;
 
                         if(!flipped) {
                             $scope.internal_sum.push(0);
 
-                            if($scope.col_labels.indexOf(v) == -1) {
+                            if($scope.col_labels.indexOf(v) === -1) {
                                 $scope.col_labels.push(v);
                                 $scope.hccol.push($scope.col_labels.length);
                             }
 
-                            var index = $scope.col_labels.indexOf(v); // index won't be -1 as we count in the facets with count = 0
+                            index = $scope.col_labels.indexOf(v); // index won't be -1 as we count in the facets with count = 0
 
                             $scope.internal_sum[index] += p.count;
 
                             entry.row = i + 1;
                             entry.col = index + 1;
                         } else {                 
-                            if($scope.row_labels.indexOf(v) == -1) {
+                            if($scope.row_labels.indexOf(v) === -1) {
                                 $scope.row_labels.push(v);
                                 $scope.hcrow.push($scope.row_labels.length);
                             }
 
-                            var index = $scope.row_labels.indexOf(v); // index won't be -1 as we count in the facets with count = 0
+                            index = $scope.row_labels.indexOf(v); // index won't be -1 as we count in the facets with count = 0
 
                             $scope.internal_sum[index] += p.count;
 
@@ -213,11 +205,9 @@ define([
             };
 
             $scope.flip = function() {
-//                $scope.require(['./d3-tip/d3tip'], function(){
-                    $scope.panel.transposed = !$scope.panel.transposed;
-                    $scope.formatData($scope.facets, $scope.panel.transposed);
-                    $scope.render();
-//                });
+                $scope.panel.transposed = !$scope.panel.transposed;
+                $scope.formatData($scope.facets, $scope.panel.transposed);
+                $scope.render();
             };
 
             $scope.set_refresh = function (state) {
@@ -277,274 +267,274 @@ define([
                     
                     // Function for rendering panel
                     function render_panel() {
-//                        scope.require(['d3', './d3-tip/d3tip'], function(){
-                            element.html('<div id="' + scope.generated_id +'" class="popup hidden"><p><span id="value"></p></div>');
-                            var el = element[0];
+                        element.html('<div id="' + scope.generated_id +'" class="popup hidden"><p><span id="value"></p></div>');
+                        var el = element[0];
 
-                            var data = jQuery.extend(true, [], scope.data);
-                            var div = scope.panel.transposed ? 'row' : 'col';
+                        var data = jQuery.extend(true, [], scope.data); // jshint ignore:line
 
-                            var labels_columns = [];
-                            var intensity_domain = d3.scale.linear().domain(scope.domain).range([0,10]);
+                        var labels_columns = [];
+                        var intensity_domain = d3.scale.linear().domain(scope.domain).range([0,10]);
 
-                            _.each(scope.internal_domain, function(d){
-                                var d_range = d3.scale.linear().domain(d).range([0,10]);
-                                labels_columns.push(d_range);
-                            });
+                        _.each(scope.internal_domain, function(d){
+                            var d_range = d3.scale.linear().domain(d).range([0,10]);
+                            labels_columns.push(d_range);
+                        });
 
-                            data = _.map(data, function(d){
-                                return{
-                                    row: +d.row,
-                                    col: +d.col,
-                                    value: +intensity_domain(d.value)
-                                };
-                            });
-
-                            var margin = {
-                                top: 70,
-                                right: 10,
-                                bottom: 20,
-                                left: 100
+                        data = _.map(data, function(d){
+                            return{
+                                row: +d.row,
+                                col: +d.col,
+                                value: +intensity_domain(d.value)
                             };
+                        });
 
-                            var rowSortOrder = false,
-                                colSortOrder = false;
+                        var margin = {
+                            top: 70,
+                            right: 10,
+                            bottom: 20,
+                            left: 100
+                        };
 
-                            var brightrange = d3.scale.linear().domain([0,300]).range([0,3]),
-                                colr_domain = d3.range(11),
-                                otherRange  = d3.scale.linear().domain([0,10]).range([-255,255]); // we have 255 intensities for a color range
+                        var rowSortOrder = false,
+                            colSortOrder = false;
 
-                            var cell_color = scope.panel.color;
+                        var brightrange = d3.scale.linear().domain([0,300]).range([0,3]),
+                            colr_domain = d3.range(11),
+                            otherRange  = d3.scale.linear().domain([0,10]).range([-255,255]); // we have 255 intensities for a color range
 
-                            function color(shift) {
-                                if (shift >= 0) {return d3.hsl(cell_color).darker(brightrange(shift));}
-                                else {return d3.hsl(cell_color).brighter(brightrange(-shift));}             
-                            }
+                        var cell_color = scope.panel.color;
 
-                            var hcrow    = jQuery.extend(true, [], scope.hcrow),
-                                hccol    = jQuery.extend(true, [], scope.hccol),
-                                rowLabel = jQuery.extend(true, [], scope.row_labels),
-                                colLabel = jQuery.extend(true, [], scope.col_labels);
+                        function color(shift) {
+                            if (shift >= 0) {return d3.hsl(cell_color).darker(brightrange(shift));}
+                            else {return d3.hsl(cell_color).brighter(brightrange(-shift));}             
+                        }
 
-                            var cellSize = 15,
-                                col_number = colLabel.length,
-                                row_number = rowLabel.length,
-                                width = cellSize * col_number,
-                                height = cellSize * row_number,
-                                legendElementWidth = cellSize * 2.5;
+                        var hcrow, hccol, rowLabel, colLabel;
+                        // jshint ignore:start
+                            hcrow    = jQuery.extend(true, [], scope.hcrow),
+                            hccol    = jQuery.extend(true, [], scope.hccol),
+                            rowLabel = jQuery.extend(true, [], scope.row_labels),
+                            colLabel = jQuery.extend(true, [], scope.col_labels);
+                        // jshint ignore:end
 
-                            var colors = [];
+                        var cellSize = 15,
+                            col_number = colLabel.length,
+                            row_number = rowLabel.length,
+                            width = cellSize * col_number,
+                            height = cellSize * row_number;
 
-                            _.each(colr_domain, function(n){
-                                colors.push(color(otherRange(n)).toString());
+                        var colors = [];
+
+                        _.each(colr_domain, function(n){
+                            colors.push(color(otherRange(n)).toString());
+                        });
+
+                        var colorScale   = d3.scale.quantile().domain([0, 10]).range(colors);
+                        
+                        var $tooltip = $('<div>');
+                    
+                        var svg = d3.select(el).append("svg")
+                            .attr("width", width + margin.left + margin.right)
+                            .attr("height", height + margin.top + margin.bottom)
+                            .append("g")
+                            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                        // Row Labels
+                        var rowLabels = svg.append("g") // jshint ignore:line
+                            .selectAll(".rowLabelg")
+                            .data(rowLabel)
+                            .enter()
+                            .append("text")
+                            .text(function (d) {
+                                if(d.length > 8) {
+                                    return d.substring(0,8)+'..';
+                                } else {
+                                    return d;
+                                }
+                            })
+                            .attr("x", 0)
+                            .attr("y", function (d, i) {
+                                return hcrow.indexOf(i + 1) * cellSize;
+                            })
+                            .style("text-anchor", "end")
+                            .attr("transform", "translate(-6," + cellSize / 1.5 + ")")
+                            .attr("class", function (d, i) {
+                                return "rowLabel_" + scope.generated_id + " mono r" + i;
+                            })
+                            .on("mouseover", function (d) {
+                                d3.select(this).classed("text-hover", true);
+                                $tooltip.html(d).place_tt(d3.event.pageX, d3.event.pageY);
+                            })
+                            .on("mouseout", function () {
+                                d3.select(this).classed("text-hover", false);
+
+                                d3.select(this).classed("cell-hover", false);
+                                d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", false);
+                                d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", false);
+                                
+                                $tooltip.detach();
+                            })
+                            .on("click", function (d, i) {
+                                rowSortOrder = !rowSortOrder;
+                                sortbylabel("r", i, rowSortOrder);
                             });
 
-                            var colorBuckets = colors.length,
-                                colorScale   = d3.scale.quantile().domain([0, 10]).range(colors);
-                            
-                            var $tooltip = $('<div>');
-                        
-                            var svg = d3.select(el).append("svg")
-                                .attr("width", width + margin.left + margin.right)
-                                .attr("height", height + margin.top + margin.bottom)
-                                .append("g")
-                                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-                            // Row Labels
-                            var rowLabels = svg.append("g")
-                                .selectAll(".rowLabelg")
-                                .data(rowLabel)
-                                .enter()
-                                .append("text")
-                                .text(function (d) {
-                                    if(d.length > 8)
-                                        return d.substring(0,8)+'..';
-                                    else
-                                        return d;
-                                })
-                                .attr("x", 0)
-                                .attr("y", function (d, i) {
-                                    return hcrow.indexOf(i + 1) * cellSize;
-                                })
-                                .style("text-anchor", "end")
-                                .attr("transform", "translate(-6," + cellSize / 1.5 + ")")
-                                .attr("class", function (d, i) {
-                                    return "rowLabel_" + scope.generated_id + " mono r" + i;
-                                })
-                                .on("mouseover", function (d) {
-                                    d3.select(this).classed("text-hover", true);
-                                    $tooltip.html(d).place_tt(d3.event.pageX, d3.event.pageY);
-                                })
-                                .on("mouseout", function (d) {
-                                    d3.select(this).classed("text-hover", false);
-
-                                    d3.select(this).classed("cell-hover", false);
-                                    d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", false);
-                                    d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", false);
-                                    
-                                    $tooltip.detach();
-                                })
-                                .on("click", function (d, i) {
-                                    rowSortOrder = !rowSortOrder;
-                                    sortbylabel("r", i, rowSortOrder);
-                                });
-
-                            // Column labels
-                            var colLabels = svg.append("g")
-                                .selectAll(".colLabelg")
-                                .data(colLabel)
-                                .enter()
-                                .append("text")
-                                .text(function (d) {
-                                    if(d.length > 6)
-                                        return d.substring(0,6)+'..';
-                                    else
-                                        return d; 
-                                })
-                                .attr("x", 0)
-                                .attr("y", function (d, i) {
-                                    return hccol.indexOf(i + 1) * cellSize;
-                                })
-                                .style("text-anchor", "left")
-                                .attr("transform", "translate(" + cellSize / 2 + ",-6) rotate (-90)")
-                                .attr("class", function (d, i) {
-                                    return "colLabel_" + scope.generated_id + " mono c" + i;
-                                })
-                                .on("mouseover", function (d) {
-                                    d3.select(this).classed("text-hover", true);
-                                    
-                                    var offsetX = d3.event.offsetX || d3.event.layerX;
-                                    var p = $('#' + scope.generated_id).parent();
-                                    var scrollLeft = $(p).parent().scrollLeft();
-
-                                    var layerX = d3.event.offsetX ? d3.event.layerX : Math.abs(scrollLeft - offsetX);
-
-                                    var offsetY = d3.event.layerY;
-                                    var scrollTop = $(p).parent().scrollTop();
-
-                                    var layerY = d3.event.offsetY ? d3.event.layerY : Math.abs(offsetY - scrollTop);
-                                    
-                                    $tooltip.html(d).place_tt(d3.event.pageX, d3.event.pageY);
-                                })
-                                .on("mouseout", function (d) {
-                                    d3.select(this).classed("text-hover", false);
-
-                                    d3.select(this).classed("cell-hover", false);
-                                    d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", false);
-                                    d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", false);
-
-                                    $tooltip.detach();
-                                })
-                                .on("click", function (d, i) {
-                                    colSortOrder = !colSortOrder;
-                                    sortbylabel("c", i, colSortOrder);
-                                });
-                            
-                            // Heatmap component
-                            var heatMap = svg.append("g").attr("class", "g3")
-                                .selectAll(".cellg")
-                                .data(data, function (d) {
-                                    return d.row + ":" + d.col;
-                                })
-                                .enter()
-                                .append("rect")
-                                .attr("x", function (d) {
-                                    return hccol.indexOf(d.col) * cellSize;
-                                })
-                                .attr("y", function (d) {
-                                    return hcrow.indexOf(d.row) * cellSize;
-                                })
-                                .attr("class", function (d) {
-                                    return "cell_" + scope.generated_id  +  " cell-border cr" + (d.row - 1) + "_" + scope.generated_id + " cc" + (d.col - 1) + "_" + scope.generated_id;
-                                })
-                                .attr("width", cellSize)
-                                .attr("height", cellSize)
-                                .style("fill", function (d) {
-                                    return colorScale(d.value);
-                                })
-                                .on("mouseover", function (d, i) {
-                                    //highlight text
-                                    d3.select(this).classed("cell-hover", true);
-                                    d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", function (r, ri) {
-                                        return ri == (d.row - 1);
-                                    });
-                                    d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", function (c, ci) {
-                                        return ci == (d.col - 1);
-                                    });
-
-                                    $tooltip.html(rowLabel[d.row - 1] + "," + colLabel[d.col - 1] + " (" + scope.data[i].value + ")").place_tt(d3.event.pageX, d3.event.pageY);
-                                })
-                                .on("mouseout", function () {
-                                    d3.select(this).classed("cell-hover", false);
-                                    d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", false);
-                                    d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", false);
-                                    
-                                    $tooltip.detach();
-                                });
-                        
-                            // Function to sort the cells with respect to selected row or column
-                            function sortbylabel(rORc, i, sortOrder) {
-                                // rORc .. r for row, c for column
-                                var t = svg.transition().duration(1200);
-                                
-                                var values = []; // holds the values in this specific row
-                                for(var j = 0; j < col_number; j++) { values.push(0) };
-                                
-                                var sorted; // sorted is zero-based index
-                                d3.selectAll(".c" + rORc + i + "_" + scope.generated_id)
-                                .filter(function (ce) {
-                                    if(rORc == "r") {
-                                        values[ce.col - 1] = ce.value;
-                                    } else {
-                                        values[ce.row - 1] = ce.value;
-                                    }
-                                });
-                                if (rORc == "r") { // sorting by rows
-                                    // can't be col_number
-                                    // must select from already there coluns (rows)
-                                    sorted = d3.range(col_number).sort(function (a, b) {
-                                        var value;
-                                        if (sortOrder) {
-                                            value = values[b] - values[a];
-                                            value = isNaN(value) ? Infinity : value;
-                                        } else {
-                                            value = values[a] - values[b];
-                                            value = isNaN(value) ? Infinity : value;
-                                        }
-                                        return value;
-                                    });
-                                    
-                                    t.selectAll(".cell_" + scope.generated_id)
-                                    .attr("x", function (d) {
-                                        return sorted.indexOf(d.col - 1) * cellSize;
-                                    });
-                                    t.selectAll(".colLabel_" + scope.generated_id)
-                                    .attr("y", function (d, i) {
-                                        return sorted.indexOf(i) * cellSize;
-                                    });
-                                } else { // sorting by columns
-                                    sorted = d3.range(row_number).sort(function (a, b) {
-                                        var value;
-                                        if (sortOrder) {
-                                            value = values[b] - values[a];
-                                            value = isNaN(value) ? Infinity : value;
-                                        } else {
-                                            value = values[a] - values[b];
-                                            value = isNaN(value) ? Infinity : value;
-                                        }
-                                        return value;
-                                    });
-                                    t.selectAll(".cell_" + scope.generated_id)
-                                    .attr("y", function (d) {
-                                        return sorted.indexOf(d.row - 1) * cellSize;
-                                    });
-                                    t.selectAll(".rowLabel_" + scope.generated_id)
-                                    .attr("y", function (d, i) {
-                                        return sorted.indexOf(i) * cellSize;
-                                    });
+                        // Column labels
+                        var colLabels = svg.append("g") // jshint ignore:line
+                            .selectAll(".colLabelg")
+                            .data(colLabel)
+                            .enter()
+                            .append("text")
+                            .text(function (d) {
+                                if(d.length > 6) {
+                                    return d.substring(0,6)+'..';
+                                } else {
+                                    return d; 
                                 }
+                            })
+                            .attr("x", 0)
+                            .attr("y", function (d, i) {
+                                return hccol.indexOf(i + 1) * cellSize;
+                            })
+                            .style("text-anchor", "left")
+                            .attr("transform", "translate(" + cellSize / 2 + ",-6) rotate (-90)")
+                            .attr("class", function (d, i) {
+                                return "colLabel_" + scope.generated_id + " mono c" + i;
+                            })
+                            .on("mouseover", function (d) {
+                                d3.select(this).classed("text-hover", true);
+                                
+                                // var offsetX = d3.event.offsetX || d3.event.layerX;
+                                // var p = $('#' + scope.generated_id).parent();
+                                // var scrollLeft = $(p).parent().scrollLeft();
+
+                                // var layerX = d3.event.offsetX ? d3.event.layerX : Math.abs(scrollLeft - offsetX);
+
+                                // var offsetY = d3.event.layerY;
+                                // var scrollTop = $(p).parent().scrollTop();
+
+                                // var layerY = d3.event.offsetY ? d3.event.layerY : Math.abs(offsetY - scrollTop);
+                                
+                                $tooltip.html(d).place_tt(d3.event.pageX, d3.event.pageY);
+                            })
+                            .on("mouseout", function () {
+                                d3.select(this).classed("text-hover", false);
+
+                                d3.select(this).classed("cell-hover", false);
+                                d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", false);
+                                d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", false);
+
+                                $tooltip.detach();
+                            })
+                            .on("click", function (d, i) {
+                                colSortOrder = !colSortOrder;
+                                sortbylabel("c", i, colSortOrder);
+                            });
+                        
+                        // Heatmap component
+                        var heatMap = svg.append("g").attr("class", "g3") // jshint ignore:line
+                            .selectAll(".cellg")
+                            .data(data, function (d) {
+                                return d.row + ":" + d.col;
+                            })
+                            .enter()
+                            .append("rect")
+                            .attr("x", function (d) {
+                                return hccol.indexOf(d.col) * cellSize;
+                            })
+                            .attr("y", function (d) {
+                                return hcrow.indexOf(d.row) * cellSize;
+                            })
+                            .attr("class", function (d) {
+                                return "cell_" + scope.generated_id  +  " cell-border cr" + (d.row - 1) + "_" + scope.generated_id + " cc" + (d.col - 1) + "_" + scope.generated_id;
+                            })
+                            .attr("width", cellSize)
+                            .attr("height", cellSize)
+                            .style("fill", function (d) {
+                                return colorScale(d.value);
+                            })
+                            .on("mouseover", function (d, i) {
+                                //highlight text
+                                d3.select(this).classed("cell-hover", true);
+                                d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", function (r, ri) {
+                                    return ri === (d.row - 1);
+                                });
+                                d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", function (c, ci) {
+                                    return ci === (d.col - 1);
+                                });
+
+                                $tooltip.html(rowLabel[d.row - 1] + "," + colLabel[d.col - 1] + " (" + scope.data[i].value + ")").place_tt(d3.event.pageX, d3.event.pageY);
+                            })
+                            .on("mouseout", function () {
+                                d3.select(this).classed("cell-hover", false);
+                                d3.selectAll(".rowLabel_" + scope.generated_id).classed("text-highlight", false);
+                                d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", false);
+                                
+                                $tooltip.detach();
+                            });
+                    
+                        // Function to sort the cells with respect to selected row or column
+                        function sortbylabel(rORc, i, sortOrder) {
+                            // rORc .. r for row, c for column
+                            var t = svg.transition().duration(1200);
+                            
+                            var values = []; // holds the values in this specific row
+                            for(var j = 0; j < col_number; j++) { values.push(0); }
+                            
+                            var sorted; // sorted is zero-based index
+                            d3.selectAll(".c" + rORc + i + "_" + scope.generated_id)
+                            .filter(function (ce) {
+                                if(rORc === "r") {
+                                    values[ce.col - 1] = ce.value;
+                                } else {
+                                    values[ce.row - 1] = ce.value;
+                                }
+                            });
+                            if (rORc === "r") { // sorting by rows
+                                // can't be col_number
+                                // must select from already there coluns (rows)
+                                sorted = d3.range(col_number).sort(function (a, b) {
+                                    var value;
+                                    if (sortOrder) {
+                                        value = values[b] - values[a];
+                                        value = isNaN(value) ? Infinity : value;
+                                    } else {
+                                        value = values[a] - values[b];
+                                        value = isNaN(value) ? Infinity : value;
+                                    }
+                                    return value;
+                                });
+                                
+                                t.selectAll(".cell_" + scope.generated_id)
+                                .attr("x", function (d) {
+                                    return sorted.indexOf(d.col - 1) * cellSize;
+                                });
+                                t.selectAll(".colLabel_" + scope.generated_id)
+                                .attr("y", function (d, i) {
+                                    return sorted.indexOf(i) * cellSize;
+                                });
+                            } else { // sorting by columns
+                                sorted = d3.range(row_number).sort(function (a, b) {
+                                    var value;
+                                    if (sortOrder) {
+                                        value = values[b] - values[a];
+                                        value = isNaN(value) ? Infinity : value;
+                                    } else {
+                                        value = values[a] - values[b];
+                                        value = isNaN(value) ? Infinity : value;
+                                    }
+                                    return value;
+                                });
+                                t.selectAll(".cell_" + scope.generated_id)
+                                .attr("y", function (d) {
+                                    return sorted.indexOf(d.row - 1) * cellSize;
+                                });
+                                t.selectAll(".rowLabel_" + scope.generated_id)
+                                .attr("y", function (d, i) {
+                                    return sorted.indexOf(i) * cellSize;
+                                });
                             }
-//                        }); // end of require
+                        }
                     }
                 }
             };

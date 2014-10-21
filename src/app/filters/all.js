@@ -145,26 +145,29 @@ define(['angular', 'jquery', 'underscore','showdown'], function(angular, $, _,Sh
   });
 
   module.filter('capitalize', function() {
-    return function(input, scope) {
-        if (input != null)
-            return input.substring(0,1).toUpperCase()+input.substring(1);
-    }
+    return function(input) {
+        if (input != null) {
+          return input.substring(0,1).toUpperCase()+input.substring(1);
+        }
+    };
   });
 
   module.filter('newlines', function() {
     return function(input) {
-      if (input)
+      if (input) {
         return input.replace(/\n/g, '<br/>');
+      }
     };
   });
 
   module.filter('striphtml', function() {
     return function(text) {
-      if (text)
+      if (text) {
         return text
           .replace(/&/g, '&amp;')
           .replace(/>/g, '&gt;')
           .replace(/</g, '&lt;');
+      }
     };
   });
 
@@ -175,7 +178,7 @@ define(['angular', 'jquery', 'underscore','showdown'], function(angular, $, _,Sh
         var textConverted = text.replace(/&/g, '&amp;')
           .replace(/>/g, '&gt;')
           .replace(/</g, '&lt;');
-        return converter.makeHtml(textConverted)
+        return converter.makeHtml(textConverted);
       }
     };
   });

@@ -23,8 +23,6 @@ define([
 function (angular, app, _, moment, kbn, $) {
   'use strict';
 
-  var DEBUG = false; // DEBUG mode
-
   var module = angular.module('kibana.panels.timepicker', []);
   app.useModule(module);
 
@@ -153,8 +151,6 @@ function (angular, app, _, moment, kbn, $) {
       // json for relative periods
       if($scope.panel.mode !== 'relative') {
 
-        if (DEBUG) { console.debug('timepicker: update_panel() $scope.time = ',$scope.time,', $scope.timepicker = ',$scope.timepicker); }
-
         $scope.panel.time = {
           from : $scope.time.from.format("MM/DD/YYYY HH:mm:ss"),
           to : $scope.time.to.format("MM/DD/YYYY HH:mm:ss"),
@@ -197,10 +193,6 @@ function (angular, app, _, moment, kbn, $) {
 
       // If time picker is defined (usually is) TOFIX: Horrible parsing
       if(!(_.isUndefined($scope.timepicker))) {
-        if (DEBUG) {
-          console.debug('timepicker: time_calc() BEFORE $scope.timepicker.from.date moment = ',moment($scope.timepicker.from.date).format('MM/DD/YYYY'));
-          console.debug('timepicker: time_calc() BEFORE $scope.timepicker.from.time = ',$scope.timepicker.from.time);
-        }
 
         // Fix for SILK-4 and SILK-29 bugs: by using moment.utc() instead of just moment()
         // Need to account for leap year by using moment.subtract()
@@ -214,8 +206,6 @@ function (angular, app, _, moment, kbn, $) {
         //   moment(moment.utc($scope.timepicker.from.date).format('MM/DD/YYYY') + " " + $scope.timepicker.from.time,'MM/DD/YYYY HH:mm:ss');
         to = $scope.panel.mode !== 'absolute' ? moment() :
           moment(moment.utc($scope.timepicker.to.date).format('MM/DD/YYYY') + " " + $scope.timepicker.to.time,'MM/DD/YYYY HH:mm:ss');
-
-        if (DEBUG) { console.debug('timepicker: time_calc() AFTER calculated from = ',from,',to = ',to); }
         
       // Otherwise (probably initialization)
       } else {
@@ -255,12 +245,8 @@ function (angular, app, _, moment, kbn, $) {
       // Remove all other time filters
       filterSrv.removeByType('time');
 
-      if (DEBUG) { console.debug('timepicker: time_apply() BEFORE time_calc() $scope.time = ',$scope.time,' $scope.timepicker.from.date = ',$scope.timepicker.from.date.toString()); }
-
       $scope.time = $scope.time_calc();
       $scope.time.field = $scope.panel.timefield;
-
-      if (DEBUG) { console.debug('timepicker: time_apply() AFTER time_calc() $scope.time = ',$scope.time,' $scope.timepicker = ',$scope.timepicker); }
 
       update_panel();
       set_time_filter($scope.time);
@@ -274,13 +260,6 @@ function (angular, app, _, moment, kbn, $) {
     // $scope.$watch('panel.mode', $scope.time_apply);
 
     $scope.time_check = function() {
-      // FOR DEBUGGING timepicker weirdness with UTC time conversion.
-      if (DEBUG) {
-        console.debug('timepicker: time_check() $scope.timepicker = ',$scope.timepicker,
-          ' $scope.timepicker.from.date = ',$scope.timepicker.from.date.toString(),
-          ' moment.utc($scope.timepicker.from.date).format("MM/DD/YYYY") = ', moment.utc($scope.timepicker.from.date).format('MM/DD/YYYY')
-        );
-      }
     };
 
     function set_time_filter(time) {
@@ -296,7 +275,7 @@ function (angular, app, _, moment, kbn, $) {
     function compile_time(time) {
       // Clone time obj
       var filterTime = $.extend(true, {}, time);
-      if ($scope.panel.mode == 'relative') {
+      if ($scope.panel.mode === 'relative') {
         // Get the time suffix (ie.s/m/h/d/w/M/y)
         var timeShorthand = $scope.panel.timespan.substr(-1);
         var timeNumber = $scope.panel.timespan.substr(0, $scope.panel.timespan.length-1);
@@ -329,14 +308,14 @@ function (angular, app, _, moment, kbn, $) {
         // where it needs Date objects for plotting x-axis on a chart.
         filterTime.fromDateObj = moment().subtract(timeShorthand,timeNumber).toDate();
         filterTime.toDateObj = new Date();
-      } else if ($scope.panel.mode == 'since') {
+      } else if ($scope.panel.mode === 'since') {
         // Add Date objects representation of from and to, for use with histogram panel
         // where it needs Date objects for plotting x-axis on a chart.
         filterTime.fromDateObj = filterTime.from.toDate();
         filterTime.toDateObj = new Date();
         filterTime.from = filterTime.from.toDate().toISOString() + '/SECOND';
         filterTime.to   = '*';
-      } else if ($scope.panel.mode == 'absolute') {
+      } else if ($scope.panel.mode === 'absolute') {
         filterTime.from = filterTime.from.toDate();
         filterTime.to   = filterTime.to.toDate();
       }
