@@ -329,13 +329,13 @@ function (angular, app, _, $, kbn) {
                 if (scope.panel.logAxis) {
                   _.defaults(yAxisConfig, {
                     ticks: function (axis) {
-                      var res = [], i = 1,
+                      var res = [], v, i = 1,
                         ticksNumber = 8,
                         max = axis.max === 0 ? 0 : Math.log(axis.max),
                         min = axis.min === 0 ? 0 : Math.log(axis.min),
                         interval = (max - min) / ticksNumber;
                       do {
-                        var v = interval * i;
+                        v = interval * i;
                         res.push(Math.exp(v));
                         ++i;
                       } while (v < max);
