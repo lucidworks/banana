@@ -434,6 +434,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         _from = _from - _offset;
         _to = Date.now();
       }
+
       var time_field = filterSrv.getTimeField();
       if(factor > 1) {
         filterSrv.removeByType('time');
