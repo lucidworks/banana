@@ -85,6 +85,7 @@ define([
         exportAll: true,
         facet_limit: 10,
         foundResults: true,
+        show_queries:true,
       };
       _.defaults($scope.panel, _d);
 

@@ -63,7 +63,8 @@ function (angular, app, _, L, localRequire) {
       lon_start: '',
       lon_end: '',
 //      tooltip : "_id",
-      field   : null
+      field   : null,
+      show_queries:true,
     };
 
     _.defaults($scope.panel, _d);

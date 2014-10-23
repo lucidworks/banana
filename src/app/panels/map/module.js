@@ -59,7 +59,8 @@ function (angular, app, _, $) {
       size    : 100,
       exclude : [],
       spyable : true,
-      index_limit : 0
+      index_limit : 0,
+      show_queries:true,
     };
     _.defaults($scope.panel,_d);
 

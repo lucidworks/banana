@@ -44,7 +44,7 @@ function (angular) {
           '<span class="rotate-icon pointer" bs-tooltip="\'Transpose Rows and Columns\'" ng-click="flip()"></span>' +
           '</span>' +
 
-          '<span ng-repeat="task in panelMeta.modals" class="row-button extra" ng-show="task.show&&panel.spyable">' +
+          '<span ng-repeat="task in panelMeta.modals" class="row-button extra" ng-show="panel.spyable">' +
             '<span bs-modal="task.partial"class="pointer"><i ' +
               'bs-tooltip="task.description" ng-class="task.icon" class="pointer"></i></span>'+
           '</span>' +
