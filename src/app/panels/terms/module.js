@@ -113,7 +113,10 @@ function (angular, app, _, $, kbn) {
       $scope.inspector = angular.toJson(JSON.parse(request.toString()),true);
 
       // Build Solr query
-      var fq = '&' + filterSrv.getSolrFq();
+      var fq = '';
+      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+        fq = '&' + filterSrv.getSolrFq();
+      }
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0'; // for terms, we do not need the actual response doc, so set rows=0
       var facet = '';

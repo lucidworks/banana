@@ -91,7 +91,10 @@ define([
             // --------------------- END OF ELASTIC SEARCH PART ---------------------------------------
 
             // Construct Solr query
-            var fq = '&' + filterSrv.getSolrFq();
+            var fq = '';
+            if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+                fq = '&' + filterSrv.getSolrFq();
+            }
             var wt_json = '&wt=json';
             // var fl = '&fl=date,' + $scope.panel.field + ',' + $scope.panel.fl + ',' + $scope.panel.rightAxis;
             // NOTE: $scope.panel.field is the time field for x-Axis

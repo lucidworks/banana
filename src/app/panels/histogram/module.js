@@ -226,7 +226,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       $scope.populate_modal(request);
 
       // Build Solr query
-      var fq = '&' + filterSrv.getSolrFq();
+      var fq = '';
+      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+        fq = '&' + filterSrv.getSolrFq();
+      }
       var time_field = filterSrv.getTimeField();
       var start_time = filterSrv.getStartTime();
       var end_time = filterSrv.getEndTime();
