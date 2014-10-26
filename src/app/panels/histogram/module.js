@@ -440,7 +440,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         _from = _from - _offset;
         _to = Date.now();
       }
-      var timefield = filterSrv.getTimeField();
+
+      var time_field = filterSrv.getTimeField();
       if(factor > 1) {
         filterSrv.removeByType('time');
       }
@@ -449,7 +450,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         type:'time',
         from:moment.utc(_from).toDate(),
         to:moment.utc(_to).toDate(),
-        field:timefield
+        field:time_field
       });
 
       dashboard.refresh();
