@@ -125,7 +125,10 @@ define([
 
         $scope.panel_request = request;
 
-        var fq = '&' + filterSrv.getSolrFq();
+        var fq = '';
+        if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+          fq = '&' + filterSrv.getSolrFq();
+        }
         var wt_json = '&wt=json';
         var facet = '&facet=true';
         var facet_fields = '';
