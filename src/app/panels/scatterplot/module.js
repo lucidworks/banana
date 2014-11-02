@@ -83,7 +83,10 @@ define([
             // --------------------- END OF ELASTIC SEARCH PART ---------------------------------------
 
             // Construct Solr query
-            var fq = '&' + filterSrv.getSolrFq();
+            var fq = '';
+            if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+                fq = '&' + filterSrv.getSolrFq();
+            }
             var wt_json = '&wt=csv';
             var fl = '&fl=' + $scope.panel.xaxis + ',' + $scope.panel.yaxis + ',' + $scope.panel.field_type;
             var rows_limit = '&rows=' + $scope.panel.max_rows;

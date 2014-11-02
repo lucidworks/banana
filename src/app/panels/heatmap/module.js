@@ -100,8 +100,11 @@ define([
                 $scope.populate_modal(request);
                 // --------------------- END OF ELASTIC SEARCH PART ---------------------------------------
 
+                var fq = '';
+                if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+                    fq = '&' + filterSrv.getSolrFq();
+                }
                 var wt_json = '&wt=json';
-                var fq = '&' + filterSrv.getSolrFq();
                 var rows_limit = '&rows=' + $scope.panel.size;
                 var facet = '&facet=true';
                 var facet_pivot = '&facet.pivot=' + $scope.panel.row_field + ',' + $scope.panel.col_field;

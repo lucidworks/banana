@@ -135,8 +135,11 @@ define([
         $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
 
         // Build SOLR query
+        var fq = '';
+        if (filterSrv.getSolrFq(true) && filterSrv.getSolrFq(true) != '') {
+          fq = '&' + filterSrv.getSolrFq(true);
+        }
         var time_field = filterSrv.getTimeField();
-        var fq = '&' + filterSrv.getSolrFq(true);
         var wt_json = '&wt=json';
         var rows_limit = '&rows=0'; // for trends, we do not need the actual response doc, so set rows=0
 

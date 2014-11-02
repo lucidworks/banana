@@ -241,7 +241,10 @@ define([
 
         $scope.panel_request = request;
 
-        var fq = '&' + filterSrv.getSolrFq();
+        var fq = '';
+        if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+          fq = '&' + filterSrv.getSolrFq();
+        }
         var query_size = $scope.panel.size * $scope.panel.pages;
         var wt_json = '&wt=json';
         var facet = '&facet=true';
