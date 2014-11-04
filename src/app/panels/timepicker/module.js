@@ -91,9 +91,9 @@ function (angular, app, _, moment, kbn, $) {
 
       // If we're in a mode where something must be calculated, clear existing filters
       // and set new ones
-      if($scope.panel.mode !== 'absolute') {
+      //if($scope.panel.mode !== 'absolute') {
         set_time_filter($scope.time);
-      }
+      //}
 
       dashboard.refresh();
 
