@@ -18498,8 +18498,6 @@
           throw new Error("No Client Set");
         }
 
-        //return sjs.client.post(getRestPath('select'), queryData, successcb, errorcb);
-        // Something does not work right with GET method.
         return sjs.client.get(getRestPath('select'), queryData, successcb, errorcb);
       }
     };
