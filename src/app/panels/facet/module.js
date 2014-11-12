@@ -14,10 +14,12 @@ define([
     'underscore',
     'kbn',
     'moment',
-    'bootstrap',
+    'bootstrap' //,
   ],
   function(angular, app, _, kbn, moment) {
-    'use strict';
+    // chrome, firefox(except developer edition) did not work. 
+    // error message : ncaught SyntaxError: Duplicate data property in object literal not allowed in strict mode 
+    //'use strict';
     var DEBUG = false; // DEBUG mode
     var module = angular.module('kibana.panels.facet',[]);
     app.useModule(module);
