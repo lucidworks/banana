@@ -35,59 +35,66 @@ define([
     app.useModule(module);
     //app.useModule('ui.bootstrap')
     module.controller('fullTextSearch', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
-      $scope.panelMeta = {
-        modals: [{
-          description: "Inspect",
-          icon: "fa fa-info",
-          partial: "app/partials/inspector.html",
-          show: $scope.panel.spyable
-        }],
-        editorTabs: [{
-          title: 'Paging',
-          src: 'app/panels/table/pagination.html'
-        }, {
-          title: 'Queries',
-          src: 'app/partials/querySelect.html'
-        }],
-        exportfile: true,
-        status: "Experimental",
-        description: "This panel provide full text search functionality for data"
-      };
+        $scope.panelMeta = {
+          modals: [{
+            description: "Inspect",
+            icon: "fa fa-info",
+            partial: "app/partials/inspector.html",
+            show: $scope.panel.spyable
+          }],
+          editorTabs: [{
+            title: 'Paging',
+            src: 'app/panels/fullTextSearch/pagination.html'
+          }, {
+            title: 'Queries',
+            src: 'app/partials/querySelect.html'
+          }],
+          exportfile: true,
+          status: "Experimental",
+          description: "This panel provide full text search functionality for data"
+        };
 
-      // Set and populate defaults
-      var _d = {
-        status: "Stable",
-        queries: {
-          mode: 'all',
-          ids: [],
-          query: '*:*',
-          basic_query: '',
-          custom: ''
-        },
-        size: 100, // Per page
-        pages: 5, // Pages available
-        offset: 0,
-        group: "default",
-        sort: [],
-        style: {
-          'font-size': '9pt'
-        },
-        overflow: 'min-height',
-        fields: [],
-        highlight: [],
-        sortable: false,
-        header: true,
-        paging: true,
-        field_list: true,
-        trimFactor: 300,
-        normTimes: true,
-        spyable: true,
-        saveOption: 'json',
-        exportSize: 100,
-        exportAll: true,
-        facet_limit: 10,
-        foundResults: true,
-      };
+        // Set and populate defaults
+        var _d = {
+          status: "Stable",
+          queries: {
+            mode: 'all',
+            ids: [],
+            query: '*:*',
+            basic_query: '',
+            custom: ''
+          },
+          size: 100, // Per page
+          pages: 5, // Pages available
+          offset: 0,
+          group: "default",
+          sort: [],
+          style: {
+            'font-size': '9pt'
+          },
+          overflow: 'min-height',
+          fields: [],
+          highlight: [],
+          sortable: false,
+          header: true,
+          paging: true,
+          field_list: true,
+          trimFactor: 300,
+          normTimes: true,
+          spyable: true,
+          saveOption: 'json',
+          exportSize: 100,
+          exportAll: true,
+          facet_limit: 10,
+          foundResults: true,
+          overflowItems : [{
+            key: 'scroll',
+            value: 'height'
+          }, {
+            key: 'expand',
+            value: 'min-height'
+          }]
+        };
       _.defaults($scope.panel, _d);
 
       $scope.init = function() {

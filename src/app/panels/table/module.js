@@ -18,80 +18,84 @@
 
 */
 define([
-  'angular',
-  'app',
-  'underscore',
-  'kbn',
-  'moment'
-  // 'text!./pagination.html',
-  // 'text!partials/querySelect.html'
-],
-function (angular, app, _, kbn, moment) {
-  'use strict';
+    'angular',
+    'app',
+    'underscore',
+    'kbn',
+    'moment'
+    // 'text!./pagination.html',
+    // 'text!partials/querySelect.html'
+  ],
+  function(angular, app, _, kbn, moment) {
+    'use strict';
 
-  var DEBUG = false; // DEBUG mode
+    var DEBUG = false; // DEBUG mode
 
-  var module = angular.module('kibana.panels.table', []);
-  app.useModule(module);
-  module.controller('table', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
-    $scope.panelMeta = {
-      modals : [
-        {
-          description: "Inspect",
-          icon: "fa fa-info",
-          partial: "app/partials/inspector.html",
-          show: $scope.panel.spyable
-        }
-      ],
-      editorTabs : [
-        {
-          title:'Paging',
-          src: 'app/panels/table/pagination.html'
-        },
-        {
-          title:'Queries',
-          src: 'app/partials/querySelect.html'
-        }
-      ],
-      exportfile: true,
-      status: "Stable",
-      description: "A paginated table of records matching your query (including any filters that may have been applied). Click on a row to expand it and review all of the fields associated with that document. Provides the capability to export your result set to CSV, XML or JSON for further processing using other systems."
-    };
+    var module = angular.module('kibana.panels.table', []);
+    app.useModule(module);
+    module.controller('table', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
+        $scope.panelMeta = {
+          modals: [{
+            description: "Inspect",
+            icon: "fa fa-info",
+            partial: "app/partials/inspector.html",
+            show: $scope.panel.spyable
+          }],
+          editorTabs: [{
+            title: 'Paging',
+            src: 'app/panels/table/pagination.html'
+          }, {
+            title: 'Queries',
+            src: 'app/partials/querySelect.html'
+          }],
+          exportfile: true,
+          status: "Stable",
+          description: "A paginated table of records matching your query (including any filters that may have been applied). Click on a row to expand it and review all of the fields associated with that document. Provides the capability to export your result set to CSV, XML or JSON for further processing using other systems."
+        };
 
-    // Set and populate defaults
-    var _d = {
-      status  : "Stable",
-      queries     : {
-        mode        : 'all',
-        ids         : [],
-        query       : '*:*',
-        basic_query : '',
-        custom      : ''
-      },
-      size    : 100, // Per page
-      pages   : 5,   // Pages available
-      offset  : 0,
-      sort    : ['event_timestamp','desc'],
-      group   : "default",
-      style   : {'font-size': '9pt'},
-      overflow: 'min-height',
-      fields  : [],
-      highlight : [],
-      sortable: true,
-      header  : true,
-      paging  : true,
-      field_list: true,
-      trimFactor: 300,
-      normTimes : true,
-      spyable : true,
-      saveOption : 'json',
-      exportSize: 100,
-      exportAll: true,
-      displayLinkIcon: true,
-      imageFields : [],      // fields to be displayed as <img>
-      imgFieldWidth: 'auto', // width of <img> (if enabled)
-      imgFieldHeight: '85px' // height of <img> (if enabled)
-    };
+        // Set and populate defaults
+        var _d = {
+          status: "Stable",
+          queries: {
+            mode: 'all',
+            ids: [],
+            query: '*:*',
+            basic_query: '',
+            custom: ''
+          },
+          size: 100, // Per page
+          pages: 5, // Pages available
+          offset: 0,
+          sort: ['event_timestamp', 'desc'],
+          group: "default",
+          style: {
+            'font-size': '9pt'
+          },
+          overflow: 'min-height',
+          fields: [],
+          highlight: [],
+          sortable: true,
+          header: true,
+          paging: true,
+          field_list: true,
+          trimFactor: 300,
+          normTimes: true,
+          spyable: true,
+          saveOption: 'json',
+          exportSize: 100,
+          exportAll: true,
+          displayLinkIcon: true,
+          imageFields: [], // fields to be displayed as <img>
+          imgFieldWidth: 'auto', // width of <img> (if enabled)
+          imgFieldHeight: '85px', // height of <img> (if enabled)
+          overflowItems: [{
+            key: 'scroll',
+            value: 'height'
+          }, {
+            key: 'expand',
+            value: 'min-height'
+          }]
+        };
     _.defaults($scope.panel,_d);
 
     $scope.init = function () {
