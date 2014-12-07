@@ -2,7 +2,7 @@
     <div class="col-sm-4 col-md-4">
         <form class="input-append">
             <h6>Add Facets</h6>
-            <input bs-typeahead="fields.list" type="text" class="form-control" ng-model="newfield">
+            <input bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="newfield">
             <button class="btn btn-default" ng-click="add_facet_field(newfield);newfield=''"><i class="fa fa-plus"></i>
             </button>
         </form>
@@ -27,7 +27,7 @@
     </div>
     <div class="col-sm-3 col-md-3" style="white-space:nowrap" ng-show="panel.sortable">
         <h6>Sort</h6>
-        <input ng-show="all_fields.length<=0 || !all_fields" style="width:85%" ng-model="panel.sort[0]" ng-change="set_refresh(true)" bs-typeahead="fields.list" type="text" class="form-control">
+        <input ng-show="all_fields.length<=0 || !all_fields" style="width:85%" ng-model="panel.sort[0]" ng-change="set_refresh(true)" bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control">
         <select ng-show="all_fields.length>0" style="width:85%" ng-model="panel.sort[0]" ng-change="set_refresh(true)" ng-options="f for f in all_fields"></select>
         <i ng-click="set_sort(panel.sort[0])" ng-class="{'fa fa-chevron-up': panel.sort[1] == 'asc' || panel.sort.length < 2,'fa fa-chevron-down': panel.sort[1] == 'desc'}"></i>
     </div>
@@ -48,26 +48,26 @@
         <h6>Title Field
             <tip>The field that will be shown as title field for document</tip>
         </h6>
-        <input bs-typeahead="fields.list" type="text" class="form-control" ng-model="panel.header_field">
+        <input bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="panel.header_field">
     </div>
     <div class="col-sm-2 col-md-2">
         <h6>Body Field
             <tip>The field that will be shown as body field for document</tip>
         </h6>
-        <input bs-typeahead="fields.list" type="text" class="form-control" ng-model="panel.body_field">
+        <input bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="panel.body_field">
     </div>
 
     <div class="col-sm-2 col-md-2">
         <h6> URL field
             <tip>URL field that will be linked to title field</tip>
         </h6>
-        <input bs-typeahead="fields.list" type="text" class="form-control" ng-model="panel.url_field">
+        <input bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="panel.url_field">
     </div>
 
     <div class="col-sm-2 col-md-2">
         <h6>Facet Limit
             <tip>Number of values per field that will be facted</tip>
         </h6>
-        <input bs-typeahead="fields.list" type="number" class="form-control" ng-model="panel.facet_limit">
+        <input bs-typeahead ng-options="field for field in fields.list" type="number" class="form-control" ng-model="panel.facet_limit">
     </div>
 </div>

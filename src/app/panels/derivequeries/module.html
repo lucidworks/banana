@@ -24,7 +24,7 @@
     ({{panel.mode}} mode)</label>
   <div>
     <form class="form-inline" style="position:relative" ng-submit="get_data()">
-      <input class="search-query panel-derive form-control" bs-typeahead="panel.history" data-min-length="0" data-items="100" type="text" ng-model="panel.query">
+      <input class="search-query panel-derive form-control" bs-typeahead ng-options="entry for entry in panel.history" data-min-length="0" data-items="100" type="text" ng-model="panel.query">
       <span class="end-derive">
         <i class="fa fa-search pointer" ng-click="get_data()"></i>
       </span>

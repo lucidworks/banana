@@ -8,11 +8,11 @@
   </div>
 
   <div ng-show="editorTabs[editor.index] == 'Panel'">
-    <div ng-include src="edit_path(panel.type)"></div>
+    <div ng-include src="edit_path(panel.type)" style="margin-top:10px;"></div>
   </div>
 
   <div ng-repeat="tab in panelMeta.editorTabs" ng-show="editorTabs[editor.index] == tab.title">
-    <div ng-include src="tab.src"></div>
+    <div ng-include src="tab.src" ></div>
   </div>
 
   <div class="modal-footer">

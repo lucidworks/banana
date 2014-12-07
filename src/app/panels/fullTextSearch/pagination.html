@@ -4,7 +4,7 @@
     </div>
     <div class="col-sm-2 col-md-2">
       <h6>Overflow</h6>
-      <select class="form-control" ng-model="panel.overflow" ng-options="f.value as f.key for f in [{key:'scroll',value:'height'},{key:'expand',value:'min-height'}]"></select>
+      <select class="form-control" ng-model="panel.overflow" ng-options="f.value as f.key for f in panel.overflowItems"></select>
     </div>
   </div>
   <div class="row">

@@ -2,13 +2,13 @@
     <div class="col-sm-4 col-md-4">
       <form>
         <h6>Coordinate Field <tip>geoJSON array! Long,Lat NOT Lat,Long</tip></h6>
-        <input bs-typeahead="fields.list" type="text" class="form-control" ng-model="panel.field" ng-change="set_refresh(true)">
+        <input bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="panel.field" ng-change="set_refresh(true)">
       </form>
     </div>
     <div class="col-sm-4 col-md-4">
       <form>
         <h6>Tooltip Field</h6>
-        <input bs-typeahead="fields.list" type="text" class="form-control" ng-model="panel.tooltip" ng-change="set_refresh(true)">
+        <input bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="panel.tooltip" ng-change="set_refresh(true)">
       </form>
     </div>
     <div class="col-sm-2 col-md-2"><h6>Max Points</h6>
