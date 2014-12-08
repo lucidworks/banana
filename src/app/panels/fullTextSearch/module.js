@@ -33,7 +33,6 @@ define([
 
     var module = angular.module('kibana.panels.fullTextSearch', []);
     app.useModule(module);
-    //app.useModule('ui.bootstrap')
     module.controller('fullTextSearch', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
         $scope.panelMeta = {
           modals: [{
@@ -363,6 +362,7 @@ define([
               };
             });
             $scope.facet_data = facet_data;
+
 
 
 
