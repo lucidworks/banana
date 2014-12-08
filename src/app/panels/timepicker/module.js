@@ -342,11 +342,13 @@ function (angular, app, _, moment, kbn, $) {
       $scope.timepicker = {
         from : {
           time : from.format("HH:mm:ss"),
-          date : from.format("MM/DD/YYYY")
+          date : from.format("MM/DD/YYYY"),
+          shared: new Date(from)
         },
         to : {
           time : to.format("HH:mm:ss"),
-          date : to.format("MM/DD/YYYY")
+          date : to.format("MM/DD/YYYY"),
+          shared: new Date(to)
         }
       };
     }
