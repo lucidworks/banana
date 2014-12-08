@@ -8,16 +8,15 @@
     <div ng-switch-when="absolute">
       <div class="timepicker-block">
         <form class="nomargin">
-          <input type="text" class="form-controler form-control" ng-change="time_check()" ng-model="timepicker.from.date" data-date-format="yyyy-MM-dd" bs-datepicker>
-          <input type="text" class="form-controler form-control" ng-change="time_check()" data-show-meridian="false" data-show-seconds="true" ng-model="timepicker.from.time"  bs-timepicker>
+          <input type="text" class="form-controler form-control" ng-change="time_check()" size="8" ng-model="timepicker.from.date" data-date-format="yyyy-MM-dd" bs-datepicker>
+          <input type="text" class="form-controler form-control" ng-change="time_check()" size="6" ng-model="timepicker.from.time" data-time-format="HH:mm:ss" data-time-type="string" data-autoclose="1" name="time2" bs-timepicker>
         </form>
       </div>
       <span class="to-txt">to</span>
       <div class="timepicker-block" style="margin-left:5px">
         <form class="nomargin">
-<!--         <input type="text" class="form-control" ng-model="timepicker.to.date" data-date-format="yyyy-MM-dd" data-date-type="number" data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date2" bs-datepicker> -->
-           <input type="text" class="form-controler form-control" ng-change="time_check()" ng-model="timepicker.to.date" data-date-format="yyyy-MM-dd" bs-datepicker>
-          <input type="text" class="form-controler form-control" ng-change="time_check()" data-show-meridian="false" data-show-seconds="true" ng-model="timepicker.to.time" bs-timepicker=""> <!--(<a ng-click="to_now()">now</a>) -->
+          <input type="text" class="form-controler form-control" ng-change="time_check()" size="8" ng-model="timepicker.to.date" data-date-format="yyyy-MM-dd" bs-datepicker>
+          <input type="text" class="form-controler form-control" ng-change="time_check()" size="6" ng-model="timepicker.to.time" data-time-format="HH:mm:ss" data-time-type="string" data-autoclose="1" name="time2" bs-timepicker>
       </form>
       </div>
       <div class="timepicker-block">
