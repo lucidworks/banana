@@ -35,15 +35,28 @@ function (angular, _, config, moment) {
       return all_collections(solr_server).then(function (p) {
         return p;
       });
-    }
+    };
 
     // returns a promise containing an array of all collections in Solr
     // param: solr_server (e.g. http://localhost:8983/solr/)
     function all_collections(solr_server) {
+      // Check USE_ADMIN_CORES flag in config.js
+      var coreApi = '';
+      if (config.USE_ADMIN_CORES) {
+        coreApi = 'admin/cores?action=STATUS&wt=json&omitHeader=true';
+      } else {
+        // admin API is disabled, then cannot retrieve the collection list from Solr.
+        // return an empty list
+        return new Promise(function(resolve) {
+          var emptyList = [];
+          resolve(emptyList);
+        });
+      }
+
       var something = $http({
         // Use Solr Admin handler to get the list of all collections.
         // TODO: Need to test this with SolrCloud and LWS
-        url: solr_server + "admin/cores?action=STATUS&wt=json&omitHeader=true",
+        url: solr_server + coreApi,
         method: "GET"
       }).error(function(data, status) {
         alertSrv.set('Error',"Could not retrieve collections from Solr (error status = "+status+")");
@@ -118,7 +131,7 @@ function (angular, _, config, moment) {
           // extract and convert timestamp to YYYY.MM.DD
           var t = timestamp_array[i].substr(0,10).replace(/-/g,'.');
           indices.push('logstash-' + t);
-        };
+        }
 
         // indices[] should be in this format
         // indices = ['logstash-2013.11.25'];

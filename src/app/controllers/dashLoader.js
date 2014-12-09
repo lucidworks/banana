@@ -5,8 +5,6 @@ define([
 function (angular, _) {
   'use strict';
 
-  var DEBUG = false; // DEBUG mode
-
   var module = angular.module('kibana.controllers');
 
   module.controller('dashLoader', function($scope, $http, timer, dashboard, alertSrv) {
@@ -19,15 +17,28 @@ function (angular, _) {
       $scope.gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;
       $scope.gist = $scope.gist || {};
       $scope.elasticsearch = $scope.elasticsearch || {};
+      $scope.resetNewDefaults();
       // $scope.elasticsearch is used throught out this file, dashLoader.html and others.
       // So we'll keep using it for now before refactoring it to $scope.solr.
       // $scope.solr = $scope.solr || {};
     };
 
+    // This function should be replaced by one-way binding feature of AngularJS 1.3
+    $scope.resetNewDefaults = function() {
+      $scope.new = {
+        server: $scope.config.solr,
+        core_name: $scope.config.solr_core,
+        time_field: 'event_timestamp'
+      };
+    };
+    
     $scope.showDropdown = function(type) {
       // var _l = $scope.loader;
       var _l = dashboard.current.loader || $scope.loader;
 
+      if(type === 'new') {
+        return (_l.load_elasticsearch || _l.load_gist || _l.load_local);
+      }
       if(type === 'load') {
         return (_l.load_elasticsearch || _l.load_gist || _l.load_local);
       }
@@ -38,6 +49,36 @@ function (angular, _) {
         return (_l.save_temp);
       }
       return false;
+    };
+    
+    $scope.create_new = function(type) {
+      $http.get('app/dashboards/' + type + '.json?' + new Date().getTime()).
+        success(function(data) {
+          data.solr.server = $scope.new.server;
+          data.solr.core_name = $scope.new.core_name;
+          // If time series dashboard, update all timefield references in the default dashboard
+          if (type === 'default-ts') {
+            data.services.filter.list[0].field = $scope.new.time_field;
+            // Iterate over panels and update timefield
+            for (var i = 0; i < data.rows.length; i++) {
+              for (var j = 0; j < data.rows[i].panels.length; j++) {
+                if (data.rows[i].panels[j].timefield) {
+                  data.rows[i].panels[j].timefield = $scope.new.time_field;
+                } else if (data.rows[i].panels[j].time_field) {
+                  data.rows[i].panels[j].time_field = $scope.new.time_field;
+                }
+              }
+            }
+          }
+
+          dashboard.dash_load(data);
+          
+          // Reset new dashboard defaults
+          $scope.resetNewDefaults();
+        }).
+        error(function() {
+          alertSrv.set('Error','Unable to load default dashboard','error');
+        });
     };
 
     $scope.set_default = function() {
@@ -63,7 +104,6 @@ function (angular, _) {
         ($scope.loader.save_temp_ttl_enable ? ttl : false)
       ).then(
         function(result) {
-        if (DEBUG) { console.debug('dashLoader: result = ',result); }
         // Solr
         if(result.responseHeader.status === 0) {
           alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
@@ -80,7 +120,6 @@ function (angular, _) {
     $scope.elasticsearch_delete = function(id) {
       dashboard.elasticsearch_delete(id).then(
         function(result) {
-          if (DEBUG) { console.debug("dashLoader: result=",result); }
           if(!_.isUndefined(result)) {
             if (result.responseHeader.status == 0) {
               alertSrv.set('Dashboard Deleted',id+' has been deleted','success',5000);
@@ -101,7 +140,6 @@ function (angular, _) {
     $scope.elasticsearch_dblist = function(query) {
       dashboard.elasticsearch_list(query,$scope.loader.load_elasticsearch_size).then(
         function(result) {
-        if (DEBUG) { console.debug("dashLoader: result=",result); }
         if (!_.isUndefined(result.response.docs)) {
           $scope.hits = result.response.numFound;
           $scope.elasticsearch.dashboards = result.response.docs;

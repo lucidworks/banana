@@ -98,7 +98,6 @@ function (angular, $, _, appLevelRequire) {
     'elasticjs.service',
     'solrjs.service',
     'ngAnimate',
-    // '$strap.directives',
     'mgcrea.ngStrap',
     'mgcrea.ngStrap.helpers.parseOptions',
     'mgcrea.ngStrap.tooltip',

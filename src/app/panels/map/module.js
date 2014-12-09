@@ -22,8 +22,6 @@ define([
 function (angular, app, _, $) {
   'use strict';
 
-  var DEBUG = false; // DEBUG mode
-
   var module = angular.module('kibana.panels.map', []);
   app.useModule(module);
 
@@ -61,7 +59,8 @@ function (angular, app, _, $) {
       size    : 100,
       exclude : [],
       spyable : true,
-      index_limit : 0
+      index_limit : 0,
+      show_queries:true,
     };
     _.defaults($scope.panel,_d);
 
@@ -96,7 +95,6 @@ function (angular, app, _, $) {
         $scope.get_data();
       }
       $scope.refresh = false;
-      $scope.$emit('render');
     };
 
     $scope.get_data = function() {
@@ -134,7 +132,10 @@ function (angular, app, _, $) {
       $scope.populate_modal(request);
 
       // Build Solr query
-      var fq = '&' + filterSrv.getSolrFq();
+      var fq = '';
+      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+        fq = '&' + filterSrv.getSolrFq();
+      }
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0'; // for map module, we don't display results from row, but we use facets.
       var facet = '';
@@ -156,8 +157,6 @@ function (angular, app, _, $) {
         request = request.setQuery($scope.panel.queries.query);
       }
 
-      if (DEBUG) { console.debug('map: $scope.panel=',$scope.panel); }
-
       var results = request.doSearch();
 
       // Populate scope when we have results
@@ -173,8 +172,6 @@ function (angular, app, _, $) {
           $scope.$emit('render');
           return false;
         }
-        
-        if (DEBUG) { console.debug('map: results=',results); }
 
         if ($scope.panel.mode === 'count') {
           terms = results.facet_counts.facet_fields[$scope.panel.field];
@@ -199,10 +196,8 @@ function (angular, app, _, $) {
                 $scope.data[terms[i].toUpperCase()] += terms[i+1];
               }
             }
-          };
+          }
         }
-
-        if (DEBUG) { console.debug('map: $scope.data=',$scope.data); }
 
         $scope.$emit('render');
       });
@@ -231,11 +226,6 @@ function (angular, app, _, $) {
 
         // Receive render events
         scope.$on('render',function(){
-          render_panel();
-        });
-
-        // Or if the window is resized
-        angular.element(window).bind('resize', function(){
           render_panel();
         });
 
