@@ -60,7 +60,6 @@ define([
         foundResults: true,
         header_title: "Limit Your Search",
         toggle_element: null,
-        spyable: true,
       };
       _.defaults($scope.panel, _d);
 
