@@ -79,3 +79,9 @@ div.flot-text{color:#333!important}
   border-top: 1px solid #e5e5e5;
   margin-top: 10px;
 }
+.timepicker-block form .input-smaller:nth-of-type(1){
+  width: 101px !important;
+}
+.panel div.panel-extra{
+  margin-bottom: 10px;
+}
