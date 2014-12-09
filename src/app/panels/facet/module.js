@@ -60,7 +60,7 @@ define([
         foundResults: true,
         header_title: "Limit Your Search",
         toggle_element: null,
-        spyable: true,
+        //spyable: true, // Removed. Duplicate data property in object literal not allowed in strict mode
       };
       _.defaults($scope.panel, _d);
 
