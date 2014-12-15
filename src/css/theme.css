@@ -79,3 +79,13 @@ div.flot-text{color:#333!important}
   border-top: 1px solid #e5e5e5;
   margin-top: 10px;
 }
+.modal{
+  width: 100% !important;
+}
+label + textarea{
+  vertical-align: text-top;
+}
+textarea.input-xxlarge{
+  width: 390px;
+  height: 183px;
+}
