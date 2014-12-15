@@ -122,11 +122,11 @@ function (angular, app, _, $, kbn) {
       var facet = '';
 
       if ($scope.panel.mode === 'count') {
-        facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size + '&facet.missing=true';
+        facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size + '&facet.missing=' + $scope.panel.missing;
       } else {
         // if mode != 'count' then we need to use stats query
         // stats does not support something like facet.limit, so we have to sort and limit the results manually.
-        facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field + '&facet.missing=true';;
+        facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field + '&facet.missing='  + $scope.panel.missing;
       }
       
       var exclude_length = $scope.panel.exclude.length; 
@@ -182,7 +182,6 @@ function (angular, app, _, $, kbn) {
 
         var sum = 0;
         var k = 0;
-        var missing =0;
         $scope.panelMeta.loading = false;
         $scope.hits = results.response.numFound;
         $scope.data = [];
@@ -196,11 +195,15 @@ function (angular, app, _, $, kbn) {
               i++;
               var count = v[i];
               sum += count;
-              if(term === null)
-                missing = count;
+
               // if count = 0, do not add it to the chart, just skip it
               if (count === 0) { continue; }
-              var slice = { label : term, data : [[k,count]], actions: true};
+              var slice = {
+                label: (term || 'No value'),
+                meta: (term ? '' : 'missing'),
+                data: [[k,count]],
+                actions: true
+              };
               slice = addSliceColor(slice,term);
               $scope.data.push(slice);
             }
@@ -227,10 +230,6 @@ function (angular, app, _, $, kbn) {
           k++;
         });
 
-        $scope.data.push({label:'Missing field',
-          // data:[[k,results.facets.terms.missing]],meta:"missing",color:'#aaa',opacity:0});
-          // TODO: Hard coded to 0 for now. Solr faceting does not provide 'missing' value.
-          data:[[k,missing]],meta:"missing",color:'#aaa',opacity:0});
         $scope.data.push({label:'Other values',
           // data:[[k+1,results.facets.terms.other]],meta:"other",color:'#444'});
           // TODO: Hard coded to 0 for now. Solr faceting does not provide 'other' value. 
@@ -277,9 +276,6 @@ function (angular, app, _, $, kbn) {
       if(term.meta === 'other' && !$scope.panel.other) {
         return false;
       }
-      if(term.meta === 'missing' && !$scope.panel.missing) {
-        return false;
-      }
       return true;
     };
 
@@ -310,8 +306,6 @@ function (angular, app, _, $, kbn) {
 
           // Make a clone we can operate on.
           chartData = _.clone(scope.data);
-          chartData = scope.panel.missing ? chartData :
-            _.without(chartData,_.findWhere(chartData,{meta:'missing'}));
           chartData = scope.panel.other ? chartData :
           _.without(chartData,_.findWhere(chartData,{meta:'other'}));
 
