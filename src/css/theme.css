@@ -21,7 +21,7 @@
 .panel div.panel-extra{font-size:.9em;}
 .panel div.panel-extra .extra{float:right!important;border-bottom:1px solid #fff}
 .dragInProgress{background-color:#fcfcfc;border:1px solid #ddd}.link{cursor:pointer}
-.pointer:hover{color:#1ab2ff}.pointer{cursor:pointer}.link:hover{color:#1ab2ff}
+.pointer:hover{color:#1ab2ff}.pointer{cursor:pointer; display: inline-block;}.link:hover{color:#1ab2ff}
 ul.list-unstyled li a.pointer{cursor: pointer;font-size: 14px;}
 ul.list-unstyled li {cursor: pointer;margin: 9px 0px;}
 ul.list-unstyled li a.label{background-color: #918A8A}
@@ -89,3 +89,40 @@ textarea.input-xxlarge{
   width: 390px;
   height: 183px;
 }
+.modal-body .input-append  input.ng-pristine {
+  float: left !important;
+  width: 151px !important;
+  margin-right: 6px;
+}
+.modal-body .input-append input.ng-pristine + button{
+  float: left;
+}
+
+.modal-body .ng-scope > .row.ng-scope{
+  margin-bottom: 15px;
+}
+
+a[data-parent="#accordion"]{
+  display: inline-block;
+  width: 100%;
+}
+
+.timepicker-date-input{
+  float: left;
+  width: 103px;
+  margin-right: 6px;
+}
+
+.timepicker-time-input{
+  float: left;
+  width: 84px;
+}
+
+@media (min-width: 768px){
+  .modal-dialog {
+  width: 650px;
+  margin: 30px auto;
+  }
+}
+
+
