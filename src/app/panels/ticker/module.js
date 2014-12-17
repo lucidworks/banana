@@ -19,8 +19,6 @@ define([
     var module = angular.module('kibana.panels.ticker', []);
     app.useModule(module);
 
-    var DEBUG = false;
-
     module.controller('ticker', function($scope, kbnIndex, querySrv, dashboard, filterSrv) {
 
       $scope.panelMeta = {
@@ -52,7 +50,8 @@ define([
         },
         ago: '1d',
         arrangement: 'vertical',
-        spyable: true
+        spyable: true,
+        show_queries:true,
       };
       _.defaults($scope.panel, _d);
 
@@ -66,7 +65,7 @@ define([
         $scope.get_data();
       };
 
-      $scope.get_data = function(segment, query_id) {
+      $scope.get_data = function(segment) {
         delete $scope.panel.error;
         $scope.panelMeta.loading = true;
 
@@ -98,7 +97,6 @@ define([
           to: new Date($scope.time.to.getTime() - kbn.interval_to_ms($scope.panel.ago))
         };
 
-        var _segment = _.isUndefined(segment) ? 0 : segment;
         var request = $scope.sjs.Request().indices(dashboard.indices);
         var _ids_without_time = _.difference(filterSrv.ids, filterSrv.idsByType('time'));
 
@@ -133,32 +131,15 @@ define([
               .query(q)
           ).size(0);
         });
-        if (DEBUG) {
-          console.log('Elastic Search Request');
-          console.log(request.toString());
-        }
         // Populate the inspector panel
         $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
 
-        // If we're on the first segment we need to get our indices
-        // if (_segment === 0) {
-        //   kbnIndex.indices(
-        //     $scope.old_time.from,
-        //     $scope.old_time.to,
-        //     dashboard.current.index.pattern,
-        //     dashboard.current.index.interval
-        //   ).then(function(p) {
-        //     $scope.index = _.union(p, $scope.index);
-        //     request = request.indices($scope.index[_segment]);
-        //     process_results(request.doSearch(), _segment, query_id);
-        //   });
-        // } else {
-        //   process_results(request.indices($scope.index[_segment]).doSearch(), _segment, query_id);
-        // }
-
         // Build SOLR query
+        var fq = '';
+        if (filterSrv.getSolrFq(true) && filterSrv.getSolrFq(true) != '') {
+          fq = '&' + filterSrv.getSolrFq(true);
+        }
         var time_field = filterSrv.getTimeField();
-        var fq = '&' + filterSrv.getSolrFq(true);
         var wt_json = '&wt=json';
         var rows_limit = '&rows=0'; // for trends, we do not need the actual response doc, so set rows=0
 
@@ -197,15 +178,6 @@ define([
           var results_old = request.doSearch();
 
           results_old.then(function(results_old) {
-            if (DEBUG) {
-              console.debug('do Search()')
-              console.debug('new time')
-              console.debug($scope.time.from, $scope.time.to)
-              console.debug('old time')
-              console.debug($scope.old_time.from, $scope.old_time.to)
-              console.debug(results_new)
-              console.debug(results_old)
-            }
             processSolrResults(results_new, results_old);
             $scope.$emit('render');
           });
@@ -298,7 +270,7 @@ define([
         var hits = {
           new: results_new.facet_counts.facet_ranges[filterSrv.getTimeField()]['between'],
           old: results_old.facet_counts.facet_ranges[filterSrv.getTimeField()]['between']
-        }
+        };
         $scope.hits = hits;
 
         var percent = percentage(hits.old, hits.new) == null ?

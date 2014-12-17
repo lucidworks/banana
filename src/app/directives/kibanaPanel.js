@@ -92,7 +92,7 @@ function (angular) {
             $compile(elem.contents())($scope);
             elem.removeClass("ng-cloak");
           }
-          
+
           $scope.$watch(attr.type, function (name) {
             elem.addClass("ng-cloak");
             // load the panels module file, then render it in the dom.
