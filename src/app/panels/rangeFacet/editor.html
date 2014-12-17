@@ -1,11 +1,11 @@
 <div class="row">
-  <div class="col-sm-2 col-md-2">
+  <div class="col-sm-3 col-md-3">
     <label class="small">Range Field <tip>Must be a numeric field</tip></label>
       <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="panel.range_field">
   </div>
 </div>
-<h5>Chart Settings</h5>
-<div class="row" style="text-align:center;margin-bottom:10px;">
+<h4>Chart Settings</h4>
+<div class="row" style="margin-bottom:10px;">
   <div class="col-sm-1 col-md-1"> <label class="small">Bars</label><input type="checkbox" ng-model="panel.bars" ng-checked="panel.bars"></div>
   <div class="col-sm-1 col-md-1"> <label class="small">Lines</label><input type="checkbox" ng-model="panel.lines" ng-checked="panel.lines"></div>
   <div class="col-sm-1 col-md-1"> <label class="small">Points</label><input type="checkbox" ng-model="panel.points" ng-checked="panel.points"></div>
@@ -29,7 +29,7 @@
   </div>
 </div>
 
-<div class="row" style="text-align:center;margin-bottom:10px;margin-left:-15px;">
+<div class="row" style="margin-bottom:10px;margin-left:-15px;">
   <div class="col-sm-2 col-md-2" style="margin-left:0;"><label class="small">Selectable</label><input type="checkbox" ng-model="panel.interactive" ng-checked="panel.interactive"></div>
   <div class="col-sm-2 col-md-2" style="margin-left:0;"><label class="small">Zoom Links</label><input type="checkbox" ng-model="panel.zoomlinks" ng-checked="panel.zoomlinks"></div>
   <div class="col-sm-2 col-md-2" style="margin-left:0;"><label class="small">View Options</label><input type="checkbox" ng-model="panel.options" ng-checked="panel.options"></div>
