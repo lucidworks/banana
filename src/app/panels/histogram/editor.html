@@ -5,10 +5,10 @@
       <!-- <select ng-change="set_refresh(true)" class="form-control" ng-model="panel.mode" ng-options="f for f in ['count','min','mean','max','total','value']"></select> -->
       <select ng-change="set_refresh(true)" class="form-control" ng-model="panel.mode" ng-options="f for f in ['count','values']"></select>
     </div>
-    <div class="col-sm-4 col-md-4">
+<!--     <div class="col-sm-4 col-md-4">
       <label class="small">Time Field</label>
         <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="panel.time_field">
-    </div>
+    </div> -->
     <div class="col-sm-2 col-md-2" ng-show="panel.mode != 'count'">
       <label class="small">Value Field</label>
         <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="panel.value_field">
