@@ -303,7 +303,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
         // Make sure we're still on the same query/queries
         // TODO: We probably DON'T NEED THIS unless we have to support multiple queries in query module.
-        if($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
+        // if($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
           var i = 0,
             numeric_series,
             hits;
@@ -360,7 +360,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           // if(segment < dashboard.indices.length-1) {
           //   $scope.get_data(segment+1,query_id);
           // }
-        }
+        // }
       });
     };
 
