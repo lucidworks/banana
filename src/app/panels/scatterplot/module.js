@@ -15,8 +15,6 @@ define([
     var module = angular.module('kibana.panels.scatterplot', []);
     app.useModule(module);
 
-    var DEBUG = false; // DEBUG mode
-
     module.controller('scatterplot', function($scope, dashboard, querySrv, filterSrv) {
         $scope.panelMeta = {
             modals: [{
@@ -47,7 +45,8 @@ define([
             yAxis: 'Rates',
             fl: 'open,high,low,close',
             rightAxis: 'volume', // TODO: need to remove hard coded field (volume).
-            spyable: true
+            spyable: true,
+            show_queries:true,
         };
 
         _.defaults($scope.panel, _d);
@@ -60,7 +59,7 @@ define([
             $scope.get_data();
         };
 
-        $scope.get_data = function(segment, query_id) {
+        $scope.get_data = function() {
             // Show progress by displaying a spinning wheel icon on panel
             $scope.panelMeta.loading = true;
             var request, results;
@@ -84,7 +83,10 @@ define([
             // --------------------- END OF ELASTIC SEARCH PART ---------------------------------------
 
             // Construct Solr query
-            var fq = '&' + filterSrv.getSolrFq();
+            var fq = '';
+            if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+                fq = '&' + filterSrv.getSolrFq();
+            }
             var wt_json = '&wt=csv';
             var fl = '&fl=' + $scope.panel.xaxis + ',' + $scope.panel.yaxis + ',' + $scope.panel.field_type;
             var rows_limit = '&rows=' + $scope.panel.max_rows;
@@ -160,24 +162,19 @@ define([
 
                     var el = element[0];
 
-                    // deepcopy of the data in the scope
-
-                    //var data = jQuery.extend(true, [], scope.data);
-
                     var parent_width = element.parent().width(),
                         height = parseInt(scope.row.height),
-                        padding = 50,
-                        paddingy = 20,
-                        aspectRatio = 400 / 600;
+                        padding = 50;
 
                     var margin = {
                         top: 20,
                         right: 20,
                         bottom: 60,
                         left: 40
-                    },
-                        width = parent_width - margin.left - margin.right,
-                        height = height - margin.top - margin.bottom;
+                    }, 
+                    width = parent_width - margin.left - margin.right;
+
+                    height = height - margin.top - margin.bottom;
 
                     var x = d3.scale.linear()
                         .range([0, width - padding * 2]);
@@ -237,7 +234,7 @@ define([
                         .attr("y", 6)
                         .attr("dy", ".71em")
                         .style("text-anchor", "end")
-                        .text(scope.panel.yaxis)
+                        .text(scope.panel.yaxis);
 
                     svg.selectAll(".dot")
                         .data(scope.data)
@@ -259,7 +256,7 @@ define([
                                     field_type + " (" + d[scope.panel.xaxis] + ", " + d[scope.panel.yaxis] + ")<br>")
                                 .place_tt(d3.event.pageX, d3.event.pageY);
                         })
-                        .on("mouseout", function(d) {
+                        .on("mouseout", function() {
                             $tooltip.detach();
                         });
                     if (scope.panel.field_type) {

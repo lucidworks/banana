@@ -9,7 +9,7 @@
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" ng-click="elasticsearch_dblist('title:'+elasticsearch.query+'*')">
     <i class="fa fa-folder-open"></i>
   </a>
-  <ul class="dropdown-menu dropdown-menu-right" role="menu" style="padding:10px" aria-labelledby="dropdownMenu1">
+  <ul class="dropdown-menu dropdown-menu-right" role="menu" style="padding:10px;width:300px" aria-labelledby="dropdownMenu1">
     <li ng-show="dashboard.current.loader.load_local">
       <h5>Local File <tip>Load dashboard JSON layout from file</tip></h5>
       <form>
@@ -18,8 +18,8 @@
     </li>
     <li ng-show="dashboard.current.loader.load_elasticsearch">
       <h5>Solr</h5>
-      <form>
-        <input type="text" ng-model="elasticsearch.query" ng-change="elasticsearch_dblist('title:'+elasticsearch.query+'*')" placeholder="Type to filter" class="form-control">
+      <form class="input-append">
+        <input type="text" ng-model="elasticsearch.query" ng-click="$event.stopPropagation()" ng-change="elasticsearch_dblist('title:'+elasticsearch.query+'*')" placeholder="Type to filter" class="form-control">
       </form>
       <h6 ng-show="elasticsearch.dashboards.length">Solr stored dashboards</h6>
       <h6 ng-hide="elasticsearch.dashboards.length">No dashboards matching your query found</h6>
@@ -38,7 +38,7 @@
   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
     <i class="fa fa-save"></i>
   </a>
-  <ul class="dropdown-menu dropdown-menu-right" style="padding:10px">
+  <ul class="dropdown-menu dropdown-menu-right"  style="padding:10px;width:300px">
     <li ng-show="dashboard.current.loader.save_default || dashboard.current.loader.save_local">
       <h5>Locally</h5>
       <ul class="list-unstyled">

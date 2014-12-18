@@ -15,8 +15,6 @@ define([
     var module = angular.module('kibana.panels.multiseries', []);
     app.useModule(module);
 
-    var DEBUG = false; // DEBUG mode
-
     module.controller('multiseries', function ($scope, dashboard, querySrv, filterSrv) {
         $scope.panelMeta = {
             modals: [
@@ -51,7 +49,8 @@ define([
             yAxis: 'Rates',
             fl: 'open,high,low,close',
             rightAxis: 'volume', // TODO: need to remove hard coded field (volume).
-            spyable: true
+            spyable: true,
+            show_queries:true,
         };
 
         _.defaults($scope.panel, _d);
@@ -92,7 +91,10 @@ define([
             // --------------------- END OF ELASTIC SEARCH PART ---------------------------------------
 
             // Construct Solr query
-            var fq = '&' + filterSrv.getSolrFq();
+            var fq = '';
+            if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+                fq = '&' + filterSrv.getSolrFq();
+            }
             var wt_json = '&wt=json';
             // var fl = '&fl=date,' + $scope.panel.field + ',' + $scope.panel.fl + ',' + $scope.panel.rightAxis;
             // NOTE: $scope.panel.field is the time field for x-Axis
@@ -170,14 +172,15 @@ define([
                     var el = element[0];
 
                     // deepcopy of the data in the scope
-                    var data = jQuery.extend(true, [], scope.data);
+                    var data;
+                    data = jQuery.extend(true, [], scope.data); // jshint ignore: line
 
-                    if (d3.keys(data[0]).indexOf(scope.panel.field) === -1)
+                    if (d3.keys(data[0]).indexOf(scope.panel.field) === -1) {
                         return;
+                    }
                     
                     var parent_width = $("#multiseries").width(),
-                        aspectRatio = 400 / 600,
-                        fixed_height = 600;
+                        aspectRatio = 400 / 600;
 
                     var margin = {
                         top: 20,
@@ -349,7 +352,7 @@ define([
                         .style("stroke", function (d) {
                             return color(d.name);
                         })
-                        .style("fill", "transparent")
+                        .style("fill", "transparent");
 
                     city.append("text")
                         .datum(function (d) {

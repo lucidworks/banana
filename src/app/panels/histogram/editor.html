@@ -1,11 +1,11 @@
 <div class="row">
-    <div class="col-sm-2 col-md-2">
+    <div class="col-sm-4 col-md-4">
       <label class="small">Mode</label>
       <!-- Banana: does not support 'min','mean','max', and 'total' modes yet -->
       <!-- <select ng-change="set_refresh(true)" class="form-control" ng-model="panel.mode" ng-options="f for f in ['count','min','mean','max','total','value']"></select> -->
       <select ng-change="set_refresh(true)" class="form-control" ng-model="panel.mode" ng-options="f for f in ['count','values']"></select>
     </div>
-    <div class="col-sm-2 col-md-2">
+    <div class="col-sm-4 col-md-4">
       <label class="small">Time Field</label>
         <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="panel.time_field">
     </div>
@@ -34,14 +34,14 @@
     </div> -->
   </div>
 
-  <h5>Chart Settings</h5>
-  <div class="row" style="text-align:center;margin-bottom:10px;">
+  <h4>Chart Settings</h4>
+  <div class="row" style="margin-bottom:15px;">
     <div class="col-sm-1 col-md-1"> <label class="small">Bars</label><input type="checkbox" ng-model="panel.bars" ng-checked="panel.bars"></div>
     <div class="col-sm-1 col-md-1"> <label class="small">Lines</label><input type="checkbox" ng-model="panel.lines" ng-checked="panel.lines"></div>
     <div class="col-sm-1 col-md-1"> <label class="small">Points</label><input type="checkbox" ng-model="panel.points" ng-checked="panel.points"></div>
     <div class="col-sm-1 col-md-1"> <label class="small">Stack</label><input type="checkbox" ng-model="panel.stack" ng-checked="panel.stack"></div>
     <div class="col-sm-1 col-md-1" ng-show="panel.stack">
-      <label style="white-space:nowrap" class="small">Percent <tip>Stack as a percentage of total</tip></label>
+      <label style="white-space:nowrap;" class="small">Percent <tip>Stack as a percentage of total</tip></label>
       <input type="checkbox" ng-model="panel.percentage" ng-checked="panel.percentage">
     </div>
     <div class="col-sm-1 col-md-1"> <label class="small">Legend</label><input type="checkbox" ng-model="panel.legend" ng-checked="panel.legend"></div>
@@ -50,15 +50,15 @@
   </div>
 
   <div class="row" style="text-align:center;">
-    <div class="col-sm-2 col-md-2" ng-show="panel.lines" style="width:65px;">
+    <div class="col-sm-2 col-md-2" ng-show="panel.lines" >
       <label class="small">Line Fill</label>
       <select class="form-control" ng-model="panel.fill" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9,10]"></select>
     </div>
-    <div class="col-sm-2 col-md-2" ng-show="panel.lines" style="width:65px;">
+    <div class="col-sm-2 col-md-2" ng-show="panel.lines" >
       <label class="small">Line Width</label>
       <select class="form-control" ng-model="panel.linewidth" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9,10]"></select>
     </div>
-    <div class="col-sm-2 col-md-2" ng-show="panel.lines" style="width:60px;">
+    <div class="col-sm-2 col-md-2" ng-show="panel.lines" >
       <label class="small">Smooth <tip>Smooth the lines by removing zero values.</tip></label>
       <input type="checkbox" ng-model="panel.lines_smooth" ng-checked="panel.lines_smooth">
     </div>
@@ -69,7 +69,7 @@
       <label class="small">Time correction</label>
       <select ng-model="panel.timezone" class="form-control" ng-options="f for f in ['browser','utc']"></select>
     </div>
-    <div class="col-sm-1 col-md-1"> <label class="small">Selectable</label><input type="checkbox" ng-model="panel.interactive" ng-checked="panel.interactive"></div>
+    <div class="col-sm-2 col-md-2"> <label class="small">Selectable</label><input type="checkbox" ng-model="panel.interactive" ng-checked="panel.interactive"></div>
     <div class="col-sm-2 col-md-2">
       <label class="small">Zoom Links</label><input type="checkbox" ng-model="panel.zoomlinks" ng-checked="panel.zoomlinks">
     </div>
@@ -89,7 +89,7 @@
     </div>
   </div>
 
-  <h5>Tooltip Settings</h5>
+  <h4>Tooltip Settings</h4>
   <div class="row" style="margin-bottom:10px;">
     <div class="col-sm-3 col-md-3">
       <label class="small">Stacked Values <tip>How should the values in stacked charts to be calculated?</tip></label>

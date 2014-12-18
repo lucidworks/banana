@@ -12,15 +12,18 @@
     <!-- <select class="form-control" ng-model="panel.order" ng-options="f for f in ['count','term','reverse_count','reverse_term']" ng-change="set_refresh(true)"></select></span> -->
     <select class="form-control" ng-model="panel.order" ng-options="f for f in ['descending','ascending']" ng-change="set_refresh(true)"></select>
   </div>
-  <div class="col-sm-4 col-md-4">
+  <div class="col-sm-5 col-md-5">
     <label class="small">Use field values as chart's colors <tip placement="bottom">If the field values are not valid HTML colors (either color names or hexadecimal colors), the default colors for chart will be used for the data series instead.</tip></label>
     <input type="checkbox" ng-model="panel.useColorFromField" ng-checked="panel.useColorFromField" ng-change="set_refresh(true)">
   </div>
- 
-  <div class="col-sm-4 col-md-4">
+</div>
+<div class="row">
+  <div class="col-sm-6 col-md-6">
     <label class="small">Exclude Terms(s) (comma seperated)</label>
     <input array-join="" type="text" ng-model="panel.exclude" ng-change="set_refresh(true)" class="form-control">
   </div>
+</div>
+  
 
 </div>
 <div class="row">
@@ -36,7 +39,7 @@
     <label class="small">Legend</label>
     <select class="form-control" ng-model="panel.counter_pos" ng-options="f for f in ['above','below','none']"></select>
   </div>
-  <div class="col-sm-3 col-md-3" ng-show="panel.chart != 'table' &amp;&amp; panel.counter_pos != 'none'">
+  <div class="col-sm-3 col-md-3" ng-show="panel.chart != 'table' &amp;&amp; panel.counter_pos != 'none'" style="width:22%">
     <label class="small">Legend Format</label>
     <select class="form-control" ng-model="panel.arrangement" ng-options="f for f in ['horizontal','vertical']"></select>
   </div>
@@ -72,6 +75,6 @@
 </div>
 <div class="row">
   <div class="col-sm-12 col-md-12">
-    <label class="small">Default Colors for Chart <tip>Comma separated values of color (no quote). HTML color names or hexadecimal colors are allowed (e.g. red, #FF0000, #F00 and etc). The chart series will get a color from these color values.</tip></label>
+    <label class="small">Default Colors for Chart <tip>Comma separated values of color (no quote). HTML color names or hexadecimal colors are allowed (e.g. red, #FF0000, #F00 and etc). The chart series will get a color from these color values.</tip></label><br>
     <textarea class="input-xxlarge" type="text" ng-model="panel.chartColors" ng-list="">  &lt;/div&gt;
 &lt;/div&gt;&lt;/div&gt;</textarea></div></div>

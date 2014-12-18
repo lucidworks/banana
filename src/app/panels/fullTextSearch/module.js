@@ -29,8 +29,6 @@ define([
   function(angular, app, _, kbn, moment) {
     'use strict';
 
-    var DEBUG = false; // DEBUG mode
-
     var module = angular.module('kibana.panels.fullTextSearch', []);
     app.useModule(module);
     module.controller('fullTextSearch', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
@@ -86,6 +84,7 @@ define([
           exportAll: true,
           facet_limit: 10,
           foundResults: true,
+		  show_queries:true,
           overflowItems : [{
             key: 'scroll',
             value: 'height'
@@ -145,7 +144,7 @@ define([
       };
 
       $scope.add_facet_field = function(field) {
-        if (_.contains(fields.list, field) && _.indexOf($scope.panel.fields, field) == -1) {
+        if (_.contains(fields.list, field) && _.indexOf($scope.panel.fields, field) === -1) {
           $scope.panel.fields.push(field);
           $scope.get_data();
         }
@@ -244,23 +243,21 @@ define([
             .fragmentSize(2147483647) // Max size of a 32bit unsigned int
             .preTags('@start-highlight@')
             .postTags('@end-highlight@')
-        )
-          .size($scope.panel.size * $scope.panel.pages) // Set the size of query result
+        ).size($scope.panel.size * $scope.panel.pages); // Set the size of query result
 
         $scope.panel_request = request;
 
-        if (DEBUG) {
-          console.debug('Full Text Search:\n\trequest=', request, '\n\trequest.toString()=', request.toString());
+        var fq = '';
+        if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+          fq = '&' + filterSrv.getSolrFq();
         }
-
-        var fq = '&' + filterSrv.getSolrFq();
         var query_size = $scope.panel.size * $scope.panel.pages;
         var wt_json = '&wt=json';
         var facet = '&facet=true';
         var facet_fields = '';
         for (var i = 0; i < $scope.panel.fields.length; i++) {
           facet_fields += '&facet.field=' + $scope.panel.fields[i];
-        };
+        }
         var rows_limit;
         var sorting = '';
 
@@ -276,11 +273,12 @@ define([
         }
 
         //set highlight part in sole query
-        var highlight
-        if ($scope.panel.body_field)
+        var highlight;
+        if ($scope.panel.body_field) {
           highlight = '&hl=true&hl.fl=' + $scope.panel.body_field;
-        else
+        } else {
           highlight = "";
+        }
 
 
         // Set the panel's query
@@ -288,10 +286,6 @@ define([
         //var query = $scope.panel.searchQuery == null ? querySrv.getQuery(0) : 'q=' + $scope.panel.searchQuery
         $scope.panel.queries.basic_query = querySrv.getQuery(0) + fq + facet + facet_fields + sorting;
         $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json + rows_limit + highlight;
-
-        if (DEBUG) {
-          console.debug('Full Text Search: query=', $scope.panel.queries.query);
-        }
 
         // Set the additional custom query
         if ($scope.panel.queries.custom != null) {
@@ -316,10 +310,6 @@ define([
             $scope.data = [];
           }
 
-          if (DEBUG) {
-            console.debug('Full Text Search:\n\tresults=', results, '\n\t_segment=', _segment, ', $scope.hits=', $scope.hits, ', $scope.data=', $scope.data, ', query_id=', query_id, '\n\t$scope.panel', $scope.panel);
-          }
-
           // Check for error and abort if found
           if (!(_.isUndefined(results.error))) {
             $scope.panel.error = $scope.parse_error(results.error.msg); // There's also results.error.code
@@ -341,14 +331,16 @@ define([
             // Solr does not need to accumulate hits count because it can get total count
             // from a single faceted query.
             $scope.hits = results.response.numFound;
-            $scope.panel.foundResults = $scope.hits == 0 ? false : true;
+            $scope.panel.foundResults = $scope.hits === 0 ? false : true;
             if (results.highlighting) {
               $scope.highlighting = results.highlighting;
               $scope.highlightingKeys = Object.keys(results.highlighting);
-              if ($.isEmptyObject($scope.highlighting[$scope.highlightingKeys[0]]))
+
+              if ($.isEmptyObject($scope.highlighting[$scope.highlightingKeys[0]])) { // jshint ignore:line
                 $scope.highlight_flag = false;
-              else
+              } else {
                 $scope.highlight_flag = true;
+              }
             }
             var facet_results = results.facet_counts.facet_fields;
             var facet_data = {};
@@ -358,17 +350,10 @@ define([
                 facet_data[field].push({
                   value: facet_results[field][i],
                   count: facet_results[field][i + 1]
-                })
-              };
+                });
+              }
             });
             $scope.facet_data = facet_data;
-
-
-
-
-            if (DEBUG) {
-              console.debug('Full Text Search: $scope.hits=', $scope.hits, ', $scope.data=', $scope.data);
-            }
 
             // Keep only what we need for the set
             $scope.data = $scope.data.slice(0, $scope.panel.size * $scope.panel.pages);
@@ -382,10 +367,6 @@ define([
           if ($scope.panel.sortable && ($scope.data.length < $scope.panel.size * $scope.panel.pages || !((_.contains(filterSrv.timeField(), $scope.panel.sort[0])) && $scope.panel.sort[1] === 'desc')) &&
             _segment + 1 < dashboard.indices.length) {
             $scope.get_data(_segment + 1, $scope.query_id);
-
-            if (DEBUG) {
-              console.debug('\tnot sorting in reverse chrono order!');
-            }
           }
 
         });
@@ -477,27 +458,30 @@ define([
           value: value
         });
         dashboard.refresh();
-      }
+      };
 
       // return the length of the filters with specific field 
       // that will be used to detect if the filter is present or not to show close icon beside the facet
       $scope.filter_close = function(field) {
-        return filterSrv.idsByTypeAndField('terms', field).length > 0
-      }
+        return filterSrv.idsByTypeAndField('terms', field).length > 0;
+      };
 
       // call close filter when click in close icon 
       $scope.delete_filter = function(type, field) {
         filterSrv.removeByTypeAndField(type, field);
         dashboard.refresh();
-      }
+      };
 
       // TODO Refactor this jquery code
       // jquery code used to toggle the arrow from up to down when facet is opened
       // also it is used to highlight the header field in faceting
+
+      // jshint ignore:start
       $('.accordion').on('show hide', function(n) {
         $(n.target).siblings('.accordion-heading').find('.accordion-toggle i').toggleClass('fa fa-chevron-up fa fa-chevron-down');
         $(n.target).siblings('.accordion-heading').toggleClass('bold');
       });
+      // jshint ignore:end
 
     });
 
@@ -512,10 +496,11 @@ define([
           replace(/<em>/g, '<span class="highlight-code"><b>').
           replace(/<\/em>/g, '</b></span>');
 
-          if (ret.lastIndexOf('<br>', 0) === 0)
+          if (ret.lastIndexOf('<br>', 0) === 0) {
             return ret.replace(/<br>/, "");
-          else
-            return ret
+          } else {
+            return ret;
+          }
         }
         return '';
       };
@@ -532,7 +517,7 @@ define([
 
     module.filter('tableTruncate', function() {
       return function(text, length, factor) {
-        if (!_.isUndefined(text) && !_.isNull(text) && text.toString().length > 0 && length != 0 && factor != 0) {
+        if (!_.isUndefined(text) && !_.isNull(text) && text.toString().length > 0 && length !== 0 && factor !== 0) {
           return text.length > length / factor ? text.substr(0, length / factor) + '...' : text;
         }
         return '';
