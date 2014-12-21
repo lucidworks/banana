@@ -43,8 +43,9 @@ define([
                 query: '*:*',
                 custom: ''
             },
+            size: 1000,
             max_rows: 100000, // maximum number of rows returned from Solr
-            field: 'date',
+            field: 'timestamp',
             // xAxis: 'Date',  // TODO: remove it, does not seem to get used.
             yAxis: 'Rates',
             fl: 'open,high,low,close',
