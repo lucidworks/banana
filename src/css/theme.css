@@ -129,3 +129,5 @@ a[data-parent="#facet_accordion"]{
   margin: 30px auto;
   }
 }
+
+body.modal-open { overflow:inherit; padding-right:inherit !important; }
