@@ -2,13 +2,9 @@
   ## tagcloud
 
   ### Parameters
-  * style :: A hash of css styles
   * size :: top N
-  * arrangement :: How should I arrange the query results? 'horizontal' or 'vertical'
-  * chart :: Show a chart? 'none', 'bar', 'pie'
-  * donut :: Only applies to 'pie' charts. Punches a hole in the chart for some reason
-  * tilt :: Only 'pie' charts. Janky 3D effect. Looks terrible 90% of the time.
-  * lables :: Only 'pie' charts. Labels on the pie?
+  * alignment :: How should I arrange the words in cloud 'horizontal and vertical' or 'Random'
+  * fontScale :: Increase the font scale for all words
 */
 define([
     'angular',
@@ -37,8 +33,8 @@ define([
           title: 'Queries',
           src: 'app/partials/querySelect.html'
         }],
-        status: "Stable",
-        description: "Displays the results of a Solr facet as a pie chart, bar chart, or a table. Newly added functionality displays min/max/mean/sum of a stats field, faceted by the Solr facet field, again as a pie chart, bar chart or a table."
+        status: "Experimental",
+        description: "Display the most N repeated word in specific fields and show it in d3.js tag cloud "
       };
 
       // Set and populate defaults
@@ -49,31 +45,13 @@ define([
           query: '*:*',
           custom: ''
         },
-        mode: 'count', // mode to tell which number will be used to plot the chart.
         field: '',
-        stats_field: '',
-        decimal_points: 0, // The number of digits after the decimal point
-        exclude: [],
-        missing: true,
-        other: true,
         size: 10,
-        // order   : 'count',
-        order: 'descending',
-        style: {
-          "font-size": '10pt'
-        },
-        donut: false,
-        tilt: false,
-        labels: true,
-        logAxis: false,
-        arrangement: 'horizontal',
-        chart: 'bar',
-        counter_pos: 'above',
-        lastColor: '',
+        alignment: 'vertical and horizontal',
+        fontScale: 1,
         spyable: true,
         show_queries: true,
         error: '',
-        chartColors: querySrv.colors
       };
       _.defaults($scope.panel, _d);
 
@@ -122,26 +100,10 @@ define([
         }
         var wt_json = '&wt=json';
         var rows_limit = '&rows=0'; // for terms, we do not need the actual response doc, so set rows=0
-        var facet = '';
-
-        if ($scope.panel.mode === 'count') {
-          facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size + '&facet.missing=true';
-        } else {
-          // if mode != 'count' then we need to use stats query
-          // stats does not support something like facet.limit, so we have to sort and limit the results manually.
-          facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field + '&facet.missing=true';;
-        }
-
-        var exclude_length = $scope.panel.exclude.length;
-        var exclude_filter = '';
-        if (exclude_length > 0) {
-          for (var i = 0; i < exclude_length; i++) {
-            exclude_filter += '&fq=-' + $scope.panel.field + ":" + $scope.panel.exclude[i];
-          }
-        }
+        var facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size;
 
         // Set the panel's query
-        $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + exclude_filter + facet;
+        $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet;
 
         // Set the additional custom query
         if ($scope.panel.queries.custom != null) {
@@ -160,87 +122,40 @@ define([
             return;
           }
 
-          // Function for validating HTML color by assign it to a dummy <div id="colorTest">
-          // and let the browser do the work of validation.
-          var isValidHTMLColor = function(color) {
-            // clear attr first, before comparison
-            $('#colorTest').removeAttr('style');
-            var valid = $('#colorTest').css('color');
-            $('#colorTest').css('color', color);
-
-            if (valid === $('#colorTest').css('color')) {
-              return false;
-            } else {
-              return true;
-            }
-          };
-
-          // Function for customizing chart color by using field values as colors.
-          var addSliceColor = function(slice, color) {
-            if ($scope.panel.useColorFromField && isValidHTMLColor(color)) {
-              slice.color = color;
-            }
-            return slice;
-          };
-
           var sum = 0;
           var k = 0;
           var missing = 0;
           $scope.panelMeta.loading = false;
           $scope.hits = results.response.numFound;
           $scope.data = [];
-          $scope.labels = [];
-          $scope.sizes = [];
+          $scope.maxRatio = 0;
 
-          if ($scope.panel.mode === 'count') {
-            // In count mode, the y-axis min should be zero because count value cannot be negative.
-            $scope.yaxis_min = 0;
-            _.each(results.facet_counts.facet_fields, function(v) {
-              for (var i = 0; i < v.length; i++) {
-                var term = v[i];
-                i++;
-                var count = v[i];
-                sum += count;
-                if (term === null) {
-                  missing = count;
-                } else {
-                  // if count = 0, do not add it to the chart, just skip it
-                  if (count === 0) {
-                    continue;
-                  }
-                  var slice = {
-                    label: term,
-                    data: count,
-                    actions: true
-                  };
-                  slice = addSliceColor(slice, term);
-                  $scope.data.push(slice);
-                  $scope.labels.push(term);
-                  $scope.sizes.push(count);
+
+          $scope.yaxis_min = 0;
+          _.each(results.facet_counts.facet_fields, function(v) {
+            for (var i = 0; i < v.length; i++) {
+              var term = v[i];
+              i++;
+              var count = v[i];
+              sum += count;
+              if (term === null) {
+                missing = count;
+              } else {
+                // if count = 0, do not add it to the chart, just skip it
+                if (count === 0) {
+                  continue;
                 }
+                var slice = {
+                  label: term,
+                  data: count,
+                  actions: true
+                };
+                if (count / $scope.hits > $scope.maxRatio)
+                  $scope.maxRatio = count / $scope.hits
+                $scope.data.push(slice);
               }
-            });
-          } else {
-            // In stats mode, set y-axis min to null so jquery.flot will set the scale automatically.
-            $scope.yaxis_min = null;
-            _.each(results.stats.stats_fields[$scope.panel.stats_field].facets[$scope.panel.field], function(stats_obj, facet_field) {
-              var slice = {
-                label: facet_field,
-                data: [
-                  [k, stats_obj[$scope.panel.mode]]
-                ],
-                actions: true
-              };
-              $scope.data.push(slice);
-            });
-          }
-
-          // // Slice it according to panel.size, and then set the x-axis values with k.
-          // $scope.data = $scope.data.slice(0, $scope.panel.size);
-          // _.each($scope.data, function(v) {
-          //   v.data[0][0] = k;
-          //   k++;
-          // });
+            }
+          });
           $scope.$emit('render');
         });
       };
@@ -282,18 +197,6 @@ define([
         $scope.$emit('render');
       };
 
-      $scope.showMeta = function(term) {
-        if (_.isUndefined(term.meta)) {
-          return true;
-        }
-        if (term.meta === 'other' && !$scope.panel.other) {
-          return false;
-        }
-        if (term.meta === 'missing' && !$scope.panel.missing) {
-          return false;
-        }
-        return true;
-      };
 
     });
 
@@ -314,30 +217,38 @@ define([
 
           // Function for rendering panel
           function render_panel() {
-            console.log(scope.data);
-            for (var i = 0; i < scope.data.length; i++) {
-
-            };
+            
             element.html("");
 
             var el = element[0];
-            var parent_width = element.parent().width(),
-              height = parseInt(scope.row.height);
+            var width = element.parent().width();
+            var height = parseInt(scope.row.height);
 
             var fill = d3.scale.category20();
             var color = d3.scale.linear()
               .domain([0, 1, 2, 3, 4, 5, 6, 10, 15, 20, 100])
               .range(["#7EB26D", "#EAB839", "#6ED0E0", "#EF843C", "#E24D42", "#1F78C1", "#BA43A9", "#705DA0", "#890F02", "#0A437C", "#6D1F62", "#584477"]);
 
-            d3.layout.cloud().size([300, 300])
+            var scale = d3.scale.linear().domain([0, scope.maxRatio]).range([0, 30]);
+            var randomRotate = d3.scale.linear().domain([0, 1]).range([-90, 90]);
+
+            d3.layout.cloud().size([width - 20, height - 20])
               .words(scope.data.map(function(d) {
                 return {
                   text: d.label,
-                  size: 10 + (d.data / scope.hits) * 1000
+                  size: 5 + scale(d.data / scope.hits) + parseInt(scope.panel.fontScale)
                 };
               })).rotate(function() {
-                return~~ (Math.random() * 2) * 90;
-                //return 0;
+                if (scope.panel.alignment == 'vertical and horizontal')
+                  return~~ (Math.random() * 2) * -90;
+                else if(scope.panel.alignment == 'horizontal')
+                  return 0;
+                else if(scope.panel.alignment == 'vertical(+90)')
+                  return 90;
+                else if(scope.panel.alignment == 'vertical(-90)')
+                  return -90;
+                else
+                  return randomRotate(Math.random());
               })
               .font("Impact")
               .fontSize(function(d) {
@@ -348,10 +259,10 @@ define([
 
             function draw(words) {
               d3.select(el).append("svg")
-                .attr("width", parent_width)
+                .attr("width", width)
                 .attr("height", height)
                 .append("g")
-                .attr("transform", "translate(150,150)")
+                .attr("transform", "translate(" + (width - 20) / 2 + "," + (height - 20) / 2 + ")")
                 .selectAll("text")
                 .data(words)
                 .enter().append("text")
