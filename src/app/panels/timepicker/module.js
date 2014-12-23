@@ -171,8 +171,7 @@ function (angular, app, _, moment, kbn, $) {
     $scope.to_now = function() {
       $scope.timepicker.to = {
         time : moment().format("HH:mm:ss"),
-        date : moment().format("MM/DD/YYYY"),
-        shared: moment()
+        date : moment().format("MM/DD/YYYY")
       };
     };
 
@@ -180,8 +179,7 @@ function (angular, app, _, moment, kbn, $) {
       $scope.panel.timespan = timespan;
       $scope.timepicker.from = {
         time : moment(kbn.time_ago(timespan)).format("HH:mm:ss"),
-        date : moment(kbn.time_ago(timespan)).format("MM/DD/YYYY"),
-        shared: moment(kbn.time_ago(timespan),'MM/DD/YYYY HH:mm:ss')
+        date : moment(kbn.time_ago(timespan)).format("MM/DD/YYYY")
       };
       $scope.time_apply();
     };
@@ -203,11 +201,11 @@ function (angular, app, _, moment, kbn, $) {
         var timeNumber = $scope.panel.timespan.substr(0, $scope.panel.timespan.length-1);
 
         from = $scope.panel.mode === 'relative' ? moment().subtract(timeShorthand,timeNumber) :
-          moment(moment.utc($scope.timepicker.from.date).format('MM/DD/YYYY') + " " + $scope.timepicker.from.time,'MM/DD/YYYY HH:mm:ss');
+          moment(moment($scope.timepicker.from.date).format('MM/DD/YYYY') + " " + $scope.timepicker.from.time,'MM/DD/YYYY HH:mm:ss');
         // from = $scope.panel.mode === 'relative' ? moment(kbn.time_ago($scope.panel.timespan)) :
         //   moment(moment.utc($scope.timepicker.from.date).format('MM/DD/YYYY') + " " + $scope.timepicker.from.time,'MM/DD/YYYY HH:mm:ss');
         to = $scope.panel.mode !== 'absolute' ? moment() :
-          moment(moment.utc($scope.timepicker.to.date).format('MM/DD/YYYY') + " " + $scope.timepicker.to.time,'MM/DD/YYYY HH:mm:ss');
+          moment(moment($scope.timepicker.to.date).format('MM/DD/YYYY') + " " + $scope.timepicker.to.time,'MM/DD/YYYY HH:mm:ss');
         
       // Otherwise (probably initialization)
       } else {
@@ -330,13 +328,11 @@ function (angular, app, _, moment, kbn, $) {
       $scope.timepicker = {
         from : {
           time : from.format("HH:mm:ss"),
-          date : from.format("MM/DD/YYYY"),
-          shared: from
+          date : from.format("MM/DD/YYYY")
         },
         to : {
           time : to.format("HH:mm:ss"),
-          date : to.format("MM/DD/YYYY"),
-          shared: to
+          date : to.format("MM/DD/YYYY")
         }
       };
     }
