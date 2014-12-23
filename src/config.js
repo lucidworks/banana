@@ -89,7 +89,8 @@ function (Settings) {
       'heatmap',
       'scatterplot',
       'fullTextSearch',
-      'facet'
+      'facet',
+      'multiseries'
       // 'dummy'  // Dummy module for testing
     ]
   });
