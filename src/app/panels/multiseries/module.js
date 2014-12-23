@@ -246,7 +246,7 @@ define([
                         });
                     }
 
-                    var cities = color.domain().map(function(name) {
+                    var yFields = color.domain().map(function(name) {
                         return {
                             name: name,
                             values: data.map(function(d) {
@@ -259,7 +259,7 @@ define([
                     });
 
                     // remove NaN values and let d3 to perform the interpolation
-                    cities.forEach(function(c) {
+                    yFields.forEach(function(c) {
                         c.values = c.values.filter(function(d) {
                             return !isNaN(d.yValue);
                         });
@@ -270,12 +270,12 @@ define([
                     }));
 
                     y.domain([
-                        d3.min(cities, function(c) {
+                        d3.min(yFields, function(c) {
                             return d3.min(c.values, function(v) {
                                 return v.yValue;
                             });
                         }),
-                        d3.max(cities, function(c) {
+                        d3.max(yFields, function(c) {
                             return d3.max(c.values, function(v) {
                                 return v.yValue;
                             });
@@ -297,12 +297,12 @@ define([
                         .style("text-anchor", "end")
                         .text(scope.panel.yAxis);
 
-                    var city = svg.selectAll(".city")
-                        .data(cities)
+                    var yfield = svg.selectAll(".yfield")
+                        .data(yFields)
                         .enter().append("g")
-                        .attr("class", "city");
+                        .attr("class", "yfield");
 
-                    city.append("path")
+                    yfield.append("path")
                         .attr("class", "line")
                         .attr("d", function(d) {
                             return line(d.values);
@@ -312,7 +312,7 @@ define([
                         })
                         .style("fill", "transparent");
 
-                    city.append("text")
+                    yfield.append("text")
                         .datum(function(d) {
                             return {
                                 name: d.name,
