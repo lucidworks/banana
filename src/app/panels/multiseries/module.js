@@ -40,7 +40,7 @@ define([
                 custom: ''
             },
             size: 1000,
-            max_rows: 100000, // maximum number of rows returned from Solr
+            max_rows: 10000, // maximum number of rows returned from Solr
             field: 'timestamp',
             // xAxis: 'Date',  // TODO: remove it, does not seem to get used.
             yAxis: 'Rates',
@@ -48,6 +48,7 @@ define([
             rightAxis: 'volume', // TODO: need to remove hard coded field (volume).
             spyable: true,
             show_queries: true,
+            interpolate: 'basis',
         };
 
         _.defaults($scope.panel, _d);
@@ -209,28 +210,19 @@ define([
                     }
 
                     var y = d3.scale.linear().range([height, 0]);
-                    //                var y1 = d3.scale.linear().range([height, 0]);
 
                     var color = d3.scale.category10();
                     var xAxis = d3.svg.axis().scale(x).orient("bottom");
                     var yAxis = d3.svg.axis().scale(y).orient("left");
 
-                    //                var colorY1 = d3.scale.category20();
-                    //                var yAxis1 = d3.svg.axis().scale(y1).orient("right");
-
                     var line = d3.svg.line()
-                        .interpolate("basis")
+                        .interpolate(scope.panel.interpolate) // interpolate option
                         .x(function(d) {
                             return x(d.xValue);
                         })
                         .y(function(d) {
                             return y(d.yValue);
                         });
-
-                    //                var line2 = d3.svg.line()
-                    //                    .interpolate("basis")
-                    //                    .x(function(d) { return x(d.xValue); })
-                    //                    .y(function(d) { return y1(d.yValue); });
 
                     var svg = d3.select(el).append("svg")
                         .attr("width", width + margin.left + margin.right)
@@ -245,11 +237,6 @@ define([
                     color.domain(d3.keys(data[0]).filter(function(key) {
                         return (fl.indexOf(key) !== -1);
                     }));
-
-                    //                var rightAxisList = scope.panel.rightAxis.split(',');
-                    //                colorY1.domain(d3.keys(data[0]).filter(function(key){
-                    //                    return (rightAxisList.indexOf(key) !== -1);
-                    //                }));
 
                     if (isDate) {
                         // That in case x-axis was date, what if not?
@@ -278,15 +265,6 @@ define([
                         });
                     });
 
-                    //                var volumes = colorY1.domain().map(function(name) {
-                    //                    return {
-                    //                        name: name,
-                    //                        values: data.map(function(d) {
-                    //                            return {xValue: d[scope.panel.field], yValue: +d[name]};
-                    //                        })
-                    //                    };
-                    //                }); 
-
                     x.domain(d3.extent(data, function(d) {
                         return d[scope.panel.field];
                     }));
@@ -304,11 +282,6 @@ define([
                         })
                     ]);
 
-                    //                y1.domain([
-                    //                    d3.min(volumes, function(c) { return d3.min(c.values, function(v) { return v.yValue; }); }),
-                    //                    d3.max(volumes, function(c) { return d3.max(c.values, function(v) { return v.yValue; }); })
-                    //                ]);
-
                     svg.append("g")
                         .attr("class", "x axis")
                         .attr("transform", "translate(0," + height + ")")
@@ -323,18 +296,6 @@ define([
                         .attr("dy", ".71em")
                         .style("text-anchor", "end")
                         .text(scope.panel.yAxis);
-
-                    //                svg.append("g")
-                    //                   .attr("class", "y axis")
-                    //                   .attr("transform", "translate(" + width + " ,0)")   
-                    //                   .style("fill", "blue") 
-                    //                   .call(yAxis1)
-                    //                   .append("text")
-                    //                   .attr("transform", "rotate(-90)")
-                    //                   .attr("y", 6)
-                    //                   .attr("dy", "-1.2em")
-                    //                   .style("text-anchor", "end")
-                    //                   .text("Volume"); // TODO: make it defined in panel
 
                     var city = svg.selectAll(".city")
                         .data(cities)
@@ -366,24 +327,6 @@ define([
                         .text(function(d) {
                             return d.name;
                         });
-
-                    //                var volume = svg.selectAll(".volume")
-                    //                              .data(volumes)
-                    //                              .enter().append("g")
-                    //                              .attr("class", "volume");
-                    //                
-                    //                volume.append("path")
-                    //                    .attr("class", "line")
-                    //                    .attr("d", function(d) { return line2(d.values); })
-                    //                    .style("stroke", function(d) { return colorY1(d.name + 10); })
-                    //                    .style("fill", "transparent")
-                    //
-                    //                volume.append("text")
-                    //                    .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-                    //                    .attr("transform", function(d) { return "translate(" + x(d.value.xValue) + "," + y(d.value.yValue) + ")"; })
-                    //                    .attr("x", 3)
-                    //                    .attr("dy", ".35em")
-                    //                    .text(function(d) { return d.name; });
                 }
 
                 render_panel();

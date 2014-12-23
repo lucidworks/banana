@@ -1,10 +1,10 @@
 <div class="row">
   <div class="col-sm-3 col-md-3">
-    <h6>Field <tip>Date field for x axis</tip></h6>
+    <h6>X-Axis Field <tip>Only one field for the x-axis</tip></h6>
     <input bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="panel.field" ng-change="set_refresh(true)">
   </div>
   <div class="col-sm-6 col-md-6">
-    <h6>Fields to Compare <tip>Field to be plotted on the chart(comma separated)</tip></h6>
+    <h6>Y-Axis Field(s) <tip>Field(s) to be plotted on the chart(comma separated)</tip></h6>
     <input type="text" class="input-xlarge form-control" ng-model="panel.fl" ng-change="set_refresh(true)">
   </div>
   <div class="col-sm-3 col-md-3">
@@ -15,6 +15,10 @@
 <div class="row">
   <div class="col-sm-2 col-md-2">
     <label class="small">Max Rows <tip>Maximum number of rows to retrieve for the result set.</tip></label>
-    <input ng-change="set_refresh(true)" placeholder="100000" type="number" class="form-control" ng-model="panel.max_rows">
+    <input ng-change="set_refresh(true)" placeholder="10000" type="number" class="form-control" ng-model="panel.max_rows">
+  </div>
+  <div class="col-sm-4 col-md-4">
+    <label class="small">Interpolation Method <tip>D3 Interpolation method for missing or NaN values</tip></label>
+    <select ng-change="set_refresh(true)" placeholder="10000" class="form-control" ng-model="panel.interpolate" ng-options="f for f in ['linear','step-before','basis','basis-open','basis-closed','cardinal','cardinal-open','cardinal-closed','monotone']"></select> <!-- add ng-model -->
   </div>
 </div>
