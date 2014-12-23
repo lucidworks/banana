@@ -171,7 +171,8 @@ function (angular, app, _, moment, kbn, $) {
     $scope.to_now = function() {
       $scope.timepicker.to = {
         time : moment().format("HH:mm:ss"),
-        date : moment().format("MM/DD/YYYY")
+        date : moment().format("MM/DD/YYYY"),
+        shared: moment()
       };
     };
 
@@ -179,7 +180,8 @@ function (angular, app, _, moment, kbn, $) {
       $scope.panel.timespan = timespan;
       $scope.timepicker.from = {
         time : moment(kbn.time_ago(timespan)).format("HH:mm:ss"),
-        date : moment(kbn.time_ago(timespan)).format("MM/DD/YYYY")
+        date : moment(kbn.time_ago(timespan)).format("MM/DD/YYYY"),
+        shared: moment(kbn.time_ago(timespan),'MM/DD/YYYY HH:mm:ss')
       };
       $scope.time_apply();
     };
@@ -328,11 +330,13 @@ function (angular, app, _, moment, kbn, $) {
       $scope.timepicker = {
         from : {
           time : from.format("HH:mm:ss"),
-          date : from.format("MM/DD/YYYY")
+          date : from.format("MM/DD/YYYY"),
+          shared: from
         },
         to : {
           time : to.format("HH:mm:ss"),
-          date : to.format("MM/DD/YYYY")
+          date : to.format("MM/DD/YYYY"),
+          shared: to
         }
       };
     }
