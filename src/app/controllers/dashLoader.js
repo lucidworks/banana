@@ -108,6 +108,7 @@ function (angular, _) {
           if(type === 'temp') {
             $scope.share = dashboard.share_link(dashboard.current.title,'temp',result.response.docs[0].id);
           }
+          $scope.elasticsearch.title = '';
         } else {
           alertSrv.set('Save failed','Dashboard could not be saved to Solr','error',5000);
         }
