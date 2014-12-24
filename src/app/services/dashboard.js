@@ -229,7 +229,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     };
 
     this.to_file = function() {
-      var blob = new Blob([angular.toJson(self.current,true)], {type: "application/json;charset=utf-8"});
+      var blob = new Blob([angular.toJson(self.current,true)], {type: "text/json;charset=utf-8"});
       // from filesaver.js
       window.saveAs(blob, self.current.title+"-"+new Date().getTime());
       return true;
