@@ -44,11 +44,14 @@ define([
             field: 'timestamp',
             // xAxis: 'Date',  // TODO: remove it, does not seem to get used.
             yAxis: 'Rates',
+            right_yAxis: 'Volume (10K)',
             fl: 'open,high,low,close',
-            rightAxis: 'volume', // TODO: need to remove hard coded field (volume).
+            right_fl: 'volume', // TODO: need to remove hard coded field (volume).
             spyable: true,
             show_queries: true,
             interpolate: 'basis',
+            right_interpolate: 'basis',
+            rightYEnabled: false
         };
 
         _.defaults($scope.panel, _d);
@@ -97,7 +100,7 @@ define([
             // var fl = '&fl=date,' + $scope.panel.field + ',' + $scope.panel.fl + ',' + $scope.panel.rightAxis;
             // NOTE: $scope.panel.field is the time field for x-Axis
             // TODO: need to rename to $scope.panel.timefield
-            var fl = '&fl=' + $scope.panel.field + ',' + $scope.panel.fl;
+            var fl = '&fl=' + $scope.panel.field + ',' + $scope.panel.fl + ',' + $scope.panel.right_fl;
             var rows_limit = '&rows=' + $scope.panel.max_rows;
             var sort = '&sort=' + $scope.panel.field + ' asc';
 
@@ -238,6 +241,22 @@ define([
                         return (fl.indexOf(key) !== -1);
                     }));
 
+                    var y_right,y_right_color,yAxis_right,line_right,rightAxisList;
+
+                    if(scope.panel.rightYEnabled) {
+                        y_right = d3.scale.linear().range([height, 0]);
+                        y_right_color = d3.scale.category20();
+                        yAxis_right = d3.svg.axis().scale(y_right).orient("right");
+                        line_right = d3.svg.line()
+                                    .interpolate(scope.panel.right_interpolate)
+                                    .x(function(d) { return x(d.xValue); })
+                                    .y(function(d) { return y_right(d.yValue); });
+                        var rightAxisList = scope.panel.right_fl.split(',');
+                        y_right_color.domain(d3.keys(data[0]).filter(function(key){
+                           return (rightAxisList.indexOf(key) !== -1);
+                        }));
+                    }
+
                     if (isDate) {
                         // That in case x-axis was date, what if not?
                         data.forEach(function(d) {
@@ -297,6 +316,35 @@ define([
                         .style("text-anchor", "end")
                         .text(scope.panel.yAxis);
 
+                    var yFields_right;
+                    if(scope.panel.rightYEnabled) {
+                        yFields_right = y_right_color.domain().map(function(name) {
+                            return {
+                               name: name,
+                               values: data.map(function(d) {
+                                   return {xValue: d[scope.panel.field], yValue: +d[name]};
+                               })
+                            };
+                        }); 
+
+                        y_right.domain([
+                            d3.min(yFields_right, function(c) { return d3.min(c.values, function(v) { return v.yValue; }); }),
+                            d3.max(yFields_right, function(c) { return d3.max(c.values, function(v) { return v.yValue; }); })
+                        ]);
+
+                        svg.append("g")
+                           .attr("class", "y axis")
+                           .attr("transform", "translate(" + width + " ,0)")   
+                           .style("fill", "blue") 
+                           .call(yAxis_right)
+                           .append("text")
+                           .attr("transform", "rotate(-90)")
+                           .attr("y", 6)
+                           .attr("dy", "-1.2em")
+                           .style("text-anchor", "end")
+                           .text(scope.panel.right_yAxis); // TODO: make it defined in panel
+                    }
+
                     var yfield = svg.selectAll(".yfield")
                         .data(yFields)
                         .enter().append("g")
@@ -327,6 +375,27 @@ define([
                         .text(function(d) {
                             return d.name;
                         });
+
+                    var yfield_right;
+                    if(scope.panel.rightYEnabled) {
+                       yfield_right = svg.selectAll(".yfield_right")
+                                     .data(yFields_right)
+                                     .enter().append("g")
+                                     .attr("class", "yfield_right");
+                       
+                       yfield_right.append("path")
+                           .attr("class", "line")
+                           .attr("d", function(d) { return line_right(d.values); })
+                           .style("stroke", function(d) { return y_right_color(d.name + 10); })
+                           .style("fill", "transparent")
+        
+                       yfield_right.append("text")
+                           .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+                           .attr("transform", function(d) { return "translate(" + x(d.value.xValue) + "," + y(d.value.yValue) + ")"; })
+                           .attr("x", 3)
+                           .attr("dy", ".35em")
+                           .text(function(d) { return d.name; });
+                    }
                 }
 
                 render_panel();
