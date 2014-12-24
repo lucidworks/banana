@@ -217,7 +217,7 @@ define([
 
           // Function for rendering panel
           function render_panel() {
-            
+
             element.html("");
 
             var el = element[0];
@@ -241,11 +241,11 @@ define([
               })).rotate(function() {
                 if (scope.panel.alignment == 'vertical and horizontal')
                   return~~ (Math.random() * 2) * -90;
-                else if(scope.panel.alignment == 'horizontal')
+                else if (scope.panel.alignment == 'horizontal')
                   return 0;
-                else if(scope.panel.alignment == 'vertical(+90)')
+                else if (scope.panel.alignment == 'vertical(+90)')
                   return 90;
-                else if(scope.panel.alignment == 'vertical(-90)')
+                else if (scope.panel.alignment == 'vertical(-90)')
                   return -90;
                 else
                   return randomRotate(Math.random());
