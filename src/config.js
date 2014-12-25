@@ -90,8 +90,8 @@ function (Settings) {
       'scatterplot',
       'fullTextSearch',
       'facet',
-      'tagcloud'
-      // 'dummy'  // Dummy module for testing
+      'tagcloud',
+      'multiseries'
     ]
   });
 });

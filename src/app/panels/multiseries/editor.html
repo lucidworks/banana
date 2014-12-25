@@ -13,11 +13,11 @@
 <div class="row-fluid">
   <div class="span4">
     <h6>Y-Axis Field(s) <tip>Field(s) to be plotted on the chart(comma separated)</tip></h6>
-    <input type="text" class="input-medium" ng-model="panel.fl" ng-change="set_refresh(true)">
+    <input type="text" class="input-medium" placeholder="open,high,low,close" ng-model="panel.fl" ng-change="set_refresh(true)">
   </div>
   <div class="span4">
     <h6>Y-Axis Label <tip>The label to be viewed on the top of Y-Axis</tip></h6>
-    <input type="text" class="input-medium" ng-model="panel.yAxis" ng-change="set_refresh(true)">
+    <input type="text" class="input-medium" placeholder="Rates" ng-model="panel.yAxis" ng-change="set_refresh(true)">
   </div>
   <div class="span4">
     <h6 class="small">Interpolation Method <tip>D3 Interpolation method for missing or NaN values</tip></h6>
