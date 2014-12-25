@@ -34,7 +34,7 @@ define([
           src: 'app/partials/querySelect.html'
         }],
         status: "Experimental",
-        description: "Display the most N repeated word in specific fields and show it in d3.js tag cloud "
+        description: "Display the tag cloud of the top N words from a specified field."
       };
 
       // Set and populate defaults
@@ -57,23 +57,10 @@ define([
 
       $scope.init = function() {
         $scope.hits = 0;
-        // $scope.testMultivalued();
         $scope.$on('refresh', function() {
           $scope.get_data();
         });
         $scope.get_data();
-      };
-
-      $scope.testMultivalued = function() {
-        if ($scope.panel.field && $scope.fields.typeList[$scope.panel.field] && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
-          $scope.panel.error = "Can't proceed with Multivalued field";
-          return;
-        }
-
-        if ($scope.panel.stats_field && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
-          $scope.panel.error = "Can't proceed with Multivalued field";
-          return;
-        }
       };
 
       $scope.get_data = function() {
@@ -160,26 +147,6 @@ define([
         });
       };
 
-      $scope.build_search = function(term, negate) {
-        if (_.isUndefined(term.meta)) {
-          filterSrv.set({
-            type: 'terms',
-            field: $scope.panel.field,
-            value: term.label,
-            mandate: (negate ? 'mustNot' : 'must')
-          });
-        } else if (term.meta === 'missing') {
-          filterSrv.set({
-            type: 'exists',
-            field: $scope.panel.field,
-            mandate: (negate ? 'must' : 'mustNot')
-          });
-        } else {
-          return;
-        }
-        dashboard.refresh();
-      };
-
       $scope.set_refresh = function(state) {
         $scope.refresh = state;
         // if 'count' mode is selected, set decimal_points to zero automatically.
@@ -190,14 +157,11 @@ define([
 
       $scope.close_edit = function() {
         if ($scope.refresh) {
-          // $scope.testMultivalued();
           $scope.get_data();
         }
         $scope.refresh = false;
         $scope.$emit('render');
       };
-
-
     });
 
     module.directive('tagcloudChart', function(querySrv, dashboard, filterSrv) {
