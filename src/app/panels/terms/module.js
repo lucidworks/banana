@@ -196,13 +196,15 @@ function (angular, app, _, $, kbn) {
               i++;
               var count = v[i];
               sum += count;
-              if(term === null)
+              if(term === null){
                 missing = count;
-              // if count = 0, do not add it to the chart, just skip it
-              if (count === 0) { continue; }
-              var slice = { label : term, data : [[k,count]], actions: true};
-              slice = addSliceColor(slice,term);
-              $scope.data.push(slice);
+              }else{
+                // if count = 0, do not add it to the chart, just skip it
+                if (count === 0) { continue; }
+                var slice = { label : term, data : [[k,count]], actions: true};
+                slice = addSliceColor(slice,term);
+                $scope.data.push(slice);
+              }
             }
           });
         } else {
