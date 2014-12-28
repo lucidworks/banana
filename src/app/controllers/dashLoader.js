@@ -23,8 +23,8 @@ function (angular, _) {
     // This function should be replaced by one-way binding feature of AngularJS 1.3
     $scope.resetNewDefaults = function() {
       $scope.new = {
-        server: 'http://localhost:8983/solr/',
-        core_name: 'searchlogs',
+        server: $scope.config.solr,
+        core_name: $scope.config.solr_core,
         time_field: 'event_timestamp'
       };
     };
@@ -108,6 +108,7 @@ function (angular, _) {
           if(type === 'temp') {
             $scope.share = dashboard.share_link(dashboard.current.title,'temp',result.response.docs[0].id);
           }
+          $scope.elasticsearch.title = '';
         } else {
           alertSrv.set('Save failed','Dashboard could not be saved to Solr','error',5000);
         }

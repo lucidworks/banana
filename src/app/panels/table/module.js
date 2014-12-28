@@ -224,7 +224,10 @@ function (angular, app, _, kbn, moment) {
 
       $scope.panel_request = request;
 
-      var fq = '&' + filterSrv.getSolrFq();
+      var fq = '';
+      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+        fq = '&' + filterSrv.getSolrFq();
+      }
       var query_size = $scope.panel.size * $scope.panel.pages;
       var wt_json = '&wt=json';
       var rows_limit;
@@ -334,11 +337,11 @@ function (angular, app, _, kbn, moment) {
           // pagination (batch downloading)
           // example: 1,000,000 rows will explode the memory !
           if(filetype === 'json') {
-              blob = new Blob([angular.toJson(response,true)], {type: "application/json;charset=utf-8"});
+              blob = new Blob([angular.toJson(response,true)], {type: "text/json;charset=utf-8"});
           } else if(filetype === 'csv') {
               blob = new Blob([response.toString()], {type: "text/csv;charset=utf-8"});
           } else if(filetype === 'xml'){
-              blob = new Blob([response.toString()], {type: "application/xml;charset=utf-8"});
+              blob = new Blob([response.toString()], {type: "text/xml;charset=utf-8"});
           } else {
               // incorrect file type
               alert('incorrect file type');

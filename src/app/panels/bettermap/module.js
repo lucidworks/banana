@@ -135,7 +135,10 @@ function (angular, app, _, L, localRequire) {
         }
 
         // Build Solr query
-        var fq = '&' + filterSrv.getSolrFq();
+        var fq = '';
+        if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+          fq = '&' + filterSrv.getSolrFq();
+        }
         var query_size = $scope.panel.size;
         var wt_json = '&wt=json';
         var rows_limit;

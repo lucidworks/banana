@@ -1,20 +1,47 @@
+<h4>X-Axis</h4>
 <div class="row-fluid">
   <div class="span3">
-    <h6>Field <tip>Date field for x axis</tip></h6>
-    <input bs-typeahead="fields.list" type="text" class="input-small" ng-model="panel.field" ng-change="set_refresh(true)">
+    <h6>Field Name <tip>Only one field for the x-axis</tip></h6>
+    <input bs-typeahead="fields.list" ng-options="field for field in fields.list" type="text" class="input-medium" ng-model="panel.field" ng-change="set_refresh(true)">
   </div>
-  <div class="span6">
-    <h6>Fields to Compare <tip>Field to be plotted on the chart(comma separated)</tip></h6>
-    <input type="text" class="input-xlarge" ng-model="panel.fl" ng-change="set_refresh(true)">
+  <div class="span2">
+    <h6 class="small">Max Rows <tip>Maximum number of rows to retrieve for the result set.</tip></h6>
+    <input ng-change="set_refresh(true)" placeholder="10000" type="number" class="input-small" ng-model="panel.max_rows">
   </div>
-  <div class="span3">
-    <h6>Y-Axis Definition <tip>The text to be viewed on the top of Y-Axis</tip></h6>
-    <input type="text" class="input-medium" ng-model="panel.yAxis" ng-change="set_refresh(true)">
+</div>
+<h4>Left Y-Axis (Required)</h4>
+<div class="row-fluid">
+  <div class="span4">
+    <h6>Y-Axis Field(s) <tip>Field(s) to be plotted on the chart(comma separated)</tip></h6>
+    <input type="text" class="input-medium" placeholder="open,high,low,close" ng-model="panel.fl" ng-change="set_refresh(true)">
+  </div>
+  <div class="span4">
+    <h6>Y-Axis Label <tip>The label to be viewed on the top of Y-Axis</tip></h6>
+    <input type="text" class="input-medium" placeholder="Rates" ng-model="panel.yAxis" ng-change="set_refresh(true)">
+  </div>
+  <div class="span4">
+    <h6 class="small">Interpolation Method <tip>D3 Interpolation method for missing or NaN values</tip></h6>
+    <select ng-change="set_refresh(true)" placeholder="10000" class="input-medium" ng-model="panel.interpolate" ng-options="f for f in ['linear','step-before','basis','basis-open','basis-closed','cardinal','cardinal-open','cardinal-closed','monotone']"></select> <!-- add ng-model -->
   </div>
 </div>
 <div class="row-fluid">
-  <div class="span2">
-    <label class="small">Max Rows <tip>Maximum number of rows to retrieve for the result set.</tip></label>
-    <input ng-change="set_refresh(true)" placeholder="100000" type="number" class="input-small" ng-model="panel.max_rows">
+  <div class="span3">
+    <h6>Add another Y-Axis <tip>Add another y-axis to the right</tip></h6>
+    <input type="checkbox" ng-model="panel.rightYEnabled" ng-checked="panel.rightYEnabled">
+  </div>
+</div>
+<h4 ng-show="panel.rightYEnabled">Right Y-Axis (Optional)</h4>
+<div class="row-fluid" ng-show="panel.rightYEnabled">
+    <div class="span4">
+    <h6>Y-Axis Field(s) <tip>Field(s) to be plotted on the chart(comma separated)</tip></h6>
+    <input type="text" class="input-medium" ng-model="panel.right_fl" ng-change="set_refresh(true)">
+  </div>
+  <div class="span4">
+    <h6>Y-Axis Label <tip>The label to be viewed on the top of Y-Axis</tip></h6>
+    <input type="text" class="input-medium" ng-model="panel.right_yAxis" ng-change="set_refresh(true)">
+  </div>
+  <div class="span4">
+    <h6 class="small">Interpolation Method <tip>D3 Interpolation method for missing or NaN values</tip></h6>
+    <select ng-change="set_refresh(true)" placeholder="10000" class="input-medium" ng-model="panel.right_interpolate" ng-options="f for f in ['linear','step-before','basis','basis-open','basis-closed','cardinal','cardinal-open','cardinal-closed','monotone']"></select> <!-- add ng-model -->
   </div>
 </div>

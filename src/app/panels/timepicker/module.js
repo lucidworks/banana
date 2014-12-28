@@ -91,9 +91,9 @@ function (angular, app, _, moment, kbn, $) {
 
       // If we're in a mode where something must be calculated, clear existing filters
       // and set new ones
-      if($scope.panel.mode !== 'absolute') {
+      //if($scope.panel.mode !== 'absolute') {
         set_time_filter($scope.time);
-      }
+      //}
 
       dashboard.refresh();
 
@@ -201,11 +201,11 @@ function (angular, app, _, moment, kbn, $) {
         var timeNumber = $scope.panel.timespan.substr(0, $scope.panel.timespan.length-1);
 
         from = $scope.panel.mode === 'relative' ? moment().subtract(timeShorthand,timeNumber) :
-          moment(moment.utc($scope.timepicker.from.date).format('MM/DD/YYYY') + " " + $scope.timepicker.from.time,'MM/DD/YYYY HH:mm:ss');
+          moment(moment($scope.timepicker.from.date).format('MM/DD/YYYY') + " " + $scope.timepicker.from.time,'MM/DD/YYYY HH:mm:ss');
         // from = $scope.panel.mode === 'relative' ? moment(kbn.time_ago($scope.panel.timespan)) :
         //   moment(moment.utc($scope.timepicker.from.date).format('MM/DD/YYYY') + " " + $scope.timepicker.from.time,'MM/DD/YYYY HH:mm:ss');
         to = $scope.panel.mode !== 'absolute' ? moment() :
-          moment(moment.utc($scope.timepicker.to.date).format('MM/DD/YYYY') + " " + $scope.timepicker.to.time,'MM/DD/YYYY HH:mm:ss');
+          moment(moment($scope.timepicker.to.date).format('MM/DD/YYYY') + " " + $scope.timepicker.to.time,'MM/DD/YYYY HH:mm:ss');
         
       // Otherwise (probably initialization)
       } else {

@@ -132,7 +132,10 @@ function (angular, app, _, $) {
       $scope.populate_modal(request);
 
       // Build Solr query
-      var fq = '&' + filterSrv.getSolrFq();
+      var fq = '';
+      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+        fq = '&' + filterSrv.getSolrFq();
+      }
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0'; // for map module, we don't display results from row, but we use facets.
       var facet = '';
