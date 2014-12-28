@@ -189,7 +189,7 @@ define([
                             bottom: 30,
                             left: 50
                         },
-                        width = parent_width - margin.left - margin.right,
+                        width = parent_width - margin.left - margin.right - 50,
                         height = (parent_width * aspectRatio) - margin.top - margin.bottom;
 
                     // The need for two date parsers is that sometimes solr removes the .%L part if it equals 000
@@ -245,7 +245,7 @@ define([
 
                     if(scope.panel.rightYEnabled) {
                         y_right = d3.scale.linear().range([height, 0]);
-                        y_right_color = d3.scale.category20();
+                        y_right_color = d3.scale.category20b();
                         yAxis_right = d3.svg.axis().scale(y_right).orient("right");
                         line_right = d3.svg.line()
                                     .interpolate(scope.panel.right_interpolate)
@@ -386,7 +386,7 @@ define([
                        yfield_right.append("path")
                            .attr("class", "line")
                            .attr("d", function(d) { return line_right(d.values); })
-                           .style("stroke", function(d) { return y_right_color(d.name + 10); })
+                           .style("stroke", function(d) { return y_right_color(d.name); })
                            .style("fill", "transparent")
         
                        yfield_right.append("text")
@@ -395,6 +395,66 @@ define([
                            .attr("x", 3)
                            .attr("dy", ".35em")
                            .text(function(d) { return d.name; });
+                    }
+
+                    var legend = svg.append("g")
+                        .attr("class", "legend")
+                        .attr("height", 100)
+                        .attr("width", 150)
+                        .attr('transform', 'translate(30,40)')    
+                          
+                        
+                        legend.selectAll('rect')
+                          .data(yFields)
+                          .enter()
+                          .append("rect")
+                          .attr("x", width + 50)
+                          .attr("y", function(d, i){ return i *  20;})
+                          .attr("width", 10)
+                          .attr("height", 10)
+                          .style("fill", function(d) { 
+                            return color(d.name);
+                          })
+                          
+                        legend.selectAll('text')
+                          .data(yFields)
+                          .enter()
+                          .append("text")
+                          .attr("x", width + 65)
+                          .attr("y", function(d, i){ return i *  20 + 9;})
+                          .text(function(d) {
+                            return d.name;
+                          });
+
+                    // Another Legend
+                    if(scope.panel.rightYEnabled) {
+                        var legend_right = svg.append("g")
+                        .attr("class", "legend")
+                        .attr("height", 100)
+                        .attr("width", 150)
+                        .attr('transform', 'translate(30,150)')
+                        
+                        legend_right.selectAll('rect')
+                          .data(yFields_right)
+                          .enter()
+                          .append("rect")
+                          .attr("x", width + 50)
+                          .attr("y", function(d, i){ return i *  20;})
+                          .attr("width", 10)
+                          .attr("height", 10)
+                          .style("fill", function(d) { 
+                            return y_right_color(d.name);
+                          })
+                          
+                        legend_right.selectAll('text')
+                          .data(yFields_right)
+                          .enter()
+                          .append("text")
+                          .attr("x", width + 65)
+                          .attr("y", function(d, i){ return i *  20 + 9;})
+                          .text(function(d) {
+                            return d.name;
+                          });
                     }
                 }
 
