@@ -53,8 +53,8 @@ function (angular, app, _, $, kbn) {
       stats_field : '',
       decimal_points : 0, // The number of digits after the decimal point
       exclude : [],
-      missing : true,
-      other   : true,
+      missing : false,
+      other   : false,
       size    : 10,
       // order   : 'count',
       order   : 'descending',
