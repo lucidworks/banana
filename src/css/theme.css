@@ -131,3 +131,7 @@ a[data-parent="#facet_accordion"]{
 }
 
 body.modal-open { overflow:inherit; padding-right:inherit !important; }
+.modal-backdrop{
+  height: 100%;
+  z-index: 999;
+}
