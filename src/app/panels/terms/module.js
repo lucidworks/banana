@@ -76,7 +76,7 @@ function (angular, app, _, $, kbn) {
 
     $scope.init = function () {
       $scope.hits = 0;
-      // $scope.testMultivalued();
+      //$scope.testMultivalued();
       $scope.$on('refresh',function(){
         $scope.get_data();
       });
@@ -215,7 +215,6 @@ function (angular, app, _, $, kbn) {
             $scope.data.push(slice);
           });
         }
-
         // Sort the results
         if ($scope.panel.order === 'descending') {
           $scope.data = _.sortBy($scope.data, function(d) {return -d.data[0][1];});
@@ -228,6 +227,10 @@ function (angular, app, _, $, kbn) {
           v.data[0][0] = k;
           k++;
         });
+
+        if ($scope.panel.field && $scope.fields.typeList[$scope.panel.field] && $scope.fields.typeList[$scope.panel.field].schema.indexOf("T") > -1) {
+          $scope.hits = sum;
+        }
 
         $scope.data.push({label:'Missing field',
           // data:[[k,results.facets.terms.missing]],meta:"missing",color:'#aaa',opacity:0});
