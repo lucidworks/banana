@@ -227,14 +227,6 @@ define([
                             return y(d.yValue);
                         });
 
-                    var svg = d3.select(el).append("svg")
-                        .attr("width", width + margin.left + margin.right)
-                        .attr("height", height + margin.top + margin.bottom)
-                        .attr("viewBox", "0 0 " + parent_width + " " + (parent_width * aspectRatio))
-                        .attr("preserveAspectRatio", "xMidYMid")
-                        .append("g")
-                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
                     // Colors domain must be the same count of fl
                     var fl = scope.panel.fl.split(',');
                     color.domain(d3.keys(data[0]).filter(function(key) {
@@ -301,21 +293,6 @@ define([
                         })
                     ]);
 
-                    svg.append("g")
-                        .attr("class", "x axis")
-                        .attr("transform", "translate(0," + height + ")")
-                        .call(xAxis);
-
-                    svg.append("g")
-                        .attr("class", "y axis")
-                        .call(yAxis)
-                        .append("text")
-                        .attr("transform", "rotate(-90)")
-                        .attr("y", 6)
-                        .attr("dy", ".71em")
-                        .style("text-anchor", "end")
-                        .text(scope.panel.yAxis);
-
                     var yFields_right;
                     if(scope.panel.rightYEnabled) {
                         yFields_right = y_right_color.domain().map(function(name) {
@@ -331,19 +308,36 @@ define([
                             d3.min(yFields_right, function(c) { return d3.min(c.values, function(v) { return v.yValue; }); }),
                             d3.max(yFields_right, function(c) { return d3.max(c.values, function(v) { return v.yValue; }); })
                         ]);
-
-                        svg.append("g")
-                           .attr("class", "y axis")
-                           .attr("transform", "translate(" + width + " ,0)")   
-                           .style("fill", "blue") 
-                           .call(yAxis_right)
-                           .append("text")
-                           .attr("transform", "rotate(-90)")
-                           .attr("y", 6)
-                           .attr("dy", "-1.2em")
-                           .style("text-anchor", "end")
-                           .text(scope.panel.right_yAxis); // TODO: make it defined in panel
                     }
+
+                    var zoom = d3.behavior.zoom()
+                                .x(x)
+                                .y(y)
+                                .scaleExtent([1, 5])
+                                .on("zoom", zoomed);                               
+
+                    var svg = d3.select(el).append("svg").call(zoom)
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .attr("viewBox", "0 0 " + parent_width + " " + (parent_width * aspectRatio))
+                        .attr("preserveAspectRatio", "xMidYMid")
+                        .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                        
+                    svg.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + height + ")")
+                        .call(xAxis);
+
+                    svg.append("g")
+                        .attr("class", "y axis")
+                        .call(yAxis)
+                        .append("text")
+                        .attr("transform", "rotate(-90)")
+                        .attr("y", 6)
+                        .attr("dy", ".71em")
+                        .style("text-anchor", "end")
+                        .text(scope.panel.yAxis);
 
                     var yfield = svg.selectAll(".yfield")
                         .data(yFields)
@@ -360,41 +354,30 @@ define([
                         })
                         .style("fill", "transparent");
 
-                    yfield.append("text")
-                        .datum(function(d) {
-                            return {
-                                name: d.name,
-                                value: d.values[d.values.length - 1]
-                            };
-                        })
-                        .attr("transform", function(d) {
-                            return "translate(" + x(d.value.xValue) + "," + y(d.value.yValue) + ")";
-                        })
-                        .attr("x", 3)
-                        .attr("dy", ".35em")
-                        .text(function(d) {
-                            return d.name;
-                        });
-
                     var yfield_right;
                     if(scope.panel.rightYEnabled) {
-                       yfield_right = svg.selectAll(".yfield_right")
+                        svg.append("g")
+                           .attr("class", "y axis")
+                           .attr("transform", "translate(" + width + " ,0)")   
+                           .style("fill", "blue") 
+                           .call(yAxis_right)
+                           .append("text")
+                           .attr("transform", "rotate(-90)")
+                           .attr("y", 6)
+                           .attr("dy", "-1.2em")
+                           .style("text-anchor", "end")
+                           .text(scope.panel.right_yAxis); // TODO: make it defined in panel
+
+                        yfield_right = svg.selectAll(".yfield_right")
                                      .data(yFields_right)
                                      .enter().append("g")
                                      .attr("class", "yfield_right");
                        
-                       yfield_right.append("path")
+                        yfield_right.append("path")
                            .attr("class", "line")
                            .attr("d", function(d) { return line_right(d.values); })
                            .style("stroke", function(d) { return y_right_color(d.name); })
                            .style("fill", "transparent")
-        
-                       yfield_right.append("text")
-                           .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-                           .attr("transform", function(d) { return "translate(" + x(d.value.xValue) + "," + y(d.value.yValue) + ")"; })
-                           .attr("x", 3)
-                           .attr("dy", ".35em")
-                           .text(function(d) { return d.name; });
                     }
 
                     var legend = svg.append("g")
@@ -455,6 +438,19 @@ define([
                           .text(function(d) {
                             return d.name;
                           });
+                    }
+
+                    function zoomed() {
+                        svg.select(".x.axis").call(xAxis);
+                        svg.select(".y.axis").call(yAxis);   
+                        svg.selectAll('.yfield path.line').data(yFields).attr('d', function(d) {
+                            return line(d.values);
+                        });
+                        if(scope.panel.rightYEnabled) {
+                            svg.selectAll('.yfield_right path.line').data(yFields_right).attr('d', function(d) {
+                                return line_right(d.values);
+                            });
+                        }
                     }
                 }
 
