@@ -4,6 +4,29 @@ The Banana project was forked from Kibana, and works with all kinds of time seri
 
 The goal is to create a rich and flexible UI, enabling users to rapidly develop end-to-end applications that leverage the power of Apache Solr. Data can be ingested into Solr through a variety of ways, including LogStash, Flume and other connectors.
 
+To run Banana follow these steps:
+
+* Install Node.js
+```
+sudo apt-get install python-software-properties python g++ make
+sudo add-apt-repository ppa:chris-lea/node.js
+sudo apt-get update
+sudo apt-get install nodejs
+```
+
+* In the terminal run 
+```
+npm install
+```
+
+* Download [Solr](http://lucene.apache.org/solr/) and run it on port 8983
+
+* In the terminal run 
+```
+npm start
+```
+
+* go to [http://localhost:3000](http://localhost:3000)
  
 ## IMPORTANT
 

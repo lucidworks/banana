@@ -31,7 +31,7 @@ function (angular, app, _, kbn, moment) {
 
   var module = angular.module('kibana.panels.table', []);
   app.useModule(module);
-  module.controller('table', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
+  module.controller('table', function($rootScope, $scope, $http, fields, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -63,7 +63,7 @@ function (angular, app, _, kbn, moment) {
     // Set and populate defaults
     var _d = {
       status  : "Stable",
-      queries     : {
+      queries : {
         mode        : 'all',
         ids         : [],
         query       : '*:*',
@@ -95,6 +95,11 @@ function (angular, app, _, kbn, moment) {
       imgFieldWidth: 'auto', // width of <img> (if enabled)
       imgFieldHeight: '85px', // height of <img> (if enabled)
       show_queries:true,
+      couchbase: {
+        bucket: '',
+        document: '',
+        view: ''
+      }
     };
     _.defaults($scope.panel,_d);
 
@@ -337,11 +342,11 @@ function (angular, app, _, kbn, moment) {
           // pagination (batch downloading)
           // example: 1,000,000 rows will explode the memory !
           if(filetype === 'json') {
-              blob = new Blob([angular.toJson(response,true)], {type: "text/json;charset=utf-8"});
+              blob = new Blob([angular.toJson(response,true)], {type: "application/json;charset=utf-8"});
           } else if(filetype === 'csv') {
               blob = new Blob([response.toString()], {type: "text/csv;charset=utf-8"});
           } else if(filetype === 'xml'){
-              blob = new Blob([response.toString()], {type: "text/xml;charset=utf-8"});
+              blob = new Blob([response.toString()], {type: "application/xml;charset=utf-8"});
           } else {
               // incorrect file type
               alert('incorrect file type');
@@ -387,6 +392,55 @@ function (angular, app, _, kbn, moment) {
       }
       return obj;
     };
+
+    // Couchbase integration
+    $scope.lookupCouchbase = function(field, value) {
+      $scope.couchbase = { field: field };
+      $http({
+        method: 'GET',
+        url: '/couchbase/lookup/' + $scope.panel.couchbase.bucket + '/' + $scope.panel.couchbase.document + '/' + $scope.panel.couchbase.view + '/' + value
+      })
+      .success(function(data) {
+        if (data.error) {
+          $scope.couchbase.error = data.error;
+          $scope.couchbase.reason = data.reason;
+        }
+        if (data && data.rows && data.rows[0]) {
+          // For lookup, we should only get one row of the lookup result back.
+          // Expected the result (data.rows[0]) to be in this format:
+          //   { key: "xxx"
+          //     value: [
+          //       0: [ "column_name", "value" ],
+          //       1: [ "column_name", "value" ]
+          //     ] 
+          //   }
+          //
+          // If the result values in the array (data.rows[0].value) are not array type (e.g. string type),
+          // then convert it to array, so that we can display it properly in the lookup html page.
+          var values = data.rows[0].value.map(function(v, i) {
+            if ((v instanceof Array) && (v.length === 2)) {
+              return v;
+            } else {
+              return [ "Column "+i, v];
+            }
+          });
+          $scope.couchbase.key = data.rows[0].key;
+          $scope.couchbase.values = values;
+        } else { // no matching lookup value
+          $scope.couchbase.values = null;
+        }
+      })
+      .error(function(data, status, headers, config) {
+        console.log('http lookupCouchbase error! data =',data,'http error status = ',status);
+        $scope.couchbase.error = 'HTTP Error Status: ' + status;
+        if (status === 404) {
+          $scope.couchbase.reason = 'Page Not Found: ' + config.url;
+        } else {
+          console.log('config = ',config);
+          $scope.couchbase.reason = data;
+        }
+      });
+    }
   });
 
   // This also escapes some xml sequences

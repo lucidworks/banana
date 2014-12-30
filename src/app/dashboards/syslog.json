@@ -316,7 +316,7 @@
     "hide": false
   },
   "solr": {
-    "server": "http://localhost:8983/solr/",
+    "server": "/solr/",
     "core_name": "logstash_logs",
     "core_list": [],
     "global_params": "&df=message"

@@ -1,0 +1,5 @@
+{
+    "serverPort": 3000,
+    "solrUrl": "http://localhost:8983",
+    "couchbaseUrl": "http://localhost:8092"
+}
