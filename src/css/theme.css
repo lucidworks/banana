@@ -17,7 +17,7 @@
 .panel-loading{position:absolute;top:0;left:0;z-index:800}
 .ui-draggable-dragging{display:block;visibility:visible;opacity:1;z-index:9999}
 .panel-title{border:0;margin-left:-11px}
-.panel div.panel-extra div.panel-extra-container{margin-right:-11px}
+.panel div.panel-extra div.panel-extra-container{margin-right:-11px; padding-right: 4px;}
 .panel div.panel-extra{font-size:.9em;}
 .panel div.panel-extra .extra{float:right!important;border-bottom:1px solid #fff}
 .dragInProgress{background-color:#fcfcfc;border:1px solid #ddd}.link{cursor:pointer}
