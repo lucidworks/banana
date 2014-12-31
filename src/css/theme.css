@@ -42,7 +42,7 @@ ul.list-unstyled li a.label{background-color: #918A8A}
 .faded{opacity:.2}
 div.flot-text{color:#333!important}
 .dashboard-notice{z-index:8000;margin-left:0;padding:3px 0 3px 0;width:100%;color:#333;padding-left:20px}
-
+.dashboard-notice.alert-error{padding-left: 20px; background-color: #f2dede; border-color: #eed3d7;}
 .panelCont div.form-horizontal {clear: both;}
 .timepicker-block{float: left;}
 .to-txt{float: left;margin: 7px 0 0 10px;}
@@ -66,6 +66,7 @@ div.flot-text{color:#333!important}
 	left: -428% !important;
 	width: 240px;
 }
+.modal-body .nav-tabs > li > a {font-size: 14px;}
 .mar-top-10{
   margin: 10px 0px 4px 0px;
 }
