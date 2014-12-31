@@ -7,68 +7,29 @@ The goal is to create a rich and flexible UI, enabling users to rapidly develop 
  
 ## IMPORTANT
 
-Pull the repo from the "release" branch; version 1.4 will be tagged as banana-1.4.
+Pull the repo from the "release" branch; version 1.5.0 will be tagged as banana-1.5.0
 
-## Banana 1.4: Released on 15 September 2014
+## Banana 1.5.0: Released on 2 January 2015
 
-Banana 1.4 contains many new features, new panels, enhancements and bug fixes to improve the overall user experience and stability. Thank you to our growing community for your suggestions and contributions! Please continue sending us your feedbacks, so that we can further extend and improve Banana!
+Banana 1.5.0 contains many new features, new panels, enhancements and bug fixes to improve the overall user experience and stability. Thank you to our growing community for your suggestions and contributions! Please continue sending us your feedbacks, so that we can further extend and improve Banana!
 
 This release includes the following key new features and improvements:
 
-1. Banana 1.4 provides much improved performance - by better utilizing Solr's caches in _Timepicker Module_. This improvement is discernable in the Relative and Since time modes.
-2. A new _Full Text Search_ panel provides a more traditional search interface to view textual data.
-3. Enhancements to the _Table_ panel improve performance and user experience:
-    * Sorting option can now be turned off in order to speed up the search results returned from Solr.
-    * A particular column - corresponding to a URI field - can be set as the hyperlink column. When set, this value will become clickable and linked to a specific URI.
-    * You can now display images inside a table column.
-4. In the _Range Facet_ panel, users now have the ability to set the chart's precision automatically or manually.
-5. In the _Terms_ panel, chart colors can be customized by changing the default color template or by using field values as colors.
-6. It is now possible to load and save a dashboard to Gist.
-7. We have fixed the Solr server location for the banana-int collection, the internal collection that stores dashboards. Now banana-int should be located on the same Solr server as specified in Solr Settings in the Dashboard configuration. You do not have to manually edit config.js file anymore.
-8. The dashboard contains a new button that enables users to quickly create a new dashboard from templates. Currently, we provide two default templates: a time-series dashboard template and a non time-series one.
-9. The _Histogram_ panel no longer requires you to set a time field; as logically expected, it will get the time field from the _Timepicker_ panel.
-10. We have enhanced the usability by allowing you to specify custom help messages inside each panel. You no longer need to use a separate _Text_ panel for this purpose. Instead, you can now embed information and instructions within each panel in the dashboard to better communicate with your users.
+1. _Multi queries support_ for all panels, except the scatter plot panel.
+2. A new _Multi-series panel_ based on D3.js provides a way to visualize more complex datasets.
+3. A new _Tag Cloud panel_ helps you to easily create a tag or word cloud from your data using facet count.
+4. Various bug fixes and improvements:
+    - Fix warnings and errors with grunt jshint. [PR #47](https://github.com/LucidWorks/banana/pull/47)
+    - Panel / Terms / Add log axis. [PR #56](https://github.com/LucidWorks/banana/pull/56)
+    - Add some modifications to help message. [PR #57](https://github.com/LucidWorks/banana/pull/57)
+    - Fix missing issue. [PR #60](https://github.com/LucidWorks/banana/pull/60)
+    - Remove "Missing" and "Other" as default options in _Terms panel_.
+    - Edit regex in urlLink filter to allow * (ampersand) [Issue #64](https://github.com/LucidWorks/banana/issues/64)
 
-## Banana 1.3: Released on 10 June 2014
+## Older Release Notes
 
-Banana 1.3 improves on its already powerful capability to visualize and interpret generalized time series data (banana is not only used to search log files, but also visualize social media streams, call center logs, medical records, and etc.). It starts leveraging the power of D3.js (data-driven documents) and provides new panels and enhancements, while also allowing visualization of non-time series data. Key new features include:
+You can find all previous [Release Notes](https://github.com/LucidWorks/banana/wiki/Release-Notes) on our wiki page.
 
-1. Stats and aggregations are now available in the _Terms_ and _Map_ panels. In addition to count mode, you can now visualize stats such as mean, max, min, sum, etc.
-2. A new _Range Facet_ panel allows you to visualize and graphically explore distributions on numeric fields, with selections being reflected across the entire dashboard.
-3. A new _Heatmap_ panel provides for visualization of the powerful pivot faceting capability of Solr.
-4. A new _Ticker_ panel provides a stock ticker like representation of trends in your time series data.
-5. The _Export_ functionality in the the _Table Module_ has been optimized for vastly improved performance and now allows you to export only a subset of the fields in the returned documents.
-6. Previous versions required a _Timepicker_ and time fields set in all panels for them to work. We have cleaned up the code so that it will now work without a _Timepicker_ and a time filter, which will help visualize non-time series data. The time field provided in the _Timepicker_ is used by all panels.
-7. General improvements in the UI and in-product help documentation makes Banana 1.3 easier to use.
-8. The directory structure is now cleaned up and legacy files have been removed. Instructions for enabling CORS in Solr and for setting the schema/config for banana's internal collections are now  contained in the _resources_ directory. 
-
-## Banana 1.2: Released on 11 May 2014
-
-Following release 1.1, we have addressed a number of user requests, including:
-
-1.	This release provides panels for representing geo-spatial data—a _map_ module that provides a heat map-style representation based on two-letter country codes or US state codes, and a _bettermap_ module that provides a clustered representation of location (_LatLonType_) data.
-2.	The _Table Module_ now has a Save button that enables you to save to csv, JSON or XML formats so that you can use other tools like MS Excel for further analysis. The number of rows downloaded will be equal to number of “pageable” hits configured in the _Paging_ tab within the _Table Panel Configuration Menu_ (accessed by clicking on the cog wheel icon near the top right of the table panel).
-3.	You can now control whether a dashboard can be saved and/or edited from the _Editable_ checkbox in the _General_ tab, and the _Controls_ tab, both within the _Dashboard Configurator_ (accessed from the cog-wheel icon to very top and right of dashboard).
-4.	We have added a _hits_ panel that provides you with the number of matching results returned while using the global query parameters. This is useful if you want to make the number prominent or if you are not using the histogram panel prominently.
-5.	You can now provide additional _Global Query Parameters_ that apply to all panels of the dashboard from the _Solr_ tab in the _Dashboard Configurator_. Among other uses, this feature is invaluable for:
-    *	Specifying a custom query parser (Solr query parameter: &defType) or search handler (&qt)
-    *	Specifying a user type for use in custom business rules at the Solr server.
-    *	Specifying default search fields (&df)
-6.	We fixed a bug in the _values_ mode within the _histogram_ module, where missing values were previously assumed to be zero. This led to jagged graphs when the “group by” option was used. We no longer set them to zero but rather have the individual lines skip the missing values.
-7.	In the _Absolute Time_ and _Since_ modes, the _timepicker_ used to skip back one day if your browser time was behind UTC. This issue has now been fixed.
-8.	Banana 1.1 hardcoded certain default search fields (df's) to work with our LogStash output writer. Specifically, it hardcoded a df=message. This means that your old dashboards may not be fetching query results with Banana 1.2, though they were doing so with 1.1. To fix this, add a _Global Query Parameter_ &df=message (or whatever field you want to search on) within the _Dashboard Configurator._ Alternately, you can set the default search field in your solrconfig (recommended).  
-
-
-## Banana 1.1 is here!
-
-We have added a number of exciting new features and fixed key issues, including:
-
-1. You can now add a _Filtering panel_ that supports global filter queries (fq's). Now, if you click on a facet in the terms panel, the results will be filtered for that particular value.
-2. The _terms_, _histogram_ and _table_ modules allow you to specify a panel-specific filter query (within the _Query Tab_ while configuring the panel) allowing greater flexibility in designing dashboards.
-3. The _inspector_ icon on these panels shows the Solr query, which is very useful for debugging dashboards.
-4. The _Histogram_ module allows you to plot values in addition to counts. It also allows you to group values by another field. This would be useful if for example you plot CPU utilization over time and want to group by hostname.
-5. The sort operation in the _Table_ module is now fixed and works correctly on single-valued fields.
-6. We have refactored the code to enable easier addition of new modules and fixes to existing modules.
 
 ### Changes to your dashboards
 If you created dashboards for Banana 1.0, you did not have a global filtering panel. In some cases, these filter values can be implicitly set to defaults that may lead to strange search results. We recommend updating your old dashboards by adding a filtering panel. A good way to do it visually is to put the filtering panel on its own row and hide it when it is not needed.
@@ -95,7 +56,6 @@ Browse to http://\<solr\_server\>:\<port\_number\>/solr/banana/src/index.html#/d
 If your Solr server/port is different from localhost:8983, edit banana/src/config.js and banana/src/app/dashboards/default.json to enter the hostname and port that you are using. Remember that banana runs within the client browser, so provide a fully qualified domain name (FQDN), because the hostname and port number you provide should be resolvable from the client machines.
 
 If you have not created the data collections and ingested data into Solr, you will see an error message saying "Collection not found at .." You can use any connector to get data into Solr. If you want to use LogStash, please go to the Solr Output Plug-in for LogStash Page (https://github.com/LucidWorks/solrlogmanager) for code, documentation and examples.
-
 
 
 #### Complete SLK Stack
