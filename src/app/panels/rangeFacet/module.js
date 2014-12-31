@@ -268,43 +268,21 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                   '&facet.range.end=' + (parseInt($scope.panel.maximum)+1) +
                   '&facet.range.gap=' + $scope.panel.interval;
 
-      // Set the panel's query
-      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet ;
-      // Set the additional custom query
-      if ($scope.panel.queries.custom != null) {
-        request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
-      } else {
-        request = request.setQuery($scope.panel.queries.query);
-      }
+      var promises = [];
+      $scope.panel.queries.query = "";
 
-      var results = request.doSearch();
-
-      // ==========================
-      // SOLR - TEST Multiple Queries
-      // ==========================
-      // var mypromises = [];
-      // mypromises.push(results);
-
-      // var temp_q = 'q=' + dashboard.current.services.query.list[1].query + df + wt_json + rows_limit + fq + facet + filter_fq + fl;
-      // request = request.setQuery(temp_q);
-      // mypromises.push(request.doSearch());
-
-      // if (dashboard.current.services.query.ids.length > 1) {
-      //   _.each(dashboard.current.services.query.list, function(v,k) {
-      //     if (DEBUG) { console.log('histogram:\n\tv=',v,', k=',k); }
-      //     // TODO
-      //   });
-      //   $q.all(mypromises).then(function(myresults) {
-      //     if (DEBUG) { console.log('histogram:\n\tmyresults=',myresults); }
-      //     // TODO
-      //   });
-      // }
-      // ========================
-      // END SOLR TEST
-      // ========================
-
+       _.each($scope.panel.queries.ids, function(id) {
+        var temp_q =  querySrv.getQuery(id) + wt_json + rows_limit + fq + facet ;
+        $scope.panel.queries.query += temp_q + "\n";
+        if ($scope.panel.queries.custom !== null) {
+          request = request.setQuery(temp_q + $scope.panel.queries.custom);
+        } else {
+          request = request.setQuery(temp_q);
+        }
+        promises.push(request.doSearch());
+      });
       // Populate scope when we have results
-      results.then(function(results) {
+      $q.all(promises).then(function(results) {
         var _range = $scope.get_facet_range();
 
         $scope.panelMeta.loading = false;
@@ -327,12 +305,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
         // Make sure we're still on the same query/queries
         // TODO: We probably DON'T NEED THIS unless we have to support multiple queries in query module.
-        if($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
+        // if($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
           var i = 0,
             numeric_series,
             hits;
 
-          _.each($scope.panel.queries.ids, function(id) {
+          _.each($scope.panel.queries.ids, function(id,index) {
 
             // we need to initialize the data variable on the first run,
             // and when we are working on the first segment of the data.
@@ -356,7 +334,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             // Solr facet counts response is in one big array.
             // So no need to get each segment like Elasticsearch does.
             // Entries from facet_ranges counts
-            var entries = results.facet_counts.facet_ranges[$scope.panel.range_field].counts;
+            var entries = results[index].facet_counts.facet_ranges[$scope.panel.range_field].counts;
             for (var j = 0; j < entries.length; j++) {
               var entry_time = entries[j]; // convert to millisec
               j++;
@@ -384,7 +362,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           // if(segment < dashboard.indices.length-1) {
           //   $scope.get_data(segment+1,query_id);
           // }
-        }
+        // }
       });
     };
 

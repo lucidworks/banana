@@ -245,7 +245,7 @@ function (angular, app, _, kbn, moment) {
       }
 
       // Set the panel's query
-      $scope.panel.queries.basic_query = querySrv.getQuery(0) + fq + sorting;
+      $scope.panel.queries.basic_query = querySrv.getORquery() + fq + sorting;
       $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json + rows_limit;
 
       // Set the additional custom query

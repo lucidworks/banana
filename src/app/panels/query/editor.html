@@ -1,1 +1,6 @@
-Nothing to Configure Here.
+<div class="span2" ng-show="!_.isUndefined(panel.spyable)">
+    <label class="small">
+        Inspect <i class="icon-question-sign" bs-tooltip="'Allow query reveal via <i class=icon-eye-open></i>'"></i>
+    </label>
+    <input type="checkbox" ng-model="panel.spyable" ng-checked="panel.spyable">
+</div>

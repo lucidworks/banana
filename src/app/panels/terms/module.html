@@ -27,6 +27,13 @@
     .floatright{
       float:right;
     }
+
+    .leftRightLegend {
+      margin-left: 10px;
+      margin-right: 10px; 
+      overflow:overlay; 
+      padding-right:10px 
+    }
     </style>
   <!-- START Pie or bar chart -->
   <div ng-show="panel.counter_pos == 'above' && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend'>
@@ -48,7 +55,7 @@
   <!-- keep legend from over lapping -->
   <div style="clear:both"></div>
 
-  <div style="margin-left: 10px;margin-right: 10px;" ng-show="(panel.counter_pos == 'right' || panel.counter_pos == 'left') && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend' ng-class="{'floatright':panel.counter_pos == 'right','floatleft':panel.counter_pos == 'left'}">
+  <div class="leftRightLegend " ng-style="{'max-height':row.height }" ng-show="(panel.counter_pos == 'right' || panel.counter_pos == 'left') && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend' ng-class="{'floatright':panel.counter_pos == 'right','floatleft':panel.counter_pos == 'left'}">
     <!-- vertical legend above -->
     <table class="small">
       <tr ng-repeat="term in legend">

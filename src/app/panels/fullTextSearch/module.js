@@ -278,7 +278,7 @@ define([
         // Set the panel's query
 
         //var query = $scope.panel.searchQuery == null ? querySrv.getQuery(0) : 'q=' + $scope.panel.searchQuery
-        $scope.panel.queries.basic_query = querySrv.getQuery(0) + fq + facet + facet_fields + sorting;
+        $scope.panel.queries.basic_query = querySrv.getORquery() + fq + facet + facet_fields + sorting;
         $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json + rows_limit + highlight;
 
         // Set the additional custom query
