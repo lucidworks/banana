@@ -7,7 +7,7 @@ The goal is to create a rich and flexible UI, enabling users to rapidly develop 
  
 ## IMPORTANT
 
-Pull the repo from the "release" branch; version 1.5.0 will be tagged as banana-1.5.0
+Pull the repo from the "release" branch; version 1.5.0 will be tagged as v1.5.0
 
 ## Banana 1.5.0: Released on 2 January 2015
 
@@ -32,7 +32,7 @@ You can find all previous [Release Notes](https://github.com/LucidWorks/banana/w
 
 
 ### Changes to your dashboards
-If you created dashboards for Banana 1.0, you did not have a global filtering panel. In some cases, these filter values can be implicitly set to defaults that may lead to strange search results. We recommend updating your old dashboards by adding a filtering panel. A good way to do it visually is to put the filtering panel on its own row and hide it when it is not needed.
+If you created dashboards for Banana 1.0.0, you did not have a global filtering panel. In some cases, these filter values can be implicitly set to defaults that may lead to strange search results. We recommend updating your old dashboards by adding a filtering panel. A good way to do it visually is to put the filtering panel on its own row and hide it when it is not needed.
 
 ## Installation and QuickStart
 
@@ -64,7 +64,7 @@ LucidWorks has packaged Solr, LogStash (with a Solr Output Plug-in), and Banana 
 
 
 #### Building and installing from a war file
-Pull the repo from the "release" branch; versions 1.3, 1.2 and 1.1 will be tagged as banana-1.3, banana-1.2 and banana-1.1 respectively.  Run "ant" from within the banana directory to build the war file.
+Pull the repo from the "release" branch; versions 1.3.0, 1.2.0 and 1.1.0 will be tagged as v1.3.0, v1.2.0 and v1.1.0 respectively.  Run "ant" from within the banana directory to build the war file.
 
     cd $BANANA_REPO_HOME  
     ant 
@@ -84,7 +84,7 @@ Browse to http://localhost:8983/banana  (or the FQDN of your solr server).
 	
 #### Banana Web App run in a WebServer
 
-Banana is a an AngularJS app and can be run in any webserver that has access to Solr. You will need to enable CORS on the Solr instances that you query, or configure a proxy that makes requests to banana and Solr as same-origin. We typically recommend the latter approach.
+Banana is an AngularJS app and can be run in any webserver that has access to Solr. You will need to enable CORS on the Solr instances that you query, or configure a proxy that makes requests to banana and Solr as same-origin. We typically recommend the latter approach.
 
 
 #### Storing Dashboards in Solr
