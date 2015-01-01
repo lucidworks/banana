@@ -214,7 +214,7 @@ define([
                 else
                   return randomRotate(Math.random());
               })
-              .font("fantasy")
+              .font("sans-serif")
               .fontSize(function(d) {
                 return d.size;
               })
@@ -233,7 +233,7 @@ define([
                 .style("font-size", function(d) {
                   return d.size + "px";
                 })
-                .style("font-family", "fantasy")
+                .style("font-family", "Impact, Haettenschweiler, 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', 'sans-serif'")
                 .style("fill", function(d, i) {
                   //return  color(i);
                   return fill(i);
