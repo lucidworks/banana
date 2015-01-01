@@ -89,8 +89,9 @@ function (Settings) {
       'heatmap',
       'scatterplot',
       'fullTextSearch',
-      'facet'
-      // 'dummy'  // Dummy module for testing
+      'facet',
+      'tagcloud',
+      'multiseries'
     ]
   });
 });

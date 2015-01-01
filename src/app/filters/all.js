@@ -62,7 +62,7 @@ define(['angular', 'jquery', 'underscore','showdown'], function(angular, $, _,Sh
 
   module.filter('urlLink', function() {
     var  //URLs starting with http://, https://, or ftp://
-      r1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim,
+      r1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|*])/gim,
       //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
       r2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim,
       //Change email addresses to mailto:: links.
@@ -98,7 +98,7 @@ define(['angular', 'jquery', 'underscore','showdown'], function(angular, $, _,Sh
 
   module.filter('urlLinkAsIcon', function() {
     var  //URLs starting with http://, https://, or ftp://
-      r1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim,
+      r1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|*])/gim,
       //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
       r2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim,
       //Change email addresses to mailto:: links.

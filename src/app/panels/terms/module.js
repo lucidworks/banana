@@ -53,8 +53,8 @@ function (angular, app, _, $, kbn) {
       stats_field : '',
       decimal_points : 0, // The number of digits after the decimal point
       exclude : [],
-      missing : true,
-      other   : true,
+      missing : false,
+      other   : false,
       size    : 10,
       // order   : 'count',
       order   : 'descending',
@@ -76,7 +76,7 @@ function (angular, app, _, $, kbn) {
 
     $scope.init = function () {
       $scope.hits = 0;
-      // $scope.testMultivalued();
+      //$scope.testMultivalued();
       $scope.$on('refresh',function(){
         $scope.get_data();
       });
@@ -138,7 +138,7 @@ function (angular, app, _, $, kbn) {
       }
 
       // Set the panel's query
-      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + exclude_filter + facet;
+      $scope.panel.queries.query = querySrv.getORquery() + wt_json + rows_limit + fq + exclude_filter + facet;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
@@ -196,13 +196,15 @@ function (angular, app, _, $, kbn) {
               i++;
               var count = v[i];
               sum += count;
-              if(term === null)
+              if(term === null){
                 missing = count;
-              // if count = 0, do not add it to the chart, just skip it
-              if (count === 0) { continue; }
-              var slice = { label : term, data : [[k,count]], actions: true};
-              slice = addSliceColor(slice,term);
-              $scope.data.push(slice);
+              }else{
+                // if count = 0, do not add it to the chart, just skip it
+                if (count === 0) { continue; }
+                var slice = { label : term, data : [[k,count]], actions: true};
+                slice = addSliceColor(slice,term);
+                $scope.data.push(slice);
+              }
             }
           });
         } else {
@@ -213,7 +215,6 @@ function (angular, app, _, $, kbn) {
             $scope.data.push(slice);
           });
         }
-
         // Sort the results
         if ($scope.panel.order === 'descending') {
           $scope.data = _.sortBy($scope.data, function(d) {return -d.data[0][1];});
@@ -226,6 +227,10 @@ function (angular, app, _, $, kbn) {
           v.data[0][0] = k;
           k++;
         });
+
+        if ($scope.panel.field && $scope.fields.typeList[$scope.panel.field] && $scope.fields.typeList[$scope.panel.field].schema.indexOf("T") > -1) {
+          $scope.hits = sum;
+        }
 
         $scope.data.push({label:'Missing field',
           // data:[[k,results.facets.terms.missing]],meta:"missing",color:'#aaa',opacity:0});
