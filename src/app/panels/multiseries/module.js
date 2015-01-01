@@ -50,7 +50,9 @@ define([
             show_queries: true,
             interpolate: 'basis',
             right_interpolate: 'basis',
-            rightYEnabled: false
+            rightYEnabled: false,
+            showLegend: true,
+            showRightLegend: true
         };
 
         _.defaults($scope.panel, _d);
@@ -290,13 +292,14 @@ define([
                         ]);
                     }
 
+                    // zoom functionality is disabled
                     var zoom = d3.behavior.zoom()
                                 .x(x)
                                 .y(y)
                                 .scaleExtent([1, 5])
                                 .on("zoom", zoomed);                               
 
-                    var svg = d3.select(el).append("svg").call(zoom)
+                    var svg = d3.select(el).append("svg")
                         .attr("width", width + margin.left + margin.right)
                         .attr("height", height + margin.top + margin.bottom)
                         .attr("viewBox", "0 0 " + parent_width + " " + (parent_width * aspectRatio))
@@ -360,37 +363,38 @@ define([
                            .style("fill", "transparent")
                     }
 
-                    var legend = svg.append("g")
-                        .attr("class", "legend")
-                        .attr("height", 100)
-                        .attr("width", 150)
-                        .attr('transform', 'translate(30,40)')    
-                          
-                        
-                        legend.selectAll('rect')
-                          .data(yFields)
-                          .enter()
-                          .append("rect")
-                          .attr("x", width + 50)
-                          .attr("y", function(d, i){ return i *  20;})
-                          .attr("width", 10)
-                          .attr("height", 10)
-                          .style("fill", function(d) { 
-                            return color(d.name);
-                          })
-                          
-                        legend.selectAll('text')
-                          .data(yFields)
-                          .enter()
-                          .append("text")
-                          .attr("x", width + 65)
-                          .attr("y", function(d, i){ return i *  20 + 9;})
-                          .text(function(d) {
-                            return d.name;
-                          });
+                    if(scope.panel.showLegend) {
+                        var legend = svg.append("g")
+                            .attr("class", "legend")
+                            .attr("height", 100)
+                            .attr("width", 150)
+                            .attr('transform', 'translate(30,40)');
+                            
+                            legend.selectAll('rect')
+                              .data(yFields)
+                              .enter()
+                              .append("rect")
+                              .attr("x", width + 50)
+                              .attr("y", function(d, i){ return i *  20;})
+                              .attr("width", 10)
+                              .attr("height", 10)
+                              .style("fill", function(d) { 
+                                return color(d.name);
+                              })
+                              
+                            legend.selectAll('text')
+                              .data(yFields)
+                              .enter()
+                              .append("text")
+                              .attr("x", width + 65)
+                              .attr("y", function(d, i){ return i *  20 + 9;})
+                              .text(function(d) {
+                                return d.name;
+                              });
+                      }
 
                     // Another Legend
-                    if(scope.panel.rightYEnabled) {
+                    if(scope.panel.rightYEnabled && scope.panel.showRightLegend) {
                         var legend_right = svg.append("g")
                         .attr("class", "legend")
                         .attr("height", 100)
