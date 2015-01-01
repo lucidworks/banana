@@ -28,7 +28,7 @@ define([
                 src: 'app/partials/querySelect.html'
             }],
             status: "Experimental",
-            description: "This panel help user to plot scatter plot between two varibales"
+            description: "This panel help user to plot scatter plot between two variables"
         };
 
         // default values
