@@ -214,7 +214,7 @@ define([
                 else
                   return randomRotate(Math.random());
               })
-              .font("Impact")
+              .font("fantasy")
               .fontSize(function(d) {
                 return d.size;
               })
@@ -233,7 +233,7 @@ define([
                 .style("font-size", function(d) {
                   return d.size + "px";
                 })
-                .style("font-family", "Impact")
+                .style("font-family", "fantasy")
                 .style("fill", function(d, i) {
                   //return  color(i);
                   return fill(i);
