@@ -266,9 +266,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           values_mode_query += '&group=true&group.field=' + $scope.panel.group_field + '&group.limit=' + $scope.panel.max_rows;
         }
       }
-      // ==========================
-      // SOLR - TEST Multiple Queries
-      // ==========================
+      
       var mypromises = [];
        _.each($scope.panel.queries.ids, function(id) {
         var temp_q =  querySrv.getQuery(id) + wt_json + rows_limit + fq + facet + values_mode_query;
@@ -283,9 +281,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       if (dashboard.current.services.query.ids.length >= 1) {
         $q.all(mypromises).then(function(results) {
-          if (true) {
-            console.log('histogram:\n\tmyresults=', results);
-          }
           $scope.panelMeta.loading = false;
           if (segment === 0) {
             $scope.hits = 0;
@@ -416,9 +411,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           // }
         });
       }
-      // ========================
-      // END SOLR TEST
-      // ========================
     };
 
     // function $scope.zoom

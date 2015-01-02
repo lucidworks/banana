@@ -25,6 +25,8 @@ This release includes the following key new features and improvements:
     - Fix missing issue. [PR #60](https://github.com/LucidWorks/banana/pull/60)
     - Remove "Missing" and "Other" as default options in _Terms panel_.
     - Edit regex in urlLink filter to allow * (ampersand) [Issue #64](https://github.com/LucidWorks/banana/issues/64)
+    - Fix individual tooltip in _Range Facet panel_.
+    - Fix issue when exporting dashboard to file in Safari.
 
 ## Older Release Notes
 
