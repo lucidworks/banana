@@ -28,7 +28,7 @@ define([
                 src: 'app/partials/querySelect.html'
             }],
             status: "Experimental",
-            description: "This panel help user to plot scatter plot between two varibales"
+            description: "This panel help user to plot scatter plot between two variables"
         };
 
         // default values
@@ -92,7 +92,7 @@ define([
             var rows_limit = '&rows=' + $scope.panel.max_rows;
             //var sort = '&sort=' + $scope.panel.field + ' asc';
 
-            $scope.panel.queries.query = querySrv.getQuery(0) + fq + fl + wt_json + rows_limit;
+            $scope.panel.queries.query = querySrv.getORquery() + fq + fl + wt_json + rows_limit;
 
             // Set the additional custom query
             if ($scope.panel.queries.custom != null) {

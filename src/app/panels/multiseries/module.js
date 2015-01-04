@@ -87,7 +87,7 @@ define([
             var rows_limit = '&rows=' + $scope.panel.max_rows;
             var sort = '&sort=' + $scope.panel.field + ' asc';
 
-            $scope.panel.queries.query = querySrv.getQuery(0) + fq + fl + wt_json + rows_limit + sort;
+            $scope.panel.queries.query = querySrv.getORquery() + fq + fl + wt_json + rows_limit + sort;
 
             // Set the additional custom query
             if ($scope.panel.queries.custom != null) {

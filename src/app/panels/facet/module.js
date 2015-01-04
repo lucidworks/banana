@@ -137,7 +137,7 @@ define([
         }
 
         // Set the panel's query
-        $scope.panel.queries.basic_query = querySrv.getQuery(0) + fq + facet + facet_fields;
+        $scope.panel.queries.basic_query = querySrv.getORquery() + fq + facet + facet_fields;
         $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json;
 
         // Set the additional custom query

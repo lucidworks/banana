@@ -1,14 +1,14 @@
 <div class="row-fluid">
   <div class="span3">
     <h6>X-axis <tip>Must be numeric field</tip></h6>
-    <input bs-typeahead="fields.list" type="text" placeholder="Start typing" class="input-small" ng-model="panel.xaxis" ng-change="set_refresh(true)">
+    <input bs-typeahead="fields.list" type="text" placeholder="X-axis field" class="input-small" ng-model="panel.xaxis" ng-change="set_refresh(true)">
   </div>
   <div class="span3">
     <h6>Y-axis <tip>Must be numeric field</tip></h6>
-    <input bs-typeahead="fields.list" type="text" placeholder="Start typing" class="input-small" ng-model="panel.yaxis" ng-change="set_refresh(true)">
+    <input bs-typeahead="fields.list" type="text" placeholder="Y-axis field" class="input-small" ng-model="panel.yaxis" ng-change="set_refresh(true)">
   </div>
   <div class="span3">
-    <h6>type field</h6>
+    <h6>Category field <tip>the colors in the plot will be divided according to this field</tip> </h6>
     <input bs-typeahead="fields.list" type="text" placeholder="Start typing" class="input-small" ng-model="panel.field_type" ng-change="set_refresh(true)">
   </div>
   <div class="span3">

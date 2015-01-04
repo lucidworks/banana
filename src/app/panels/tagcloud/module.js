@@ -90,7 +90,7 @@ define([
         var facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size;
 
         // Set the panel's query
-        $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet;
+        $scope.panel.queries.query = querySrv.getORquery() + wt_json + rows_limit + fq + facet;
 
         // Set the additional custom query
         if ($scope.panel.queries.custom != null) {
@@ -214,7 +214,7 @@ define([
                 else
                   return randomRotate(Math.random());
               })
-              .font("Impact")
+              .font("sans-serif")
               .fontSize(function(d) {
                 return d.size;
               })
@@ -233,7 +233,7 @@ define([
                 .style("font-size", function(d) {
                   return d.size + "px";
                 })
-                .style("font-family", "Impact")
+                .style("font-family", "Impact, Haettenschweiler, 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', 'sans-serif'")
                 .style("fill", function(d, i) {
                   //return  color(i);
                   return fill(i);

@@ -148,7 +148,7 @@ function (angular, app, _, $) {
       }
 
       // Set the panel's query
-      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + fq + rows_limit + facet;
+      $scope.panel.queries.query = querySrv.getORquery() + wt_json + fq + rows_limit + facet;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {

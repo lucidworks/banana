@@ -9,7 +9,7 @@
   <div ng-show="editor.index == 0">
     <div class="row-fluid">
       <div class="span4">
-        <label class="small">Title</label><input type="text" class="input-large" ng-model='dashboard.current.title'></input>
+        <label class="small">Title</label><input type="text" class="input-large" ng-model='dashboard.current.title'/>
       </div>
       <div class="span1">
         <label class="small"> Editable </label><input type="checkbox" ng-model="dashboard.current.editable" ng-checked="dashboard.current.editable" />
@@ -21,7 +21,7 @@
         <label class="small">Style</label><select class="input-small" ng-model="dashboard.current.style" ng-options="f for f in ['dark','light']"></select>
       </div>
       <div class="span2">
-        <label class="small">Version</label>Banana v1.4
+        <label class="small">Version</label>Banana v1.5rc
       </div>
     </div>
   </div>
@@ -153,7 +153,7 @@
       </div>
       <div class="span4">
         <h6>Collection</h6>
-        <input type="text" class="input-medium" ng-model="dashboard.current.solr.core_name">
+        <input type="text" class="input-medium" ng-model="dashboard.current.solr.core_name" bs-typeahead="dashboard.current.solr.core_list"></input>
       </div>
     </div>
     <div class="row-fluid">
