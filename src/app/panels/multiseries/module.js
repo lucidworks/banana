@@ -163,6 +163,7 @@ define([
                     }
 
                     var parent_width = $("#multiseries").width(),
+                        parent_height = $('#multiseries').parent().parent().parent().parent().height(),
                         aspectRatio = 400 / 600;
 
                     var margin = {
@@ -172,7 +173,8 @@ define([
                             left: 50
                         },
                         width = parent_width - margin.left - margin.right - 50,
-                        height = (parent_width * aspectRatio) - margin.top - margin.bottom;
+                        // height = (parent_width * aspectRatio) - margin.top - margin.bottom;
+                        height = parent_height - margin.top - margin.bottom;
 
                     // The need for two date parsers is that sometimes solr removes the .%L part if it equals 000
                     // So double checking to make proper parsing format and cause no error
@@ -302,7 +304,7 @@ define([
                     var svg = d3.select(el).append("svg")
                         .attr("width", width + margin.left + margin.right)
                         .attr("height", height + margin.top + margin.bottom)
-                        .attr("viewBox", "0 0 " + parent_width + " " + (parent_width * aspectRatio))
+                        .attr("viewBox", "0 0 " + parent_width + " " + parent_height)
                         .attr("preserveAspectRatio", "xMidYMid")
                         .append("g")
                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
