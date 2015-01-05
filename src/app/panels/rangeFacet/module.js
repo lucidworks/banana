@@ -32,7 +32,8 @@ define([
   'jquery.flot.selection',
   'jquery.flot.time',
   'jquery.flot.stack',
-  'jquery.flot.stackpercent'
+  'jquery.flot.stackpercent',
+  'jquery.flot.axislabels'
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
@@ -476,10 +477,14 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 },
                 shadowSize: 1
               },
+              axisLabels: {
+                show: true
+              },
               yaxis: {
                 show: scope.panel['y-axis'],
                 min: 0,
                 max: scope.panel.percentage && scope.panel.stack ? 100 : null,
+                axisLabel: 'count'
               },
               xaxis: {
                 show: scope.panel['x-axis'],
@@ -487,7 +492,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 max: facet_range.to + 1,
                 autoscaleMargin : scope.panel.interval,
                 minTickSize : scope.panel.interval,
-                tickDecimals: 0
+                tickDecimals: 0,
+                axisLabel: scope.panel.range_field
               },
               grid: {
                 backgroundColor: null,
