@@ -109,6 +109,9 @@ define([
                 // build $scope.data array
                 //$scope.data = results.response.docs;
                 $scope.data = d3.csv.parse(results);
+                if($scope.data.length == 0) {
+                    $scope.panel.error = $scope.parse_error("There's no data to show");
+                }
                 // $scope.data = results;
                 $scope.render();
             });

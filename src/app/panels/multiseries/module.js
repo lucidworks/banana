@@ -101,6 +101,10 @@ define([
 
             // Populate scope when we have results
             results.then(function (results) {
+                if(!(_.isUndefined(results.error))) {
+                    $scope.panel.error = $scope.parse_error(results.error.msg);
+                    return;
+                }
                 // build $scope.data array
                 $scope.data = results.response.docs;
                 $scope.render();

@@ -125,6 +125,11 @@ define([
 
                 // Populate scope when we have results
                 results.then(function (results) {
+                    // Check for error and abort if found
+                      if(!(_.isUndefined(results.error))) {
+                        $scope.panel.error = $scope.parse_error(results.error);
+                        return;
+                      }
                     // build $scope.data array
                     var facets = results.facet_counts.facet_pivot;
                     var key = Object.keys(facets)[0];

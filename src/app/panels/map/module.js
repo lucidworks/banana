@@ -161,6 +161,11 @@ function (angular, app, _, $) {
 
       // Populate scope when we have results
       results.then(function(results) {
+        // Check for error and abort if found
+        if(!(_.isUndefined(results.error))) {
+          $scope.panel.error = $scope.parse_error(results.error);
+          return;
+        }
         $scope.panelMeta.loading = false;
         $scope.data = {}; // empty the data for new results
         var terms = [];
