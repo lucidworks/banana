@@ -26,7 +26,7 @@ define([
   var module = angular.module('kibana.panels.hits', []);
   app.useModule(module);
 
-  module.controller('hits', function($scope, querySrv, dashboard, filterSrv) {
+  module.controller('hits', function($scope, $q, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -113,42 +113,48 @@ define([
       var rows_limit = '&rows=0'; // for hits, we do not need the actual response doc, so set rows=0
       var facet = '';
 
-      $scope.panel.queries.query = querySrv.getQuery(0) + fq + facet + wt_json + rows_limit;
+      //$scope.panel.queries.query = querySrv.getQuery(0) + fq + facet + wt_json + rows_limit;
 
-      // Set the additional custom query
-      if ($scope.panel.queries.custom != null) {
-        request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
-      } else {
-        request = request.setQuery($scope.panel.queries.query);
-      }
+      var promises = [];
+      $scope.data = [];
+      $scope.hits =0;
+      $scope.panel.queries.query="";
 
-      // Then run it
-      var results = request.doSearch();
-
-      // Populate scope when we have results
-      results.then(function(results) {
-        $scope.panelMeta.loading = false;
-        $scope.hits = results.response.numFound;
-        $scope.data = [];
-
-        // Check for error and abort if found
-        if(!(_.isUndefined(results.error))) {
-          $scope.panel.error = $scope.parse_error(results.error);
-          return;
+       _.each($scope.panel.queries.ids, function(id) {
+        var temp_q =  querySrv.getQuery(id) + fq + facet + wt_json + rows_limit;
+        $scope.panel.queries.query += temp_q + "\n";
+        // Set the additional custom query
+        if ($scope.panel.queries.custom !== null) {
+          request = request.setQuery(temp_q + $scope.panel.queries.custom);
+        } else {
+          request = request.setQuery(temp_q);
         }
-          var i = 0;
-          var id = $scope.panel.queries.ids[0];
-            var hits = $scope.hits;
-            // Create series
-            $scope.data[i] = {
-              info: querySrv.list[id],
-              id: id,
-              hits: hits,
-              data: [[i,hits]]
-            };
-
-          $scope.$emit('render');
+        promises.push(request.doSearch());
       });
+      // Populate scope when we have results
+      $q.all(promises).then(function(results) {
+        _.each(dashboard.current.services.query.ids, function(id, i) {
+          $scope.panelMeta.loading = false;
+          $scope.hits += results[i].response.numFound;
+
+          // Check for error and abort if found
+          if (!(_.isUndefined(results.error))) {
+            $scope.panel.error = $scope.parse_error(results.error);
+            return;
+          }
+          var info = dashboard.current.services.query.list[id];
+          var hits = $scope.hits;
+          // Create series
+          $scope.data[i] = {
+            info: info,
+            id: id,
+            hits: results[i].response.numFound,
+            data: [[id, results[i].response.numFound]
+            ]
+          };
+          $scope.$emit('render');
+        });
+      })
     };
 
     $scope.set_refresh = function (state) {

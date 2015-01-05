@@ -19,7 +19,7 @@ define([
     var module = angular.module('kibana.panels.ticker', []);
     app.useModule(module);
 
-    module.controller('ticker', function($scope, kbnIndex, querySrv, dashboard, filterSrv) {
+    module.controller('ticker', function($scope,$q, kbnIndex, querySrv, dashboard, filterSrv) {
 
       $scope.panelMeta = {
         modals: [{
@@ -51,7 +51,7 @@ define([
         ago: '1d',
         arrangement: 'vertical',
         spyable: true,
-        show_queries:true,
+        show_queries: true,
       };
       _.defaults($scope.panel, _d);
 
@@ -165,28 +165,50 @@ define([
           '&facet.range.hardend=true' +
           '&facet.range.other=between';
 
-        var first_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_first_range;
-        var second_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_second_range;
-        $scope.panel.queries.query = first_request + "\n\n" + second_request;
-
-        request = request.setQuery(first_request);
-        var results_new = request.doSearch();
-
-        results_new.then(function(results_new) {
-          // Second Query
-          request = request.setQuery(second_request);
-          var results_old = request.doSearch();
-
-          results_old.then(function(results_old) {
-            processSolrResults(results_new, results_old);
-            $scope.$emit('render');
-          });
+        var mypromises = [];
+        $scope.panel.queries.query = "";
+        _.each($scope.panel.queries.ids, function(id) {
+          var first_request = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet_first_range;
+          var second_request = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet_second_range;
+          var request_new = request.setQuery(first_request);
+          $scope.panel.queries.query += first_request + "\n\n" ;
+          mypromises.push(request_new.doSearch());
+          var request_old = request.setQuery(second_request);
+          $scope.panel.queries.query += second_request + "\n";
+          mypromises.push(request_old.doSearch());
+          $scope.panel.queries.query += "-----------\n" ;
         });
+
+        // var first_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_first_range;
+        // var second_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_second_range;
+        // $scope.panel.queries.query = first_request + "\n\n" + second_request;
+
+        // request = request.setQuery(first_request);
+        // var results_new = request.doSearch();
+
+        // results_new.then(function(results_new) {
+        //   // Second Query
+        //   request = request.setQuery(second_request);
+        //   var results_old = request.doSearch();
+
+        //   results_old.then(function(results_old) {
+        //     processSolrResults(results_new, results_old);
+        //     $scope.$emit('render');
+        //   });
+        // });
+        $scope.data = [];
+        if (dashboard.current.services.query.ids.length >= 1) {
+          $q.all(mypromises).then(function(results) {
+            _.each($scope.panel.queries.ids, function(id, index) {
+              processSolrResults(results[index * 2], results[index * 2 + 1], id,index);
+            })
+          })
+        }
 
       };
 
 
-      function processSolrResults(results_new, results_old) {
+      function processSolrResults(results_new, results_old, id,i) {
         $scope.panelMeta.loading = false;
 
         // Check for error and abort if found
@@ -201,7 +223,6 @@ define([
         }
 
         $scope.hits = {};
-        $scope.data = [];
 
         var hits = {
           new: results_new.facet_counts.facet_ranges[filterSrv.getTimeField()]['between'],
@@ -212,8 +233,8 @@ define([
         var percent = percentage(hits.old, hits.new) == null ?
           '?' : Math.round(percentage(hits.old, hits.new) * 100) / 100;
         // Create series
-        $scope.data[0] = {
-          info: querySrv.list[0],
+        $scope.data[i] = {
+          info: querySrv.list[id],
           hits: {
             new: hits.new,
             old: hits.old

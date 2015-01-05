@@ -266,9 +266,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           values_mode_query += '&group=true&group.field=' + $scope.panel.group_field + '&group.limit=' + $scope.panel.max_rows;
         }
       }
-      // ==========================
-      // SOLR - TEST Multiple Queries
-      // ==========================
+      
       var mypromises = [];
        _.each($scope.panel.queries.ids, function(id) {
         var temp_q =  querySrv.getQuery(id) + wt_json + rows_limit + fq + facet + values_mode_query;
@@ -282,16 +280,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       });
 
       if (dashboard.current.services.query.ids.length >= 1) {
-        _.each(dashboard.current.services.query.list, function(v, k) {
-          if (true) {
-            console.log('histogram:\n\tv=', v, ', k=', k);
-          }
-          // TODO
-        });
         $q.all(mypromises).then(function(results) {
-          if (true) {
-            console.log('histogram:\n\tmyresults=', results);
-          }
           $scope.panelMeta.loading = false;
           if (segment === 0) {
             $scope.hits = 0;
@@ -312,7 +301,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
           // Make sure we're still on the same query/queries
           // TODO: We probably DON'T NEED THIS unless we have to support multiple queries in query module.
-          if ($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
+          // if ($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
             var i = 0,
               time_series,
               hits;
@@ -419,12 +408,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
             // Tell the histogram directive to render.
             $scope.$emit('render');
-          }
+          // }
         });
       }
-      // ========================
-      // END SOLR TEST
-      // ========================
     };
 
     // function $scope.zoom

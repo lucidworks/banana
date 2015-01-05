@@ -1,0 +1,29 @@
+<div class="row-fluid">
+    <div class="span4">
+        <label class="small">Field
+            <tip>This is the facet field.</tip>
+        </label>
+        <input type="text" class="input-small" bs-typeahead="fields.list" ng-model="panel.field" ng-change="set_refresh(true)">
+    </div>
+    <div class="span4">
+        <label class="small">Number of tags
+            <tip>Specify a maximum number of terms to display (Top N).</tip>
+        </label>
+        <input class="input-small" type="number" ng-model="panel.size" ng-change="set_refresh(true)">
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span4">
+        <label class="small">Text Alignment</label>
+        <select class="input-large" ng-model="panel.alignment" ng-options="f for f in ['horizontal','vertical(+90)','vertical(-90)','vertical and horizontal','Random']"></select>
+        </span>
+    </div>
+    <div class="span4">
+        <label class="small">Font Scale
+        <tip> Increase the size of the word font</tip>
+        </label>
+        <select class="input-mini" ng-model="panel.fontScale" ng-options="f for f in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]"></select>
+        </span>
+    </div>
+</div>
