@@ -68,7 +68,6 @@ define([
             // Show progress by displaying a spinning wheel icon on panel
             delete $scope.panel.error;
             $scope.panelMeta.loading = true;
-            delete $scope.panel.error;
 
             // Set Solr server
             $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);

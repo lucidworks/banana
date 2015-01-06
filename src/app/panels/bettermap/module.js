@@ -179,7 +179,7 @@ function (angular, app, _, L, localRequire) {
 
           // Check for error and abort if found
           if(!(_.isUndefined(results.error))) {
-            $scope.panel.error = $scope.parse_error(results.error);
+            $scope.panel.error = $scope.parse_error(results.error.msg);
             return;
           }
           
