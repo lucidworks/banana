@@ -68,6 +68,7 @@ define([
             // Show progress by displaying a spinning wheel icon on panel
             delete $scope.panel.error;
             $scope.panelMeta.loading = true;
+            delete $scope.panel.error;
 
             // Set Solr server
             $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
@@ -102,6 +103,10 @@ define([
 
             // Populate scope when we have results
             results.then(function (results) {
+                if(!(_.isUndefined(results.error))) {
+                    $scope.panel.error = $scope.parse_error(results.error.msg);
+                    return;
+                }
                 // build $scope.data array
                 $scope.panelMeta.loading = false;
                 $scope.data = [];
