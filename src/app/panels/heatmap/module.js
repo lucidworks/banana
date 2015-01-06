@@ -75,6 +75,7 @@ define([
             $scope.get_data = function () {
                 // Show progress by displaying a spinning wheel icon on panel
                 $scope.panelMeta.loading = true;
+                delete $scope.panel.error;
 
                 var request, results;
                 // Set Solr server
@@ -127,7 +128,9 @@ define([
                 results.then(function (results) {
                     // Check for error and abort if found
                       if(!(_.isUndefined(results.error))) {
-                        $scope.panel.error = $scope.parse_error(results.error);
+                        $scope.panel.error = $scope.parse_error(results.error.msg);
+                        $scope.init_arrays();
+                        $scope.render();
                         return;
                       }
                     // build $scope.data array

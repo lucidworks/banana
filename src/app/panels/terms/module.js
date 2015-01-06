@@ -101,6 +101,7 @@ function (angular, app, _, $, kbn) {
         return;
       }
 
+      delete $scope.panel.error;
       $scope.panelMeta.loading = true;
       var request, results;
 
@@ -154,6 +155,8 @@ function (angular, app, _, $, kbn) {
         // Check for error and abort if found
         if(!(_.isUndefined(results.error))) {
           $scope.panel.error = $scope.parse_error(results.error.msg);
+          $scope.data = [];
+          $scope.$emit('render');
           return;
         }
 
