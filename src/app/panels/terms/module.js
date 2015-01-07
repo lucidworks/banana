@@ -156,6 +156,7 @@ function (angular, app, _, $, kbn) {
         if(!(_.isUndefined(results.error))) {
           $scope.panel.error = $scope.parse_error(results.error.msg);
           $scope.data = [];
+          $scope.panelMeta.loading = false;
           $scope.$emit('render');
           return;
         }
