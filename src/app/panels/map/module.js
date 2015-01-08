@@ -103,6 +103,7 @@ function (angular, app, _, $) {
         return;
       }
       $scope.panelMeta.loading = true;
+      delete $scope.panel.error;
 
       // Solr
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
@@ -162,6 +163,11 @@ function (angular, app, _, $) {
       // Populate scope when we have results
       results.then(function(results) {
         $scope.panelMeta.loading = false;
+        // Check for error and abort if found
+        if(!(_.isUndefined(results.error))) {
+          $scope.panel.error = $scope.parse_error(results.error.msg);
+          return;
+        }
         $scope.data = {}; // empty the data for new results
         var terms = [];
 

@@ -36,6 +36,7 @@ require.config({
     'jquery.flot.stack':      '../vendor/jquery/jquery.flot.stack',
     'jquery.flot.stackpercent':'../vendor/jquery/jquery.flot.stackpercent',
     'jquery.flot.time':       '../vendor/jquery/jquery.flot.time',
+    'jquery.flot.axislabels': '../vendor/jquery/jquery.flot.axislabels',
     'showdown':               '../vendor/showdown',
 
     modernizr:                '../vendor/modernizr-2.6.1',
@@ -73,6 +74,7 @@ require.config({
     'jquery.flot.stack':    ['jquery', 'jquery.flot'],
     'jquery.flot.stackpercent':['jquery', 'jquery.flot'],
     'jquery.flot.time':     ['jquery', 'jquery.flot'],
+    'jquery.flot.axislabels':['jquery', 'jquery.flot'],
 
     'angular-sanitize':     ['angular'],
     'angular-cookies':      ['angular'],

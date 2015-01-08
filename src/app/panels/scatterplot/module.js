@@ -62,6 +62,8 @@ define([
         $scope.get_data = function() {
             // Show progress by displaying a spinning wheel icon on panel
             $scope.panelMeta.loading = true;
+            delete $scope.panel.error;
+            
             var request, results;
             // Set Solr server
             $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
@@ -109,6 +111,9 @@ define([
                 // build $scope.data array
                 //$scope.data = results.response.docs;
                 $scope.data = d3.csv.parse(results);
+                if($scope.data.length == 0) {
+                    $scope.panel.error = $scope.parse_error("There's no data to show");
+                }
                 // $scope.data = results;
                 $scope.render();
             });
@@ -169,8 +174,8 @@ define([
                     var margin = {
                         top: 20,
                         right: 20,
-                        bottom: 60,
-                        left: 40
+                        bottom: 100,
+                        left: 50
                     }, 
                     width = parent_width - margin.left - margin.right;
 
@@ -195,7 +200,7 @@ define([
                     var svg = d3.select(el).append("svg")
                         .attr("width", width + margin.left + margin.right)
                         .attr("height", height + margin.top + margin.bottom)
-                        .attr("viewBox", "0 0 " + parent_width + " " + height)
+                        .attr("viewBox", "0 0 " + parent_width + " " + (height + margin.top))
                         .attr("preserveAspectRatio", "xMidYMid")
                         .append("g")
                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -220,9 +225,8 @@ define([
                         .call(xAxis)
                         .append("text")
                         .attr("class", "label")
-                        .attr("x", width - padding * 2)
-                        .attr("y", -6)
-                        .style("text-anchor", "end")
+                        .attr("transform", "translate(" + ((width / 2) - margin.left) + " ," + 30+ ")")
+                        .style("text-anchor", "middle")
                         .text(scope.panel.xaxis);
 
                     svg.append("g")
@@ -231,7 +235,8 @@ define([
                         .append("text")
                         .attr("class", "label")
                         .attr("transform", "rotate(-90)")
-                        .attr("y", 6)
+                        .attr("y", 0 - margin.left)
+                        .attr("x",0 - ((height-margin.top-margin.bottom) / 2))
                         .attr("dy", ".71em")
                         .style("text-anchor", "end")
                         .text(scope.panel.yaxis);

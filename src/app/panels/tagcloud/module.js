@@ -68,7 +68,7 @@ define([
         if (dashboard.indices.length === 0) {
           return;
         }
-
+        delete $scope.panel.error;
         $scope.panelMeta.loading = true;
         var request, results;
 
