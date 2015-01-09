@@ -11,7 +11,7 @@ Pull the repo from the "release" branch; version 1.5.0 will be tagged as v1.5.0
 
 ## Banana 1.5.0: Released on 2 January 2015
 
-Banana 1.5.0 contains many new features, new panels, enhancements and bug fixes to improve the overall user experience and stability. Thank you to our growing community for your suggestions and contributions! Please continue sending us your feedbacks, so that we can further extend and improve Banana!
+Banana 1.5.0 contains many new features, new panels, enhancements and bug fixes to improve the overall user experience and stability. Thank you to our growing community for your suggestions and contributions! Please continue sending us your feedback, so that we can further extend and improve Banana!
 
 This release includes the following key new features and improvements:
 
@@ -22,7 +22,6 @@ This release includes the following key new features and improvements:
     - Fix warnings and errors with grunt jshint. [PR #47](https://github.com/LucidWorks/banana/pull/47)
     - Panel / Terms / Add log axis. [PR #56](https://github.com/LucidWorks/banana/pull/56)
     - Add some modifications to help message. [PR #57](https://github.com/LucidWorks/banana/pull/57)
-    - Fix missing issue. [PR #60](https://github.com/LucidWorks/banana/pull/60)
     - Remove "Missing" and "Other" as default options in _Terms panel_.
     - Edit regex in urlLink filter to allow * (ampersand) [Issue #64](https://github.com/LucidWorks/banana/issues/64)
     - Fix individual tooltip in _Range Facet panel_.
