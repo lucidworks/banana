@@ -32,8 +32,12 @@
     .form-inline .checkbox {
         display: inline-block;
     }
+
+    .histogram-fix{
+      margin-left: 0px !important;
+    }
   </style>
-  <div class="row">
+  <div class="row histogram-fix">
     <span ng-show="panel.options" style="margin-left:10px;">
       <a class="link underline small" ng-show="panel.options" ng-click="options=!options">
         <i ng-show="!options" class="fa fa-caret-right"></i><i ng-show="options" class="fa fa-caret-down"></i> View

@@ -40,6 +40,7 @@ require.config({
     'jquery.flot.stack':      '../bower_components/flot/jquery.flot.stack',
     'jquery.flot.stackpercent':'../vendor/jquery/jquery.flot.stackpercent',
     'jquery.flot.time':       '../bower_components/flot/jquery.flot.time',
+    'showdown':               '../bower_components/showdown/compressed/Showdown.min',
 
     modernizr:                '../bower_components/modernizr/modernizr',
     elasticjs:                '../vendor/elasticjs/elastic-angular-client',
