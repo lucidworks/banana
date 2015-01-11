@@ -11,6 +11,10 @@
     <div ng-include src="edit_path(panel.type)" style="margin-top:10px;" class="col-xs-12"></div>
   </div>
 
+  <div ng-show="editorTabs[editor.index] == 'Info'">
+    <div ng-include src="'app/partials/panelinfo.html'"></div>
+  </div>
+
   <div ng-repeat="tab in panelMeta.editorTabs" ng-show="editorTabs[editor.index] == tab.title">
     <div ng-include src="tab.src" ></div>
   </div>
