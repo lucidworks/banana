@@ -41,7 +41,8 @@ define([
   'jquery.flot.selection',
   'jquery.flot.time',
   'jquery.flot.stack',
-  'jquery.flot.stackpercent'
+  'jquery.flot.stackpercent',
+  'jquery.flot.axislabels'
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
@@ -199,6 +200,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       var request = $scope.sjs.Request().indices(dashboard.indices[segment]);
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
       
+
+      $scope.panel.queries.query = "";
       // Build the query
       _.each($scope.panel.queries.ids, function(id) {
         var query = $scope.sjs.FilteredQuery(
@@ -266,75 +269,47 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         }
       }
 
-      // Set the panel's query
-      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet + values_mode_query;
-
-      // Set the additional custom query
-      if ($scope.panel.queries.custom != null) {
-        request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
-      } else {
-        request = request.setQuery($scope.panel.queries.query);
-      }
-
-      var results = request.doSearch();
-
-      // ==========================
-      // SOLR - TEST Multiple Queries
-      // ==========================
-      // var mypromises = [];
-      // mypromises.push(results);
-
-      // var temp_q = 'q=' + dashboard.current.services.query.list[1].query + df + wt_json + rows_limit + fq + facet + filter_fq + fl;
-      // request = request.setQuery(temp_q);
-      // mypromises.push(request.doSearch());
-
-      // if (dashboard.current.services.query.ids.length > 1) {
-      //   _.each(dashboard.current.services.query.list, function(v,k) {
-      //     if (DEBUG) { console.log('histogram:\n\tv=',v,', k=',k); }
-      //     // TODO
-      //   });
-      //   $q.all(mypromises).then(function(myresults) {
-      //     if (DEBUG) { console.log('histogram:\n\tmyresults=',myresults); }
-      //     // TODO
-      //   });
-      // }
-      // ========================
-      // END SOLR TEST
-      // ========================
-
-      // Populate scope when we have results
-      results.then(function(results) {
-
-        $scope.panelMeta.loading = false;
-        if(segment === 0) {
-          $scope.hits = 0;
-          $scope.data = [];
-          query_id = $scope.query_id = new Date().getTime();
+      var mypromises = [];
+      _.each($scope.panel.queries.ids, function(id) {
+        var temp_q = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet + values_mode_query;
+        $scope.panel.queries.query += temp_q + "\n";
+        if ($scope.panel.queries.custom !== null) {
+          request = request.setQuery(temp_q + $scope.panel.queries.custom);
+        } else {
+          request = request.setQuery(temp_q);
         }
+        mypromises.push(request.doSearch());
+      });
 
-        // Check for error and abort if found
-        if(!(_.isUndefined(results.error))) {
-          $scope.panel.error = $scope.parse_error(results.error.msg);
-          return;
-        }
+      if (dashboard.current.services.query.ids.length >= 1) {
+        $q.all(mypromises).then(function(results) {
+          $scope.panelMeta.loading = false;
+          if (segment === 0) {
+            $scope.hits = 0;
+            $scope.data = [];
+            query_id = $scope.query_id = new Date().getTime();
+          }
+          // Convert facet ids to numbers
+          // var facetIds = _.map(_.keys(results.facets),function(k){return parseInt(k, 10);});
+          // TODO: change this, Solr do faceting differently
+          var facetIds = [0]; // Need to fix this
 
-        // Convert facet ids to numbers
-        // var facetIds = _.map(_.keys(results.facets),function(k){return parseInt(k, 10);});
-        // TODO: change this, Solr do faceting differently
-        var facetIds = [0]; // Need to fix this
-
-        // Make sure we're still on the same query/queries
-        // TODO: We probably DON'T NEED THIS unless we have to support multiple queries in query module.
-        if($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
+          // Make sure we're still on the same query/queries
+          // TODO: We probably DON'T NEED THIS unless we have to support multiple queries in query module.
+          // if ($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
           var i = 0,
             time_series,
             hits;
 
-          _.each($scope.panel.queries.ids, function(id) {
-
+          _.each($scope.panel.queries.ids, function(id, index) {
+            // Check for error and abort if found
+            if (!(_.isUndefined(results[index].error))) {
+              $scope.panel.error = $scope.parse_error(results[index].error.msg);
+              return;
+            }
             // we need to initialize the data variable on the first run,
             // and when we are working on the first segment of the data.
-            if(_.isUndefined($scope.data[i]) || segment === 0) {
+            if (_.isUndefined($scope.data[i]) || segment === 0) {
               time_series = new timeSeries.ZeroFilled({
                 interval: _interval,
                 start_date: _range && _range.from,
@@ -351,13 +326,13 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               hits = 0;
               $scope.hits = 0;
             }
-            
+
             // Solr facet counts response is in one big array.
             // So no need to get each segment like Elasticsearch does.
             var entry_time, entries, entry_value;
             if ($scope.panel.mode === 'count') {
               // Entries from facet_ranges counts
-              entries = results.facet_counts.facet_ranges[time_field].counts;
+              entries = results[index].facet_counts.facet_ranges[time_field].counts;
               for (var j = 0; j < entries.length; j++) {
                 entry_time = new Date(entries[j]).getTime(); // convert to millisec
                 j++;
@@ -369,9 +344,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             } else if ($scope.panel.mode === 'values') {
               if ($scope.panel.group_field) {
                 // Group By Field is specified
-                var groups = results.grouped[$scope.panel.group_field].groups;
+                var groups = results[index].grouped[$scope.panel.group_field].groups;
 
-                for (var j=0; j < groups.length; j++) { // jshint ignore: line
+                for (var j = 0; j < groups.length; j++) { // jshint ignore: line
                   var docs = groups[j].doclist.docs;
                   var group_time_series = new timeSeries.ZeroFilled({
                     interval: _interval,
@@ -382,7 +357,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                   hits = 0;
 
                   // loop through each group results
-                  for (var k=0; k < docs.length; k++) {
+                  for (var k = 0; k < docs.length; k++) {
                     entry_time = new Date(docs[k][time_field]).getTime(); // convert to millisec
                     entry_value = docs[k][$scope.panel.value_field];
                     group_time_series.addValue(entry_time, entry_value);
@@ -403,15 +378,15 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                   };
                 }
               } else { // Group By Field is not specified
-                entries = results.response.docs;
-                for (var j=0; j < entries.length; j++) { // jshint ignore: line
+                entries = results[index].response.docs;
+                for (var j = 0; j < entries.length; j++) { // jshint ignore: line
                   entry_time = new Date(entries[j][time_field]).getTime(); // convert to millisec
                   entry_value = entries[j][$scope.panel.value_field];
                   time_series.addValue(entry_time, entry_value);
                   hits += 1;
                   $scope.hits += 1;
                 }
-                
+
                 $scope.data[i] = {
                   info: querySrv.list[id],
                   time_series: time_series,
@@ -419,7 +394,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 };
               }
             }
-            
+
             if ($scope.panel.mode !== 'values') {
               $scope.data[i] = {
                 info: querySrv.list[id],
@@ -433,8 +408,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
           // Tell the histogram directive to render.
           $scope.$emit('render');
-        }
-      });
+          // }
+        });
+      }
     };
 
     // function $scope.zoom
@@ -555,10 +531,14 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 },
                 shadowSize: 1
               },
+               axisLabels: {
+                show: true
+              },
               yaxis: {
                 show: scope.panel['y-axis'],
                 min: null, // TODO - make this adjusted dynamicmally, and add it to configuration panel
                 max: scope.panel.percentage && scope.panel.stack ? 100 : null,
+                axisLabel: scope.panel.mode,
               },
               xaxis: {
                 timezone: scope.panel.timezone,
@@ -568,6 +548,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 max: _.isUndefined(scope.range.to) ? null : scope.range.to.getTime(),
                 timeformat: time_format(scope.panel.interval),
                 label: "Datetime",
+                axisLabel: filterSrv.getTimeField(),
               },
               grid: {
                 backgroundColor: null,

@@ -44,7 +44,8 @@
     "normalize.css": "~3.0.2",
     "animate.css": "~3.2.0",
     "bootstrap-additions": "~0.2.3",
-    "showdown": "~0.3.4"
+    "showdown": "~0.3.4",
+    "flot-axislabels": "*"
   },
   "resolutions": {
     "bootstrap": "~3.3.1",
