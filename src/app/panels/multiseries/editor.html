@@ -15,13 +15,17 @@
     <h6>Y-Axis Field(s) <tip>Field(s) to be plotted on the chart(comma separated)</tip></h6>
     <input type="text" class="input-xlarge form-control" ng-model="panel.fl" ng-change="set_refresh(true)">
   </div>
-  <div class="col-sm-4 col-md-4">
+  <div class="col-sm-2 col-md-2">
     <h6>Y-Axis Label <tip>The label to be viewed on the top of Y-Axis</tip></h6>
     <input type="text" class="form-control" ng-model="panel.yAxis" ng-change="set_refresh(true)">
   </div>
   <div class="col-sm-4 col-md-4">
     <h6 class="small">Interpolation Method <tip>D3 Interpolation method for missing or NaN values</tip></h6>
     <select ng-change="set_refresh(true)" placeholder="10000" class="form-control" ng-model="panel.interpolate" ng-options="f for f in ['linear','step-before','basis','basis-open','basis-closed','cardinal','cardinal-open','cardinal-closed','monotone']"></select> <!-- add ng-model -->
+  </div>
+  <div class="col-sm-2 col-md-2">
+    <h6>Show Legend <tip>Shows legend for this series when checked</tip></h6>
+    <input type="checkbox" ng-model="panel.showLegend" ng-checked="panel.showLegend">
   </div>
 </div>
 <div class="row">
@@ -36,7 +40,7 @@
     <h6>Y-Axis Field(s) <tip>Field(s) to be plotted on the chart(comma separated)</tip></h6>
     <input type="text" class="input-xlarge form-control" ng-model="panel.right_fl" ng-change="set_refresh(true)">
   </div>
-  <div class="col-sm-4 col-md-4">
+  <div class="col-sm-2 col-md-2">
     <h6>Y-Axis Label <tip>The label to be viewed on the top of Y-Axis</tip></h6>
     <input type="text" class="form-control" ng-model="panel.right_yAxis" ng-change="set_refresh(true)">
   </div>
@@ -44,4 +48,8 @@
     <h6 class="small">Interpolation Method <tip>D3 Interpolation method for missing or NaN values</tip></h6>
     <select ng-change="set_refresh(true)" placeholder="10000" class="form-control" ng-model="panel.right_interpolate" ng-options="f for f in ['linear','step-before','basis','basis-open','basis-closed','cardinal','cardinal-open','cardinal-closed','monotone']"></select> <!-- add ng-model -->
   </div>
+  <div class="col-sm-2 col-md-2">
+    <h6>Show Legend <tip>Shows legend for this series when checked</tip></h6>
+    <input type="checkbox" ng-model="panel.showRightLegend" ng-checked="panel.showRightLegend">
+  </div>  
 </div>
