@@ -32,7 +32,8 @@ define([
   'jquery.flot.selection',
   'jquery.flot.time',
   'jquery.flot.stack',
-  'jquery.flot.stackpercent'
+  'jquery.flot.stackpercent',
+  'jquery.flot.axislabels'
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
@@ -268,80 +269,57 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0'; // for RangeFacet, we do not need the actual response doc, so set rows=0
       var facet = '&facet=true' +
-                  '&facet.range=' + $scope.panel.range_field +
-                  '&facet.range.start=' + $scope.panel.minimum +
-                  '&facet.range.end=' + (parseInt($scope.panel.maximum)+1) +
-                  '&facet.range.gap=' + $scope.panel.interval;
+        '&facet.range=' + $scope.panel.range_field +
+        '&facet.range.start=' + $scope.panel.minimum +
+        '&facet.range.end=' + (parseInt($scope.panel.maximum) + 1) +
+        '&facet.range.gap=' + $scope.panel.interval;
 
-      // Set the panel's query
-      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet ;
-      // Set the additional custom query
-      if ($scope.panel.queries.custom != null) {
-        request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
-      } else {
-        request = request.setQuery($scope.panel.queries.query);
-      }
+      var promises = [];
+      $scope.panel.queries.query = "";
 
-      var results = request.doSearch();
-
-      // ==========================
-      // SOLR - TEST Multiple Queries
-      // ==========================
-      // var mypromises = [];
-      // mypromises.push(results);
-
-      // var temp_q = 'q=' + dashboard.current.services.query.list[1].query + df + wt_json + rows_limit + fq + facet + filter_fq + fl;
-      // request = request.setQuery(temp_q);
-      // mypromises.push(request.doSearch());
-
-      // if (dashboard.current.services.query.ids.length > 1) {
-      //   _.each(dashboard.current.services.query.list, function(v,k) {
-      //     if (DEBUG) { console.log('histogram:\n\tv=',v,', k=',k); }
-      //     // TODO
-      //   });
-      //   $q.all(mypromises).then(function(myresults) {
-      //     if (DEBUG) { console.log('histogram:\n\tmyresults=',myresults); }
-      //     // TODO
-      //   });
-      // }
-      // ========================
-      // END SOLR TEST
-      // ========================
-
+      _.each($scope.panel.queries.ids, function(id) {
+        var temp_q = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet;
+        $scope.panel.queries.query += temp_q + "\n";
+        if ($scope.panel.queries.custom !== null) {
+          request = request.setQuery(temp_q + $scope.panel.queries.custom);
+        } else {
+          request = request.setQuery(temp_q);
+        }
+        promises.push(request.doSearch());
+      });
       // Populate scope when we have results
-      results.then(function(results) {
-        var _range = $scope.get_facet_range();
+      $q.all(promises).then(function(results) {
+          var _range = $scope.get_facet_range();
 
-        $scope.panelMeta.loading = false;
-        if(segment === 0) {
-          $scope.hits = 0;
-          $scope.data = [];
-          query_id = $scope.query_id = new Date().getTime();
-        }
+          $scope.panelMeta.loading = false;
+          if (segment === 0) {
+            $scope.hits = 0;
+            $scope.data = [];
+            query_id = $scope.query_id = new Date().getTime();
+          }
 
-        // Check for error and abort if found
-        if(!(_.isUndefined(results.error))) {
-          $scope.panel.error = $scope.parse_error(results.error.msg);
-          return;
-        }
+          // Convert facet ids to numbers
+          // var facetIds = _.map(_.keys(results.facets),function(k){return parseInt(k, 10);});
+          // TODO: change this, Solr do faceting differently
+          var facetIds = [0]; // Need to fix this
 
-        // Convert facet ids to numbers
-        // var facetIds = _.map(_.keys(results.facets),function(k){return parseInt(k, 10);});
-        // TODO: change this, Solr do faceting differently
-        var facetIds = [0]; // Need to fix this
-
-        // Make sure we're still on the same query/queries
-        // TODO: We probably DON'T NEED THIS unless we have to support multiple queries in query module.
-        if($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
+          // Make sure we're still on the same query/queries
+          // TODO: We probably DON'T NEED THIS unless we have to support multiple queries in query module.
+          // if($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
           var i = 0,
             numeric_series,
             hits;
 
-          _.each($scope.panel.queries.ids, function(id) {
+          _.each($scope.panel.queries.ids, function(id, index) {
 
+            // Check for error and abort if found
+            if (!(_.isUndefined(results[index].error))) {
+              $scope.panel.error = $scope.parse_error(results[index].error.msg);
+              return;
+            }
             // we need to initialize the data variable on the first run,
             // and when we are working on the first segment of the data.
-            if(_.isUndefined($scope.data[i]) || segment === 0) {
+            if (_.isUndefined($scope.data[i]) || segment === 0) {
               numeric_series = new timeSeries.ZeroFilled({
                 start_date: _range && _range.from,
                 end_date: _range && _range.to,
@@ -361,7 +339,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             // Solr facet counts response is in one big array.
             // So no need to get each segment like Elasticsearch does.
             // Entries from facet_ranges counts
-            var entries = results.facet_counts.facet_ranges[$scope.panel.range_field].counts;
+            var entries = results[index].facet_counts.facet_ranges[$scope.panel.range_field].counts;
             for (var j = 0; j < entries.length; j++) {
               var entry_time = entries[j]; // convert to millisec
               j++;
@@ -389,7 +367,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           // if(segment < dashboard.indices.length-1) {
           //   $scope.get_data(segment+1,query_id);
           // }
-        }
+          // }
       });
     };
 
@@ -439,7 +417,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
   });
 
-  module.directive('rangefacetChart', function(dashboard, filterSrv) {
+  module.directive('rangefacetChart', function(dashboard) {
     return {
       restrict: 'A',
       template: '<div></div>',
@@ -503,10 +481,14 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 },
                 shadowSize: 1
               },
+              axisLabels: {
+                show: true
+              },
               yaxis: {
                 show: scope.panel['y-axis'],
                 min: 0,
                 max: scope.panel.percentage && scope.panel.stack ? 100 : null,
+                axisLabel: 'count'
               },
               xaxis: {
                 show: scope.panel['x-axis'],
@@ -514,7 +496,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 max: facet_range.to + 1,
                 autoscaleMargin : scope.panel.interval,
                 minTickSize : scope.panel.interval,
-                tickDecimals: 0
+                tickDecimals: 0,
+                axisLabel: scope.panel.range_field
               },
               grid: {
                 backgroundColor: null,
