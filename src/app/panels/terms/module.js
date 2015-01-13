@@ -84,12 +84,12 @@ function (angular, app, _, $, kbn) {
     };
 
     $scope.testMultivalued = function() {
-      if($scope.panel.field && $scope.panel.field !== '' && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
+      if($scope.panel.field && $scope.fields.typeList[$scope.panel.field] && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
         $scope.panel.error = "Can't proceed with Multivalued field";
         return;
       }
 
-      if($scope.panel.stats_field && $scope.panel.stats_field !== '' && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
+      if($scope.panel.stats_field && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
         $scope.panel.error = "Can't proceed with Multivalued field";
         return;
       }
@@ -101,6 +101,7 @@ function (angular, app, _, $, kbn) {
         return;
       }
 
+      delete $scope.panel.error;
       $scope.panelMeta.loading = true;
       var request, results, boolQuery;
 
@@ -138,7 +139,7 @@ function (angular, app, _, $, kbn) {
       }
 
       // Set the panel's query
-      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + exclude_filter + facet;
+      $scope.panel.queries.query = querySrv.getORquery() + wt_json + rows_limit + fq + exclude_filter + facet;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
@@ -154,6 +155,9 @@ function (angular, app, _, $, kbn) {
         // Check for error and abort if found
         if(!(_.isUndefined(results.error))) {
           $scope.panel.error = $scope.parse_error(results.error.msg);
+          $scope.data = [];
+          $scope.panelMeta.loading = false;
+          $scope.$emit('render');
           return;
         }
 
@@ -228,6 +232,10 @@ function (angular, app, _, $, kbn) {
           v.data[0][0] = k;
           k++;
         });
+
+        if ($scope.panel.field && $scope.fields.typeList[$scope.panel.field] && $scope.fields.typeList[$scope.panel.field].schema.indexOf("T") > -1) {
+          $scope.hits = sum;
+        }
 
         $scope.data.push({label:'Missing field',
           // data:[[k,results.facets.terms.missing]],meta:"missing",color:'#aaa',opacity:0});

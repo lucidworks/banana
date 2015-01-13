@@ -1,11 +1,11 @@
 <div>
   <div class="row">
     <h4>Add Panel to Column</h4>
-    <select class="form-control" ng-model="new_panel.type" ng-options="f for f in _.without(config.panel_names,'column')| stringSort" ng-change="reset_panel(new_panel.type);send_render();"></select>
+    <select class="form-control" ng-model="new_panel.type" ng-options="f for f in _.without(config.panel_names,'column')| stringSort" ng-change="reset_panel(new_panel.type);send_render();" style="width: 200px; float: left; margin-right: 16px;"></select>
     <small>Select Type</small>
-    <div ng-show="!(_.isUndefined(new_panel.type))">
+    <div ng-show="!(_.isUndefined(new_panel.type))" style="clear:both;">
       <div column-edit="" panel="new_panel" config="config" row="row" dashboards="dashboards" type="new_panel.type"></div>
-      <button ng-click="add_panel(new_panel); reset_panel();" class="btn btn-primary">Create Panel</button><br>
+      <button ng-click="add_panel(new_panel); reset_panel();" class="btn btn-primary" style="margin-top: 10px;">Create Panel</button><br>
     </div>
   </div>
   <div class="row">

@@ -213,7 +213,8 @@ function (angular, app, _, kbn, moment) {
 
     $scope.get_data = function(segment,query_id) {
       $scope.panel.error =  false;
-
+      delete $scope.panel.error;
+      
       // Make sure we have everything for the request to complete
       if(dashboard.indices.length === 0) {
         return;
@@ -252,7 +253,7 @@ function (angular, app, _, kbn, moment) {
       }
 
       // Set the panel's query
-      $scope.panel.queries.basic_query = querySrv.getQuery(0) + fq + sorting;
+      $scope.panel.queries.basic_query = querySrv.getORquery() + fq + sorting;
       $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json + rows_limit;
 
       // Set the additional custom query
@@ -344,11 +345,11 @@ function (angular, app, _, kbn, moment) {
           // pagination (batch downloading)
           // example: 1,000,000 rows will explode the memory !
           if(filetype === 'json') {
-              blob = new Blob([angular.toJson(response,true)], {type: "application/json;charset=utf-8"});
+              blob = new Blob([angular.toJson(response,true)], {type: "text/json;charset=utf-8"});
           } else if(filetype === 'csv') {
               blob = new Blob([response.toString()], {type: "text/csv;charset=utf-8"});
           } else if(filetype === 'xml'){
-              blob = new Blob([response.toString()], {type: "application/xml;charset=utf-8"});
+              blob = new Blob([response.toString()], {type: "text/xml;charset=utf-8"});
           } else {
               // incorrect file type
               alert('incorrect file type');

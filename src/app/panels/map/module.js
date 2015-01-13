@@ -65,17 +65,17 @@ function (angular, app, _, $) {
     _.defaults($scope.panel,_d);
 
     $scope.init = function() {
-      $scope.testMultivalued();
+      // $scope.testMultivalued();
       $scope.$on('refresh',function(){$scope.get_data();});
       $scope.get_data();
     };
 
     $scope.testMultivalued = function() {
-      if($scope.panel.field && $scope.panel.field !== '' && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
+      if($scope.panel.field && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
         $scope.panel.error = "Can't proceed with Multivalued field";
         return;
       }
-      if($scope.panel.stats_field && $scope.panel.stats_field !== '' && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
+      if($scope.panel.stats_field && $scope.fields.typeList[$scope.panel.stats_field].schema.indexOf("M") > -1) {
         $scope.panel.error = "Can't proceed with Multivalued field";
         return;
       }
@@ -91,7 +91,7 @@ function (angular, app, _, $) {
 
     $scope.close_edit = function() {
       if ($scope.refresh) {
-        $scope.testMultivalued();
+        // $scope.testMultivalued();
         $scope.get_data();
       }
       $scope.refresh = false;
@@ -103,6 +103,7 @@ function (angular, app, _, $) {
         return;
       }
       $scope.panelMeta.loading = true;
+      delete $scope.panel.error;
 
       // Solr
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
@@ -148,7 +149,7 @@ function (angular, app, _, $) {
       }
 
       // Set the panel's query
-      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + fq + rows_limit + facet;
+      $scope.panel.queries.query = querySrv.getORquery() + wt_json + fq + rows_limit + facet;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
@@ -162,6 +163,11 @@ function (angular, app, _, $) {
       // Populate scope when we have results
       results.then(function(results) {
         $scope.panelMeta.loading = false;
+        // Check for error and abort if found
+        if(!(_.isUndefined(results.error))) {
+          $scope.panel.error = $scope.parse_error(results.error.msg);
+          return;
+        }
         $scope.data = {}; // empty the data for new results
         var terms = [];
 

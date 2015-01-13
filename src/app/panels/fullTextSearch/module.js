@@ -213,6 +213,7 @@ define([
 
       $scope.get_data = function(segment, query_id) {
         $scope.panel.error = false;
+        delete $scope.panel.error;
 
         // Make sure we have everything for the request to complete
         if (dashboard.indices.length === 0) {
@@ -284,7 +285,7 @@ define([
         // Set the panel's query
 
         //var query = $scope.panel.searchQuery == null ? querySrv.getQuery(0) : 'q=' + $scope.panel.searchQuery
-        $scope.panel.queries.basic_query = querySrv.getQuery(0) + fq + facet + facet_fields + sorting;
+        $scope.panel.queries.basic_query = querySrv.getORquery() + fq + facet + facet_fields + sorting;
         $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json + rows_limit + highlight;
 
         // Set the additional custom query
@@ -394,7 +395,7 @@ define([
           // example: 1,000,000 rows will explode the memory !
           if (filetype === 'json') {
             blob = new Blob([angular.toJson(response, true)], {
-              type: "application/json;charset=utf-8"
+              type: "text/json;charset=utf-8"
             });
           } else if (filetype === 'csv') {
             blob = new Blob([response.toString()], {
@@ -402,7 +403,7 @@ define([
             });
           } else if (filetype === 'xml') {
             blob = new Blob([response.toString()], {
-              type: "application/xml;charset=utf-8"
+              type: "text/xml;charset=utf-8"
             });
           } else {
             // incorrect file type

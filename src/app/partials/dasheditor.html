@@ -106,7 +106,7 @@
   <!-- Controls tab -->
   <div ng-show="editor.index == 2" ng-controller="dashLoader">
     <div class="row">
-      <div class="col-sm-3 col-md-3" style="font-weight:bold;">Show Collections Picker</div>
+      <div class="col-sm-6 col-md-6" style="font-weight:bold;">Show Collections Picker</div>
       <input type="checkbox" ng-model="dashboard.current.loader.dropdown_collections" ng-checked="dashboard.current.loader.dropdown_collections">
     </div>
     <h5>Allow saving to</h5>
@@ -118,6 +118,9 @@
         <label class="small">Browser</label><input type="checkbox" ng-model="dashboard.current.loader.save_default" ng-checked="dashboard.current.loader.save_default">
       </div>
       <div class="col-sm-2 col-md-2">
+        <label class="small">Gist <tip>Requires your domain to be OAUTH registered with Github</tip></label><input type="checkbox" ng-model="dashboard.current.loader.save_gist" ng-checked="dashboard.current.loader.save_gist">
+      </div>
+      <div class="col-sm-2 col-md-2">
         <label class="small">Solr</label><input type="checkbox" ng-model="dashboard.current.loader.save_elasticsearch" ng-checked="dashboard.current.loader.save_elasticsearch">
       </div>
     </div>
@@ -127,19 +130,24 @@
         <label class="small">Local file</label><input type="checkbox" ng-model="dashboard.current.loader.load_local" ng-checked="dashboard.current.loader.load_local">
       </div>
       <div class="col-sm-2 col-md-2">
+        <label class="small">Gist</label><input type="checkbox" ng-model="dashboard.current.loader.load_gist" ng-checked="dashboard.current.loader.load_gist">
+      </div>
+      <div class="col-sm-2 col-md-2">
         <label class="small">Solr</label><input type="checkbox" ng-model="dashboard.current.loader.load_elasticsearch" ng-checked="dashboard.current.loader.load_elasticsearch">
       </div>
-      <!--
-      <div class="span3" ng-show="dashboard.current.loader.load_elasticsearch">
-        <label class="small">Solr list size</label><input class="form-control" type="number" ng-model="dashboard.current.loader.load_elasticsearch_size">
+      
+      <div class="col-sm-2 col-md-2" ng-show="dashboard.current.loader.load_elasticsearch">
+        <label class="small">Solr list size <tip>The maximum number of dashboards to show in the loading list for Solr stored dashboards under Load menu.</tip></label><input class="input-mini form-control" type="number" ng-model="dashboard.current.loader.load_elasticsearch_size">
       </div>
-      -->
+      
     </div>
   </div>
   <!-- Solr tab -->
   <div ng-show="editor.index == 3">
     <div class="row">
-      <h4>Solr Settings</h4>
+      <div class="col-md-12">
+        <h4>Solr Settings</h4>        
+      </div>
     </div>
     <div class="row">
       <div class="col-sm-5 col-md-5">
@@ -148,7 +156,7 @@
       </div>
       <div class="col-sm-4 col-md-4">
         <h6>Collection</h6>
-        <input type="text" class="form-control" ng-model="dashboard.current.solr.core_name">
+        <input type="text" class="form-control" ng-model="dashboard.current.solr.core_name" bs-typeahead ng-options="c as c for c in dashboard.current.solr.core_list">
       </div>
     </div>
     <div class="row">

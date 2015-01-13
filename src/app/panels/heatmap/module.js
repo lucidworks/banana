@@ -75,6 +75,7 @@ define([
             $scope.get_data = function () {
                 // Show progress by displaying a spinning wheel icon on panel
                 $scope.panelMeta.loading = true;
+                delete $scope.panel.error;
 
                 var request, results;
                 // Set Solr server
@@ -111,7 +112,7 @@ define([
                 var facet_limit = '&facet.limit=' + $scope.panel.row_size;
                 var facet_pivot_mincount = '&facet.pivot.mincount=0';
 
-                $scope.panel.queries.query = querySrv.getQuery(0) + fq + wt_json + rows_limit + facet + facet_pivot + facet_limit + facet_pivot_mincount;
+                $scope.panel.queries.query = querySrv.getORquery() + fq + wt_json + rows_limit + facet + facet_pivot + facet_limit + facet_pivot_mincount;
 
                 // Set the additional custom query
                 if ($scope.panel.queries.custom != null) {
@@ -125,6 +126,13 @@ define([
 
                 // Populate scope when we have results
                 results.then(function (results) {
+                    // Check for error and abort if found
+                      if(!(_.isUndefined(results.error))) {
+                        $scope.panel.error = $scope.parse_error(results.error.msg);
+                        $scope.init_arrays();
+                        $scope.render();
+                        return;
+                      }
                     // build $scope.data array
                     var facets = results.facet_counts.facet_pivot;
                     var key = Object.keys(facets)[0];
