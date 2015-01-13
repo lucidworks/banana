@@ -24,7 +24,11 @@
   </div>
 </div>
 -->
-<div class="row">
+<div class="row" style="margin-top:10px">
+  <div class="col-sm-12 col-md-12" style="margin-left:0px">
+      <label class="small" style="float:left;"> Display query when Inspect</label>
+      <input type="checkbox" ng-model="panel.show_queries" ng-checked="panel.show_queries">
+  </div>
   <div class="col-sm-12 col-md-12" style="margin-left:0px">
     <label class="small">Panel Query</label>
     <pre>{{panel.queries.query}}</pre>

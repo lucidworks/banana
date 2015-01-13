@@ -40,6 +40,8 @@ require.config({
     'jquery.flot.stack':      '../bower_components/flot/jquery.flot.stack',
     'jquery.flot.stackpercent':'../vendor/jquery/jquery.flot.stackpercent',
     'jquery.flot.time':       '../bower_components/flot/jquery.flot.time',
+    'jquery.flot.axislabels':  '../bower_components/flot-axislabels/jquery.flot.axislabels',
+    'showdown':               '../bower_components/showdown/compressed/Showdown.min',
 
     modernizr:                '../bower_components/modernizr/modernizr',
     elasticjs:                '../vendor/elasticjs/elastic-angular-client',
@@ -76,6 +78,7 @@ require.config({
     'jquery.flot.stack':    ['jquery', 'jquery.flot'],
     'jquery.flot.stackpercent':['jquery', 'jquery.flot'],
     'jquery.flot.time':     ['jquery', 'jquery.flot'],
+    'jquery.flot.axislabels':['jquery', 'jquery.flot'],
 
     'angular-sanitize':     ['angular'],
     'angular-animate':      ['angular'],

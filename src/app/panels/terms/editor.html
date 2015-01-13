@@ -37,7 +37,7 @@
   </div>
   <div class="col-sm-2 col-md-2" ng-show="panel.chart == 'bar' || panel.chart == 'pie'">
     <label class="small">Legend</label>
-    <select class="form-control" ng-model="panel.counter_pos" ng-options="f for f in ['above','below','none']"></select>
+    <select class="form-control" ng-model="panel.counter_pos" ng-options="f for f in ['above','below','left','right','none']"></select>
   </div>
   <div class="col-sm-3 col-md-3" ng-show="panel.chart != 'table' &amp;&amp; panel.counter_pos != 'none'" style="width:22%">
     <label class="small">Legend Format</label>
@@ -56,7 +56,10 @@
     <label class="small">Tilt</label><input type="checkbox" ng-model="panel.tilt" ng-checked="panel.tilt">
   </div>
   <div class="col-sm-1 col-md-1" ng-show="panel.chart == 'pie'">
-    <label class="small">Labels</label><input type="checkbox" ng-model="panel.labels" ng-checked="panel.labels">
+    <label class="small">Labels</lab	el><input type="checkbox" ng-model="panel.labels" ng-checked="panel.labels">
+  </div>
+  <div class="col-sm-2 col-md-2" ng-show="panel.chart == 'bar'">
+    <label class="small">Log axis</label><input type="checkbox" ng-model="panel.logAxis" ng-checked="panel.logAxis">
   </div>
 </div>
 <div class="row">

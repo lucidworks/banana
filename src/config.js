@@ -31,7 +31,7 @@ function (Settings) {
      * your banana web application.
      * @type {String}
      */
-    solr: "http://localhost:8983/solr/",
+    solr: "/solr/",
     solr_core: "logstash_logs",
 
     /**
@@ -90,6 +90,7 @@ function (Settings) {
       'scatterplot',
       'fullTextSearch',
       'facet',
+      'tagcloud',
       'multiseries'
       // 'dummy'  // Dummy module for testing
     ]
