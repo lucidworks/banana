@@ -361,6 +361,6 @@
     "server": "/solr/",
     "core_name": "collection1",
     "core_list": [],
-    "global_params": "&df=message"
+    "global_params": ""
   }
 }

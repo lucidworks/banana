@@ -182,7 +182,7 @@
   },
   "solr": {
     "server": "/solr/",
-    "core_name": "searchlogs",
+    "core_name": "collection1",
     "core_list": [],
     "global_params": ""
   }
