@@ -120,9 +120,12 @@ a[data-parent="#facet_accordion"]{
 }
 .panel{
   margin-bottom: 0px;
-  padding-left: 0;
   padding-right: 10px;
 }
+.row-of-two-panels >div:nth-child(even){
+  padding-left: 0;
+}
+
 .timepicker-time-input{
   float: left;
   width: 84px;
