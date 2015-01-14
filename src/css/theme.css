@@ -120,6 +120,8 @@ a[data-parent="#facet_accordion"]{
 }
 .panel{
   margin-bottom: 0px;
+  padding-left: 0;
+  padding-right: 10px;
 }
 .timepicker-time-input{
   float: left;
@@ -136,7 +138,7 @@ a[data-parent="#facet_accordion"]{
 body.modal-open { overflow:inherit; padding-right:inherit !important; }
 
 .modal-backdrop{
-  height: 100%;
+  height: 100vmax;
   z-index: 999;
 }
 
