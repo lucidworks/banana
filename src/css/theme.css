@@ -79,6 +79,7 @@ div.flot-text{color:#333!important}
   text-align: right;
   border-top: 1px solid #e5e5e5;
   margin-top: 10px;
+  margin-bottom: 15px;
 }
 .modal{
   width: 100% !important;
@@ -145,3 +146,15 @@ body.modal-open { overflow:inherit; padding-right:inherit !important; }
   z-index: 999;
 }
 
+.modal-header h3{
+  margin: 0;
+}
+.modal-footer{
+  clear: both;
+}
+.modal-body h4{
+  margin-top: 33px;
+}
+.modal-body select{
+  margin-bottom: 10px;
+}
