@@ -13,8 +13,8 @@ function (angular) {
 
         '<div class="panel-extra row"><div class="panel-extra-container col-md-12 col-xs-12">' +
 
-          '<span class="extra row-button" ng-hide="panel.draggable == false">' +
-            '<span class="row-text pointer" bs-tooltip data-target="" data-title="Drag here to move"' +
+          '<span class="extra row-button" ng-hide="panel.draggable == false"  bs-tooltip data-trigger="hover" data-placement="top" data-title="Drag&nbsp;here&nbsp;to&nbsp;move">' +
+            '<span class="row-text pointer"' +
             'data-drag=true data-jqyoui-options="{revert: \'invalid\',helper:\'clone\'}"'+
             ' jqyoui-draggable="'+
             '{'+
