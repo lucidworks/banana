@@ -94,6 +94,7 @@ function (angular, app, _, L, localRequire) {
     $scope.get_data = function(segment,query_id) {
       $scope.require(['./leaflet/plugins'], function () {
         $scope.panel.error =  false;
+        delete $scope.panel.error;
 
         // Make sure we have everything for the request to complete
         if(dashboard.indices.length === 0) {
@@ -178,7 +179,7 @@ function (angular, app, _, L, localRequire) {
 
           // Check for error and abort if found
           if(!(_.isUndefined(results.error))) {
-            $scope.panel.error = $scope.parse_error(results.error);
+            $scope.panel.error = $scope.parse_error(results.error.msg);
             return;
           }
           

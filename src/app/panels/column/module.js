@@ -22,7 +22,7 @@ function (angular, app, _, config) {
   module.controller('column', function($scope, $rootScope, $timeout) {
     $scope.panelMeta = {
       status  : "Stable",
-      description : "A pseudo panel that lets you add other panels to be arranged in a column with"+
+      description : "A pseudo panel that lets you add other panels to be arranged in a column with "+
         "defined heights."
     };
 

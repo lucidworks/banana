@@ -297,7 +297,7 @@
     "dropdown_collections": false
   },
   "solr": {
-    "server": "http://localhost:8983/solr/",
+    "server": "/solr/",
     "core_name": "collection1",
     "core_list": [],
     "global_params": "&df=message"

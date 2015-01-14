@@ -66,6 +66,7 @@ define([
 
         $scope.get_data = function() {
             // Show progress by displaying a spinning wheel icon on panel
+            delete $scope.panel.error;
             $scope.panelMeta.loading = true;
 
             // Set Solr server
@@ -101,7 +102,20 @@ define([
 
             // Populate scope when we have results
             results.then(function (results) {
+                if(!(_.isUndefined(results.error))) {
+                    $scope.panel.error = $scope.parse_error(results.error.msg);
+                    return;
+                }
                 // build $scope.data array
+                $scope.panelMeta.loading = false;
+                $scope.data = [];
+
+                if (!(_.isUndefined(results.error))) {
+                    $scope.panel.error = $scope.parse_error(results.error.msg);
+                    $scope.render();
+                    return;
+                }
+
                 $scope.data = results.response.docs;
                 $scope.render();
             });
@@ -163,6 +177,7 @@ define([
                     }
 
                     var parent_width = $("#multiseries").width(),
+                        parent_height = $('#multiseries').parent().parent().parent().parent().height(),
                         aspectRatio = 400 / 600;
 
                     var margin = {
@@ -172,7 +187,8 @@ define([
                             left: 50
                         },
                         width = parent_width - margin.left - margin.right - 50,
-                        height = (parent_width * aspectRatio) - margin.top - margin.bottom;
+                        // height = (parent_width * aspectRatio) - margin.top - margin.bottom;
+                        height = parent_height - margin.top - margin.bottom;
 
                     // The need for two date parsers is that sometimes solr removes the .%L part if it equals 000
                     // So double checking to make proper parsing format and cause no error
@@ -302,7 +318,7 @@ define([
                     var svg = d3.select(el).append("svg")
                         .attr("width", width + margin.left + margin.right)
                         .attr("height", height + margin.top + margin.bottom)
-                        .attr("viewBox", "0 0 " + parent_width + " " + (parent_width * aspectRatio))
+                        .attr("viewBox", "0 0 " + parent_width + " " + parent_height)
                         .attr("preserveAspectRatio", "xMidYMid")
                         .append("g")
                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");

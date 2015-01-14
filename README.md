@@ -15,13 +15,13 @@ Banana 1.5.0 contains many new features, new panels, enhancements and bug fixes 
 
 This release includes the following key new features and improvements:
 
-1. _Multi queries support_ for all panels, except the scatter plot panel.
-2. A new _Multi-series panel_ based on D3.js provides a way to visualize more complex datasets.
+1. _Multi queries support_ for all panels.
+2. A new _Multi-series panel_ based on D3.js provides a way to visualize more complex datasets, such as stock prices.
 3. A new _Tag Cloud panel_ helps you to easily create a tag or word cloud from your data using facet count.
 4. Various bug fixes and improvements:
     - Fix warnings and errors with grunt jshint. [PR #47](https://github.com/LucidWorks/banana/pull/47)
-    - Panel / Terms / Add log axis. [PR #56](https://github.com/LucidWorks/banana/pull/56)
-    - Add some modifications to help message. [PR #57](https://github.com/LucidWorks/banana/pull/57)
+    - Support log axis for _Terms panel_ panel. [PR #56](https://github.com/LucidWorks/banana/pull/56)
+    - Added 'Info' tab to panels that displays rich and customized help messages. [PR #57](https://github.com/LucidWorks/banana/pull/57)
     - Remove "Missing" and "Other" as default options in _Terms panel_.
     - Edit regex in urlLink filter to allow * (ampersand) [Issue #64](https://github.com/LucidWorks/banana/issues/64)
     - Fix individual tooltip in _Range Facet panel_.
