@@ -35,7 +35,7 @@
         </div>
 
       </div>
-      <div class="row" style="padding-top:0px" ng-hide="row.collapse">
+      <div class="row row-of-two-panels" style="padding-top:0px" ng-hide="row.collapse">
 
         <!-- Panels -->
         <div ng-repeat="(name, panel) in row.panels|filter:isPanel" ng-hide="panel.span == 0 || panel.hide" class="col-md-{{panel.span}} panel nospace" style="min-height:{{row.height}}; position:relative" data-drop="true" ng-model="row.panels" data-jqyoui-options="" jqyoui-droppable="{index:$index,mutate:false,onDrop:'panelMoveDrop',onOver:'panelMoveOver(true)',onOut:'panelMoveOut'}">

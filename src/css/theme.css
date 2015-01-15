@@ -79,6 +79,7 @@ div.flot-text{color:#333!important}
   text-align: right;
   border-top: 1px solid #e5e5e5;
   margin-top: 10px;
+  margin-bottom: 15px;
 }
 .modal{
   width: 100% !important;
@@ -120,7 +121,12 @@ a[data-parent="#facet_accordion"]{
 }
 .panel{
   margin-bottom: 0px;
+  padding-right: 10px;
 }
+.row-of-two-panels >div:nth-child(even){
+  padding-left: 0;
+}
+
 .timepicker-time-input{
   float: left;
   width: 84px;
@@ -136,7 +142,19 @@ a[data-parent="#facet_accordion"]{
 body.modal-open { overflow:inherit; padding-right:inherit !important; }
 
 .modal-backdrop{
-  height: 100%;
+  height: 100vmax;
   z-index: 999;
 }
 
+.modal-header h3{
+  margin: 0;
+}
+.modal-footer{
+  clear: both;
+}
+.modal-body h4{
+  margin-top: 33px;
+}
+.modal-body select{
+  margin-bottom: 10px;
+}
