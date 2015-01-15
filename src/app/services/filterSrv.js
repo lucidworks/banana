@@ -155,7 +155,7 @@ define([
 
         if (DEBUG) { console.debug('filterSrv: v=',v,' k=',k); }
 
-        if (v.type == 'time') {
+        if (v.type === 'time') {
           time_field = v.field;
           // Check for type of timestamps
           // In case of relative timestamps, they will be string, not Date obj.
@@ -170,37 +170,37 @@ define([
           } else {
             end_time = v.to;
           }
-        } else if (v.type == 'terms') {
-          if (v.mandate == 'must') {
+        } else if (v.type === 'terms') {
+          if (v.mandate === 'must') {
             filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
-          } else if (v.mandate == 'mustNot') {
+          } else if (v.mandate === 'mustNot') {
             filter_fq = filter_fq + '&fq=-' + v.field + ':"' + v.value + '"';
-          } else if (v.mandate == 'either') {
+          } else if (v.mandate === 'either') {
             filter_either.push(v.field + ':"' + v.value + '"');
           }
-        } else if (v.type == 'field') {
+        } else if (v.type === 'field') {
           // v.query contains double-quote around it.
-          if (v.mandate == 'must') {
+          if (v.mandate === 'must') {
             filter_fq = filter_fq + '&fq=' + v.field + ':' + v.query;
-          } else if (v.mandate == 'mustNot') {
+          } else if (v.mandate === 'mustNot') {
             filter_fq = filter_fq + '&fq=-' + v.field + ':' + v.query;
-          } else if (v.mandate == 'either') {
+          } else if (v.mandate === 'either') {
             filter_either.push(v.field + ':' + v.query);
           }
-        } else if (v.type == 'querystring') {
-          if (v.mandate == 'must') {
+        } else if (v.type === 'querystring') {
+          if (v.mandate === 'must') {
             filter_fq = filter_fq + '&fq=' + v.query;
-          } else if (v.mandate == 'mustNot') {
+          } else if (v.mandate === 'mustNot') {
             filter_fq = filter_fq + '&fq=-' + v.query;
-          } else if (v.mandate == 'either') {
+          } else if (v.mandate === 'either') {
             filter_either.push(v.query);
           }
-        } else if (v.type == 'range') {
-          if (v.mandate == 'must') {
+        } else if (v.type === 'range') {
+          if (v.mandate === 'must') {
             filter_fq = filter_fq + '&fq=' + v.field + ':[' + v.from +' TO '+ v.to +']';
-          } else if (v.mandate == 'mustNot') {
+          } else if (v.mandate === 'mustNot') {
             filter_fq = filter_fq + '&fq=-' + v.field + ':[' + v.from +' TO '+ v.to +']';
-          } else if (v.mandate == 'either') {
+          } else if (v.mandate === 'either') {
             filter_either.push(v.field + ':[' + v.from +' TO '+ v.to +']');
           }
         } else {
@@ -231,31 +231,31 @@ define([
     this.getTimeField = function() {
       var time_field;
       _.each(self.list, function(v) {
-        if (v.type == 'time') {
+        if (v.type === 'time') {
           time_field = v.field;
           return;
         }
       });
       return time_field;
-    }
+    };
 
     // Get range field for Solr query
     this.getRangeField = function() {
       var range_field;
       _.each(self.list, function(v) {
-        if (v.type == 'range') {
+        if (v.type === 'range') {
           range_field = v.field;
           return;
         }
       });
       return range_field;
-    }
+    };
 
     // Get start time for Solr query (e.g. facet.range.start)
     this.getStartTime = function() {
       var start_time;
       _.each(self.list, function(v) {
-        if (v.type == 'time') {
+        if (v.type === 'time') {
           if (v.from instanceof Date) {
             start_time = new Date(v.from).toISOString();
           } else {
@@ -271,7 +271,7 @@ define([
     this.getEndTime = function() {
       var end_time;
       _.each(self.list, function(v) {
-        if (v.type == 'time') {
+        if (v.type === 'time') {
           if (v.to instanceof Date) {
             end_time = new Date(v.to).toISOString();
           } else {
@@ -287,7 +287,7 @@ define([
     this.getStartTimeAndEndTime = function() {
       var start_time, end_time;
       _.each(self.list, function(v) {
-        if (v.type == 'time') {
+        if (v.type === 'time') {
           start_time = new Date(v.from).toISOString();
           end_time = new Date(v.to).toISOString();
           return;
@@ -304,12 +304,12 @@ define([
     this.idsByTypeAndField = function(type,field,inactive){
       var _require = inactive ? {type:type} : {type:type, field:field, active:true};
       return _.pluck(_.where(self.list,_require),'id');
-    }
+    };
 
     // this method used to get the range filter with specific field
     this.getRangeFieldFilter = function(type, field, inactive){
       return _.pick(self.list, self.idsByTypeAndField(type, field, inactive));
-    }
+    };
 
     this.removeByType = function(type) {
       var ids = self.idsByType(type);
@@ -359,6 +359,7 @@ define([
             to: new Date(_.min(_.pluck(_t,'to')))
           };
         }
+        break; // not neccessary, but added to pass jshint test
       case "max":
         return {
           from: new Date(_.min(_.pluck(_t,'from'))),
@@ -379,7 +380,7 @@ define([
           from: _.max(_.pluck(_t,'from')),
           to: _.min(_.pluck(_t,'to'))
       };
-    }
+    };
 
     this.remove = function(id) {
       if(!_.isUndefined(self.list[id])) {

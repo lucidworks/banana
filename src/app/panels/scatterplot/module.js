@@ -15,8 +15,6 @@ define([
     var module = angular.module('kibana.panels.scatterplot', []);
     app.useModule(module);
 
-    var DEBUG = false; // DEBUG mode
-
     module.controller('scatterplot', function($scope, dashboard, querySrv, filterSrv) {
         $scope.panelMeta = {
             modals: [{
@@ -30,7 +28,7 @@ define([
                 src: 'app/partials/querySelect.html'
             }],
             status: "Experimental",
-            description: "This panel help user to plot scatter plot between two varibales"
+            description: "This panel help user to plot scatter plot between two variables"
         };
 
         // default values
@@ -47,7 +45,8 @@ define([
             yAxis: 'Rates',
             fl: 'open,high,low,close',
             rightAxis: 'volume', // TODO: need to remove hard coded field (volume).
-            spyable: true
+            spyable: true,
+            show_queries:true,
         };
 
         _.defaults($scope.panel, _d);
@@ -60,9 +59,11 @@ define([
             $scope.get_data();
         };
 
-        $scope.get_data = function(segment, query_id) {
+        $scope.get_data = function() {
             // Show progress by displaying a spinning wheel icon on panel
             $scope.panelMeta.loading = true;
+            delete $scope.panel.error;
+            
             var request, results;
             // Set Solr server
             $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
@@ -84,13 +85,16 @@ define([
             // --------------------- END OF ELASTIC SEARCH PART ---------------------------------------
 
             // Construct Solr query
-            var fq = '&' + filterSrv.getSolrFq();
+            var fq = '';
+            if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+                fq = '&' + filterSrv.getSolrFq();
+            }
             var wt_json = '&wt=csv';
             var fl = '&fl=' + $scope.panel.xaxis + ',' + $scope.panel.yaxis + ',' + $scope.panel.field_type;
             var rows_limit = '&rows=' + $scope.panel.max_rows;
             //var sort = '&sort=' + $scope.panel.field + ' asc';
 
-            $scope.panel.queries.query = querySrv.getQuery(0) + fq + fl + wt_json + rows_limit;
+            $scope.panel.queries.query = querySrv.getORquery() + fq + fl + wt_json + rows_limit;
 
             // Set the additional custom query
             if ($scope.panel.queries.custom != null) {
@@ -107,6 +111,9 @@ define([
                 // build $scope.data array
                 //$scope.data = results.response.docs;
                 $scope.data = d3.csv.parse(results);
+                if($scope.data.length == 0) {
+                    $scope.panel.error = $scope.parse_error("There's no data to show");
+                }
                 // $scope.data = results;
                 $scope.render();
             });
@@ -160,24 +167,19 @@ define([
 
                     var el = element[0];
 
-                    // deepcopy of the data in the scope
-
-                    //var data = jQuery.extend(true, [], scope.data);
-
                     var parent_width = element.parent().width(),
                         height = parseInt(scope.row.height),
-                        padding = 50,
-                        paddingy = 20,
-                        aspectRatio = 400 / 600;
+                        padding = 50;
 
                     var margin = {
                         top: 20,
                         right: 20,
-                        bottom: 60,
-                        left: 40
-                    },
-                        width = parent_width - margin.left - margin.right,
-                        height = height - margin.top - margin.bottom;
+                        bottom: 100,
+                        left: 50
+                    }, 
+                    width = parent_width - margin.left - margin.right;
+
+                    height = height - margin.top - margin.bottom;
 
                     var x = d3.scale.linear()
                         .range([0, width - padding * 2]);
@@ -198,7 +200,7 @@ define([
                     var svg = d3.select(el).append("svg")
                         .attr("width", width + margin.left + margin.right)
                         .attr("height", height + margin.top + margin.bottom)
-                        .attr("viewBox", "0 0 " + parent_width + " " + height)
+                        .attr("viewBox", "0 0 " + parent_width + " " + (height + margin.top))
                         .attr("preserveAspectRatio", "xMidYMid")
                         .append("g")
                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -223,9 +225,8 @@ define([
                         .call(xAxis)
                         .append("text")
                         .attr("class", "label")
-                        .attr("x", width - padding * 2)
-                        .attr("y", -6)
-                        .style("text-anchor", "end")
+                        .attr("transform", "translate(" + ((width / 2) - margin.left) + " ," + 30+ ")")
+                        .style("text-anchor", "middle")
                         .text(scope.panel.xaxis);
 
                     svg.append("g")
@@ -234,10 +235,11 @@ define([
                         .append("text")
                         .attr("class", "label")
                         .attr("transform", "rotate(-90)")
-                        .attr("y", 6)
+                        .attr("y", 0 - margin.left)
+                        .attr("x",0 - ((height-margin.top-margin.bottom) / 2))
                         .attr("dy", ".71em")
                         .style("text-anchor", "end")
-                        .text(scope.panel.yaxis)
+                        .text(scope.panel.yaxis);
 
                     svg.selectAll(".dot")
                         .data(scope.data)
@@ -259,7 +261,7 @@ define([
                                     field_type + " (" + d[scope.panel.xaxis] + ", " + d[scope.panel.yaxis] + ")<br>")
                                 .place_tt(d3.event.pageX, d3.event.pageY);
                         })
-                        .on("mouseout", function(d) {
+                        .on("mouseout", function() {
                             $tooltip.detach();
                         });
                     if (scope.panel.field_type) {

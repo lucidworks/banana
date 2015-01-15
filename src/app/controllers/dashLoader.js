@@ -5,8 +5,6 @@ define([
 function (angular, _) {
   'use strict';
 
-  var DEBUG = false; // DEBUG mode
-
   var module = angular.module('kibana.controllers');
 
   module.controller('dashLoader', function($scope, $http, timer, dashboard, alertSrv) {
@@ -25,8 +23,8 @@ function (angular, _) {
     // This function should be replaced by one-way binding feature of AngularJS 1.3
     $scope.resetNewDefaults = function() {
       $scope.new = {
-        server: 'http://localhost:8983/solr/',
-        core_name: 'searchlogs',
+        server: $scope.config.solr,
+        core_name: $scope.config.solr_core,
         time_field: 'event_timestamp'
       };
     };
@@ -75,7 +73,7 @@ function (angular, _) {
           // Reset new dashboard defaults
           $scope.resetNewDefaults();
         }).
-        error(function(data, status) {
+        error(function() {
           alertSrv.set('Error','Unable to load default dashboard','error');
         });
     };
@@ -103,7 +101,6 @@ function (angular, _) {
         ($scope.loader.save_temp_ttl_enable ? ttl : false)
       ).then(
         function(result) {
-        if (DEBUG) { console.debug('dashLoader: result = ',result); }
         // Solr
         if(result.responseHeader.status === 0) {
           alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
@@ -111,6 +108,7 @@ function (angular, _) {
           if(type === 'temp') {
             $scope.share = dashboard.share_link(dashboard.current.title,'temp',result.response.docs[0].id);
           }
+          $scope.elasticsearch.title = '';
         } else {
           alertSrv.set('Save failed','Dashboard could not be saved to Solr','error',5000);
         }
@@ -120,9 +118,8 @@ function (angular, _) {
     $scope.elasticsearch_delete = function(id) {
       dashboard.elasticsearch_delete(id).then(
         function(result) {
-          if (DEBUG) { console.debug("dashLoader: result=",result); }
           if(!_.isUndefined(result)) {
-            if (result.responseHeader.status == 0) {
+            if (result.responseHeader.status === 0) {
               alertSrv.set('Dashboard Deleted',id+' has been deleted','success',5000);
               // Find the deleted dashboard in the cached list and remove it
               // var toDelete = _.where($scope.elasticsearch.dashboards,{_id:id})[0];
@@ -141,7 +138,6 @@ function (angular, _) {
     $scope.elasticsearch_dblist = function(query) {
       dashboard.elasticsearch_list(query,dashboard.current.loader.load_elasticsearch_size).then(
         function(result) {
-        if (DEBUG) { console.debug('dashLoader: result=',result); }
         if (!_.isUndefined(result.response.docs)) {
           $scope.hits = result.response.numFound;
           $scope.elasticsearch.dashboards = result.response.docs;

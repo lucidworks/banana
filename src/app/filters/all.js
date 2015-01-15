@@ -62,7 +62,7 @@ define(['angular', 'jquery', 'underscore','showdown'], function(angular, $, _,Sh
 
   module.filter('urlLink', function() {
     var  //URLs starting with http://, https://, or ftp://
-      r1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim,
+      r1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|*])/gim,
       //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
       r2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim,
       //Change email addresses to mailto:: links.
@@ -98,7 +98,7 @@ define(['angular', 'jquery', 'underscore','showdown'], function(angular, $, _,Sh
 
   module.filter('urlLinkAsIcon', function() {
     var  //URLs starting with http://, https://, or ftp://
-      r1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim,
+      r1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|*])/gim,
       //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
       r2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim,
       //Change email addresses to mailto:: links.
@@ -145,26 +145,29 @@ define(['angular', 'jquery', 'underscore','showdown'], function(angular, $, _,Sh
   });
 
   module.filter('capitalize', function() {
-    return function(input, scope) {
-        if (input != null)
-            return input.substring(0,1).toUpperCase()+input.substring(1);
-    }
+    return function(input) {
+        if (input != null) {
+          return input.substring(0,1).toUpperCase()+input.substring(1);
+        }
+    };
   });
 
   module.filter('newlines', function() {
     return function(input) {
-      if (input)
+      if (input) {
         return input.replace(/\n/g, '<br/>');
+      }
     };
   });
 
   module.filter('striphtml', function() {
     return function(text) {
-      if (text)
+      if (text) {
         return text
           .replace(/&/g, '&amp;')
           .replace(/>/g, '&gt;')
           .replace(/</g, '&lt;');
+      }
     };
   });
 
@@ -175,7 +178,7 @@ define(['angular', 'jquery', 'underscore','showdown'], function(angular, $, _,Sh
         var textConverted = text.replace(/&/g, '&amp;')
           .replace(/>/g, '&gt;')
           .replace(/</g, '&lt;');
-        return converter.makeHtml(textConverted)
+        return converter.makeHtml(textConverted);
       }
     };
   });

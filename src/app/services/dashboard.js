@@ -125,7 +125,10 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
           self.current.solr.core_list = p;
         } else {
           // No collections returned from Solr
-          alertSrv.set('No collections','There were no collections returned from Solr.','info',5000);
+          // Display alert only if USE_ADMIN_CORES flag in config.js is true.
+          if (config.USE_ADMIN_CORES) {
+            alertSrv.set('No collections','There were no collections returned from Solr.','info',5000);
+          }
         }
       });
 
@@ -226,7 +229,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     };
 
     this.to_file = function() {
-      var blob = new Blob([angular.toJson(self.current,true)], {type: "application/json;charset=utf-8"});
+      var blob = new Blob([angular.toJson(self.current,true)], {type: "text/json;charset=utf-8"});
       // from filesaver.js
       window.saveAs(blob, self.current.title+"-"+new Date().getTime());
       return true;
@@ -469,11 +472,12 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     };
 
     this.numberWithCommas = function(x) {
-      if (x)
+      if (x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      else
+      } else {
         return x;
-    }
+      }
+    };
 
   });
 

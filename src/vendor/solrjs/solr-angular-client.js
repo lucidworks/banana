@@ -65,9 +65,9 @@ angular.module('solrjs.service', [])
         return promiseThen($http.post(path, data, config), successcb, errorcb);
       },
       get: function (path, data, successcb, errorcb) {
-        path = url + path;
+        path = url + path + '?' + data;
         if (DEBUG) { console.debug('solr-angular-client: GET url=',url,', path=',path,', data=',data); }
-        return promiseThen($http.get(path, data), successcb, errorcb);
+        return promiseThen($http.get(path), successcb, errorcb);
       },
       put: function (path, data, successcb, errorcb) {
         path = url + path;

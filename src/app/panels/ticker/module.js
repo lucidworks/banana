@@ -19,9 +19,7 @@ define([
     var module = angular.module('kibana.panels.ticker', []);
     app.useModule(module);
 
-    var DEBUG = false;
-
-    module.controller('ticker', function($scope, kbnIndex, querySrv, dashboard, filterSrv) {
+    module.controller('ticker', function($scope,$q, kbnIndex, querySrv, dashboard, filterSrv) {
 
       $scope.panelMeta = {
         modals: [{
@@ -52,7 +50,8 @@ define([
         },
         ago: '1d',
         arrangement: 'vertical',
-        spyable: true
+        spyable: true,
+        show_queries: true,
       };
       _.defaults($scope.panel, _d);
 
@@ -66,7 +65,7 @@ define([
         $scope.get_data();
       };
 
-      $scope.get_data = function(segment, query_id) {
+      $scope.get_data = function(segment) {
         delete $scope.panel.error;
         $scope.panelMeta.loading = true;
 
@@ -98,7 +97,6 @@ define([
           to: new Date($scope.time.to.getTime() - kbn.interval_to_ms($scope.panel.ago))
         };
 
-        var _segment = _.isUndefined(segment) ? 0 : segment;
         var request = $scope.sjs.Request().indices(dashboard.indices);
         var _ids_without_time = _.difference(filterSrv.ids, filterSrv.idsByType('time'));
 
@@ -133,32 +131,15 @@ define([
               .query(q)
           ).size(0);
         });
-        if (DEBUG) {
-          console.log('Elastic Search Request');
-          console.log(request.toString());
-        }
         // Populate the inspector panel
         $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
 
-        // If we're on the first segment we need to get our indices
-        // if (_segment === 0) {
-        //   kbnIndex.indices(
-        //     $scope.old_time.from,
-        //     $scope.old_time.to,
-        //     dashboard.current.index.pattern,
-        //     dashboard.current.index.interval
-        //   ).then(function(p) {
-        //     $scope.index = _.union(p, $scope.index);
-        //     request = request.indices($scope.index[_segment]);
-        //     process_results(request.doSearch(), _segment, query_id);
-        //   });
-        // } else {
-        //   process_results(request.indices($scope.index[_segment]).doSearch(), _segment, query_id);
-        // }
-
         // Build SOLR query
+        var fq = '';
+        if (filterSrv.getSolrFq(true) && filterSrv.getSolrFq(true) != '') {
+          fq = '&' + filterSrv.getSolrFq(true);
+        }
         var time_field = filterSrv.getTimeField();
-        var fq = '&' + filterSrv.getSolrFq(true);
         var wt_json = '&wt=json';
         var rows_limit = '&rows=0'; // for trends, we do not need the actual response doc, so set rows=0
 
@@ -184,101 +165,55 @@ define([
           '&facet.range.hardend=true' +
           '&facet.range.other=between';
 
-        var first_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_first_range;
-        var second_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_second_range;
-        $scope.panel.queries.query = first_request + "\n\n" + second_request;
-
-        request = request.setQuery(first_request);
-        var results_new = request.doSearch();
-
-        results_new.then(function(results_new) {
-          // Second Query
-          request = request.setQuery(second_request);
-          var results_old = request.doSearch();
-
-          results_old.then(function(results_old) {
-            if (DEBUG) {
-              console.debug('do Search()')
-              console.debug('new time')
-              console.debug($scope.time.from, $scope.time.to)
-              console.debug('old time')
-              console.debug($scope.old_time.from, $scope.old_time.to)
-              console.debug(results_new)
-              console.debug(results_old)
-            }
-            processSolrResults(results_new, results_old);
-            $scope.$emit('render');
-          });
+        var mypromises = [];
+        $scope.panel.queries.query = "";
+        _.each($scope.panel.queries.ids, function(id) {
+          var first_request = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet_first_range;
+          var second_request = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet_second_range;
+          var request_new = request.setQuery(first_request);
+          $scope.panel.queries.query += first_request + "\n\n" ;
+          mypromises.push(request_new.doSearch());
+          var request_old = request.setQuery(second_request);
+          $scope.panel.queries.query += second_request + "\n";
+          mypromises.push(request_old.doSearch());
+          $scope.panel.queries.query += "-----------\n" ;
         });
+
+        // var first_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_first_range;
+        // var second_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_second_range;
+        // $scope.panel.queries.query = first_request + "\n\n" + second_request;
+
+        // request = request.setQuery(first_request);
+        // var results_new = request.doSearch();
+
+        // results_new.then(function(results_new) {
+        //   // Second Query
+        //   request = request.setQuery(second_request);
+        //   var results_old = request.doSearch();
+
+        //   results_old.then(function(results_old) {
+        //     processSolrResults(results_new, results_old);
+        //     $scope.$emit('render');
+        //   });
+        // });
+        $scope.data = [];
+        if (dashboard.current.services.query.ids.length >= 1) {
+          $q.all(mypromises).then(function(results) {
+            _.each($scope.panel.queries.ids, function(id, index) {
+              // Check for error and abort if found
+              if (!(_.isUndefined(results[index].error))) {
+                $scope.panel.error = $scope.parse_error(results[index].error.msg);
+                return;
+              }
+              processSolrResults(results[index * 2], results[index * 2 + 1], id,index);
+            })
+          })
+        }
 
       };
 
-      // Populate scope when we have results
-      var process_results = function(results, _segment, query_id) {
-        results.then(function(results) {
-          $scope.panelMeta.loading = false;
-          if (_segment === 0) {
-            $scope.hits = {};
-            $scope.data = [];
-            query_id = $scope.query_id = new Date().getTime();
-          }
 
-          // Check for error and abort if found
-          if (!(_.isUndefined(results.error))) {
-            $scope.panel.error = $scope.parse_error(results.error.msg);
-            return;
-          }
-
-          // Convert facet ids to numbers
-          var facetIds = _.map(_.keys(results.facets), function(k) {
-            if (!isNaN(k)) {
-              return parseInt(k, 10);
-            }
-          });
-
-          // Make sure we're still on the same query/queries
-          if ($scope.query_id === query_id &&
-            _.intersection(facetIds, $scope.panel.queries.ids).length === $scope.panel.queries.ids.length
-          ) {
-            var i = 0;
-            _.each($scope.panel.queries.ids, function(id) {
-              var n = results.facets[id].count;
-              var o = results.facets['old_' + id].count;
-
-              var hits = {
-                new: _.isUndefined($scope.data[i]) || _segment === 0 ? n : $scope.data[i].hits.new + n,
-                old: _.isUndefined($scope.data[i]) || _segment === 0 ? o : $scope.data[i].hits.old + o
-              };
-
-              $scope.hits.new += n;
-              $scope.hits.old += o;
-
-              var percent = percentage(hits.old, hits.new) == null ?
-                '?' : Math.round(percentage(hits.old, hits.new) * 100) / 100;
-              // Create series
-              $scope.data[i] = {
-                info: querySrv.list[id],
-                hits: {
-                  new: hits.new,
-                  old: hits.old
-                },
-                percent: percent
-              };
-
-              i++;
-            });
-            $scope.$emit('render');
-            if (_segment < $scope.index.length - 1) {
-              $scope.get_data(_segment + 1, query_id);
-            } else {
-              $scope.trends = $scope.data;
-            }
-          }
-        });
-      };
-
-
-      function processSolrResults(results_new, results_old) {
+      function processSolrResults(results_new, results_old, id,i) {
         $scope.panelMeta.loading = false;
 
         // Check for error and abort if found
@@ -293,19 +228,18 @@ define([
         }
 
         $scope.hits = {};
-        $scope.data = [];
 
         var hits = {
           new: results_new.facet_counts.facet_ranges[filterSrv.getTimeField()]['between'],
           old: results_old.facet_counts.facet_ranges[filterSrv.getTimeField()]['between']
-        }
+        };
         $scope.hits = hits;
 
         var percent = percentage(hits.old, hits.new) == null ?
           '?' : Math.round(percentage(hits.old, hits.new) * 100) / 100;
         // Create series
-        $scope.data[0] = {
-          info: querySrv.list[0],
+        $scope.data[i] = {
+          info: querySrv.list[id],
           hits: {
             new: hits.new,
             old: hits.old

@@ -27,6 +27,9 @@
     .histogram-options span {
       white-space: nowrap;
     }
+    .axisLabels:hover{
+      color: inherit !important;
+    }
 
     /* this is actually should be in bootstrap */
     .form-inline .checkbox {
@@ -87,5 +90,5 @@
     </span>
   </form>
   <center><img ng-show='panel.loading && _.isUndefined(data)' src="img/load_big.gif"></center>
-  <div histogram-chart class="pointer histogram-chart" params="{{panel}}"></div>
+  <div histogram-chart class="histogram-chart" params="{{panel}}"></div>
 </div>

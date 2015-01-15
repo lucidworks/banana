@@ -32,12 +32,11 @@ define([
   'jquery.flot.selection',
   'jquery.flot.time',
   'jquery.flot.stack',
-  'jquery.flot.stackpercent'
+  'jquery.flot.stackpercent',
+  'jquery.flot.axislabels'
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
-
-  var DEBUG = false; // DEBUG mode
 
   var module = angular.module('kibana.panels.rangeFacet', []);
   app.useModule(module);
@@ -98,7 +97,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         value_type: 'cumulative',
         query_as_alias: false
       },
-      showChart:true
+      showChart:true,
+      show_queries:true,
     };
 
     _.defaults($scope.panel,_d);
@@ -171,13 +171,13 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         field: $scope.panel.range_field
       });
       dashboard.refresh();
-    }
+    };
 
     // set the configrations in settings 
     $scope.set_configrations = function(from,to){
       $scope.panel.minimum = parseInt(from);
       $scope.panel.maximum = parseInt(to);
-    }
+    };
 
     //set the range filter from old configrations
     $scope.range_apply = function(){
@@ -188,7 +188,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         field: $scope.panel.range_field
       });
       dashboard.refresh();
-    }
+    };
     
     /**
      * Fetch the data for a chunk of a queries results. Multiple segments occur when several indicies
@@ -217,7 +217,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       }
 
       var _range = $scope.get_facet_range();
-      var _interval = $scope.get_interval(_range);
 
       if ($scope.panel.auto_int) {
         $scope.panel.interval = kbn.calculate_gap(_range.from, _range.to, $scope.panel.resolution, 0);
@@ -227,8 +226,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       // Solr
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
-
-      if (DEBUG) { console.debug('RangeFacet:\n\tdashboard=',dashboard,'\n\t$scope=',$scope,'\n\t$scope.panel=',$scope.panel,'\n\tquerySrv=',querySrv,'\n\tfilterSrv=',filterSrv); }
 
       var request = $scope.sjs.Request().indices(dashboard.indices[segment]);
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
@@ -260,11 +257,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       $scope.populate_modal(request);
 
       // Build Solr query
-      var fq = '&' + filterSrv.getSolrFq();
-      var time_field = filterSrv.getTimeField();
-      var start_time = filterSrv.getStartTime();
-      var end_time = filterSrv.getEndTime();
-
+      var fq = '';
+      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+        fq = '&' + filterSrv.getSolrFq();
+      }
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0'; // for RangeFacet, we do not need the actual response doc, so set rows=0
       var facet = '&facet=true' +
@@ -273,57 +269,28 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                   '&facet.range.end=' + (parseInt($scope.panel.maximum)+1) +
                   '&facet.range.gap=' + $scope.panel.interval;
 
-      // Set the panel's query
-      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet ;
-      // Set the additional custom query
-      if ($scope.panel.queries.custom != null) {
-        request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
-      } else {
-        request = request.setQuery($scope.panel.queries.query);
-      }
+      var promises = [];
+      $scope.panel.queries.query = "";
 
-      var results = request.doSearch();
-
-      // ==========================
-      // SOLR - TEST Multiple Queries
-      // ==========================
-      // var mypromises = [];
-      // mypromises.push(results);
-
-      // var temp_q = 'q=' + dashboard.current.services.query.list[1].query + df + wt_json + rows_limit + fq + facet + filter_fq + fl;
-      // request = request.setQuery(temp_q);
-      // mypromises.push(request.doSearch());
-
-      // if (dashboard.current.services.query.ids.length > 1) {
-      //   _.each(dashboard.current.services.query.list, function(v,k) {
-      //     if (DEBUG) { console.log('histogram:\n\tv=',v,', k=',k); }
-      //     // TODO
-      //   });
-      //   $q.all(mypromises).then(function(myresults) {
-      //     if (DEBUG) { console.log('histogram:\n\tmyresults=',myresults); }
-      //     // TODO
-      //   });
-      // }
-      // ========================
-      // END SOLR TEST
-      // ========================
-
+       _.each($scope.panel.queries.ids, function(id) {
+        var temp_q =  querySrv.getQuery(id) + wt_json + rows_limit + fq + facet ;
+        $scope.panel.queries.query += temp_q + "\n";
+        if ($scope.panel.queries.custom !== null) {
+          request = request.setQuery(temp_q + $scope.panel.queries.custom);
+        } else {
+          request = request.setQuery(temp_q);
+        }
+        promises.push(request.doSearch());
+      });
       // Populate scope when we have results
-      results.then(function(results) {
-        var _range = $scope.get_facet_range()
-        if (DEBUG) { console.debug('RangeFacet:\n\trequest='+request+'\n\tresults=',results); }
+      $q.all(promises).then(function(results) {
+        var _range = $scope.get_facet_range();
 
         $scope.panelMeta.loading = false;
         if(segment === 0) {
           $scope.hits = 0;
           $scope.data = [];
           query_id = $scope.query_id = new Date().getTime();
-        }
-
-        // Check for error and abort if found
-        if(!(_.isUndefined(results.error))) {
-          $scope.panel.error = $scope.parse_error(results.error.msg);
-          return;
         }
 
         // Convert facet ids to numbers
@@ -333,16 +300,18 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
         // Make sure we're still on the same query/queries
         // TODO: We probably DON'T NEED THIS unless we have to support multiple queries in query module.
-        if($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
+        // if($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
           var i = 0,
             numeric_series,
             hits;
 
-          _.each($scope.panel.queries.ids, function(id) {
-            // var query_results = results.facets[id];
+          _.each($scope.panel.queries.ids, function(id,index) {
 
-            if (DEBUG) { console.debug('facetrange: i=',i, '$scope=',$scope); }
-
+            // Check for error and abort if found
+            if (!(_.isUndefined(results[index].error))) {
+              $scope.panel.error = $scope.parse_error(results[index].error.msg);
+              return;
+            }
             // we need to initialize the data variable on the first run,
             // and when we are working on the first segment of the data.
             if(_.isUndefined($scope.data[i]) || segment === 0) {
@@ -352,9 +321,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 fill_style: 'minimal'
               });
               hits = 0;
-              if (DEBUG) { console.debug('\tfirst run: i='+i+', numeric_series=',numeric_series); }
             } else {
-              if (DEBUG) { console.debug('\tNot first run: i='+i+', $scope.data[i].numeric_series=',$scope.data[i].numeric_series,', hits='+$scope.data[i].hits); }
               numeric_series = $scope.data[i].numeric_series;
               // Bug fix for wrong event count:
               //   Solr don't need to accumulate hits count since it can get total count from facet query.
@@ -363,11 +330,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               hits = 0;
               $scope.hits = 0;
             }
-            $scope.range_count = 0
+            $scope.range_count = 0;
             // Solr facet counts response is in one big array.
             // So no need to get each segment like Elasticsearch does.
             // Entries from facet_ranges counts
-            var entries = results.facet_counts.facet_ranges[$scope.panel.range_field].counts;
+            var entries = results[index].facet_counts.facet_ranges[$scope.panel.range_field].counts;
             for (var j = 0; j < entries.length; j++) {
               var entry_time = entries[j]; // convert to millisec
               j++;
@@ -375,8 +342,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               numeric_series.addValue(entry_time, entry_count);
               hits += entry_count; // The series level hits counter
               $scope.hits += entry_count; // Entire dataset level hits counter
-              $scope.range_count += 1 // count the number of ranges to help later in bar width
-            }; 
+              $scope.range_count += 1; // count the number of ranges to help later in bar width
+            }
 
             $scope.data[i] = {
               info: querySrv.list[id],
@@ -386,8 +353,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
             i++;
           });
-          
-          if (DEBUG) { console.debug('RangeFacet: Before render $scope=',$scope,'$scope.panel=',$scope.panel); }
 
           // Tell the RangeFacet directive to render.
           $scope.$emit('render');
@@ -397,7 +362,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           // if(segment < dashboard.indices.length-1) {
           //   $scope.get_data(segment+1,query_id);
           // }
-        }
+        // }
       });
     };
 
@@ -405,11 +370,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     // factor :: Zoom factor, so 0.5 = cuts timespan in half, 2 doubles timespan
     $scope.zoom = function(factor) {
       var _range = filterSrv.facetRange($scope.panel.range_field)[1];
-      if (_.isUndefined(_range))
+      if (_.isUndefined(_range)){
         _range = {
           from: $scope.panel.minimum,
           to: $scope.panel.maximum
-        }
+        };
+      }
 
       var _timespan = (_range.to.valueOf() - _range.from.valueOf());
       var _center = _range.to.valueOf() - _timespan/2;
@@ -446,7 +412,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
   });
 
-  module.directive('rangefacetChart', function(dashboard, filterSrv) {
+  module.directive('rangefacetChart', function(dashboard) {
     return {
       restrict: 'A',
       template: '<div></div>',
@@ -510,10 +476,14 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 },
                 shadowSize: 1
               },
+              axisLabels: {
+                show: true
+              },
               yaxis: {
                 show: scope.panel['y-axis'],
                 min: 0,
                 max: scope.panel.percentage && scope.panel.stack ? 100 : null,
+                axisLabel: 'count'
               },
               xaxis: {
                 show: scope.panel['x-axis'],
@@ -521,7 +491,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 max: facet_range.to + 1,
                 autoscaleMargin : scope.panel.interval,
                 minTickSize : scope.panel.interval,
-                tickDecimals: 0
+                tickDecimals: 0,
+                axisLabel: scope.panel.range_field
               },
               grid: {
                 backgroundColor: null,
@@ -556,7 +527,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             // If 'lines_smooth' is enabled, loop through $scope.data[] and remove zero filled entries.
             // Without zero values, the line chart will appear smooth as SiLK ;-)
             if (scope.panel.lines_smooth) {
-              for (var i=0; i < scope.data.length; i++) {
+              for (var i=0; i < scope.data.length; i++) { // jshint ignore: line
                 var new_data = [];
                 for (var j=0; j < scope.data[i].data.length; j++) {
                   // if value of the timestamp !== 0, then add it to new_data
@@ -567,8 +538,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 scope.data[i].data = new_data;
               }
             }
-            
-            if (DEBUG) { console.debug('RangeFacet:\n\tflot options = ',options,'\n\tscope.data = ',scope.data); }
 
             scope.plot = $.plot(elem, scope.data, options);
           } catch(e) {
@@ -606,7 +575,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
         elem.bind("plotselected", function (event, ranges) {
           scope.set_range_filter(ranges.xaxis.from, ranges.xaxis.to);
-          scope.set_configrations(ranges.xaxis.from, ranges.xaxis.to)
+          scope.set_configrations(ranges.xaxis.from, ranges.xaxis.to);
           dashboard.refresh();
         });
       }

@@ -181,8 +181,8 @@
     "dropdown_collections": false
   },
   "solr": {
-    "server": "http://localhost:8983/solr/",
-    "core_name": "searchlogs",
+    "server": "/solr/",
+    "core_name": "collection1",
     "core_list": [],
     "global_params": ""
   }

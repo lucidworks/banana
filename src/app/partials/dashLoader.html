@@ -17,7 +17,7 @@
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" ng-click="elasticsearch_dblist('title:'+elasticsearch.query+'*')">
     <i class='icon-folder-open'></i>
   </a>
-  <ul class="dropdown-menu" style="padding:10px">
+  <ul class="dropdown-menu" style="padding:10px;z-index:1001">
     <li ng-show='dashboard.current.loader.load_local'>
       <h5>Local File <tip>Load dashboard JSON layout from file</tip></h5>
       <form>
@@ -32,7 +32,7 @@
         <h6 ng-show="gist.files.length">Dashboards in gist:{{gist.url | gistid}} <small>click to load</small></h6>
         <h6 ng-hide="gist.files.length || !gist.url.length">No gist dashboards found</h6>
         <table class="table table-condensed table-striped">
-          <tr ng-repeat="file in gist.files">
+          <tr ng-repeat="file in gist.files" class="pointer">
             <td><a ng-click="dashboard.dash_load(file)">{{file.title}}</a></td>
           </tr>
         </table>
