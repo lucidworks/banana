@@ -172,9 +172,6 @@ body.modal-open { overflow:inherit; padding-right:inherit !important; }
     padding: 0px;
   }
 
-
-
-
 .timepicker.dropdown-menu {
   padding: 0 12px 0 0px;
 }
@@ -188,10 +185,14 @@ body.modal-open { overflow:inherit; padding-right:inherit !important; }
   font-weight: normal;
 }
 .dropdown-menu.timepicker table thead tr th button.btn-default , .dropdown-menu.timepicker table   tfoot tr th button.btn-default{
-  margin-left: 10px;
+  margin-left: 12px;
   margin-top: 3px;
   margin-bottom: 3px;
 }
-.dropdown-menu.timepicker{
-  left: 325px !important;
+.dropdown-menu.datepicker  {
+  padding: 12px 12px 12px 6px;
+}
+
+.timepicker-block form.nomargin.input-append button{
+  margin-left: 0;
 }
