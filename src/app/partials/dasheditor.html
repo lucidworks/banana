@@ -156,7 +156,7 @@
       </div>
       <div class="col-sm-4 col-md-4">
         <h6>Collection</h6>
-        <input type="text" class="form-control" ng-model="dashboard.current.solr.core_name">
+        <input type="text" class="form-control" ng-model="dashboard.current.solr.core_name" bs-typeahead ng-options="c as c for c in dashboard.current.solr.core_list">
       </div>
     </div>
     <div class="row">

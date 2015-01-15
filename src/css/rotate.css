@@ -16,3 +16,13 @@
 	-ms-box-shadow: none !important;
 	box-shadow: none !important; 
 }
+
+.panel-error {
+    opacity: 0.9;
+    position:absolute;
+    z-index: 900 !important;
+}
+
+.datepicker-dropdown {
+    z-index: 1000 !important;
+}
