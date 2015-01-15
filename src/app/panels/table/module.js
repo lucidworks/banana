@@ -267,6 +267,7 @@ function (angular, app, _, kbn, moment) {
 
       // Populate scope when we have results
       results.then(function(results) {
+        $scope.panel.offset = 0;
         $scope.panelMeta.loading = false;
 
         if(_segment === 0) {
