@@ -33,6 +33,7 @@ function (Settings) {
      */
     solr: "/solr/",
     solr_core: "logstash_logs",
+    timefield: 'timestamp',
 
     /**
      * The default Solr index to use for storing objects internal to Banana, such as 
