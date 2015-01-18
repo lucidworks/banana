@@ -23,7 +23,7 @@
 .dragInProgress{background-color:#fcfcfc;border:1px solid #ddd}.link{cursor:pointer}
 .pointer:hover{color:#1ab2ff}.pointer{cursor:pointer;}.modal-body .pointer{display: inline-block;}.link:hover{color:#1ab2ff}
 ul.list-unstyled li a.pointer{cursor: pointer;font-size: 14px;}
-ul.list-unstyled li {cursor: pointer;margin: 9px 0px;}
+ul.list-unstyled li {cursor: pointer;margin: 4px 0px;}
 ul.list-unstyled li a.label{background-color: #918A8A}
 .popover{max-width:480px}.modal{width:770px;margin-left:-385px;top:10px!important}
 .tiny{font-size:50%}.smaller{font-size:70%}.small{font-size:85%}
@@ -206,4 +206,12 @@ span .label.pointer{
 }
 .collection-picker-select{
   margin-top: 11px;
+}
+
+.search-query-input  .begin-query .fa.fa-times.pointer{
+  display: none;
+}
+
+.search-query-input:hover  .begin-query .fa.fa-times.pointer{
+  display: inline-block;
 }
