@@ -23,7 +23,7 @@
 .dragInProgress{background-color:#fcfcfc;border:1px solid #ddd}.link{cursor:pointer}
 .pointer:hover{color:#1ab2ff}.pointer{cursor:pointer;}.modal-body .pointer{display: inline-block;}.link:hover{color:#1ab2ff}
 ul.list-unstyled li a.pointer{cursor: pointer;font-size: 14px;}
-ul.list-unstyled li {cursor: pointer;margin: 9px 0px;}
+ul.list-unstyled li {cursor: pointer;margin: 4px 0px;}
 ul.list-unstyled li a.label{background-color: #918A8A}
 .popover{max-width:480px}.modal{width:770px;margin-left:-385px;top:10px!important}
 .tiny{font-size:50%}.smaller{font-size:70%}.small{font-size:85%}
@@ -47,7 +47,7 @@ div.flot-text{color:#333!important}
 .timepicker-block{float: left;}
 .to-txt{float: left;margin: 7px 0 0 10px;}
 .timepicker-block button{margin-left: 5px;}
-.settime-liks{padding: 6px 7px;}
+.settime-liks{padding: 6px 7px 0px 7px;}
 .search-query-input{clear: both;margin-top: 5px !important;position: relative;top: 6px;}
 .search-query-input input{width: 100% !important;border-radius: 30px;}
 .modal.top.am-fade{
@@ -195,4 +195,23 @@ body.modal-open { overflow:inherit; padding-right:inherit !important; }
 
 .timepicker-block form.nomargin.input-append button{
   margin-left: 0;
+}
+span .label.pointer{
+  font-size: 13px;
+  font-weight: normal;
+}
+
+.search-query-input  input.search-query{
+  padding-left: 40px !important;
+}
+.collection-picker-select{
+  margin-top: 11px;
+}
+
+.search-query-input  .begin-query .fa.fa-times.pointer{
+  display: none;
+}
+
+.search-query-input:hover  .begin-query .fa.fa-times.pointer{
+  display: inline-block;
 }
