@@ -47,7 +47,7 @@ div.flot-text{color:#333!important}
 .timepicker-block{float: left;}
 .to-txt{float: left;margin: 7px 0 0 10px;}
 .timepicker-block button{margin-left: 5px;}
-.settime-liks{padding: 6px 7px;}
+.settime-liks{padding: 6px 7px 0px 7px;}
 .search-query-input{clear: both;margin-top: 5px !important;position: relative;top: 6px;}
 .search-query-input input{width: 100% !important;border-radius: 30px;}
 .modal.top.am-fade{
@@ -195,4 +195,15 @@ body.modal-open { overflow:inherit; padding-right:inherit !important; }
 
 .timepicker-block form.nomargin.input-append button{
   margin-left: 0;
+}
+span .label.pointer{
+  font-size: 13px;
+  font-weight: normal;
+}
+
+.search-query-input  input.search-query{
+  padding-left: 40px !important;
+}
+.collection-picker-select{
+  margin-top: 11px;
 }
