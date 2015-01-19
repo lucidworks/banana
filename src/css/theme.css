@@ -182,7 +182,7 @@ body.modal-open { overflow:inherit; padding-right:inherit !important; }
 
 .modal-body label{
   font-size: 12.5px;
-  font-weight: normal;
+  font-weight: 400;
 }
 .dropdown-menu.timepicker table thead tr th button.btn-default , .dropdown-menu.timepicker table   tfoot tr th button.btn-default{
   margin-left: 12px;
