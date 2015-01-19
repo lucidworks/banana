@@ -151,10 +151,12 @@ function (angular, app, _, kbn, moment) {
     };
 
     $scope.toggle_field = function(field) {
-      if (_.indexOf($scope.panel.fields,field) > -1) {
-        $scope.panel.fields = _.without($scope.panel.fields,field);
-      } else {
+      if (_.indexOf($scope.panel.fields, field) > -1) {
+        $scope.panel.fields = _.without($scope.panel.fields, field);
+      } else if (_.indexOf(fields.list, field) > -1) {
         $scope.panel.fields.push(field);
+      } else {
+        return;
       }
     };
 
