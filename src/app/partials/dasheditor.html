@@ -106,10 +106,11 @@
   <!-- Controls tab -->
   <div ng-show="editor.index == 2" ng-controller="dashLoader">
     <div class="row">
-      <div class="col-sm-6 col-md-6" style="font-weight:bold; margin-top: 8px;">Show Collections Picker</div>
-      <input type="checkbox" ng-model="dashboard.current.loader.dropdown_collections" ng-checked="dashboard.current.loader.dropdown_collections">
+      <div class="col-sm-4 col-md-4" style="font-weight:bold; margin-top: 8px;"><span class="pull-left">Show Collections Picker</span>
+        <input class="pull-left" style="margin:5px 0 0 10px" type="checkbox" ng-model="dashboard.current.loader.dropdown_collections" ng-checked="dashboard.current.loader.dropdown_collections">
+      </div>
     </div>
-    <h5>Allow saving to</h5>
+    <h5 style="margin-top:20px; margin-bottom: 6px;">Allow saving to</h5>
     <div class="row">
       <div class="col-sm-2 col-md-2">
         <label class="small">File</label><input type="checkbox" ng-model="dashboard.current.loader.save_local" ng-checked="dashboard.current.loader.save_local">
@@ -124,7 +125,7 @@
         <label class="small">Solr</label><input type="checkbox" ng-model="dashboard.current.loader.save_elasticsearch" ng-checked="dashboard.current.loader.save_elasticsearch">
       </div>
     </div>
-    <h5>Allow loading from</h5>
+    <h5 style="margin-top:20px; margin-bottom: 6px;">Allow loading from</h5>
     <div class="row">
       <div class="col-sm-2 col-md-2">
         <label class="small">Local file</label><input type="checkbox" ng-model="dashboard.current.loader.load_local" ng-checked="dashboard.current.loader.load_local">
@@ -137,7 +138,7 @@
       </div>
       
       <div class="col-sm-3 col-md-3" ng-show="dashboard.current.loader.load_elasticsearch">
-        <label class="small">Solr list size <tip>The maximum number of dashboards to show in the loading list for Solr stored dashboards under Load menu.</tip></label><input class="input-mini form-control" type="number" ng-model="dashboard.current.loader.load_elasticsearch_size">
+         <label class="small">Solr list size <tip>The maximum number of dashboards to show in the loading list for Solr stored dashboards under Load menu.</tip></label><input style="width:80px;" class="input-mini form-control" type="number" ng-model="dashboard.current.loader.load_elasticsearch_size">
       </div>
       
     </div>
