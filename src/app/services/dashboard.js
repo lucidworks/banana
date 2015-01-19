@@ -441,7 +441,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
           "description": save.title,
           "public": false,
           "files": {
-            "kibana-dashboard.json": {
+            "banana-dashboard.json": {
               "content": angular.toJson(save,true)
             }
           }
