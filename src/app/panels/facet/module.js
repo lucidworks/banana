@@ -60,7 +60,7 @@ define([
         foundResults: true,
         header_title: "Limit Your Search",
         toggle_element: null,
-        show_queries:true,
+        show_queries: true
       };
       _.defaults($scope.panel, _d);
 
@@ -97,7 +97,7 @@ define([
 
       $scope.get_data = function(segment, query_id) {
         $scope.panel.error = false;
-
+        delete $scope.panel.error;
         // Make sure we have everything for the request to complete
         if (dashboard.indices.length === 0) {
           return;

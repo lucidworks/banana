@@ -207,6 +207,7 @@ define([
 
       $scope.get_data = function(segment, query_id) {
         $scope.panel.error = false;
+        delete $scope.panel.error;
 
         // Make sure we have everything for the request to complete
         if (dashboard.indices.length === 0) {

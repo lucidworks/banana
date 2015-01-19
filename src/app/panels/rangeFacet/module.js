@@ -32,7 +32,8 @@ define([
   'jquery.flot.selection',
   'jquery.flot.time',
   'jquery.flot.stack',
-  'jquery.flot.stackpercent'
+  'jquery.flot.stackpercent',
+  'jquery.flot.axislabels'
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
@@ -292,12 +293,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           query_id = $scope.query_id = new Date().getTime();
         }
 
-        // Check for error and abort if found
-        if(!(_.isUndefined(results.error))) {
-          $scope.panel.error = $scope.parse_error(results.error.msg);
-          return;
-        }
-
         // Convert facet ids to numbers
         // var facetIds = _.map(_.keys(results.facets),function(k){return parseInt(k, 10);});
         // TODO: change this, Solr do faceting differently
@@ -312,6 +307,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
           _.each($scope.panel.queries.ids, function(id,index) {
 
+            // Check for error and abort if found
+            if (!(_.isUndefined(results[index].error))) {
+              $scope.panel.error = $scope.parse_error(results[index].error.msg);
+              return;
+            }
             // we need to initialize the data variable on the first run,
             // and when we are working on the first segment of the data.
             if(_.isUndefined($scope.data[i]) || segment === 0) {
@@ -476,10 +476,14 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 },
                 shadowSize: 1
               },
+              axisLabels: {
+                show: true
+              },
               yaxis: {
                 show: scope.panel['y-axis'],
                 min: 0,
                 max: scope.panel.percentage && scope.panel.stack ? 100 : null,
+                axisLabel: 'count'
               },
               xaxis: {
                 show: scope.panel['x-axis'],
@@ -487,7 +491,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 max: facet_range.to + 1,
                 autoscaleMargin : scope.panel.interval,
                 minTickSize : scope.panel.interval,
-                tickDecimals: 0
+                tickDecimals: 0,
+                axisLabel: scope.panel.range_field
               },
               grid: {
                 backgroundColor: null,

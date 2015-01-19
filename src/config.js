@@ -31,8 +31,9 @@ function (Settings) {
      * your banana web application.
      * @type {String}
      */
-    solr: "http://localhost:8983/solr/",
+    solr: "/solr/",
     solr_core: "logstash_logs",
+    timefield: 'event_timestamp',
 
     /**
      * The default Solr index to use for storing objects internal to Banana, such as 

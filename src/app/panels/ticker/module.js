@@ -200,6 +200,11 @@ define([
         if (dashboard.current.services.query.ids.length >= 1) {
           $q.all(mypromises).then(function(results) {
             _.each($scope.panel.queries.ids, function(id, index) {
+              // Check for error and abort if found
+              if (!(_.isUndefined(results[index].error))) {
+                $scope.panel.error = $scope.parse_error(results[index].error.msg);
+                return;
+              }
               processSolrResults(results[index * 2], results[index * 2 + 1], id,index);
             })
           })

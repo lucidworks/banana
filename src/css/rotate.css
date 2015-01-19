@@ -9,3 +9,13 @@
     background-repeat: repeat-x;
     padding-top: 6px;
 }
+
+.panel-error {
+	opacity: 0.9;
+	position:absolute;
+	z-index: 900 !important;
+}
+
+.datepicker-dropdown {
+	z-index: 1000 !important;
+}

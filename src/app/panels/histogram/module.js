@@ -41,7 +41,8 @@ define([
   'jquery.flot.selection',
   'jquery.flot.time',
   'jquery.flot.stack',
-  'jquery.flot.stackpercent'
+  'jquery.flot.stackpercent',
+  'jquery.flot.axislabels'
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
@@ -266,9 +267,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           values_mode_query += '&group=true&group.field=' + $scope.panel.group_field + '&group.limit=' + $scope.panel.max_rows;
         }
       }
-      // ==========================
-      // SOLR - TEST Multiple Queries
-      // ==========================
+      
       var mypromises = [];
        _.each($scope.panel.queries.ids, function(id) {
         var temp_q =  querySrv.getQuery(id) + wt_json + rows_limit + fq + facet + values_mode_query;
@@ -283,22 +282,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       if (dashboard.current.services.query.ids.length >= 1) {
         $q.all(mypromises).then(function(results) {
-          if (true) {
-            console.log('histogram:\n\tmyresults=', results);
-          }
           $scope.panelMeta.loading = false;
           if (segment === 0) {
             $scope.hits = 0;
             $scope.data = [];
             query_id = $scope.query_id = new Date().getTime();
           }
-
-          // Check for error and abort if found
-          if (!(_.isUndefined(results.error))) {
-            $scope.panel.error = $scope.parse_error(results.error.msg);
-            return;
-          }
-
           // Convert facet ids to numbers
           // var facetIds = _.map(_.keys(results.facets),function(k){return parseInt(k, 10);});
           // TODO: change this, Solr do faceting differently
@@ -312,6 +301,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               hits;
 
             _.each($scope.panel.queries.ids, function(id,index) {
+              // Check for error and abort if found
+              if (!(_.isUndefined(results[index].error))) {
+                $scope.panel.error = $scope.parse_error(results[index].error.msg);
+                return;
+              }
               // we need to initialize the data variable on the first run,
               // and when we are working on the first segment of the data.
               if (_.isUndefined($scope.data[i]) || segment === 0) {
@@ -416,9 +410,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           // }
         });
       }
-      // ========================
-      // END SOLR TEST
-      // ========================
     };
 
     // function $scope.zoom
@@ -540,10 +531,14 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 },
                 shadowSize: 1
               },
+               axisLabels: {
+                show: true
+              },
               yaxis: {
                 show: scope.panel['y-axis'],
                 min: null, // TODO - make this adjusted dynamicmally, and add it to configuration panel
                 max: scope.panel.percentage && scope.panel.stack ? 100 : null,
+                axisLabel: scope.panel.mode,
               },
               xaxis: {
                 timezone: scope.panel.timezone,
@@ -553,6 +548,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 max: _.isUndefined(scope.range.to) ? null : scope.range.to.getTime(),
                 timeformat: time_format(scope.panel.interval),
                 label: "Datetime",
+                axisLabel: filterSrv.getTimeField(),
               },
               grid: {
                 backgroundColor: null,

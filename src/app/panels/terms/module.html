@@ -28,6 +28,10 @@
       float:right;
     }
 
+    .below{
+      display: inline-block !important;
+    }
+
     .leftRightLegend {
       margin-left: 10px;
       margin-right: 10px; 
@@ -67,7 +71,7 @@
 
   <div style="overflow:hidden" ng-show="panel.chart == 'pie' || panel.chart == 'bar'" terms-chart params="{{panel}}" style="position:relative" class="pointer" ng-style="{'floatleft':panel.counter_pos == 'right'}"></div>
 
-  <div ng-show="panel.counter_pos == 'below' && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend'>
+  <div ng-show="panel.counter_pos == 'below' && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend' ng-class="{below:panel.counter_pos == 'below'}">
     <!-- vertical legend below -->
     <table class="small" ng-show="panel.arrangement == 'vertical'">
       <tr ng-repeat="term in legend">

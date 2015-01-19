@@ -75,6 +75,7 @@ define([
             $scope.get_data = function () {
                 // Show progress by displaying a spinning wheel icon on panel
                 $scope.panelMeta.loading = true;
+                delete $scope.panel.error;
 
                 var request, results;
                 // Set Solr server
@@ -125,6 +126,13 @@ define([
 
                 // Populate scope when we have results
                 results.then(function (results) {
+                    // Check for error and abort if found
+                      if(!(_.isUndefined(results.error))) {
+                        $scope.panel.error = $scope.parse_error(results.error.msg);
+                        $scope.init_arrays();
+                        $scope.render();
+                        return;
+                      }
                     // build $scope.data array
                     var facets = results.facet_counts.facet_pivot;
                     var key = Object.keys(facets)[0];

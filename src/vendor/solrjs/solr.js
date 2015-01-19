@@ -205,7 +205,7 @@
         return '%2B' + gap.replace('d', 'DAY');
       case (gap.charAt(gap.length-1) == 'w'):
         // multiply a week by 7 days
-        num_days = gap.substring(0, gap.length-1) * 7;
+        var num_days = gap.substring(0, gap.length-1) * 7;
         return '%2B' + num_days + 'DAY';
       case (gap.charAt(gap.length-1) == 'M'):
         return '%2B' + gap.replace('M', 'MONTH');
@@ -9001,8 +9001,8 @@
           throw new Error('ID must be set');
         }
 
-        var data = '';
-        var url = '/update?commit=true&wt=json&stream.body=<delete><query>id:"'+id+'"</query></delete>';
+        var url = '/update';
+        var data = 'commit=true&wt=json&stream.body=<delete><query>id:"'+id+'"</query></delete>';
         
         // return sjs.client.del(url, data, successcb, errorcb);
         return sjs.client.get(url, data, successcb, errorcb);
