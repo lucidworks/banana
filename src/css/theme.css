@@ -45,7 +45,7 @@ div.flot-text{color:#333!important}
 .dashboard-notice.alert-error{padding-left: 20px; background-color: #f2dede; border-color: #eed3d7;}
 .panelCont div.form-horizontal {clear: both;}
 .timepicker-block{float: left;}
-.to-txt{float: left;margin: 7px 0 0 10px;}
+.to-txt{float: left;margin: 7px 6px 0 10px;}
 .timepicker-block button{margin-left: 5px;}
 .settime-liks{padding: 6px 7px 0px 7px;}
 .search-query-input{clear: both;margin-top: 5px !important;position: relative;top: 6px;}

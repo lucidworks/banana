@@ -3,7 +3,7 @@
   <select class="collection-picker-select" ng-model="dashboard.current.solr.core_name" ng-change="dashboard.refresh()" ng-options="c as c for c in dashboard.current.solr.core_list"></select>
 </li>
 
-<li><a bs-tooltip="'Goto saved default'" data-placement="bottom" href="#/dashboard"><i class="fa fa-home"></i></a></li>
+<li><a bs-tooltip="'Goto saved default'" data-placement="bottom" container="body" href="#/dashboard"><i class="fa fa-home"></i></a></li>
 <!-- New menu -->
 <li bs-tooltip="'New'" data-placement="bottom" ng-show="showDropdown('new')" >
   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -92,6 +92,6 @@
 <!-- Configure menu -->
 <li ng-show="dashboard.current.editable">
   <a bs-modal="dashboardEditorModal" data-content-template="app/partials/dasheditor.html">
-    <i class="fa fa-cog pointer" bs-tooltip="dashboardEditorTooltip" data-placement="bottom"></i>
+    <i class="fa fa-cog pointer" container="body" bs-tooltip="dashboardEditorTooltip" data-placement="bottom"></i>
   </a>
 </li>
