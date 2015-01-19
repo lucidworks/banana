@@ -33,7 +33,7 @@
     <div ng-repeat="alert in dashAlerts.list" class="alert-{{alert.severity}} dashboard-notice" ng-show="$last" style="position:fixed">
       <button type="button" class="close" ng-click="dashAlerts.clear(alert)" style="padding-right:50px">×</button>
       <strong>{{alert.title}}</strong>
-      <span ng-bind-html-unsafe="alert.text"></span>
+      <span ng-bind-html="alert.text"></span>
       <div style="padding-right:10px" class="pull-right small"> {{$index + 1}} alert(s) </div>
     </div>
     <div class="navbar navbar-default" role="navigation" bs-navbar>
@@ -50,5 +50,8 @@
         <div ng-view=""></div>
       </div>
     </div>
+    <script>
+      // setTimeout(function(){$('span.extra > span').tooltip({container:'body'})},2000);
+    </script>
   </body>
 </html>

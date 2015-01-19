@@ -151,19 +151,23 @@ function (angular, app, _, kbn, moment) {
     };
 
     $scope.toggle_field = function(field) {
-      if (_.indexOf($scope.panel.fields,field) > -1) {
-        $scope.panel.fields = _.without($scope.panel.fields,field);
-      } else {
+      if (_.indexOf($scope.panel.fields, field) > -1) {
+        $scope.panel.fields = _.without($scope.panel.fields, field);
+      } else if (_.indexOf(fields.list, field) > -1) {
         $scope.panel.fields.push(field);
+      } else {
+        return;
       }
     };
 
     // Toggle important field that will appear to the left of table panel
     $scope.toggle_important_field = function(field) {
-      if (_.indexOf($scope.panel.important_fields,field) > -1) {
-        $scope.panel.important_fields = _.without($scope.panel.important_fields,field);
-      } else {
+      if (_.indexOf($scope.panel.important_fields, field) > -1) {
+        $scope.panel.fields = _.without($scope.panel.important_fields, field);
+      } else if (_.indexOf(fields.list, field) > -1) {
         $scope.panel.important_fields.push(field);
+      } else {
+        return;
       }
     };
 
@@ -267,6 +271,7 @@ function (angular, app, _, kbn, moment) {
 
       // Populate scope when we have results
       results.then(function(results) {
+        $scope.panel.offset = 0;
         $scope.panelMeta.loading = false;
 
         if(_segment === 0) {

@@ -16,10 +16,10 @@ function (angular, kbn) {
           var _t = '';
           if (!attrs['placement']) {
             _t = '<i class="fa fa-'+(attrs.icon||'question-circle')+'" bs-tooltip="\''+
-            kbn.addslashes(elem.text())+'\'"></i>';
+            kbn.addslashes(elem.text())+'\'" container="body"></i>';
           } else {
             _t = '<i class="fa fa-'+(attrs.icon||'question-circle')+'" bs-tooltip="\''+
-            kbn.addslashes(elem.text())+'\'" data-placement="'+attrs['placement']+'"></i>';
+            kbn.addslashes(elem.text())+'\'" data-placement="'+attrs['placement']+'" container="body"></i>';
           }
           
           elem.replaceWith($compile(angular.element(_t))(scope));

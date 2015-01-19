@@ -29,7 +29,7 @@
       <div class="timepicker-block">
         <form class="nomargin">
           <input type="text" class="form-controler form-control timepicker-date-input" ng-change="time_check()" ng-model="timepicker.from.date" data-date-format="yyyy-MM-dd" bs-datepicker>
-          <input type="text" class="form-control timepicker-time-input" ng-change="time_check()" data-show-meridian="false" data-show-seconds="true" ng-model="timepicker.from.time"  bs-timepicker>
+          <input type="text" class="form-controler form-control timepicker-time-input" ng-change="time_check()" size="6"  ng-model="timepicker.from.time" data-time-format="HH:mm:ss" data-time-type="string" data-autoclose="1" name="time2" bs-timepicker>
         </form>
       </div>
       <div class="timepicker-block" style="margin-left:5px">
