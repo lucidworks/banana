@@ -4613,7 +4613,7 @@ button:focus,button:hover,button{
 .modal-body {
   position: relative;
   /*overflow-y: auto;*/
-  max-height: 400px;
+  /*max-height: 400px;*/
   padding: 15px;
 }
 
