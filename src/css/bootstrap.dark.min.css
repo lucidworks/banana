@@ -1048,10 +1048,18 @@ input[type="file"],input[type="image"],input[type="submit"],input[type="reset"],
 
 select,input[type="file"] {
   height: 31px;
-  *margin-top: 4px;
+  margin-top: 4px;
   line-height: 31px;
 }
-
+input[type="file"]{
+  height: 36px;
+  line-height: 17px;
+  margin-left: -7px;
+  background: rgb(82, 87, 92);
+  border: 0;
+  box-shadow: none;
+  color: #fff;
+}
 select {
   width: 220px;
   border: 1px solid #7a8288 !important;
@@ -6146,8 +6154,8 @@ legend,label {
 }
 
 .alert-error ,.panel-error{
-  background-color: #b94a48;
-  border-color: #b94a48;
+  background-color: #b94a48 !important;
+  border-color: #b94a48 !important;
 }
 
 .alert-info {
@@ -6482,4 +6490,7 @@ div.flot-text {
 }
 .query-modal-checkbox{
   margin: 6px !important;
+}
+ul.list-unstyled li{
+  margin: 0 !important;
 }
