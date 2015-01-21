@@ -4661,14 +4661,14 @@ button:focus,button:hover,button{
 }
 
 .tooltip {
-  position: absolute;
-  z-index: 1030;
+  /*position: absolute;*/
+  z-index: 9999;
   display: block;
   visibility: visible;
   font-size: 11px;
   line-height: 1.4;
-  opacity: 0;
-  filter: alpha(opacity=0);
+  /*opacity: 0;*/
+  /*filter: alpha(opacity=0);*/
 }
 
 .tooltip.in {
