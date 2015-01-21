@@ -45,9 +45,9 @@ div.flot-text{color:#333!important}
 .dashboard-notice.alert-error{padding-left: 20px; background-color: #f2dede; border-color: #eed3d7;}
 .panelCont div.form-horizontal {clear: both;}
 .timepicker-block{float: left;}
-.to-txt{float: left;margin: 7px 0 0 10px;}
+.to-txt{float: left;margin: 7px 6px 0 10px;}
 .timepicker-block button{margin-left: 5px;}
-.settime-liks{padding: 6px 7px;}
+.settime-liks{padding: 6px 7px 0px 7px;}
 .search-query-input{clear: both;margin-top: 5px !important;position: relative;top: 6px;}
 .search-query-input input{width: 100% !important;border-radius: 30px;}
 .modal.top.am-fade{
@@ -79,7 +79,7 @@ div.flot-text{color:#333!important}
   text-align: right;
   border-top: 1px solid #e5e5e5;
   margin-top: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 }
 .modal{
   width: 100% !important;
@@ -121,10 +121,10 @@ a[data-parent="#facet_accordion"]{
 }
 .panel{
   margin-bottom: 0px;
-  padding-right: 10px;
+  padding-right: 15px;
 }
 .row-of-two-panels >div:nth-child(even){
-  padding-left: 0;
+  /*padding-left: 0;*/
 }
 
 .timepicker-time-input{
@@ -158,3 +158,84 @@ body.modal-open { overflow:inherit; padding-right:inherit !important; }
 .modal-body select{
   margin-bottom: 10px;
 }
+
+.datepicker.dropdown-menu {
+  width: 250px;
+  height: 250px;
+}
+.datepicker.dropdown-menu  > button {
+    outline: none;
+    border: 0px;
+  }
+
+ .datepicker.dropdown-menu  tbody button {
+    padding: 0px;
+  }
+
+.timepicker.dropdown-menu {
+  padding: 0 12px 0 0px;
+}
+.datepicker.dropdown-menu  button {
+  outline: none;
+  border: 0px;
+}
+
+.modal-body label{
+  font-size: 12.5px;
+  font-weight: 400;
+}
+.dropdown-menu.timepicker table thead tr th button.btn-default , .dropdown-menu.timepicker table   tfoot tr th button.btn-default{
+  margin-left: 12px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+.dropdown-menu.datepicker  {
+  padding: 12px 12px 12px 6px;
+}
+
+.timepicker-block form.nomargin.input-append button{
+  margin-left: 0;
+}
+span .label.pointer{
+  font-size: 13px;
+  font-weight: normal;
+}
+
+.search-query-input  input.search-query{
+  padding-left: 40px !important;
+}
+.collection-picker-select{
+  margin-top: 11px;
+}
+
+.search-query-input  .begin-query .fa.fa-times.pointer{
+  display: none;
+}
+
+.search-query-input:hover  .begin-query .fa.fa-times.pointer{
+  display: inline-block;
+}
+
+/*---------------- customizations for both light,dark theme ---------------- */
+.modal{
+  top: 0 !important;
+  margin: 0 auto !important;
+  left: 0% !important;
+  background: transparent !important;
+}
+
+.tab-content {
+  overflow: auto;
+  clear: both;
+}
+.query-modal-checkbox{
+  margin: 3px 6px !important;
+}
+
+
+
+
+
+
+
+

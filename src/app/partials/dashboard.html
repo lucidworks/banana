@@ -1,4 +1,4 @@
-<div class="container " style="margin-top:10px; width:92%">
+<div class="container " style="width:95%">
 
   <!-- Rows -->
   <div class="kibana-row row" ng-controller="RowCtrl" ng-repeat="(row_name, row) in dashboard.current.rows" ng-style="row_style(row)">
@@ -7,7 +7,7 @@
 
         <div class="row-close col-sm-12 col-md-12" ng-show="row.collapse" data-placement="bottom">
           <span class="row-button" bs-modal="rowEditorModal" data-content-template="app/partials/roweditor.html">
-            <i bs-tooltip="'Configure row'" data-placement="right" ng-show="row.editable" class="fa fa-cog pointer"></i>
+            <i bs-tooltip="'Configure row'" container="body" data-placement="right" ng-show="row.editable" class="fa fa-cog pointer"></i>
           </span>
           <span class="row-button" ng-click="toggle_row(row)" ng-show="row.collapsable">
             <i bs-tooltip="'Expand row'" data-placement="right" ng-show="row.editable" class="fa fa-expand pointer"></i>
@@ -21,11 +21,11 @@
             <br>
           </span>
           <span bs-modal="rowEditorModal" data-content-template="app/partials/roweditor.html" ng-show="row.editable">
-            <i bs-tooltip="'Configure row'" data-placement="right" class="fa fa-cog pointer"></i>
+            <i bs-tooltip="'Configure row'" data-placement="right" container="body" class="fa fa-cog pointer"></i>
             <br>
           </span>
           <span ng-show="rowSpan(row) == 12 &amp;&amp; row.editable">
-            <i bs-tooltip="'Row full. Create a new row to add more panels'" data-placement="right" class="fa fa-trello"></i>
+            <i bs-tooltip="'Row full. Create a new row to add more panels'" container="body" data-placement="right" class="fa fa-trello"></i>
             <br>
           </span>
           <span ng-show="rowSpan(row) > 12">
