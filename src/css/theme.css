@@ -215,3 +215,27 @@ span .label.pointer{
 .search-query-input:hover  .begin-query .fa.fa-times.pointer{
   display: inline-block;
 }
+
+/*---------------- customizations for both light,dark theme ---------------- */
+.modal{
+  top: 0 !important;
+  margin: 0 auto !important;
+  left: 0% !important;
+  background: transparent !important;
+}
+
+.tab-content {
+  overflow: auto;
+  clear: both;
+}
+.query-modal-checkbox{
+  margin: 3px 6px !important;
+}
+
+
+
+
+
+
+
+
