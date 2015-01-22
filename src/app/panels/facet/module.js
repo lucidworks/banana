@@ -60,7 +60,7 @@ define([
         foundResults: true,
         header_title: "Limit Your Search",
         toggle_element: null,
-        show_queries:true,
+        show_queries: true
       };
       _.defaults($scope.panel, _d);
 
