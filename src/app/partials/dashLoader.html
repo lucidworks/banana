@@ -23,7 +23,7 @@
     <li ng-show="dashboard.current.loader.load_local">
       <h5>Local File <tip>Load dashboard JSON layout from file</tip></h5>
       <form>
-        <input type="file" id="dashupload" dash-upload="" class="form-control"><br>
+        <input type="file" id="dashupload" dash-upload="" class="form-control" style="width:100%;display:inline-block" ><br>
       </form>
     </li>
     <li ng-show='dashboard.current.loader.load_gist'>
@@ -42,7 +42,7 @@
     </li>
     <li ng-show="dashboard.current.loader.load_elasticsearch">
       <h5>Solr</h5>
-      <form class="input-append">
+      <form class="input-append" style="width:100%;">
         <input type="text" ng-model="elasticsearch.query" ng-click="$event.stopPropagation()" ng-change="elasticsearch_dblist('title:'+elasticsearch.query+'*')" placeholder="Type to filter" class="form-control">
       </form>
       <h6 ng-show="elasticsearch.dashboards.length">Solr stored dashboards</h6>
