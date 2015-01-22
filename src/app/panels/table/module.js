@@ -162,12 +162,17 @@ function (angular, app, _, kbn, moment) {
 
     // Toggle important field that will appear to the left of table panel
     $scope.toggle_important_field = function(field) {
-      if (_.indexOf($scope.panel.important_fields, field) > -1) {
-        $scope.panel.fields = _.without($scope.panel.important_fields, field);
-      } else if (_.indexOf(fields.list, field) > -1) {
-        $scope.panel.important_fields.push(field);
+      // if (_.indexOf($scope.panel.important_fields, field) > -1) {
+      //   $scope.panel.fields = _.without($scope.panel.important_fields, field);
+      // } else if (_.indexOf(fields.list, field) > -1) {
+      //   $scope.panel.important_fields.push(field);
+      // } else {
+      //   return;
+      // }
+      if (_.indexOf($scope.panel.important_fields,field) > -1) {
+        $scope.panel.important_fields = _.without($scope.panel.important_fields,field);
       } else {
-        return;
+        $scope.panel.important_fields.push(field);
       }
     };
 
