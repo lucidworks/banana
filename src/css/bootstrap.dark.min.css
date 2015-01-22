@@ -3406,8 +3406,8 @@ button.btn.btn-mini,input[type="submit"].btn.btn-mini {
 button:focus,button:hover,button{
   outline: none !important;
 }
-.alert-success h4 {
-  color: #b94a48;
+.alert-success * {
+  color: #383838;
 }
 
 .alert-danger,.alert-error {
@@ -5511,9 +5511,10 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 code,pre {
-  background-color: #f7f7f7;
+  background-color: #52575C;
   border: 1px solid #1c1e22;
   text-shadow: none;
+  color: #949495;
 }
 
 legend,.page-header {
@@ -6492,4 +6493,15 @@ div.flot-text {
 }
 ul.list-unstyled li{
   margin: 0 !important;
+}
+.edit-dash-settings  .nav{
+  width: 100%;
+  margin-top: -25px;
+}
+.panel .panel-heading{
+  background: rgb(32, 35, 40);
+  border-radius: 5px;
+}
+.auto-refresh-chkbox{
+  margin-top: -2px !important;
 }
