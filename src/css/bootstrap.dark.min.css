@@ -994,7 +994,7 @@ label {
 
 select,textarea,input[type="text"],input[type="password"],input[type="datetime"],input[type="datetime-local"],input[type="date"],input[type="month"],input[type="time"],input[type="week"],input[type="number"],input[type="email"],input[type="url"],input[type="search"],input[type="tel"],input[type="color"],.uneditable-input {
   display: inline-block;
-  height: 34px;
+  height: 31px;
   padding: 6px 12px;
   margin-bottom: 10.5px;
   font-size: 14px;
@@ -1054,7 +1054,6 @@ select,input[type="file"] {
 input[type="file"]{
   height: 36px;
   line-height: 17px;
-  margin-left: -7px;
   background: rgb(82, 87, 92);
   border: 0;
   box-shadow: none;
@@ -2776,9 +2775,9 @@ button.close {
 
 .btn {
   display: inline-block;
-  *display: inline;
-  *zoom: 1;
-  padding: 4px 12px;
+  display: inline;
+  zoom: 1;
+  padding: 5px 12px;
   margin-bottom: 0;
   font-size: 14px;
   line-height: 21px;
@@ -4667,12 +4666,12 @@ button:focus,button:hover,button{
   visibility: visible;
   font-size: 11px;
   line-height: 1.4;
-  /*opacity: 0;*/
+  /*opacity: 1;*/
   /*filter: alpha(opacity=0);*/
 }
 
 .tooltip.in {
-  opacity: .8;
+  opacity: 1;
   filter: alpha(opacity=80);
 }
 
