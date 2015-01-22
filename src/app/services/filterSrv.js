@@ -147,65 +147,69 @@ define([
     // time filter query
     this.getSolrFq = function(noTime) {
       var start_time, end_time, time_field;
-      var filter_fq ='';
+      var filter_fq = '';
       var filter_either = [];
 
       // Loop through the list to find the time field, usually it should be in self.list[0]
-      _.each(self.list, function(v,k) {
+      _.each(self.list, function(v, k) {
 
-        if (DEBUG) { console.debug('filterSrv: v=',v,' k=',k); }
+        if (DEBUG) {
+          console.debug('filterSrv: v=', v, ' k=', k);
+        }
 
-        if (v.type === 'time') {
-          time_field = v.field;
-          // Check for type of timestamps
-          // In case of relative timestamps, they will be string, not Date obj.
-          if (v.from instanceof Date) {
-            start_time = new Date(v.from).toISOString();
+        if (v.active == true) {
+          if (v.type === 'time') {
+            time_field = v.field;
+            // Check for type of timestamps
+            // In case of relative timestamps, they will be string, not Date obj.
+            if (v.from instanceof Date) {
+              start_time = new Date(v.from).toISOString();
+            } else {
+              start_time = v.from;
+            }
+
+            if (v.to instanceof Date) {
+              end_time = new Date(v.to).toISOString();
+            } else {
+              end_time = v.to;
+            }
+          } else if (v.type === 'terms') {
+            if (v.mandate === 'must') {
+              filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
+            } else if (v.mandate === 'mustNot') {
+              filter_fq = filter_fq + '&fq=-' + v.field + ':"' + v.value + '"';
+            } else if (v.mandate === 'either') {
+              filter_either.push(v.field + ':"' + v.value + '"');
+            }
+          } else if (v.type === 'field') {
+            // v.query contains double-quote around it.
+            if (v.mandate === 'must') {
+              filter_fq = filter_fq + '&fq=' + v.field + ':' + v.query;
+            } else if (v.mandate === 'mustNot') {
+              filter_fq = filter_fq + '&fq=-' + v.field + ':' + v.query;
+            } else if (v.mandate === 'either') {
+              filter_either.push(v.field + ':' + v.query);
+            }
+          } else if (v.type === 'querystring') {
+            if (v.mandate === 'must') {
+              filter_fq = filter_fq + '&fq=' + v.query;
+            } else if (v.mandate === 'mustNot') {
+              filter_fq = filter_fq + '&fq=-' + v.query;
+            } else if (v.mandate === 'either') {
+              filter_either.push(v.query);
+            }
+          } else if (v.type === 'range') {
+            if (v.mandate === 'must') {
+              filter_fq = filter_fq + '&fq=' + v.field + ':[' + v.from + ' TO ' + v.to + ']';
+            } else if (v.mandate === 'mustNot') {
+              filter_fq = filter_fq + '&fq=-' + v.field + ':[' + v.from + ' TO ' + v.to + ']';
+            } else if (v.mandate === 'either') {
+              filter_either.push(v.field + ':[' + v.from + ' TO ' + v.to + ']');
+            }
           } else {
-            start_time = v.from;
+            // Unsupport filter type
+            return false;
           }
-
-          if (v.to instanceof Date) {
-            end_time = new Date(v.to).toISOString();
-          } else {
-            end_time = v.to;
-          }
-        } else if (v.type === 'terms') {
-          if (v.mandate === 'must') {
-            filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
-          } else if (v.mandate === 'mustNot') {
-            filter_fq = filter_fq + '&fq=-' + v.field + ':"' + v.value + '"';
-          } else if (v.mandate === 'either') {
-            filter_either.push(v.field + ':"' + v.value + '"');
-          }
-        } else if (v.type === 'field') {
-          // v.query contains double-quote around it.
-          if (v.mandate === 'must') {
-            filter_fq = filter_fq + '&fq=' + v.field + ':' + v.query;
-          } else if (v.mandate === 'mustNot') {
-            filter_fq = filter_fq + '&fq=-' + v.field + ':' + v.query;
-          } else if (v.mandate === 'either') {
-            filter_either.push(v.field + ':' + v.query);
-          }
-        } else if (v.type === 'querystring') {
-          if (v.mandate === 'must') {
-            filter_fq = filter_fq + '&fq=' + v.query;
-          } else if (v.mandate === 'mustNot') {
-            filter_fq = filter_fq + '&fq=-' + v.query;
-          } else if (v.mandate === 'either') {
-            filter_either.push(v.query);
-          }
-        } else if (v.type === 'range') {
-          if (v.mandate === 'must') {
-            filter_fq = filter_fq + '&fq=' + v.field + ':[' + v.from +' TO '+ v.to +']';
-          } else if (v.mandate === 'mustNot') {
-            filter_fq = filter_fq + '&fq=-' + v.field + ':[' + v.from +' TO '+ v.to +']';
-          } else if (v.mandate === 'either') {
-            filter_either.push(v.field + ':[' + v.from +' TO '+ v.to +']');
-          }
-        } else {
-          // Unsupport filter type
-          return false;
         }
       });
 
