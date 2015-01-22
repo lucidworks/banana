@@ -1,6 +1,6 @@
   <div class="pull-right editor-title">Dashboard settings</div>
 
-  <div ng-model="editor.index" bs-tabs="">
+  <div ng-model="editor.index" bs-tabs="" class="edit-dash-settings">
     <div ng-repeat="tab in ['General','Rows','Controls','Solr']" title="{{tab}}" bs-pane>
     </div>
   </div>
@@ -110,7 +110,11 @@
         <input class="pull-left" style="margin:5px 0 0 10px" type="checkbox" ng-model="dashboard.current.loader.dropdown_collections" ng-checked="dashboard.current.loader.dropdown_collections">
       </div>
     </div>
-    <h5 style="margin-top:20px; margin-bottom: 6px;">Allow saving to</h5>
+    <div class="row">
+      <div class="col-md-4">
+        <h5 style="margin-top:20px; margin-bottom: 6px;">Allow saving to</h5>        
+      </div>
+    </div>
     <div class="row">
       <div class="col-sm-2 col-md-2">
         <label class="small">File</label><input type="checkbox" ng-model="dashboard.current.loader.save_local" ng-checked="dashboard.current.loader.save_local">
@@ -125,7 +129,11 @@
         <label class="small">Solr</label><input type="checkbox" ng-model="dashboard.current.loader.save_elasticsearch" ng-checked="dashboard.current.loader.save_elasticsearch">
       </div>
     </div>
-    <h5 style="margin-top:20px; margin-bottom: 6px;">Allow loading from</h5>
+    <div class="row">
+      <div class="col-md-4">
+        <h5 style="margin-top:20px; margin-bottom: 6px;">Allow loading from</h5>
+      </div>
+    </div>
     <div class="row">
       <div class="col-sm-2 col-md-2">
         <label class="small">Local file</label><input type="checkbox" ng-model="dashboard.current.loader.load_local" ng-checked="dashboard.current.loader.load_local">

@@ -232,10 +232,18 @@ span .label.pointer{
   margin: 3px 6px !important;
 }
 
+.filter-must{
+  padding-bottom: 20px;
+}
 
-
-
-
-
+.filter-must select{
+  margin-bottom: 8px;
+}
+.input-append{
+  margin-top: 15px;
+}
+.input-append button{
+  border-radius: 0;
+}
 
 
