@@ -3823,9 +3823,9 @@ button:focus,button:hover,button{
 }
 
 .navbar-inner,.navbar-default{
-  min-height: 40px;
-  padding-left: 20px;
-  padding-right: 20px;
+  min-height: 34px;
+  /*padding-left: 20px;*/
+  /*padding-right: 20px;*/
   background-color: #32373c;
   background-image: -moz-linear-gradient(top,#3a3f44,#272b30);
   background-image: -webkit-gradient(linear,0 0,0 100%,from(#3a3f44),to(#272b30));
@@ -6504,4 +6504,7 @@ ul.list-unstyled li{
 }
 .auto-refresh-chkbox{
   margin-top: -2px !important;
+}
+.modal-dialog{
+  margin:31px auto !important;
 }
