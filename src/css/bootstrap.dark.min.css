@@ -231,8 +231,8 @@ a:hover,a:focus {
 }
 
 .row {
-  margin-left: -10px;
-  *zoom: 1;
+  /*margin-left: -10px;*/
+  zoom: 1;
 }
 
 .row:before,.row:after {
@@ -3817,7 +3817,7 @@ button:focus,button:hover,button{
 
 .navbar {
   overflow: visible;
-  margin-bottom: 21px;
+  margin-bottom: 11px;
   *position: relative;
   *z-index: 2;
 }
@@ -6297,7 +6297,7 @@ legend,label {
 
 .row-open {
   text-align: right;
-  left: -18px;
+  /*left: -18px;*/
   position: absolute;
   font-size: 13pt;
   font-weight: 200;
@@ -6354,7 +6354,7 @@ legend,label {
 
 .panel div.panel-extra {
   font-size: .9em;
-  margin-bottom: 10px;
+  /*margin-bottom: 10px;*/
 }
 
 .panel div.panel-extra .extra {
@@ -6486,7 +6486,8 @@ div.flot-text {
   background-color: #2e3236 !important;
 }
 .table-doc-table{
-  overflow-x:auto !important; 
+  overflow-x:auto !important;
+  overflow-y:auto !important; 
 }
 .query-modal-checkbox{
   margin: 6px !important;
@@ -6507,4 +6508,7 @@ ul.list-unstyled li{
 }
 .modal-dialog{
   margin:31px auto !important;
+}
+.rotate-icon{
+    background-image: url("../img/rotate.png") !important;
 }

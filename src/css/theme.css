@@ -195,6 +195,7 @@ body.modal-open { overflow:inherit; padding-right:inherit !important; }
 
 .timepicker-block form.nomargin.input-append button{
   margin-left: 0;
+  float: left;
 }
 span .label.pointer{
   font-size: 13px;
@@ -233,7 +234,7 @@ span .label.pointer{
 }
 
 .filter-must{
-  padding-bottom: 20px;
+  padding-bottom: 15px;
 }
 
 .filter-must select{
@@ -267,4 +268,16 @@ scatterplot .axis path , scatterplot .axis line{
 }
 .modal-dialog{
   margin:41px auto;
+}
+form.input-append, form.input-prepend{
+  width: 100%;
+}
+.table-doc-table{
+  overflow-x:auto !important;
+  overflow-y:auto !important; 
+}
+.filter-must{
+  padding-bottom: 2px;
+  display: inline-block;
+  width: 100%;
 }
