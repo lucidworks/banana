@@ -245,5 +245,26 @@ span .label.pointer{
 .input-append button{
   border-radius: 0;
 }
+h4, .h4, h5, .h5, h6, .h6{
+  font-weight: bold;
+}
+scatterplot .x.axis,scatterplot .y.axis,scatterplot .legend{
+  fill:#fff;
+}
+scatterplot .axis path , scatterplot .axis line{
+  stroke: #FFF;
+}
 
-
+.navbar-brand{
+  height: 40px;
+  padding: 10px 15px;
+}
+.navbar{
+  min-height:41px;
+}
+.navbar .nav:not(.nav-tabs)>li>a{
+  padding: 9.5px 15px 9.5px;
+}
+.modal-dialog{
+  margin:41px auto;
+}
