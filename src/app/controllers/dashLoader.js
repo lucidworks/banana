@@ -111,6 +111,7 @@ function (angular, _) {
           if(type === 'temp') {
             $scope.share = dashboard.share_link(dashboard.current.title,'temp',result.response.docs[0].id);
           }
+          $scope.elasticsearch.title = '';
         } else {
           alertSrv.set('Save failed','Dashboard could not be saved to Solr','error',5000);
         }
@@ -138,7 +139,7 @@ function (angular, _) {
     };
 
     $scope.elasticsearch_dblist = function(query) {
-      dashboard.elasticsearch_list(query,$scope.loader.load_elasticsearch_size).then(
+      dashboard.elasticsearch_list(query,dashboard.current.loader.load_elasticsearch_size).then(
         function(result) {
         if (!_.isUndefined(result.response.docs)) {
           $scope.hits = result.response.numFound;

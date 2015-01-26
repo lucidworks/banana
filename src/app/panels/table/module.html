@@ -1,7 +1,7 @@
 <div ng-controller="table" ng-init="init()">
   <style>
     .table-doc-table {
-      margin-left: 0px !important;
+      margin-left: -15px !important;
       overflow-y: auto;
       overflow-x: scroll;
     }
@@ -28,7 +28,7 @@
           <i ng-click="panel.offset = (panel.offset - panel.size)" ng-show="panel.offset > 0" class="fa fa-arrow-left pointer"></i>
         </div>
         <div class="col-sm-8 col-md-8" style="text-align:center">
-          <strong>{{panel.offset}}</strong> to <strong>{{dashboard.numberWithCommas(panel.offset + data.slice(panel.offset,panel.offset+panel.size).length)}}</strong>
+          <strong>{{hits > 0 ? panel.offset+1 : panel.offset}}</strong> to <strong>{{dashboard.numberWithCommas(panel.offset + data.slice(panel.offset,panel.offset+panel.size).length)}}</strong>
           <small> of {{dashboard.numberWithCommas(data.length)}} available for paging</small>
         </div>
         <div class="col-sm-1 col-md-1" style="text-align:left">
@@ -104,7 +104,7 @@
           <i ng-click="panel.offset = (panel.offset - panel.size)" ng-show="panel.offset > 0" class="fa fa-arrow-left pointer"></i>
         </div>
         <div class="col-sm-4 col-md-4" style="text-align:center">
-          <strong>{{panel.offset}}</strong> to <strong>{{dashboard.numberWithCommas(panel.offset + data.slice(panel.offset,panel.offset+panel.size).length)}}</strong>
+          <strong>{{hits > 0 ? panel.offset+1 : panel.offset}}</strong> to <strong>{{dashboard.numberWithCommas(panel.offset + data.slice(panel.offset,panel.offset+panel.size).length)}}</strong>
           <small> of {{dashboard.numberWithCommas(data.length)}} available for paging</small>
         </div>
         <div class="col-sm-1 col-md-1" style="text-align:left">
