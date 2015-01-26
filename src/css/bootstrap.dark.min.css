@@ -6510,5 +6510,7 @@ ul.list-unstyled li{
   margin:31px auto !important;
 }
 .rotate-icon{
-    background-image: url("../img/rotate.png") !important;
+    background-image: url("../img/rotate.png")!important;
+    padding-bottom: 15px;
+    display: inline-block;
 }
