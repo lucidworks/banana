@@ -113,7 +113,7 @@
                             <a href="{{event.kibana._source[panel.url_field]}}" target="_blank"> {{event.kibana._source[panel.header_field] | tableTruncate:panel.trimFactor:1}} </a>
                             <br>
                             <div ng-show="highlight_flag" ng-bind-html="(highlighting[highlightingKeys[panel.offset + $index]][panel.body_field]) | tableTruncate:panel.trimFactor:3 | tableHighlight"></div>
-                            <div ng-show="!highlight_flag" ng-bind-html-unsafe="(event.kibana._source[panel.body_field]) | tableTruncate:panel.trimFactor:3"></div>
+                            <div ng-show="!highlight_flag" ng-bind-html="(event.kibana._source[panel.body_field]) | tableTruncate:panel.trimFactor:3"></div>
                             <br>
                         </td>
 
