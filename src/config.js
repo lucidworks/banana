@@ -54,6 +54,7 @@ function (Settings) {
      * @type {Array}
      */
     panel_names: [
+      'facet',
       'histogram',
       'map',
       'table',
@@ -69,8 +70,8 @@ function (Settings) {
       'rangeFacet',
       'heatmap',
       'scatterplot',
-      'fullTextSearch',
-      'facet'
+      'stats',	
+      'fullTextSearch'
       // 'dummy'  // Dummy module for testing
     ]
   });

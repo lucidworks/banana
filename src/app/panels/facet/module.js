@@ -18,7 +18,7 @@ define([
   ],
   function(angular, app, _, kbn, moment) {
     'use strict';
-    var DEBUG = false; // DEBUG mode
+    var DEBUG = true; // DEBUG mode
     var module = angular.module('kibana.panels.facet',[]);
     app.useModule(module);
     module.controller('facet', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
@@ -60,7 +60,7 @@ define([
         foundResults: true,
         header_title: "Limit Your Search",
         toggle_element: null,
-        spyable: true,
+//        spyable: true,
       };
       _.defaults($scope.panel, _d);
 
