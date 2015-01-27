@@ -1,0 +1,5 @@
+<div ng-controller='stats' ng-init="init()">
+  <div style="clear:both"></div>
+  <div ng-show="panel.chart == 'sum' || panel.chart == 'count' || panel.chart == 'all' " ng-style="panel.style" style="line-height:{{panel.style['font-size']}};text-align:center">{{dashboard.numberWithCommas(stats)}}</div>
+  <div ng-show="panel.chart == 'mean'" ng-style="panel.style" style="line-height:{{panel.style['font-size']}};text-align:center">{{dashboard.numberToFixed(stats)}}</div>
+</div>
