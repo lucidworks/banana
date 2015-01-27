@@ -62,7 +62,7 @@
       <span ng-hide="panel.mode == 'absolute' || panel.mode == 'none'"> |
         <input type="checkbox" class="auto-refresh-chkbox" ng-model="panel.refresh.enable" ng-change="refresh();"> Auto-refresh
         <span ng-class="{'ng-cloak': !panel.refresh.enable}">
-          every <a title="<small>Auto-refresh Settings</small>"  data-animation="am-flip-x" data-template="app/panels/timepicker/refreshctrl.html" bs-popover="popover">{{panel.refresh.interval}}s</a>.
+          every <a title="<small>Auto-refresh Settings</small>" style="cursor:pointer"  data-placement="bottom"  data-animation="am-flip-x" data-template="app/panels/timepicker/refreshctrl.html" bs-popover="popover">{{panel.refresh.interval}}s</a>.
         </span>
       </span>
     </div>
