@@ -12,6 +12,7 @@ function (_) {
     var defaults = {
       solr: "http://"+window.location.hostname+":8983/solr/",
       solr_core: "logstash_logs",
+      timefield: 'event_timestamp',
       banana_index  : 'banana-int',
       USE_ADMIN_LUKE: true,
       USE_ADMIN_CORES: true,

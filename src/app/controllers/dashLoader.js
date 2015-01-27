@@ -25,7 +25,7 @@ function (angular, _) {
       $scope.new = {
         server: $scope.config.solr,
         core_name: $scope.config.solr_core,
-        time_field: 'event_timestamp'
+        time_field: $scope.config.timefield
       };
     };
     
