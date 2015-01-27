@@ -249,12 +249,7 @@ span .label.pointer{
 h4, .h4, h5, .h5, h6, .h6{
   font-weight: bold;
 }
-scatterplot .x.axis,scatterplot .y.axis,scatterplot .legend{
-  fill:#fff;
-}
-scatterplot .axis path , scatterplot .axis line{
-  stroke: #FFF;
-}
+
 
 .navbar-brand{
   height: 40px;

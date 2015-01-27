@@ -6514,3 +6514,9 @@ ul.list-unstyled li{
     padding-bottom: 15px;
     display: inline-block;
 }
+scatterplot .x.axis,scatterplot .y.axis,scatterplot .legend{
+  fill:#fff;
+}
+scatterplot .axis path , scatterplot .axis line{
+  stroke: #FFF;
+}
