@@ -20,7 +20,7 @@
   <!-- Row for Group By field when Mode is values -->
   <div class="row" ng-show="panel.mode == 'values'">
     <div class="col-sm-4 col-md-4"></div>
-    <div class="col-sm-2 col-md-2">
+    <div class="col-sm-3 col-md-3">
       <label class="small">Group By Field <tip>This field must be a single value field. Leave blank if you do not want to group the result.</tip></label>
       <input ng-change="set_refresh(true)" placeholder="Optional" bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="panel.group_field">
     </div>
