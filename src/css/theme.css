@@ -215,3 +215,56 @@ span .label.pointer{
 .search-query-input:hover  .begin-query .fa.fa-times.pointer{
   display: inline-block;
 }
+
+/*---------------- customizations for both light,dark theme ---------------- */
+.modal{
+  top: 0 !important;
+  margin: 0 auto !important;
+  left: 0% !important;
+  background: transparent !important;
+}
+
+.tab-content {
+  overflow: auto;
+  clear: both;
+}
+.query-modal-checkbox{
+  margin: 3px 6px !important;
+}
+
+.filter-must{
+  padding-bottom: 20px;
+}
+
+.filter-must select{
+  margin-bottom: 8px;
+}
+.input-append{
+  margin-top: 15px;
+}
+.input-append button{
+  border-radius: 0;
+}
+h4, .h4, h5, .h5, h6, .h6{
+  font-weight: bold;
+}
+scatterplot .x.axis,scatterplot .y.axis,scatterplot .legend{
+  fill:#fff;
+}
+scatterplot .axis path , scatterplot .axis line{
+  stroke: #FFF;
+}
+
+.navbar-brand{
+  height: 40px;
+  padding: 10px 15px;
+}
+.navbar{
+  min-height:41px;
+}
+.navbar .nav:not(.nav-tabs)>li>a{
+  padding: 9.5px 15px 9.5px;
+}
+.modal-dialog{
+  margin:41px auto;
+}
