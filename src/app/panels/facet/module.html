@@ -40,7 +40,7 @@
     <div class="row-fluid">
         <!-- <div ng-class="{'span3':panel.field_list}" ng-show="panel.fields.length>0 && panel.field_list"> -->
         <h5>{{panel.header_title}}</h5>
-        <div class="panel-group" id="facet_accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel-group facet_accordion" id="facet_accordion" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default" ng-repeat="field in panel.fields">
                 <div class="panel-heading" role="tab" id="heading_{{field}}">
                     <a href="#facet_collapse_{{field}}" data-parent="#facet_accordion" data-toggle="collapse" aria-expanded="true" aria-controls="collapse_{{field}}">
