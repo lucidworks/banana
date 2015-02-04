@@ -55,11 +55,13 @@ define([
         "font-size": '10pt'
       },
       arrangement: 'horizontal',
-      chart: 'total',
+      chart: 'list',
       counter_pos: 'above',
       donut: false,
       tilt: false,
       labels: true,
+      mode : 'count',
+
       spyable: true,
       show_queries: true,
     };
@@ -114,6 +116,11 @@ define([
       var rows_limit = '&rows=0'; // for hits, we do not need the actual response doc, so set rows=0
       var facet = '';
 
+
+      if ($scope.panel.mode !== 'count') {
+        facet = '&stats=true&stats.field=' + $scope.panel.stats_field;
+      }
+
       var promises = [];
       $scope.data = [];
       $scope.hits = 0;
@@ -144,14 +151,25 @@ define([
           var info = dashboard.current.services.query.list[id];
           var hits = $scope.hits;
           // Create series
-          $scope.data[i] = {
-            info: info,
-            id: id,
-            hits: results[i].response.numFound,
-            data: [
-              [id, results[i].response.numFound]
-            ]
-          };
+          if ($scope.panel.mode === 'count') {
+            $scope.data[i] = {
+              info: info,
+              id: id,
+              hits: results[i].response.numFound,
+              data: [
+                [id, results[i].response.numFound]
+              ]
+            };
+          }else{
+            $scope.data[i] = {
+              info: info,
+              id: id,
+              hits: results[i].stats.stats_fields[$scope.panel.stats_field][$scope.panel.mode],
+              data: [
+                [id, results[i].stats.stats_fields[$scope.panel.stats_field][$scope.panel.mode]]
+              ]
+            };
+          }
           $scope.$emit('render');
         });
       })
