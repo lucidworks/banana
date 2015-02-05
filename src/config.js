@@ -92,7 +92,6 @@ function (Settings) {
       'facet',
       'tagcloud',
       'multiseries'
-      // 'dummy'  // Dummy module for testing
     ]
   });
 });
