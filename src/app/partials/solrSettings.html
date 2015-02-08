@@ -1,0 +1,26 @@
+  <div class="row">
+    <div class="pull-right editor-title">New Dashboard Settings</div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <div class="col-sm-6 col-md-6">
+          <h6>Solr Server</h6>
+          <input type="text" class="form-control input-xlarge" ng-model="new.server" placeholder='/solr/'>
+      </div>
+      <div class="col-sm-6 col-md-6">
+          <h6>Collection</h6>
+          <input type="text" class="form-control  input-medium" ng-model="new.core_name" placeholder="searchlogs">
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-12" ng-show="$scope.type == 'default-ts'">
+            <h6>Time Field</h6>
+            <input type="text" class="form-control  input-medium" ng-model="new.time_field" placeholder="timestamp">
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-success" ng-click="create_new($scope.type);$hide();">Create</button>
+  <button type="button" class="btn btn-danger" ng-click="$hide();reset_panel();close_edit()">Close</button>
+</div>

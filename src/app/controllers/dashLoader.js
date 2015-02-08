@@ -1,8 +1,9 @@
 define([
   'angular',
-  'underscore'
+  'underscore',
+  'jquery'
 ],
-function (angular, _) {
+function (angular, _,$) {
   'use strict';
 
   var module = angular.module('kibana.controllers');
@@ -12,6 +13,7 @@ function (angular, _) {
     
     $scope.dashboardEditorModal = { };
     $scope.dashboardEditorTooltip = { title: 'Configure dashboard' };
+    $scope.solrSettingsModal = {};
 
     $scope.init = function() {
       $scope.gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;
@@ -22,6 +24,14 @@ function (angular, _) {
       // So we'll keep using it for now before refactoring it to $scope.solr.
       // $scope.solr = $scope.solr || {};
     };
+
+    // $scope.test = function (elem,e){
+    //   $scope.type='default-nts';
+    //   e.stopPropagation();
+    //   if ($(e.target).is('[bs-modal="solrSettingsModal"]')) {
+    //     $($(e.target).data('target')).modal();
+    //   }
+    // }
 
     // This function should be replaced by one-way binding feature of AngularJS 1.3
     $scope.resetNewDefaults = function() {
