@@ -1,9 +1,8 @@
 define([
   'angular',
-  'underscore',
-  'jquery'
+  'underscore'
 ],
-function (angular, _,$) {
+function (angular, _) {
   'use strict';
 
   var module = angular.module('kibana.controllers');
@@ -24,14 +23,6 @@ function (angular, _,$) {
       // So we'll keep using it for now before refactoring it to $scope.solr.
       // $scope.solr = $scope.solr || {};
     };
-
-    // $scope.test = function (elem,e){
-    //   $scope.type='default-nts';
-    //   e.stopPropagation();
-    //   if ($(e.target).is('[bs-modal="solrSettingsModal"]')) {
-    //     $($(e.target).data('target')).modal();
-    //   }
-    // }
 
     // This function should be replaced by one-way binding feature of AngularJS 1.3
     $scope.resetNewDefaults = function() {
