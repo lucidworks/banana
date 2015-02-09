@@ -36,8 +36,8 @@
   <div ng-show="panel.chart == 'total'"><div ng-style="panel.style" style="line-height:{{panel.style['font-size']}};text-align:center"> {{dashboard.numberWithCommas(hits)}}</div></div>
 
   <span ng-show="panel.chart == 'list'">
-    <div ng-style="panel.style" style="display:inline-block;line-height:{{panel.style['font-size']}}" ng-repeat="query in data">
-      <i class="fa fa-circle" style="color:{{query.info.color}}"></i> {{query.info.alias}} ({{query.hits}})
+    <div ng-style="panel.style" style="display:inline-block;margin-left: 6px;line-height:{{panel.style['font-size']}}" ng-repeat="query in data">
+      <i class="fa fa-circle" style="color:{{query.info.color}}"></i> {{query.info.alias}} ({{query.hits}}) 
     </div>
   </span><br ng-show="panel.arrangement == 'vertical' &amp;&amp; panel.chart == 'list'">
 
