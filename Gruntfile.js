@@ -1,7 +1,5 @@
 /* jshint node:true */
 
-// NOTE: This file is not completed for use yet.
-
 'use strict';
 module.exports = function (grunt) {
 
@@ -41,6 +39,17 @@ module.exports = function (grunt) {
           "<%= srcDir %>/css/bootstrap.dark.min.css": "<%= srcDir %>/vendor/bootstrap/less/bootstrap.dark.less",
           "<%= srcDir %>/css/bootstrap.light.min.css": "<%= srcDir %>/vendor/bootstrap/less/bootstrap.light.less"
         }
+      },
+      // TODO: Fix CSS issues to work with new Bootstrap 3
+      bootstrap3:{
+        options: {
+          paths: ["<%= srcDir %>/bower_components/bootstrap/less"],
+          yuicompress: true
+        },
+        files: {
+          "<%= srcDir %>/css/bootstrap.dark.min.css": "<%= srcDir %>/bower_components/bootstrap/less/bootstrap.dark.less",
+          "<%= srcDir %>/css/bootstrap.light.min.css": "<%= srcDir %>/bower_components/bootstrap/less/bootstrap.light.less"
+        }
       }
     },
     copy: {
@@ -55,9 +64,11 @@ module.exports = function (grunt) {
     jshint: {
       // just lint the source dir
       source: {
-        files: {
-          src: ['Gruntfile.js', '<%= srcDir %>/app/**/*.js']
-        }
+        src: [
+          'Gruntfile.js',
+          '<%= srcDir %>/app/**/*.js',
+          '<%= srcDir %>/config.js'
+        ]
       },
       options: {
         jshintrc: '.jshintrc'
@@ -79,15 +90,19 @@ module.exports = function (grunt) {
         dest: '<%= tempDir %>'
       }
     },
+    // TODO: exclude bower_components dir
     cssmin: {
       build: {
         expand: true,
         cwd: '<%= tempDir %>',
-        src: '**/*.css',
+        src: [
+          '**/*.css',
+          '!bower_components/**/*'
+        ],
         dest: '<%= tempDir %>'
       }
     },
-    ngmin: {
+    ngAnnotate: {
       build: {
         expand:true,
         cwd:'<%= tempDir %>',
@@ -99,7 +114,8 @@ module.exports = function (grunt) {
           'app/panels/**/*.js',
           'app/app.js',
           'vendor/angular/**/*.js',
-          'vendor/elasticjs/elastic-angular-client.js'
+          'vendor/elasticjs/elastic-angular-client.js',
+          'vendor/solrjs/solr-angular-client.js'
         ],
         dest: '<%= tempDir %>'
       }
@@ -137,10 +153,16 @@ module.exports = function (grunt) {
         }
       }
     },
+    // TODO: exclude bower_components dir
     uglify: {
       dest: {
         expand: true,
-        src: ['**/*.js', '!config.js', '!app/dashboards/*.js'],
+        src: [
+          '**/*.js',
+          '!config.js',
+          '!app/dashboards/*.js',
+          '!bower_components/**/*'
+        ],
         dest: '<%= destDir %>',
         cwd: '<%= destDir %>',
         options: {
@@ -193,29 +215,13 @@ module.exports = function (grunt) {
           }
         ]
       }
-    },
-    s3: {
-      dist: {
-        bucket: 'download.elasticsearch.org',
-        access: 'private',
-        // debug: true, // uncommment to prevent actual upload
-        upload: [
-          {
-            src: '<%= tempDir %>/<%= pkg.name %>-latest.zip',
-            dest: 'kibana/kibana/<%= pkg.name %>-latest.zip',
-          },
-          {
-            src: '<%= tempDir %>/<%= pkg.name %>-latest.tar.gz',
-            dest: 'kibana/kibana/<%= pkg.name %>-latest.tar.gz',
-          }
-        ]
-      }
     }
   };
 
   // setup the modules require will build
   var requireModules = config.requirejs.build.options.modules = [
     {
+      // TODO: verify requirejs include everything
       // main/common module
       name: 'app',
       include: [
@@ -228,6 +234,7 @@ module.exports = function (grunt) {
         'bootstrap',
         'modernizr',
         'elasticjs',
+        'solrjs',
         'timepicker',
         'datepicker',
         'underscore',
@@ -238,7 +245,8 @@ module.exports = function (grunt) {
         'directives/all',
         'jquery.flot.pie',
         'angular-sanitize',
-        'angular-dragdrop'
+        'angular-dragdrop',
+        'd3'
       ]
     }
   ];
@@ -271,7 +279,6 @@ module.exports = function (grunt) {
     'copy:everything_but_less_to_temp',
     'htmlmin:build',
     'cssmin:build',
-    'ngmin:build',
     'requirejs:build',
     'clean:temp',
     'build:write_revision',
@@ -301,40 +308,26 @@ module.exports = function (grunt) {
 
   // build, then zip and upload to s3
   grunt.registerTask('distribute', [
-    'distribute:load_s3_config',
     'build',
     'compress:zip',
     'compress:tgz',
-    's3:dist',
     'clean:temp'
   ]);
 
-  // collect the key and secret from the .aws-config.json file, finish configuring the s3 task
-  grunt.registerTask('distribute:load_s3_config', function () {
-    var config = grunt.file.readJSON('.aws-config.json');
-    grunt.config('s3.options', {
-      key: config.key,
-      secret: config.secret
-    });
-  });
-
   // load plugins
-  grunt.loadNpmTasks('grunt-s3');
-  grunt.loadNpmTasks('grunt-ngmin');
-  grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-less');
-  grunt.loadNpmTasks('grunt-git-describe');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-cssmin');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-string-replace');
   grunt.loadNpmTasks('grunt-contrib-htmlmin');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-ng-annotate');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-git-describe');
+  grunt.loadNpmTasks('grunt-string-replace');
   grunt.loadNpmTasks('grunt-contrib-compress');
-
-
+  
   // pass the config to grunt
   grunt.initConfig(config);
-
 };
