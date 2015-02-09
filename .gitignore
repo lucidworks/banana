@@ -1,7 +1,7 @@
 node_modules
+bower_components
 .aws-config.json
 dist
-bower_components
+tmp
 src/app/dashboards/
-
 /.project
