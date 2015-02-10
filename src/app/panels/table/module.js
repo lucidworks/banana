@@ -36,7 +36,7 @@ function (angular, app, _, kbn, moment) {
       modals : [
         {
           description: "Inspect",
-          icon: "icon-info-sign",
+          icon: "fa fa-info",
           partial: "app/partials/inspector.html",
           show: $scope.panel.spyable
         }
@@ -99,7 +99,14 @@ function (angular, app, _, kbn, moment) {
         bucket: '',
         document: '',
         view: ''
-      }
+      },
+      overflowItems: [{
+            key: 'scroll',
+            value: 'height'
+          }, {
+            key: 'expand',
+            value: 'min-height'
+       }]
     };
     _.defaults($scope.panel,_d);
 
@@ -149,19 +156,25 @@ function (angular, app, _, kbn, moment) {
     };
 
     $scope.toggle_field = function(field) {
-      if (_.indexOf($scope.panel.fields,field) > -1) {
-        $scope.panel.fields = _.without($scope.panel.fields,field);
-      } else {
+      if (_.indexOf($scope.panel.fields, field) > -1) {
+        $scope.panel.fields = _.without($scope.panel.fields, field);
+      } else if (_.indexOf(fields.list, field) > -1) {
         $scope.panel.fields.push(field);
+      } else {
+        return;
       }
     };
 
     // Toggle important field that will appear to the left of table panel
     $scope.toggle_important_field = function(field) {
-      if (_.indexOf($scope.panel.important_fields,field) > -1) {
-        $scope.panel.important_fields = _.without($scope.panel.important_fields,field);
-      } else {
+      if (_.indexOf($scope.panel.important_fields, field) > -1) {
+        $scope.panel.important_fields = _.without($scope.panel.important_fields, field);
+        // Remove it from the fields because fields is supset from important fields
+        $scope.panel.fields = _.without($scope.panel.fields, field);
+      } else if (_.indexOf(fields.list, field) > -1) {
         $scope.panel.important_fields.push(field);
+      } else {
+        return;
       }
     };
 
@@ -211,7 +224,8 @@ function (angular, app, _, kbn, moment) {
 
     $scope.get_data = function(segment,query_id) {
       $scope.panel.error =  false;
-
+      delete $scope.panel.error;
+      
       // Make sure we have everything for the request to complete
       if(dashboard.indices.length === 0) {
         return;
@@ -250,7 +264,7 @@ function (angular, app, _, kbn, moment) {
       }
 
       // Set the panel's query
-      $scope.panel.queries.basic_query = querySrv.getQuery(0) + fq + sorting;
+      $scope.panel.queries.basic_query = querySrv.getORquery() + fq + sorting;
       $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json + rows_limit;
 
       // Set the additional custom query
@@ -264,6 +278,7 @@ function (angular, app, _, kbn, moment) {
 
       // Populate scope when we have results
       results.then(function(results) {
+        $scope.panel.offset = 0;
         $scope.panelMeta.loading = false;
 
         if(_segment === 0) {
@@ -342,11 +357,11 @@ function (angular, app, _, kbn, moment) {
           // pagination (batch downloading)
           // example: 1,000,000 rows will explode the memory !
           if(filetype === 'json') {
-              blob = new Blob([angular.toJson(response,true)], {type: "application/json;charset=utf-8"});
+              blob = new Blob([angular.toJson(response,true)], {type: "text/json;charset=utf-8"});
           } else if(filetype === 'csv') {
               blob = new Blob([response.toString()], {type: "text/csv;charset=utf-8"});
           } else if(filetype === 'xml'){
-              blob = new Blob([response.toString()], {type: "application/xml;charset=utf-8"});
+              blob = new Blob([response.toString()], {type: "text/xml;charset=utf-8"});
           } else {
               // incorrect file type
               alert('incorrect file type');

@@ -38,7 +38,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         save_temp_ttl: '30d',
         load_gist: true,
         load_elasticsearch: true,
-        load_elasticsearch_size: 10,
+        load_elasticsearch_size: 20,
         load_local: true,
         hide: false
       },
@@ -441,7 +441,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
           "description": save.title,
           "public": false,
           "files": {
-            "kibana-dashboard.json": {
+            "banana-dashboard.json": {
               "content": angular.toJson(save,true)
             }
           }

@@ -1,4 +1,4 @@
-<div ng-controller='derivequeries' ng-init="init()">
+<div ng-controller="derivequeries" ng-init="init()">
 <style>
   .end-derive {
     position:absolute;
@@ -19,15 +19,14 @@
 </style>
   <label class="small">Create new queries from
     <span class="panel-derive-field" ng-show="!editing" ng-click="editing=true">{{panel.field}}</span>
-    <select ng-show="editing && fields.list.length>1" class="input-medium" ng-model="panel.field" ng-options="f for f in fields.list" ng-change='editing=false' ng-blur="editing=false"></select>
-    <input ng-show="editing && fields.list.length<2" type="text" ng-model="panel.field" ng-blur="editing=false"/>
+    <select ng-show="editing &amp;&amp; fields.list.length>1" class="form-control" ng-model="panel.field" ng-options="f for f in fields.list" ng-change="editing=false" ng-blur="editing=false"></select>
+    <input ng-show="editing &amp;&amp; fields.list.length<2" type="text" ng-model="panel.field" ng-blur="editing=false" class="form-control"><!--2-->
     ({{panel.mode}} mode)</label>
   <div>
-    <form class="form-search" style="position:relative" ng-submit="get_data()">
-      <input class="search-query panel-derive input-block-level" bs-typeahead="panel.history" data-min-length=0 data-items=100 type="text" ng-model="panel.query"/>
+    <form class="form-inline" style="position:relative" ng-submit="get_data()">
+      <input class="search-query panel-derive form-control" bs-typeahead ng-options="entry for entry in panel.history" data-min-length="0" data-items="100" type="text" ng-model="panel.query">
       <span class="end-derive">
-        <i class="icon-search pointer" ng-click="get_data()"></i>
-      </span
-    </form>
-  </div>
+        <i class="fa fa-search pointer" ng-click="get_data()"></i>
+      </span>
+  </form></div>
 </div>
