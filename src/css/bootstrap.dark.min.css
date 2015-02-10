@@ -4648,7 +4648,7 @@ button:focus,button:hover,button{
 
 .modal-footer .btn+.btn {
   margin-left: 5px;
-  margin-bottom: 0;
+  margin: 4px 0 !important;
 }
 
 .modal-footer .btn-group .btn+.btn {
