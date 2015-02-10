@@ -63,6 +63,13 @@ define([
         $scope.get_data();
       };
 
+      $scope.alertInvalidField = function(message) {
+            $scope.panel.error = message;
+            $scope.data = [];
+            $scope.panelMeta.loading = false;
+            $scope.$emit('render');
+      }
+
       $scope.get_data = function() {
         // Make sure we have everything for the request to complete
         if (dashboard.indices.length === 0) {
@@ -156,6 +163,10 @@ define([
       };
 
       $scope.close_edit = function() {
+        if (!$scope.panel.field) {
+          $scope.alertInvalidField("Tag field must be specified");
+          return;
+        }
         if ($scope.refresh) {
           $scope.get_data();
         }

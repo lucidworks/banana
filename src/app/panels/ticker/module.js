@@ -65,7 +65,19 @@ define([
         $scope.get_data();
       };
 
+      $scope.alertInvalidField = function(message) {
+        $scope.panel.error = message;
+        $scope.trends = [];
+        $scope.panelMeta.loading = false;
+        $scope.$emit('render');
+      }
+
       $scope.get_data = function(segment) {
+        if(!$scope.panel.ago){
+          $scope.alertInvalidField('Time ago is required field');
+          return;
+        }
+
         delete $scope.panel.error;
         $scope.panelMeta.loading = true;
 
