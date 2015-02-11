@@ -126,8 +126,8 @@ a[data-parent="#facet_accordion"]{
 .facet_accordion .panel{
   padding-right: 0;
 }
-.row-of-two-panels >div:nth-child(even){
-  /*padding-left: 0;*/
+#accordion.panel-group > .panel{
+  padding-right: 0;
 }
 
 .timepicker-time-input{
@@ -160,7 +160,7 @@ body.modal-open { overflow:inherit; padding-right:inherit !important; }
   clear: both;
 }
 .modal-body h4{
-  margin-top: 33px;
+  /*margin-top: 33px;*/
 }
 .modal-body select{
   margin-bottom: 10px;
@@ -331,4 +331,8 @@ form.input-append, form.input-prepend{
   padding-bottom: 2px;
   display: inline-block;
   width: 100%;
+}
+
+.input-mini{
+  width: 68px !important;
 }
