@@ -88,13 +88,21 @@
     </div>
   </div>
 
-  <!-- <div class="row-fluid">
-    <div class="span3" ng-show="panel.enableHyperlink && !panel.displayLinkIcon">
-      <h6>Column for Link Text</h6>
-      <input type="text" class="form-control" ng-model="panel.hyperlinkColumnForText" bs-typeahead ng-options="field for field in fields.list">
+  <div class="row">
+    <div class="col-sm-3 col-md-3">
+      <h6>Enable Couchbase Lookup <tip>Look up a field value from Couchbase. You have to specify which Couchbase bucket, document, and view to be used for the lookup.</tip></h6>
+      <input type="checkbox" ng-model="panel.enableCouchbase" ng-checked="panel.enableCouchbase">
     </div>
-    <div class="span3" ng-show="panel.enableHyperlink && !panel.displayLinkIcon">
-      <h6>Column for Links</h6>
-      <input type="text" class="form-control" ng-model="panel.hyperlinkColumnForURI" bs-typeahead ng-options="field for field in fields.list">
+    <div class="col-sm-3 col-md-3" ng-show="panel.enableCouchbase">
+      <h6>Bucket</h6>
+      <input type="text" class="input-medium form-control" placeholder="beer-sample" ng-model="panel.couchbase.bucket">
     </div>
-  </div> -->
+    <div class="col-sm-3 col-md-3" ng-show="panel.enableCouchbase">
+      <h6>Document</h6>
+      <input type="text" class="input-medium form-control" placeholder="beer" ng-model="panel.couchbase.document">
+    </div>
+    <div class="col-sm-3 col-md-3" ng-show="panel.enableCouchbase">
+      <h6>View</h6>
+      <input type="text" class="input-medium form-control" placeholder="brewery_beers" ng-model="panel.couchbase.view">
+    </div>
+  </div>
