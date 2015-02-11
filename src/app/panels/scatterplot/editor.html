@@ -1,18 +1,18 @@
-<div class="row-fluid">
-  <div class="span3">
+<div class="row">
+  <div class="col-sm-3 col-md-3">
     <h6>X-axis <tip>Must be numeric field</tip></h6>
-    <input bs-typeahead="fields.list" type="text" placeholder="Start typing" class="input-small" ng-model="panel.xaxis" ng-change="set_refresh(true)">
+    <input bs-typeahead ng-options="field for field in fields.list" type="text" placeholder="Start typing" class="form-control" ng-model="panel.xaxis" ng-change="set_refresh(true)">
   </div>
-  <div class="span3">
+  <div class="col-sm-3 col-md-3">
     <h6>Y-axis <tip>Must be numeric field</tip></h6>
-    <input bs-typeahead="fields.list" type="text" placeholder="Start typing" class="input-small" ng-model="panel.yaxis" ng-change="set_refresh(true)">
+    <input bs-typeahead ng-options="field for field in fields.list" type="text" placeholder="Start typing" class="form-control" ng-model="panel.yaxis" ng-change="set_refresh(true)">
   </div>
-  <div class="span3">
-    <h6>type field</h6>
-    <input bs-typeahead="fields.list" type="text" placeholder="Start typing" class="input-small" ng-model="panel.field_type" ng-change="set_refresh(true)">
+  <div class="col-sm-3 col-md-3">
+   <h6>Category field <tip>the colors in the plot will be divided according to this field</tip> </h6>
+    <input bs-typeahead ng-options="field for field in fields.list" type="text" placeholder="Start typing" class="form-control" ng-model="panel.field_type" ng-change="set_refresh(true)">
   </div>
-  <div class="span3">
+  <div class="col-sm-3 col-md-3">
     <h6>Max Rows</h6>
-    <input type="number" class="input-medium" ng-model="panel.max_rows" ng-change="set_refresh(true)">
+    <input type="number" class="form-control" ng-model="panel.max_rows" ng-change="set_refresh(true)">
   </div>
 </div>

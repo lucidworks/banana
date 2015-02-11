@@ -23,12 +23,12 @@ function (angular, app, _, $, kbn) {
   var module = angular.module('kibana.panels.terms', []);
   app.useModule(module);
 
-  module.controller('terms', function($scope, querySrv, dashboard, filterSrv) {
+  module.controller('terms', function($scope, querySrv, dashboard, filterSrv, alertSrv) {
     $scope.panelMeta = {
       modals : [
         {
           description: "Inspect",
-          icon: "icon-info-sign",
+          icon: "fa fa-info",
           partial: "app/partials/inspector.html",
           show: $scope.panel.spyable
         }
@@ -76,12 +76,19 @@ function (angular, app, _, $, kbn) {
 
     $scope.init = function () {
       $scope.hits = 0;
-      // $scope.testMultivalued();
+      $scope.testMultivalued();
       $scope.$on('refresh',function(){
         $scope.get_data();
       });
       $scope.get_data();
     };
+
+    $scope.alertInvalidField = function(message) {
+      $scope.panel.error = message;
+      $scope.data = [];
+      $scope.panelMeta.loading = false;
+      $scope.$emit('render');
+    }
 
     $scope.testMultivalued = function() {
       if($scope.panel.field && $scope.fields.typeList[$scope.panel.field] && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
@@ -101,8 +108,9 @@ function (angular, app, _, $, kbn) {
         return;
       }
 
+      delete $scope.panel.error;
       $scope.panelMeta.loading = true;
-      var request, results;
+      var request, results, boolQuery;
 
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
@@ -124,9 +132,13 @@ function (angular, app, _, $, kbn) {
       if ($scope.panel.mode === 'count') {
         facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size + '&facet.missing=true';
       } else {
+        if (!$scope.panel.stats_field) {
+          $scope.alertInvalidField("In " + $scope.panel.mode + " mode a stats field must be specified");
+          return;
+        }
         // if mode != 'count' then we need to use stats query
         // stats does not support something like facet.limit, so we have to sort and limit the results manually.
-        facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field + '&facet.missing=true';;
+        facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field + '&facet.missing=true';
       }
       
       var exclude_length = $scope.panel.exclude.length; 
@@ -138,7 +150,7 @@ function (angular, app, _, $, kbn) {
       }
 
       // Set the panel's query
-      $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + exclude_filter + facet;
+      $scope.panel.queries.query = querySrv.getORquery() + wt_json + rows_limit + fq + exclude_filter + facet;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
@@ -154,6 +166,9 @@ function (angular, app, _, $, kbn) {
         // Check for error and abort if found
         if(!(_.isUndefined(results.error))) {
           $scope.panel.error = $scope.parse_error(results.error.msg);
+          $scope.data = [];
+          $scope.panelMeta.loading = false;
+          $scope.$emit('render');
           return;
         }
 
@@ -189,6 +204,11 @@ function (angular, app, _, $, kbn) {
 
         if ($scope.panel.mode === 'count') {
           // In count mode, the y-axis min should be zero because count value cannot be negative.
+          if(!$scope.panel.field) {
+            $scope.panel.error = "Terms panel field must be specified";
+            $scope.$emit('render');
+            return;
+          }
           $scope.yaxis_min = 0;
           _.each(results.facet_counts.facet_fields, function(v) {
             for (var i = 0; i < v.length; i++) {
@@ -229,6 +249,10 @@ function (angular, app, _, $, kbn) {
           k++;
         });
 
+        if ($scope.panel.field && $scope.fields.typeList[$scope.panel.field] && $scope.fields.typeList[$scope.panel.field].schema.indexOf("T") > -1) {
+          $scope.hits = sum;
+        }
+
         $scope.data.push({label:'Missing field',
           // data:[[k,results.facets.terms.missing]],meta:"missing",color:'#aaa',opacity:0});
           // TODO: Hard coded to 0 for now. Solr faceting does not provide 'missing' value.
@@ -265,7 +289,7 @@ function (angular, app, _, $, kbn) {
 
     $scope.close_edit = function() {
       if($scope.refresh) {
-        // $scope.testMultivalued();
+        $scope.testMultivalued();
         $scope.get_data();
       }
       $scope.refresh =  false;

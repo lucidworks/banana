@@ -1,27 +1,26 @@
-<div class="modal-body">
   <div class="pull-right editor-title">Dashboard settings</div>
 
-  <div ng-model="editor.index" bs-tabs>
-    <div ng-repeat="tab in ['General','Rows','Controls','Solr']" data-title="{{tab}}">
+  <div ng-model="editor.index" bs-tabs="" class="edit-dash-settings">
+    <div ng-repeat="tab in ['General','Rows','Controls','Solr']" title="{{tab}}" bs-pane>
     </div>
   </div>
   <!-- General tab -->
   <div ng-show="editor.index == 0">
-    <div class="row-fluid">
-      <div class="span4">
-        <label class="small">Title</label><input type="text" class="input-large" ng-model='dashboard.current.title'></input>
+    <div class="row" style="margin-top:9px;">
+      <div class="col-sm-4 col-md-4">
+        <label class="small">Title</label><input type="text" class="input-large form-control" ng-model="dashboard.current.title">
       </div>
-      <div class="span1">
-        <label class="small"> Editable </label><input type="checkbox" ng-model="dashboard.current.editable" ng-checked="dashboard.current.editable" />
+      <div class="col-sm-1 col-md-1">
+        <label class="small"> Editable </label><input type="checkbox" ng-model="dashboard.current.editable" ng-checked="dashboard.current.editable">
       </div>
-      <div class="span1">
-        <label class="small"> Hints <tip>Show 'Add panel' hints in empty spaces</tip></label><input type="checkbox" ng-model="dashboard.current.panel_hints" ng-checked="dashboard.current.panel_hints" />
+      <div class="col-sm-2 col-md-2">
+        <label class="small"> Hints <tip>Show 'Add panel' hints in empty spaces</tip></label><input type="checkbox" ng-model="dashboard.current.panel_hints" ng-checked="dashboard.current.panel_hints">
       </div>
-      <div class="span3">
-        <label class="small">Style</label><select class="input-small" ng-model="dashboard.current.style" ng-options="f for f in ['dark','light']"></select>
+      <div class="col-sm-2 col-md-2">
+        <label class="small">Style</label><select class="form-control" ng-model="dashboard.current.style" ng-options="f for f in ['dark','light']"></select>
       </div>
-      <div class="span2">
-        <label class="small">Version</label>Banana v2.0.0
+      <div class="col-sm-2 col-md-2">
+        <label class="small" style="margin-right: 7px;">Version: </label>Banana v2.0.0-alpha
       </div>
     </div>
   </div>
@@ -51,121 +50,133 @@
     </div>
     <div class="row-fluid">
       <div class="span2">
-        <h6>Timestamping</h6><select class="input-small" ng-model="dashboard.current.index.interval" ng-options="f for f in ['none','hour','day','week','month','year']"></select>
+        <h6>Timestamping</h6><select class="form-control" ng-model="dashboard.current.index.interval" ng-options="f for f in ['none','hour','day','week','month','year']"></select>
       </div>
       <div class="span4" ng-show="dashboard.current.index.interval != 'none'">
         <h6>Index pattern <small>Absolutes in []</small></h6>
-        <input type="text" class="input-medium" ng-model="dashboard.current.index.pattern">
+        <input type="text" class="form-control" ng-model="dashboard.current.index.pattern">
       </div>
       <div class="span2" ng-show="dashboard.current.index.interval != 'none'">
-        <h6>Failover <i class="icon-question-sign" bs-tooltip="'If no indices match the pattern, failover to default index *NOT RECOMMENDED*'"></i></h6>
+        <h6>Failover <i class="fa fa-question-sign" bs-tooltip="'If no indices match the pattern, failover to default index *NOT RECOMMENDED*'"></i></h6>
         <input type="checkbox" ng-model="dashboard.current.failover" ng-checked="dashboard.current.failover" />
       </div>
       <div class="span4" ng-show="dashboard.current.failover || dashboard.current.index.interval == 'none'">
         <h6>Default Index <small ng-show="dashboard.current.index.interval != 'none'">If index not found</small></h6>
-        <input type="text" class="input-medium" ng-model="dashboard.current.index.default">
+        <input type="text" class="form-control" ng-model="dashboard.current.index.default">
       </div>
     </div>
   </div>
   -->
   <!-- Rows tab -->
   <div ng-show="editor.index == 1">
-    <div class="row-fluid">
-      <div class="span12">
+    <div class="row" style="margin-top: 6px;">
+      <div class="col-sm-12 col-md-12">
         <table class="table table-condensed table-striped">
           <thead>
-            <th>Title</th>
+            <tr><th>Title</th>
             <th>Delete</th>
             <th>Move</th>
-          </thead>
-          <tr ng-repeat="row in dashboard.current.rows">
+          </tr></thead>
+          <tbody><tr ng-repeat="row in dashboard.current.rows">
             <td>{{row.title}}</td>
-            <td><i ng-click="dashboard.current.rows = _.without(dashboard.current.rows,row)" class="pointer icon-remove"></i></td>
-            <td><i ng-click="_.move(dashboard.current.rows,$index,$index-1)" ng-hide="$first" class="pointer icon-arrow-up"></i></td>
-            <td><i ng-click="_.move(dashboard.current.rows,$index,$index+1)" ng-hide="$last" class="pointer icon-arrow-down"></i></td>
+            <td><i ng-click="dashboard.current.rows = _.without(dashboard.current.rows,row)" class="pointer fa fa-times"></i></td>
+            <td><i ng-click="_.move(dashboard.current.rows,$index,$index-1)" ng-hide="$first" class="pointer fa fa-arrow-up"></i></td>
+            <td><i ng-click="_.move(dashboard.current.rows,$index,$index+1)" ng-hide="$last" class="pointer fa fa-arrow-down"></i></td>
           </tr>
-        </table>
+        </tbody></table>
       </div>
     </div>
-    <div class="row-fluid">
+    <div class="row">
       <form>
-        <div class="span5">
+        <div class="col-sm-5 col-md-5">
           <label class="small">Title</label>
-          <input type="text" class="input-large" ng-model='row.title' placeholder="New row"></input>
+          <input type="text" class="input-large form-control" ng-model="row.title" placeholder="New row">
         </div>
-        <div class="span2">
+        <div class="col-sm-2 col-md-2">
           <label class="small">Height</label>
-          <input type="text" class="input-mini" ng-model='row.height'></input>
+          <input type="text" class="form-control" ng-model="row.height">
         </div>
-        <div class="span1">
+        <div class="col-sm-1 col-md-1">
           <label class="small"> Editable </label>
-          <input type="checkbox" ng-model="row.editable" ng-checked="row.editable" />
+          <input type="checkbox" ng-model="row.editable" ng-checked="row.editable">
         </div>
       </form>
     </div>
   </div>
   <!-- Controls tab -->
   <div ng-show="editor.index == 2" ng-controller="dashLoader">
-    <div class="row-fluid">
-      <div class="span3" style="font-weight:bold;">Show Collections Picker</div>
-      <input type="checkbox" ng-model="dashboard.current.loader.dropdown_collections" ng-checked="dashboard.current.loader.dropdown_collections">
+    <div class="row">
+      <div class="col-sm-4 col-md-4" style="font-weight:bold; margin-top: 8px;"><span class="pull-left">Show Collections Picker</span>
+        <input class="pull-left" style="margin:5px 0 0 10px" type="checkbox" ng-model="dashboard.current.loader.dropdown_collections" ng-checked="dashboard.current.loader.dropdown_collections">
+      </div>
     </div>
-    <h5>Allow saving to</h5>
-    <div class="row-fluid">
-      <div class="span2">
+    <div class="row">
+      <div class="col-md-4">
+        <h5 style="margin-top:20px; margin-bottom: 6px;">Allow saving to</h5>        
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-2 col-md-2">
         <label class="small">File</label><input type="checkbox" ng-model="dashboard.current.loader.save_local" ng-checked="dashboard.current.loader.save_local">
       </div>
-      <div class="span2">
+      <div class="col-sm-2 col-md-2">
         <label class="small">Browser</label><input type="checkbox" ng-model="dashboard.current.loader.save_default" ng-checked="dashboard.current.loader.save_default">
       </div>
-      <div class="span2">
+      <div class="col-sm-2 col-md-2">
         <label class="small">Gist <tip>Requires your domain to be OAUTH registered with Github</tip></label><input type="checkbox" ng-model="dashboard.current.loader.save_gist" ng-checked="dashboard.current.loader.save_gist">
       </div>
-      <div class="span2">
+      <div class="col-sm-2 col-md-2">
         <label class="small">Solr</label><input type="checkbox" ng-model="dashboard.current.loader.save_elasticsearch" ng-checked="dashboard.current.loader.save_elasticsearch">
       </div>
     </div>
-    <h5>Allow loading from</h5>
-    <div class="row-fluid">
-      <div class="span2">
+    <div class="row">
+      <div class="col-md-4">
+        <h5 style="margin-top:20px; margin-bottom: 6px;">Allow loading from</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-2 col-md-2">
         <label class="small">Local file</label><input type="checkbox" ng-model="dashboard.current.loader.load_local" ng-checked="dashboard.current.loader.load_local">
       </div>
-      <div class="span2">
+      <div class="col-sm-2 col-md-2">
         <label class="small">Gist</label><input type="checkbox" ng-model="dashboard.current.loader.load_gist" ng-checked="dashboard.current.loader.load_gist">
       </div>
-      <div class="span2">
+      <div class="col-sm-2 col-md-2">
         <label class="small">Solr</label><input type="checkbox" ng-model="dashboard.current.loader.load_elasticsearch" ng-checked="dashboard.current.loader.load_elasticsearch">
       </div>
-      <div class="span3" ng-show="dashboard.current.loader.load_elasticsearch">
-        <label class="small">Solr list size <tip>The maximum number of dashboards to show in the loading list for Solr stored dashboards under Load menu.</tip></label><input class="input-mini" type="number" ng-model="dashboard.current.loader.load_elasticsearch_size">
+      
+      <div class="col-sm-3 col-md-3" ng-show="dashboard.current.loader.load_elasticsearch">
+         <label class="small">Solr list size <tip>The maximum number of dashboards to show in the loading list for Solr stored dashboards under Load menu.</tip></label><input style="width:80px;" class="input-mini form-control" type="number" ng-model="dashboard.current.loader.load_elasticsearch_size">
       </div>
+      
     </div>
   </div>
   <!-- Solr tab -->
   <div ng-show="editor.index == 3">
-    <div class="row-fluid">
-      <h4>Solr Settings</h4>
+    <div class="row">
+      <div class="col-md-12">
+        <h4>Solr Settings</h4>        
+      </div>
     </div>
-    <div class="row-fluid">
-      <div class="span5">
+    <div class="row">
+      <div class="col-sm-5 col-md-5">
         <h6>Solr Server</h6>
-        <input type="text" class="input-xlarge" ng-model="dashboard.current.solr.server">
+        <input type="text" class="input-xlarge form-control" ng-model="dashboard.current.solr.server">
       </div>
-      <div class="span4">
+      <div class="col-sm-4 col-md-4">
         <h6>Collection</h6>
-        <input type="text" class="input-medium" ng-model="dashboard.current.solr.core_name">
+        <input type="text" class="form-control" ng-model="dashboard.current.solr.core_name" bs-typeahead ng-options="c as c for c in dashboard.current.solr.core_list">
       </div>
     </div>
-    <div class="row-fluid">
-      <div class="span9">
+    <div class="row">
+      <div class="col-sm-9 col-md-9">
         <h6>Global Query Parameters <tip>Specify query parameters to be appended to all queries of the dashboard panels.</tip></h6>
-        <input type="text" class="input-xxlarge" placeholder="e.g. &defType=lucid&qt=lucid&df=message&..." ng-model="dashboard.current.solr.global_params">
+        <input type="text" class="input-xxlarge form-control" placeholder="e.g. &amp;defType=lucid&amp;qt=lucid&amp;df=message&amp;..." ng-model="dashboard.current.solr.global_params">
       </div>
     </div>
   </div>
-</div>
 
-<div class="modal-footer">
-  <button ng-click="add_row(dashboard.current,row); reset_row();" class="btn btn-success" ng-show="editor.index == 1">Create Row</button>
-  <button type="button" class="btn btn-danger" ng-click="editor.index=0;dismiss();reset_panel();dashboard.refresh()">Close</button>
-</div>
+  <div class="modal-footer">
+    <button ng-click="add_row(dashboard.current,row); reset_row();" class="btn btn-success" ng-show="editor.index == 1">Create Row</button>
+    <button type="button" class="btn btn-danger" ng-click="editor.index=0;$hide();reset_panel();dashboard.refresh()">Close</button>
+  </div>

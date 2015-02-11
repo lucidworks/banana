@@ -110,15 +110,15 @@ define(['angular', 'jquery', 'underscore','showdown'], function(angular, $, _,Sh
         return text;
       } else {
         _.each(text.match(r1), function() {
-          t1 = text.replace(r1, '<a class="icon-search pointer" href="$1" target="_blank"></a>');
+          t1 = text.replace(r1, '<a class="fa fa-search pointer" href="$1" target="_blank"></a>');
         });
         text = t1 || text;
         _.each(text.match(r2), function() {
-          t2 = text.replace(r2, '<a class="icon-search pointer" href="http://$2" target="_blank"></a>');
+          t2 = text.replace(r2, '<a class="fa fa-search pointer" href="http://$2" target="_blank"></a>');
         });
         text = t2 || text;
         _.each(text.match(r3), function() {
-          t3 = text.replace(r3, '<a class="icon-search pointer" href="mailto:$1"></a>');
+          t3 = text.replace(r3, '<a class="fa fa-search pointer" href="mailto:$1"></a>');
         });
         text = t3 || text;
         return text;

@@ -4,12 +4,12 @@
       margin-bottom: 5px !important;
     }
   </style>
-  <a class="close" ng-click="render();dismiss();" href="">×</a>
+  <a class="close" ng-click="render();$hide();" href="">×</a>
   <h6>Query Alias</h6>
   <form>
-    <input class="input-medium input-query-alias" type="text" ng-model="queries.list[id].alias" placeholder='Alias...' />
+    <input class="form-control input-query-alias form-control" type="text" ng-model="queries.list[id].alias" placeholder="Alias...">
     <div>
-      <i ng-repeat="color in queries.colors" class="pointer" ng-class="{'icon-circle-blank':queries.list[id].color == color,'icon-circle':queries.list[id].color != color}" style="color:{{color}}" ng-click="queries.list[id].color = color;render();"> </i>
+      <i ng-repeat="color in queries.colors" class="pointer" ng-class="{'fa fa-circle-blank':queries.list[id].color == color,'fa fa-circle':queries.list[id].color != color}" style="color:{{color}}" ng-click="queries.list[id].color = color;render();"> </i>
     </div>
   </form>
 </div>

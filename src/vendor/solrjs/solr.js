@@ -205,7 +205,7 @@
         return '%2B' + gap.replace('d', 'DAY');
       case (gap.charAt(gap.length-1) == 'w'):
         // multiply a week by 7 days
-        num_days = gap.substring(0, gap.length-1) * 7;
+        var num_days = gap.substring(0, gap.length-1) * 7;
         return '%2B' + num_days + 'DAY';
       case (gap.charAt(gap.length-1) == 'M'):
         return '%2B' + gap.replace('M', 'MONTH');
@@ -18480,7 +18480,6 @@
 
         if (query.query !== undefined && query.query.query_string !== undefined) {
           // For loading dashboard from json files
-          // Check query.size
           var rowNum = '';
           if (query.size && query.size > 0) {
             rowNum = '&rows=' + query.size;
@@ -18498,7 +18497,9 @@
           throw new Error("No Client Set");
         }
 
-        return sjs.client.get(getRestPath('select'), queryData, successcb, errorcb);
+        return sjs.client.post(getRestPath('select'), queryData, successcb, errorcb);
+        // Something does not work right with GET method.
+        // return sjs.client.get(getRestPath('select'), queryData, successcb, errorcb);
       }
     };
   };

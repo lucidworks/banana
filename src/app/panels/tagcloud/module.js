@@ -63,12 +63,19 @@ define([
         $scope.get_data();
       };
 
+      $scope.alertInvalidField = function(message) {
+            $scope.panel.error = message;
+            $scope.data = [];
+            $scope.panelMeta.loading = false;
+            $scope.$emit('render');
+      }
+
       $scope.get_data = function() {
         // Make sure we have everything for the request to complete
         if (dashboard.indices.length === 0) {
           return;
         }
-
+        delete $scope.panel.error;
         $scope.panelMeta.loading = true;
         var request, results;
 
@@ -90,7 +97,7 @@ define([
         var facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size;
 
         // Set the panel's query
-        $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet;
+        $scope.panel.queries.query = querySrv.getORquery() + wt_json + rows_limit + fq + facet;
 
         // Set the additional custom query
         if ($scope.panel.queries.custom != null) {
@@ -156,6 +163,10 @@ define([
       };
 
       $scope.close_edit = function() {
+        if (!$scope.panel.field) {
+          $scope.alertInvalidField("Tag field must be specified");
+          return;
+        }
         if ($scope.refresh) {
           $scope.get_data();
         }
@@ -214,7 +225,7 @@ define([
                 else
                   return randomRotate(Math.random());
               })
-              .font("Impact")
+              .font("sans-serif")
               .fontSize(function(d) {
                 return d.size;
               })
@@ -233,7 +244,7 @@ define([
                 .style("font-size", function(d) {
                   return d.size + "px";
                 })
-                .style("font-family", "Impact")
+                .style("font-family", "Impact, Haettenschweiler, 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', 'sans-serif'")
                 .style("fill", function(d, i) {
                   //return  color(i);
                   return fill(i);
