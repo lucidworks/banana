@@ -119,6 +119,13 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
     };
 
+    $scope.alertInvalidField = function(message) {
+      $scope.panel.error = message;
+      $scope.data = [];
+      $scope.panelMeta.loading = false;
+      $scope.$emit('render');
+    }
+
     $scope.set_precision = function(precision) {
       $scope.panel.resolution = precision;
     };
@@ -241,6 +248,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         var facet = $scope.sjs.DateHistogramFacet(id);
 
         if($scope.panel.mode === 'count') {
+          if (!$scope.panel.stats_field) {
+            $scope.alertInvalidField("In " + $scope.panel.mode + " mode a stats field must be specified");
+            return;
+          }
           facet = facet.field($scope.panel.time_field);
         } else {
           if(_.isNull($scope.panel.value_field)) {
@@ -403,6 +414,16 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
     $scope.close_edit = function() {
+      if (!$scope.panel.range_field) {
+        $scope.alertInvalidField("Range field must be specified");
+        return;
+      }
+
+      if (!$scope.panel.minimum || !$scope.panel.maximum) {
+        $scope.alertInvalidField("Maximum and minimum fields must be specified");
+        return;
+      }
+      
       if($scope.refresh) {
         $scope.get_data();
       }
