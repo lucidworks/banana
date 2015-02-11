@@ -11,10 +11,10 @@ function (angular) {
 
       var editorTemplate =
 
-        '<div class="row-fluid panel-extra"><div class="panel-extra-container">' +
+        '<div class="panel-extra row"><div class="panel-extra-container col-md-12 col-xs-12">' +
 
-          '<span class="extra row-button" ng-hide="panel.draggable == false">' +
-            '<span class="row-text pointer" bs-tooltip="\'Drag here to move\'"' +
+          '<span class="extra row-button" ng-hide="panel.draggable == false"  bs-tooltip data-trigger="hover" container="body" data-placement="top" data-title="Drag&nbsp;here&nbsp;to&nbsp;move">' +
+            '<span class="row-text pointer"' +
             'data-drag=true data-jqyoui-options="{revert: \'invalid\',helper:\'clone\'}"'+
             ' jqyoui-draggable="'+
             '{'+
@@ -32,26 +32,26 @@ function (angular) {
           '<span class="extra row-button" ng-show="panel.editable != false">' +
             '<span confirm-click="row.panels = _.without(row.panels,panel)" '+
             'confirmation="Are you sure you want to remove this {{panel.type}} panel?" class="pointer">'+
-            '<i class="icon-remove pointer" bs-tooltip="\'Remove\'"></i></span>'+
+            '<i class="fa fa-times pointer" bs-tooltip data-title="Remove" container="body" ></i></span>'+
           '</span>' +
 
           '<span class="row-button extra" ng-show="panel.editable != false">' +
-            '<span bs-modal="\'app/partials/paneleditor.html\'" class="pointer">'+
-            '<i class="icon-cog pointer" bs-tooltip="\'Configure\'"></i></span>'+
+            '<span bs-modal data-content-template="app/partials/paneleditor.html" class="pointer">'+
+            '<i class="fa fa-cog pointer" bs-tooltip data-title="Configure" container="body" ></i></span>'+
           '</span>' +
 
           '<span class="row-button extra" ng-show="panel.transpose_show">' +
-          '<span class="rotate-icon pointer" bs-tooltip="\'Transpose Rows and Columns\'" ng-click="flip()"></span>' +
+          '<span class="rotate-icon pointer" bs-tooltip data-title="Transpose Rows and Columns" ng-click="flip()" container="body" ></span>' +
           '</span>' +
 
-          '<span ng-repeat="task in panelMeta.modals" class="row-button extra" ng-show="panel.spyable">' +
-            '<span bs-modal="task.partial"class="pointer"><i ' +
-              'bs-tooltip="task.description" ng-class="task.icon" class="pointer"></i></span>'+
+          '<span ng-repeat="task in panelMeta.modals" class="row-button extra" ng-show="task.show&&panel.spyable">' +
+            '<span bs-modal data-content-template="{{task.partial}}" class="pointer"><i ' +
+              'class="fa fa-info-circle pointer" bs-tooltip data-title="{{task.description}}" container="body" ></i></span>'+
           '</span>' +
 
-          '<span class="dropdown row-button extra" bs-tooltip="\'Export\'" data-placement="bottom" ng-show="panelMeta.exportfile">' +
+          '<span class="dropdown row-button extra" container="body"  bs-tooltip data-title="Export" data-placement="bottom" ng-show="panelMeta.exportfile">' +
             '<span class="pointer" class="dropdown-toggle" data-toggle="dropdown">' +
-                '<i class="icon-save" class="pointer"></i>' +
+                '<i class="fa fa-save" class="pointer"></i>' +
             '</span>' +
             '<ul class="dropdown-menu" style="padding:10px; left:-150px;">' +
           '<h5>Number of Rows</h5><form><input type="number" value="panel.exportSize" ng-model="panel.exportSize" placeholder="{{panel.size * panel.pages}}"/>' +
@@ -59,22 +59,17 @@ function (angular) {
                 '<li>' +
                     '<h5>Export to File</h5>' +
                         '<ul class="unstyled">' +
-                            '<li><a class="link" ng-click="exportfile(\'csv\')"><i class="icon-file"></i> CSV</a></li>' +
-                            '<li><a class="link" ng-click="exportfile(\'xml\')"><i class="icon-file"></i> XML</a></li>' +
-                            '<li><a class="link" ng-click="exportfile(\'json\')"><i class="icon-file"></i> JSON</a></li>' +
+                            '<li><a class="link" ng-click="exportfile(\'csv\')"><i class="fa fa-file"></i> CSV</a></li>' +
+                            '<li><a class="link" ng-click="exportfile(\'xml\')"><i class="fa fa-file"></i> XML</a></li>' +
+                            '<li><a class="link" ng-click="exportfile(\'json\')"><i class="fa fa-file"></i> JSON</a></li>' +
                         '</ul>' +
                 '</li>' +
             '</ul>' +
           '</span>' +
 
-//          '<span ng-repeat="dropdown in panelMeta.dropdowns" class="row-button extra">' +
-//            '<span class="dropdown" data-placement="bottom" bs-tooltip="dropdown.description"><a href="#" class="dropdown-toggle" data-toggle="dropdown" bs-dropdown="dropdown.list"><i ' +
-//              'ng-class="dropdown.icon" class="pointer"></i></a></span>'+
-//          '</span>' +
-
           '<span class="row-button extra" ng-show="panelMeta.loading == true">' +
             '<span>'+
-              '<i class="icon-spinner smaller icon-spin icon-large"></i>' +
+              '<i class="fa fa-spinner fa-3"></i>' +
             '</span>'+
           '</span>' +
 

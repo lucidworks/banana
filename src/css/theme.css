@@ -1,0 +1,334 @@
+.panelCont{outline:1px solid #e6e6e6;border-top:1px solid #fff;padding:0 10px 10px 10px;background:#f2f2f2;margin:0}
+#events{font-size:12px}.version{font-size:85%}.legend{color:#000}
+.editor-title{margin-right:10px;font-size:1.7em;font-weight:bold;text-transform:capitalize}
+.editor-title small{opacity:.5;font-size:.7em;font-weight:normal}
+.bordered{border:1px solid #ddd}
+.spy{position:absolute;right:0;top:0}
+.navbar-inner{border-width:0;padding-left:0;padding-right:0}
+.kibana-row{margin-bottom:10px}
+.row-button{border-left:1px solid #fff;border-right:1px solid #e6e6e6;padding:2px 7px 0 7px;float:left}
+.row-text{text-transform:uppercase;font-weight:bold;font-size:.8em}
+.row-close{outline:1px solid #e6e6e6;border-top:1px solid #fff;padding:0;margin:0;min-height:24px!important;line-height:24px;background:#f7f7f7}
+.row-open{text-align:right;left:-28px;position:absolute;font-size:13pt;font-weight:200}
+.row-open i{font-size:10pt}.odd{background-color:#f9f9f9}
+.nomargin{margin:0}[ng\:cloak],[ng-cloak],.ng-cloak{display:none!important}
+.table tbody+tbody{border-top:0}
+.panel-error{opacity:.9;position:absolute;z-index:1000}
+.panel-loading{position:absolute;top:0;left:0;z-index:800}
+.ui-draggable-dragging{display:block;visibility:visible;opacity:1;z-index:9999}
+.panel-title{border:0;margin-left:-11px}
+.panel div.panel-extra div.panel-extra-container{margin-right:-11px; padding-right: 4px;}
+.panel div.panel-extra{font-size:.9em;}
+.panel div.panel-extra .extra{float:right!important;border-bottom:1px solid #fff}
+.dragInProgress{background-color:#fcfcfc;border:1px solid #ddd}.link{cursor:pointer}
+.pointer:hover{color:#1ab2ff}.pointer{cursor:pointer;}.modal-body .pointer{display: inline-block;}.link:hover{color:#1ab2ff}
+ul.list-unstyled li a.pointer{cursor: pointer;font-size: 11.844px;}
+ul.list-unstyled li {cursor: pointer;margin: 9px 0px;}
+ul.list-unstyled li a.label{background-color: #918A8A}
+.popover{max-width:480px}.modal{width:770px;margin-left:-385px;top:10px!important}
+.tiny{font-size:50%}.smaller{font-size:70%}.small{font-size:85%}
+.large{font-size:120%}
+.strong{font-weight:bold}.normal{font-weight:normal}
+.light{font-weight:200}
+.input-append label{font-size:inherit!important}
+.input-smaller{width:81px;float: left;margin-left: 5px;}.string{color:#404040}
+.onput-mini{width: 75px}
+.number{color:#4196bf}
+.boolean{color:#c7a366}
+.key{color:#c05c5a}
+.typeahead{z-index:1051}
+.btn-active{background-color:#e6e6e6;background-image:none;box-shadow:0 2px 4px rgba(0,0,0,0.15) inset,0 1px 2px rgba(0,0,0,0.05);outline:0 none}
+.remove:hover{background-color:#bd362f}
+.faded{opacity:.2}
+div.flot-text{color:#333!important}
+.dashboard-notice{z-index:8000;margin-left:0;padding:3px 0 3px 0;width:100%;color:#333;padding-left:20px}
+.dashboard-notice.alert-error{padding-left: 20px; background-color: #f2dede; border-color: #eed3d7;}
+.panelCont div.form-horizontal {clear: both;}
+.timepicker-block{float: left;}
+.to-txt{float: left;margin: 7px 6px 0 10px;}
+.timepicker-block button{margin-left: 5px;}
+.settime-liks{padding: 6px 7px 0px 7px;}
+.search-query-input{clear: both;margin-top: 5px !important;position: relative;top: 6px;}
+.search-query-input input{width: 100% !important;border-radius: 30px;}
+.modal.top.am-fade{
+/*  top: 50% !important;*/
+  margin: 0 auto !important;
+}
+.modal input[type="checkbox"]{
+  vertical-align: sub;
+  display: block;
+  margin-top: 12px;
+}
+.modal-backdrop.am-fade{
+  background-color: rgba(0, 0, 0, 0.71);
+}
+.navbar.navbar-static-top.navbar-default .dropdown-menu{
+  left: -428% !important;
+  width: 240px;
+}
+.modal-body .nav-tabs > li > a {font-size: 14px;}
+.mar-top-10{
+  margin: 10px 0px 4px 0px;
+}
+.nav-tabs > li{
+  cursor: pointer
+}
+
+.modal-footer{
+  padding: 12px 0 0px 0;
+  text-align: right;
+  border-top: 1px solid #e5e5e5;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+.modal{
+  width: 100% !important;
+}
+label + textarea{
+  vertical-align: text-top;
+}
+textarea.input-xxlarge{
+  width: 544px;
+  height: 60px;
+}
+.modal-body .input-append  input[type="text"] {
+  float: left !important;
+  width: 151px !important;
+  margin-right: 6px;
+}
+.modal-body .input-append input[type="text"] + button{
+  float: left;
+}
+
+.modal-body .ng-scope > .row.ng-scope{
+  margin-bottom: 15px;
+}
+
+a[data-parent="#accordion"]{
+  display: inline-block;
+  width: 100%;
+}
+
+a[data-parent="#facet_accordion"]{
+  display: inline-block;
+  width: 100%;
+}
+
+.timepicker-date-input{
+  float: left;
+  width: 103px;
+  margin-right: 6px;
+}
+.panel{
+  margin-bottom: 0px;
+  padding-right: 15px;
+}
+.facet_accordion .panel{
+  padding-right: 0;
+}
+.row-of-two-panels >div:nth-child(even){
+  /*padding-left: 0;*/
+}
+
+.timepicker-time-input{
+  float: left;
+  width: 84px;
+}
+
+@media (min-width: 768px){
+  .modal-dialog {
+  width: 772px;
+  margin: 30px auto;
+  }
+}
+
+body.modal-open { overflow:inherit; padding-right:inherit !important; }
+
+.modal-backdrop{
+  height: 100%;
+  z-index: 999;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
+
+.modal-header h3{
+  margin: 0;
+}
+.modal-footer{
+  clear: both;
+}
+.modal-body h4{
+  margin-top: 33px;
+}
+.modal-body select{
+  margin-bottom: 10px;
+}
+
+.datepicker.dropdown-menu {
+  width: 250px;
+  height: 250px;
+}
+.datepicker.dropdown-menu  > button {
+    outline: none;
+    border: 0px;
+  }
+
+ .datepicker.dropdown-menu  tbody button {
+    padding: 0px;
+  }
+
+.timepicker.dropdown-menu {
+  padding: 0 12px 0 0px;
+}
+.datepicker.dropdown-menu  button {
+  outline: none;
+  border: 0px;
+}
+
+.modal-body label{
+  font-size: 12.5px;
+  font-weight: 400;
+}
+.dropdown-menu.timepicker table thead tr th button.btn-default , .dropdown-menu.timepicker table   tfoot tr th button.btn-default{
+  margin-left: 12px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+.dropdown-menu.datepicker  {
+  padding: 12px 12px 12px 6px;
+}
+
+.timepicker-block form.nomargin.input-append button{
+  margin-left: 0;
+  float: left;
+}
+span .label.pointer{
+  font-size: 13px;
+  font-weight: normal;
+  margin-bottom: 6px;
+}
+.search-query-input-wrap{
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 1 20%;
+  -ms-flex: 1 1 20%;
+  flex: 1 1 20%;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+.search-query-input{
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 1 20%;
+  -ms-flex: 1 1 20%;
+  flex: 1 1 20%;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: start;
+  -webkit-justify-content: flex-start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -webkit-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+
+.search-query-input  input.search-query{
+  padding-left: 40px !important;
+}
+.collection-picker-select{
+  margin-top: 11px;
+}
+
+.search-query-input  .begin-query .fa.fa-times.pointer{
+  display: none;
+}
+
+.search-query-input:hover  .begin-query .fa.fa-times.pointer{
+  display: inline-block;
+}
+
+/*---------------- customizations for both light,dark theme ---------------- */
+.modal{
+  top: 0 !important;
+  margin: 0 auto !important;
+  left: 0% !important;
+  background: transparent !important;
+}
+
+.tab-content {
+  overflow: auto;
+  clear: both;
+}
+.query-modal-checkbox{
+  margin: 3px 6px !important;
+}
+
+.filter-must{
+  padding-bottom: 15px;
+}
+
+.filter-must select{
+  margin-bottom: 8px;
+}
+.input-append{
+  margin-top: 15px;
+}
+.input-append button{
+  border-radius: 0;
+}
+h4, .h4, h5, .h5, h6, .h6{
+  font-weight: bold;
+}
+
+
+.navbar-brand{
+  height: 40px;
+  padding: 10px 15px;
+}
+.navbar{
+  min-height:41px;
+}
+.navbar .nav:not(.nav-tabs)>li>a{
+  padding: 9.5px 15px 9.5px;
+}
+.modal-dialog{
+  margin:41px auto;
+}
+form.input-append, form.input-prepend{
+  width: 100%;
+}
+.table-doc-table{
+  overflow-x:auto !important;
+  overflow-y:auto !important; 
+}
+.filter-must{
+  padding-bottom: 2px;
+  display: inline-block;
+  width: 100%;
+}

@@ -20,7 +20,7 @@ define([
                 modals: [
                     {
                         description: "Inspect",
-                        icon: "icon-info-sign",
+                        icon: "fa fa-info",
                         partial: "app/partials/inspector.html",
                         show: $scope.panel.spyable
                     }
@@ -75,6 +75,7 @@ define([
             $scope.get_data = function () {
                 // Show progress by displaying a spinning wheel icon on panel
                 $scope.panelMeta.loading = true;
+                delete $scope.panel.error;
 
                 var request, results;
                 // Set Solr server
@@ -111,7 +112,7 @@ define([
                 var facet_limit = '&facet.limit=' + $scope.panel.row_size;
                 var facet_pivot_mincount = '&facet.pivot.mincount=0';
 
-                $scope.panel.queries.query = querySrv.getQuery(0) + fq + wt_json + rows_limit + facet + facet_pivot + facet_limit + facet_pivot_mincount;
+                $scope.panel.queries.query = querySrv.getORquery() + fq + wt_json + rows_limit + facet + facet_pivot + facet_limit + facet_pivot_mincount;
 
                 // Set the additional custom query
                 if ($scope.panel.queries.custom != null) {
@@ -125,6 +126,13 @@ define([
 
                 // Populate scope when we have results
                 results.then(function (results) {
+                    // Check for error and abort if found
+                      if(!(_.isUndefined(results.error))) {
+                        $scope.panel.error = $scope.parse_error(results.error.msg);
+                        $scope.init_arrays();
+                        $scope.render();
+                        return;
+                      }
                     // build $scope.data array
                     var facets = results.facet_counts.facet_pivot;
                     var key = Object.keys(facets)[0];
@@ -407,18 +415,6 @@ define([
                             })
                             .on("mouseover", function (d) {
                                 d3.select(this).classed("text-hover", true);
-                                
-                                // var offsetX = d3.event.offsetX || d3.event.layerX;
-                                // var p = $('#' + scope.generated_id).parent();
-                                // var scrollLeft = $(p).parent().scrollLeft();
-
-                                // var layerX = d3.event.offsetX ? d3.event.layerX : Math.abs(scrollLeft - offsetX);
-
-                                // var offsetY = d3.event.layerY;
-                                // var scrollTop = $(p).parent().scrollTop();
-
-                                // var layerY = d3.event.offsetY ? d3.event.layerY : Math.abs(offsetY - scrollTop);
-                                
                                 $tooltip.html(d).place_tt(d3.event.pageX, d3.event.pageY);
                             })
                             .on("mouseout", function () {

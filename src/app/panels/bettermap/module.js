@@ -33,7 +33,7 @@ function (angular, app, _, L, localRequire) {
       modals : [
         {
           description: "Inspect",
-          icon: "icon-info-sign",
+          icon: "fa fa-info",
           partial: "app/partials/inspector.html",
           show: $scope.panel.spyable
         }
@@ -157,7 +157,7 @@ function (angular, app, _, L, localRequire) {
         }
 
         // Set the panel's query
-        $scope.panel.queries.query = querySrv.getQuery(0) + wt_json + rows_limit + fq + sorting;
+        $scope.panel.queries.query = querySrv.getORquery() + wt_json + rows_limit + fq + sorting;
 
         // Set the additional custom query
         if ($scope.panel.queries.custom != null) {
@@ -178,7 +178,7 @@ function (angular, app, _, L, localRequire) {
 
           // Check for error and abort if found
           if(!(_.isUndefined(results.error))) {
-            $scope.panel.error = $scope.parse_error(results.error);
+            $scope.panel.error = $scope.parse_error(results.error.msg);
             return;
           }
           

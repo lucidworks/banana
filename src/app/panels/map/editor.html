@@ -1,29 +1,29 @@
-<div class="row-fluid">
-  <div class="span3">
+<div class="row">
+  <div class="col-sm-3 col-md-3">
     <form>
-      <h6>Field <tip>2 letter country or state code</tip></h6>
-      <input bs-typeahead="fields.list" type="text" class="input-small" ng-model="panel.field" ng-change="set_refresh(true)">
+      <h6>Field <tip data-placement="right">2 letter country or state code</tip></h6>
+      <input type="text" class="form-control" bs-typeahead ng-options="field for field in fields.list" ng-model="panel.field" ng-change="set_refresh(true)">
     </form>
   </div>
-  <div class="span2">
+  <div class="col-sm-3 col-md-3">
     <h6>Max <tip>Maximum countries to plot</tip></h6>
-    <input class="input-mini" type="number" ng-model="panel.size" ng-change="set_refresh(true)">
+    <input class="form-control" type="number" ng-model="panel.size" ng-change="set_refresh(true)">
   </div>
-  <div class="span1"><h6>Map</h6>
-    <select ng-change="$emit('render')" class="input-small" ng-model="panel.map" ng-options="f for f in ['world','europe','usa']"></select>
+  <div class="col-sm-3 col-md-3"><h6>Map</h6>
+    <select ng-change="$emit('render')" class="form-control" ng-model="panel.map" ng-options="f for f in ['world','europe','usa']"></select>
   </div>
 </div>
-<div class="row-fluid">
-  <div class="span2">
+<div class="row">
+  <div class="col-sm-3 col-md-3">
     <label class="small">Mode <tip>For min, mean, max, and sum modes. Field type has to be numeric.</tip></label>
-    <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['count','min','mean','max','sum']"></select>
+    <select ng-change="set_refresh(true)" class="form-control" ng-model="panel.mode" ng-options="f for f in ['count','min','mean','max','sum']"></select>
   </div>
-  <div class="span2" ng-show="panel.mode != 'count'">
+  <div class="col-sm-3 col-md-3" ng-show="panel.mode != 'count'">
     <label class="small">Stats Field <tip>This is the field that contains numerical values.</tip></label>
-    <input type="text" class="input-small" bs-typeahead="fields.list" ng-model="panel.stats_field" ng-change="set_refresh(true)">
+    <input type="text" class="form-control" bs-typeahead ng-options="field for field in fields.list" ng-model="panel.stats_field" ng-change="set_refresh(true)">
   </div>
-  <div class="span2">
+  <div class="col-sm-3 col-md-3">
     <label class="small">Decimal Points <tip>The number of digits after the decimal point.</tip></label>
-    <select class="input-mini" ng-model="panel.decimal_points" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9]"></select>
+    <select class="form-control" ng-model="panel.decimal_points" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9]"></select>
   </div>
 </div>

@@ -9,6 +9,10 @@ function (angular, _) {
 
   module.controller('dashLoader', function($scope, $http, timer, dashboard, alertSrv) {
     $scope.loader = dashboard.current.loader;
+    
+    $scope.dashboardEditorModal = { };
+    $scope.dashboardEditorTooltip = { title: 'Configure dashboard' };
+    $scope.solrSettingsModal = {};
 
     $scope.init = function() {
       $scope.gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;

@@ -31,68 +31,74 @@ define([
 
     var module = angular.module('kibana.panels.fullTextSearch', []);
     app.useModule(module);
-    //app.useModule('ui.bootstrap')
     module.controller('fullTextSearch', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
-      $scope.panelMeta = {
-        modals: [{
-          description: "Inspect",
-          icon: "icon-info-sign",
-          partial: "app/partials/inspector.html",
-          show: $scope.panel.spyable
-        }],
-        editorTabs: [{
-          title: 'Paging',
-          src: 'app/panels/table/pagination.html'
-        }, {
-          title: 'Queries',
-          src: 'app/partials/querySelect.html'
-        }],
-        exportfile: true,
-        status: "Experimental",
-        description: "This panel provide full text search functionality for data"
-      };
+        $scope.panelMeta = {
+          modals: [{
+            description: "Inspect",
+            icon: "fa fa-info",
+            partial: "app/partials/inspector.html",
+            show: $scope.panel.spyable
+          }],
+          editorTabs: [{
+            title: 'Paging',
+            src: 'app/panels/fullTextSearch/pagination.html'
+          }, {
+            title: 'Queries',
+            src: 'app/partials/querySelect.html'
+          }],
+          exportfile: true,
+          status: "Experimental",
+          description: "This panel provide full text search functionality for data"
+        };
 
-      // Set and populate defaults
-      var _d = {
-        status: "Stable",
-        queries: {
-          mode: 'all',
-          ids: [],
-          query: '*:*',
-          basic_query: '',
-          custom: ''
-        },
-        size: 100, // Per page
-        pages: 5, // Pages available
-        offset: 0,
-        group: "default",
-        sort: [],
-        style: {
-          'font-size': '9pt'
-        },
-        overflow: 'min-height',
-        fields: [],
-        highlight: [],
-        sortable: false,
-        header: true,
-        paging: true,
-        field_list: true,
-        trimFactor: 300,
-        normTimes: true,
-        spyable: true,
-        saveOption: 'json',
-        exportSize: 100,
-        exportAll: true,
-        facet_limit: 10,
-        foundResults: true,
-        show_queries:true,
-      };
+        // Set and populate defaults
+        var _d = {
+          status: "Stable",
+          queries: {
+            mode: 'all',
+            ids: [],
+            query: '*:*',
+            basic_query: '',
+            custom: ''
+          },
+          size: 100, // Per page
+          pages: 5, // Pages available
+          offset: 0,
+          group: "default",
+          sort: [],
+          style: {
+            'font-size': '9pt'
+          },
+          overflow: 'min-height',
+          fields: [],
+          highlight: [],
+          sortable: false,
+          header: true,
+          paging: true,
+          field_list: true,
+          trimFactor: 300,
+          normTimes: true,
+          spyable: true,
+          saveOption: 'json',
+          exportSize: 100,
+          exportAll: true,
+          facet_limit: 10,
+          foundResults: true,
+		  show_queries:true,
+          overflowItems : [{
+            key: 'scroll',
+            value: 'height'
+          }, {
+            key: 'expand',
+            value: 'min-height'
+          }]
+        };
       _.defaults($scope.panel, _d);
 
       $scope.init = function() {
         $scope.Math = Math;
         // Solr
-        $scope.sjs = $scope.sjs || sjsResource(dashboard.current.solr.server + dashboard.current.solr.core_name); // jshint ignore:line
+        $scope.sjs = $scope.sjs || sjsResource(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
         $scope.$on('refresh', function() {
           $scope.get_data();
@@ -207,6 +213,7 @@ define([
 
       $scope.get_data = function(segment, query_id) {
         $scope.panel.error = false;
+        delete $scope.panel.error;
 
         // Make sure we have everything for the request to complete
         if (dashboard.indices.length === 0) {
@@ -278,7 +285,7 @@ define([
         // Set the panel's query
 
         //var query = $scope.panel.searchQuery == null ? querySrv.getQuery(0) : 'q=' + $scope.panel.searchQuery
-        $scope.panel.queries.basic_query = querySrv.getQuery(0) + fq + facet + facet_fields + sorting;
+        $scope.panel.queries.basic_query = querySrv.getORquery() + fq + facet + facet_fields + sorting;
         $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json + rows_limit + highlight;
 
         // Set the additional custom query
@@ -472,7 +479,7 @@ define([
 
       // jshint ignore:start
       $('.accordion').on('show hide', function(n) {
-        $(n.target).siblings('.accordion-heading').find('.accordion-toggle i').toggleClass('icon-chevron-up icon-chevron-down');
+        $(n.target).siblings('.accordion-heading').find('.accordion-toggle i').toggleClass('fa fa-chevron-up fa fa-chevron-down');
         $(n.target).siblings('.accordion-heading').toggleClass('bold');
       });
       // jshint ignore:end
