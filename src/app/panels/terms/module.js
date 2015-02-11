@@ -83,6 +83,13 @@ function (angular, app, _, $, kbn) {
       $scope.get_data();
     };
 
+    $scope.alertInvalidField = function(message) {
+      $scope.panel.error = message;
+      $scope.data = [];
+      $scope.panelMeta.loading = false;
+      $scope.$emit('render');
+    }
+
     $scope.testMultivalued = function() {
       if($scope.panel.field && $scope.fields.typeList[$scope.panel.field] && $scope.fields.typeList[$scope.panel.field].schema.indexOf("M") > -1) {
         $scope.panel.error = "Can't proceed with Multivalued field";
@@ -125,6 +132,10 @@ function (angular, app, _, $, kbn) {
       if ($scope.panel.mode === 'count') {
         facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size + '&facet.missing=true';
       } else {
+        if (!$scope.panel.stats_field) {
+          $scope.alertInvalidField("In " + $scope.panel.mode + " mode a stats field must be specified");
+          return;
+        }
         // if mode != 'count' then we need to use stats query
         // stats does not support something like facet.limit, so we have to sort and limit the results manually.
         facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field + '&facet.missing=true';
@@ -193,6 +204,11 @@ function (angular, app, _, $, kbn) {
 
         if ($scope.panel.mode === 'count') {
           // In count mode, the y-axis min should be zero because count value cannot be negative.
+          if(!$scope.panel.field) {
+            $scope.panel.error = "Terms panel field must be specified";
+            $scope.$emit('render');
+            return;
+          }
           $scope.yaxis_min = 0;
           _.each(results.facet_counts.facet_fields, function(v) {
             for (var i = 0; i < v.length; i++) {

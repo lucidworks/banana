@@ -77,6 +77,13 @@ define([
 
     };
 
+    $scope.alertInvalidField = function(message) {
+      $scope.panel.error = message;
+      $scope.data = [];
+      $scope.panelMeta.loading = false;
+      $scope.$emit('render');
+    }
+
     $scope.get_data = function() {
       delete $scope.panel.error;
       $scope.panelMeta.loading = true;
@@ -118,6 +125,10 @@ define([
 
 
       if ($scope.panel.mode !== 'count') {
+        if (!$scope.panel.stats_field) {
+          $scope.alertInvalidField("In " + $scope.panel.mode + " mode a stats field must be specified");
+          return;
+        }
         facet = '&stats=true&stats.field=' + $scope.panel.stats_field;
       }
 

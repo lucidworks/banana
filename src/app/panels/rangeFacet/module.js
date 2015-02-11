@@ -119,6 +119,13 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
     };
 
+     $scope.alertInvalidField = function(message) {
+      $scope.panel.error = message;
+      $scope.data = [];
+      $scope.panelMeta.loading = false;
+      $scope.$emit('render');
+    }
+
     $scope.set_precision = function(precision) {
       $scope.panel.resolution = precision;
     };
@@ -209,6 +216,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       if (_.isUndefined(segment)) {
         segment = 0;
       }
+
       delete $scope.panel.error;
 
       // Make sure we have everything for the request to complete
@@ -403,14 +411,23 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
     $scope.close_edit = function() {
-      if($scope.refresh) {
+      if (!$scope.panel.range_field) {
+        $scope.alertInvalidField("Range field must be specified");
+        return;
+      }
+
+      if (!$scope.panel.minimum || !$scope.panel.maximum) {
+        $scope.alertInvalidField("Maximum and minimum fields must be specified");
+        return;
+      }
+
+      if ($scope.refresh) {
         $scope.get_data();
       }
-      $scope.set_range_filter($scope.panel.minimum,$scope.panel.maximum);
-      $scope.refresh =  false;
+      $scope.set_range_filter($scope.panel.minimum, $scope.panel.maximum);
+      $scope.refresh = false;
       $scope.$emit('render');
     };
-
     $scope.render = function() {
       $scope.$emit('render');
     };
