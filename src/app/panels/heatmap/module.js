@@ -44,8 +44,8 @@ define([
                     custom: ''
                 },
                 size: 0,
-                row_field: 'start_station_name',
-                col_field: 'gender',
+                row_field: '',
+                col_field: '',
                 row_size: 300,
                 editor_size: 0,
                 color:'gray',
