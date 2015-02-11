@@ -1,14 +1,14 @@
 <div class="row">
     <div class="col-sm-5 col-md-5">
-        <form class="input-append">
-            <h6>Add Facets</h6>
+        <form class="input-append" style="margin-top:0">
+            <h6 style="margin-top:0">Add Facets</h6>
             <input bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="newfield">
             <button class="btn btn-default" ng-click="add_facet_field(newfield);newfield=''"><i class="fa fa-plus"></i>
             </button>
         </form>
     </div>
     <div class="col-sm-7 col-md-7">
-        <h6>Facets
+        <h6 style="margin-top:0">Facets
             <small>Click to remove</small>
         </h6>
         <span style="margin-left:3px" ng-click="remove_facet_field(field)" ng-repeat="field in $parent.panel.fields" class="label pointer remove label-default">{{field}}</span>

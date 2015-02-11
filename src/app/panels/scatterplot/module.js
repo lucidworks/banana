@@ -59,6 +59,13 @@ define([
             $scope.get_data();
         };
 
+        $scope.alertInvalidField = function(message) {
+            $scope.panel.error = message;
+            $scope.data = [];
+            $scope.panelMeta.loading = false;
+            $scope.$emit('render');
+        }
+
         $scope.get_data = function() {
             // Show progress by displaying a spinning wheel icon on panel
             $scope.panelMeta.loading = true;
@@ -127,6 +134,16 @@ define([
         };
 
         $scope.close_edit = function() {
+            if (!$scope.panel.yaxis) {
+                $scope.alertInvalidField("Y-axis field must be specified");
+                return;
+            }
+
+            if (!$scope.panel.xaxis) {
+                $scope.alertInvalidField("X-axis field must be specified");
+                return;
+            }
+
             if ($scope.refresh) {
                 $scope.get_data();
             }

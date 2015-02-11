@@ -1,5 +1,7 @@
-node_modules
-.aws-config.json
-dist
-bower_components
+.idea
 .DS_Store
+
+node_modules
+src/bower_components
+dist
+tmp

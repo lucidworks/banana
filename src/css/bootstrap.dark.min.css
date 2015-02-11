@@ -4648,7 +4648,7 @@ button:focus,button:hover,button{
 
 .modal-footer .btn+.btn {
   margin-left: 5px;
-  margin-bottom: 0;
+  margin: 4px 0 !important;
 }
 
 .modal-footer .btn-group .btn+.btn {
@@ -6161,7 +6161,6 @@ legend,label {
 .alert-info {
   background-color: #3a87ad;
   border-color: #3a87ad;
-  color: #333 !important;
 }
 
 .well,.hero-unit {

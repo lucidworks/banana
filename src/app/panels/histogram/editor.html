@@ -5,7 +5,7 @@
       <!-- <select ng-change="set_refresh(true)" class="form-control" ng-model="panel.mode" ng-options="f for f in ['count','min','mean','max','total','value']"></select> -->
       <select ng-change="set_refresh(true)" class="form-control" ng-model="panel.mode" ng-options="f for f in ['count','values']"></select>
     </div>
-    <div class="col-sm-2 col-md-2" ng-show="panel.mode != 'count'">
+    <div class="col-sm-2 col-md-2" ng-if="panel.mode != 'count'">
       <label class="small">Value Field</label>
         <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead ng-options="field for field in fields.list" type="text" class="form-control" ng-model="panel.value_field">
     </div>
@@ -82,6 +82,17 @@
     <div class="col-sm-2 col-md-2" ng-hide="panel.auto_int">
       <label class="small">Interval <tip>Use Solr date math format (eg 1m, 5m, 1d, 2w, 1y)</tip></label>
       <input type="text" class="form-control" ng-model="panel.interval" ng-change="set_refresh(true)">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-3 col-md-3" >
+      <label class="small">Maximum value <tip>Maximum value for Y-axis</tip></label>
+      <input type="number" min="panel.min_value" class="form-control" ng-model="panel.max_value" ng-change="set_refresh(true)">
+    </div>
+    <div class="col-sm-3 col-md-3" >
+      <label class="small">Minimum value <tip>Minimum value for Y-axis</tip></label>
+      <input type="number" max="panel.max_value" class="form-control" ng-model="panel.min_value" ng-change="set_refresh(true)">
     </div>
   </div>
 
