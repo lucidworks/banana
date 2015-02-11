@@ -29,7 +29,7 @@ require.config({
     'underscore-src':         '../bower_components/underscore/underscore',
     bootstrap:                '../bower_components/bootstrap/dist/js/bootstrap',
 
-    jquery:                   '../bower_components/jquery/jquery',
+    jquery:                   '../bower_components/jquery/dist/jquery',
     'jquery-ui':              '../bower_components/jquery-ui/jquery-ui',
 
     'extend-jquery':          'components/extend-jquery',

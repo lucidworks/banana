@@ -51,7 +51,6 @@
     "update-index-async": "node -e \"require('shelljs/global'); sed('-i', /\\/\\/@@NG_LOADER_START@@[\\s\\S]*\\/\\/@@NG_LOADER_END@@/, '//@@NG_LOADER_START@@\\n' + cat('bower_components/angular-loader/angular-loader.min.js') + '\\n//@@NG_LOADER_END@@', 'app/index-async.html');\""
   },
   "dependencies": {
-    "grunt-ngmin": "0.0.3",
     "cookie-parser": "~1.3.3",
     "debug": "~2.0.0",
     "ejs": "~0.8.5",
