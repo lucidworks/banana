@@ -1,21 +1,21 @@
-<a class="close" ng-click="dismiss()" href="">x</a>
+<a class="close" ng-click="$hide()" href="">x</a>
 <h4>
-    Lookup field: <em>{{couchbase.field}}</em> from Couchbase server
+  Lookup field: <em>{{couchbase.field}}</em> from Couchbase server
 </h4>
 <div ng-hide="couchbase.values">
-    <div ng-hide="couchbase.error">
-        No matching lookup value returned.
-    </div>
-    <div ng-show="couchbase.error">
-        Error from Couchbase: {{couchbase.error}}<br>Reason: {{couchbase.reason}}
-    </div>
+  <div ng-hide="couchbase.error">
+    No matching lookup value returned.
+  </div>
+  <div ng-show="couchbase.error">
+    Error from Couchbase: {{couchbase.error}}<br>Reason: {{couchbase.reason}}
+  </div>
 </div>
 <div ng-show="couchbase.values">
-    <strong>Key = {{couchbase.key}}</strong>
-    <table class="table table-striped table-condensed">
-        <tr ng-repeat="doc in couchbase.values">
-            <td><strong>{{doc[0]}}</strong></td>
-            <td>{{doc[1]}}</td>
-        </tr>
-    </table>
+  <strong>Key = {{couchbase.key}}</strong>
+  <table class="table table-striped table-condensed">
+    <tr ng-repeat="doc in couchbase.values">
+      <td><strong>{{doc[0]}}</strong></td>
+      <td>{{doc[1]}}</td>
+    </tr>
+  </table>
 </div>
