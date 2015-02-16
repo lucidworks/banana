@@ -6520,3 +6520,12 @@ scatterplot .x.axis,scatterplot .y.axis,scatterplot .legend{
 scatterplot .axis path , scatterplot .axis line{
   stroke: #FFF;
 }
+g.axis path, g.axis line
+{
+  fill: none;
+  stroke: #FFF;
+  shape-rendering: crispEdges;
+}
+g text {
+  fill: #FFF;
+}

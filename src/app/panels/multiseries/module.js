@@ -48,6 +48,7 @@ define([
             right_fl: '',
             spyable: true,
             show_queries: true,
+            showLegend: true,
             interpolate: 'basis',
             right_interpolate: 'basis',
             rightYEnabled: false
