@@ -6524,7 +6524,7 @@ g.axis path, g.axis line
 {
   fill: none;
   stroke: #FFF;
-  shape-rendering: crispEdges;
+  shape-rendering: optimizeSpeed;
 }
 g text {
   fill: #FFF;
