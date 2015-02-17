@@ -1,4 +1,4 @@
-.panelCont{outline:1px solid #e6e6e6;border-top:1px solid #fff;padding:0 10px 10px 10px;background:#f2f2f2;margin:0}
+.panelCont{border:1px solid #e6e6e6;padding:0 10px 10px 10px;background:#f2f2f2;margin:0}
 #events{font-size:12px}.version{font-size:85%}.legend{color:#000}
 .editor-title{margin-right:10px;font-size:1.7em;font-weight:bold;text-transform:capitalize}
 .editor-title small{opacity:.5;font-size:.7em;font-weight:normal}

@@ -5499,8 +5499,8 @@ a.label:hover,a.label:focus,a.badge:hover,a.badge:focus {
 }
 
 .panelCont {
-  outline: 1px solid #101214;
-  border-top: 1px solid #3e444c;
+  outline: none;
+  border: 1px solid #101214;
   padding: 0 10px 10px 10px;
   background: #202328;
   margin: 0;
