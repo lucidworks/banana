@@ -310,6 +310,11 @@ function (angular, app, _, kbn, moment) {
           _segment+1 < dashboard.indices.length) {
           $scope.get_data(_segment+1,$scope.query_id);
         }
+        
+        // When I try to search data, table paging is not refresh in the query panel. 
+        if($scope.data.length < $scope.panel.size) {
+        	$scope.panel.offset = 0
+        }
 
       });
     };
