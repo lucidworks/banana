@@ -14,7 +14,7 @@ function (angular, app, _) {
   var module = angular.module('kibana.panels.filtering', []);
   app.useModule(module);
 
-  module.controller('filtering', function($scope, filterSrv, $rootScope, dashboard) {
+  module.controller('filtering', function($scope, filterSrv, $rootScope, $location, dashboard) {
 
     $scope.panelMeta = {
       modals: [{
@@ -35,6 +35,23 @@ function (angular, app, _) {
 
     $scope.init = function() {
       $scope.filterSrv = filterSrv;
+
+      var locationSearch = $location.search(),
+          mandateMap = {'+': 'must', '-': 'mustNot'}
+      if (locationSearch.q) {
+        angular.forEach(locationSearch.q.split(' '), function (value) {
+          if (value) {
+            var startWithMandate = value[0].match(/\+|-/) !== null,
+                mandate = startWithMandate ? mandateMap[value[0]] : 'either';
+            filterSrv.set({
+              editing   : true,
+              type      : 'querystring',
+              query     : startWithMandate ? value.substr(1, value.length) : value,
+              mandate   : mandate
+            }, undefined, true);
+          }
+        });
+      }
     };
 
     $scope.remove = function(id) {
