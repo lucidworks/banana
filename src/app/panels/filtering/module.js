@@ -44,13 +44,14 @@ function (angular, app, _) {
             var startWithMandate = value[0].match(/\+|-/) !== null,
                 mandate = startWithMandate ? mandateMap[value[0]] : 'either';
             filterSrv.set({
-              editing   : true,
+              editing   : false,
               type      : 'querystring',
               query     : startWithMandate ? value.substr(1, value.length) : value,
               mandate   : mandate
             }, undefined, true);
           }
         });
+        $scope.refresh();
       }
     };
 
