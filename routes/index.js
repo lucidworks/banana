@@ -7,7 +7,8 @@ router.get('/', function(req, res) {
     res.render('index', {});
 });
 
-router.get('/solr/*', function(req, res) {
+// Match both /solr and /solr/
+router.get('/solr/?*', function(req, res) {
     app.get('proxy').web(req, res);
 });
 
