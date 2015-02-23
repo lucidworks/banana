@@ -147,6 +147,7 @@ define([
       var start_time, end_time, time_field;
       var filter_fq ='';
       var filter_either = [];
+      var time_fq = '';
 
       // Loop through the list to find the time field, usually it should be in self.list[0]
       _.each(self.list, function(v,k) {
@@ -168,6 +169,15 @@ define([
           } else {
             end_time = v.to;
           }
+
+          if (v.mandate === 'must') {
+            time_fq = 'fq=' + time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
+          } else if (v.mandate === 'mustNot') {
+            time_fq =  'fq=-' + time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
+          } else if (v.mandate === 'either') {
+            time_fq = 'fq=' + time_field + ':[' + start_time + '%20TO%20' + end_time + ']';
+          }
+
         } else if (v.type === 'terms') {
           if (v.mandate === 'must') {
             filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
@@ -221,7 +231,7 @@ define([
       if (noTime) {
         return filter_fq;
       } else {
-        return 'fq=' + time_field + ':[' + start_time + '%20TO%20' + end_time + ']' + filter_fq;
+        return time_fq + filter_fq;
       }
     };
 
