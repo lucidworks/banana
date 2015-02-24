@@ -27,3 +27,11 @@
         </span>
     </div>
 </div>
+
+<div class="row">
+  <div class="col-sm-6 col-md-6">
+    <label class="small">Exclude Terms(s) (comma seperated)</label>
+    <tip>If the field is string use double quotes for every single term</tip>
+    <input array-join="" type="text" ng-model="panel.exclude" ng-change="set_refresh(true)" class="form-control">
+  </div>
+</div>
