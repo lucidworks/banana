@@ -46,6 +46,7 @@ define([
           custom: ''
         },
         field: '',
+        exclude : [],
         size: 10,
         alignment: 'vertical and horizontal',
         fontScale: 1,
@@ -92,12 +93,21 @@ define([
         if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
           fq = '&' + filterSrv.getSolrFq();
         }
+
+        var exclude_length = $scope.panel.exclude.length;
+        var exclude_filter = '';
+        if (exclude_length > 0) {
+          for (var i = 0; i < exclude_length; i++) {
+            exclude_filter += '&fq=-' + $scope.panel.field + ":" +  encodeURIComponent($scope.panel.exclude[i]);
+          }
+        }
+
         var wt_json = '&wt=json';
         var rows_limit = '&rows=0'; // for terms, we do not need the actual response doc, so set rows=0
         var facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size;
 
         // Set the panel's query
-        $scope.panel.queries.query = querySrv.getORquery() + wt_json + rows_limit + fq + facet;
+        $scope.panel.queries.query = querySrv.getORquery() + wt_json + rows_limit + fq + exclude_filter + facet;
 
         // Set the additional custom query
         if ($scope.panel.queries.custom != null) {
