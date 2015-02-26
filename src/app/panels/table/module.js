@@ -73,7 +73,7 @@ function (angular, app, _, kbn, moment) {
       size    : 100, // Per page
       pages   : 5,   // Pages available
       offset  : 0,
-      sort    : ['event_timestamp','desc'],
+      sort    : [], // By default, sorting is turned off for performance reason
       group   : "default",
       style   : {'font-size': '9pt'},
       overflow: 'min-height',
