@@ -7,10 +7,19 @@
     <label class="small">Length <tip>Specify a maximum number of terms to display (Top N).</tip></label>
     <input class="input-small" type="number" ng-model="panel.size" ng-change="set_refresh(true)">
   </div>
+  <div class="span2">
+    <label class="small">Sort by</label>
+    <select ng-change="set_refresh(true)" class="input-small"
+            ng-model="panel.sortBy"
+            ng-options="f for f in ['count','index']"></select>
+  </div>
   <div class="span3">
     <label class="small">Order</label>
     <!-- <select class="input-medium" ng-model="panel.order" ng-options="f for f in ['count','term','reverse_count','reverse_term']" ng-change="set_refresh(true)"></select></span> -->
-    <select class="input-medium" ng-model="panel.order" ng-options="f for f in ['descending','ascending']" ng-change="set_refresh(true)"></select>
+    <select class="input-medium"
+            ng-model="panel.order"
+            ng-options="f for f in ['descending','ascending']"
+            ng-change="set_refresh(true)"></select>
   </div>
   <div class="span4">
     <label class="small">Use field values as chart's colors <tip placement="bottom">If the field values are not valid HTML colors (either color names or hexadecimal colors), the default colors for chart will be used for the data series instead.</tip></label>
