@@ -56,7 +56,7 @@ function (angular, app, _, $, kbn) {
       missing : false,
       other   : false,
       size    : 10,
-      // order   : 'count',
+      sortBy  : 'count',
       order   : 'descending',
       style   : { "font-size": '10pt'},
       donut   : false,
@@ -140,7 +140,8 @@ function (angular, app, _, $, kbn) {
         // stats does not support something like facet.limit, so we have to sort and limit the results manually.
         facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field + '&facet.missing=true';
       }
-      
+      facet += '&f.' + $scope.panel.field + '.facet.sort=' + ($scope.panel.sortBy || 'count');
+
       var exclude_length = $scope.panel.exclude.length; 
       var exclude_filter = '';
       if(exclude_length > 0){
@@ -237,11 +238,13 @@ function (angular, app, _, $, kbn) {
         }
 
         // Sort the results
+        $scope.data = _.sortBy($scope.data, function(d) {
+          return $scope.panel.sortBy === 'index' ? d.label : d.data[0][1];
+        });
         if ($scope.panel.order === 'descending') {
-          $scope.data = _.sortBy($scope.data, function(d) {return -d.data[0][1];});
-        } else {
-          $scope.data = _.sortBy($scope.data, function(d) {return d.data[0][1];});
+          $scope.data.reverse();
         }
+
         // Slice it according to panel.size, and then set the x-axis values with k.
         $scope.data = $scope.data.slice(0,$scope.panel.size);
         _.each($scope.data, function(v) {
