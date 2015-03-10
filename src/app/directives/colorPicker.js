@@ -65,7 +65,7 @@ define([
 
             function getColor(label) {
               var i, item;
-              for (i = 0; i < $scope.palette.length; i + 1) {
+              for (i = 0; i < $scope.palette.length; i ++) {
                 item = $scope.palette[i];
                 if (item.label === label) {
                   return item.color;
@@ -79,7 +79,7 @@ define([
             // based on the palette.
             $scope.updateDataColors = function () {
               var paletteValueFoundInData = false, i, item, color;
-              for (i = 0; i < $scope.data.length; i + 1) {
+              for (i = 0; i < $scope.data.length; i ++) {
                 item = $scope.data[i];
                 color = getColor(item.label);
                 if (color === null) {
@@ -99,7 +99,7 @@ define([
             $scope.createPalette = function (b) {
               var scale = chroma.scale(b).out('hex'), i, item,
                 nbOfValues = $scope.palette.length;
-              for (i = 0; i < nbOfValues; i + 1) {
+              for (i = 0; i < nbOfValues; i ++) {
                 item = $scope.palette[i];
                 item.color = scale(1 / nbOfValues * i);
               }
@@ -111,7 +111,7 @@ define([
               var colors = [], i,
                 scale = chroma.scale(b).out('hex'),
                 nbOfValues = $scope.nbOfClasses;
-              for (i = 0; i < nbOfValues; i + 1) {
+              for (i = 0; i < nbOfValues; i ++) {
                 colors.push('"' + scale(1 / nbOfValues * i) + '"');
               }
               $scope.colors = colors;
