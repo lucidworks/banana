@@ -1,0 +1,147 @@
+<div>
+  <h4>Colors</h4>
+  <label class="small">
+    <input type="radio"
+           name="colorMode"
+           data-ng-model="mode"
+           id="colorModeList"
+           value="list"/>
+    <span>Comma separated values of color (no quote)</span>
+    <tip>HTML color names or hexadecimal colors are allowed
+      (e.g. red, #FF0000, #F00 and etc).
+      The chart series will get a color from these color values.</tip>
+  </label>
+  &nbsp;
+  <label class="small">
+    <input type="radio"
+           name="colorMode"
+           data-ng-model="mode"
+           id="colorModeListWithValues"
+           value="listWithValues"/>
+    <span>List of values</span>
+  </label>
+
+
+  <div data-ng-show="mode == 'list'">
+    <div class="row">
+      <div class="col-md-8">
+        <textarea class="form-control"
+                  style="width: 100%"
+              type="text"
+              data-ng-model="colors"></textarea>
+        <table style="width: 100%"><tr>
+          <td data-ng-repeat="c in colors"
+              style="background-color: {{c.substring(1, 8)}}">&nbsp;</td>
+        </tr></table>
+      </div>
+      <div class="col-md-4">
+        <span>Create a palette</span><br/>
+        <div class="input-group">
+          <input type="number"
+                 class="form-control"
+                 placeholder="Number of classes"
+                 data-ng-model="nbOfClasses"/>
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-default dropdown-toggle"
+                    data-toggle="dropdown" aria-expanded="false">
+              <span>Choose a palette</span>
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="" data-ng-click="setDefault()">default</a></li>
+              <li data-ng-repeat="b in brewer">
+                <a href=""
+                   data-ng-click="createPaletteList(b)">
+                  <table style="width: 100%"><tr>
+                    <td data-ng-repeat="c in b"
+                        style="background-color: {{c}}">&nbsp;</td>
+                  </tr></table>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div data-ng-show="mode == 'listWithValues'">
+    <div class="row" data-ng-show="palette.length > 0">
+      <div class="col-lg-offset-6 col-lg-5">
+        <div class="btn-group pull-right">
+          <button type="button" class="btn btn-link dropdown-toggle"
+                  data-toggle="dropdown" aria-expanded="false">
+            <span>Choose a palette</span>
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li data-ng-repeat="b in brewer">
+              <a href=""
+                 data-ng-click="createPalette(b)">
+                <table style="width: 100%"><tr>
+                  <td data-ng-repeat="c in b"
+                          style="background-color: {{c}}">&nbsp;</td>
+                </tr></table>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-1">
+        <button class="btn btn-link"
+                data-ng-click="removeAllValues()"
+                title="Remove all values">
+          <i class="text-danger glyphicon glyphicon-remove"/>
+        </button>
+      </div>
+    </div>
+    <div class="row"
+         data-ng-repeat="v in palette">
+      <div class="col-md-8">
+        <input type="text"
+               class="form-control"
+               name="key{{v.label}}"
+               data-ng-model="v.label"
+               data-ng-change="updateDataColors()"
+               placeholder="Index value"/>
+      </div>
+      <div class="col-md-3">
+        <div class="input-group">
+          <input type="text"
+                 class="form-control"
+                 name="color{{v.label}}"
+                 data-ng-model="v.color"
+                 data-ng-change="updateDataColors()"
+                 placeholder="Color value"/>
+          <span class="input-group-addon">
+            <input type="color"
+                   name="color{{v.color}}"
+                   data-ng-model="v.color"
+                   data-ng-change="updateDataColors()"/>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-1">
+        <button class="btn btn-link"
+                data-ng-click="removeValue($index)"
+                title="Add new value">
+          <i class="text-danger glyphicon glyphicon-remove"/>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn btn-link glyphicon glyphicon-plus"
+            data-ng-click="addValue()"
+            title="Add new value"/>
+    <button class="btn btn-link glyphicon glyphicon-download"
+            data-ng-disabled="!field"
+            data-ng-click="addValuesFromIndex()"
+            title="Load all values from the index field"/>
+
+    <p class="alert alert-warning"
+       data-ng-show="palette.length > 0 && !paletteValueFoundInData">
+      No values from the list are available in current data.
+    </p>
+  </div>
+
+</div>
