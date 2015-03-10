@@ -7,12 +7,22 @@
     <label class="small">Length <tip>Specify a maximum number of terms to display (Top N).</tip></label>
     <input class="form-control" type="number" ng-model="panel.size" ng-change="set_refresh(true)">
   </div>
-  <div class="col-sm-3 col-md-3">
+  <div class="col-sm-2 col-md-2">
+    <label class="small">Sort by</label>
+    <select class="form-control"
+            ng-change="set_refresh(true)"
+            ng-model="panel.sortBy"
+            ng-options="f for f in ['count','index']"></select>
+  </div>
+  <div class="col-sm-2 col-md-2">
     <label class="small">Order</label>
     <!-- <select class="form-control" ng-model="panel.order" ng-options="f for f in ['count','term','reverse_count','reverse_term']" ng-change="set_refresh(true)"></select></span> -->
-    <select class="form-control" ng-model="panel.order" ng-options="f for f in ['descending','ascending']" ng-change="set_refresh(true)"></select>
+    <select class="form-control"
+            ng-model="panel.order"
+            ng-options="f for f in ['descending','ascending']"
+            ng-change="set_refresh(true)"></select>
   </div>
-  <div class="col-sm-5 col-md-5">
+  <div class="col-sm-4 col-md-4">
     <label class="small">Use field values as chart's colors <tip placement="bottom">If the field values are not valid HTML colors (either color names or hexadecimal colors), the default colors for chart will be used for the data series instead.</tip></label>
     <input type="checkbox" ng-model="panel.useColorFromField" ng-checked="panel.useColorFromField" ng-change="set_refresh(true)">
   </div>
