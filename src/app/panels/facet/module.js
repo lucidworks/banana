@@ -54,11 +54,12 @@ define([
         },
         overflow: 'min-height',
         fields: [],
-        field_list: true,
         spyable: true,
         facet_limit: 10,
+        maxnum_facets: 5,  // Max number of facet fields that can be specified. 
+                           // If we do too many facets on a really big data, we will run into Out Of Memory issue in JVM.
         foundResults: true,
-        header_title: "Limit Your Search",
+        header_title: "Facet Fields",
         toggle_element: null,
         show_queries: true
       };
@@ -74,18 +75,16 @@ define([
         });
 
         $scope.panel.exportSize = $scope.panel.size * $scope.panel.pages;
-
         $scope.fields = fields;
         $scope.get_data();
       };
 
       $scope.percent = kbn.to_percent;
 
-
       $scope.add_facet_field = function(field) {
-        if (_.contains(fields.list, field) && _.indexOf($scope.panel.fields, field) === -1) {
+        if (_.contains(fields.list, field) && _.indexOf($scope.panel.fields, field) === -1 && $scope.panel.fields.length < $scope.panel.maxnum_facets) {
           $scope.panel.fields.push(field);
-          $scope.get_data();
+          $scope.set_refresh(true);
         }
       };
 
@@ -132,10 +131,11 @@ define([
         var wt_json = '&wt=json';
         var facet = '&facet=true';
         var facet_fields = '';
+
         for (var i = 0; i < $scope.panel.fields.length; i++) {
           facet_fields += '&facet.field=' + $scope.panel.fields[i];
         }
-
+        
         // Set the panel's query
         $scope.panel.queries.basic_query = querySrv.getORquery() + fq + facet + facet_fields;
         $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json;
