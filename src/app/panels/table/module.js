@@ -31,7 +31,7 @@ function (angular, app, _, kbn, moment) {
 
   var module = angular.module('kibana.panels.table', []);
   app.useModule(module);
-  module.controller('table', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
+  module.controller('table', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv, solrSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -74,13 +74,13 @@ function (angular, app, _, kbn, moment) {
       pages   : 5,   // Pages available
       offset  : 0,
       sort    : [], // By default, sorting is turned off for performance reason
+      sortable: false,
       group   : "default",
       style   : {'font-size': '9pt'},
       overflow: 'min-height',
       fields  : [],
       important_fields : [],
       highlight : [],
-      sortable: true,
       header  : true,
       paging  : true,
       field_list: true,
@@ -94,9 +94,14 @@ function (angular, app, _, kbn, moment) {
       imageFields : [],      // fields to be displayed as <img>
       imgFieldWidth: 'auto', // width of <img> (if enabled)
       imgFieldHeight: '85px', // height of <img> (if enabled)
-      show_queries:true,
+      show_queries: true,
+      maxNumCalcTopFields: 20, // Set the max number of fields for calculating top values
+      calcTopFieldValuesFromAllData: false // false: calculate top field values from $scope.data
+                                           // true: calculate from all data using Solr facet
     };
     _.defaults($scope.panel,_d);
+
+    $scope.percent = kbn.to_percent;
 
     $scope.init = function () {
       $scope.Math = Math;
@@ -105,27 +110,29 @@ function (angular, app, _, kbn, moment) {
       $scope.$on('refresh',function(){$scope.get_data();});
       $scope.panel.exportSize = $scope.panel.size * $scope.panel.pages; 
       $scope.fields = fields;
-      
-      // Backward compatibility with old dashboards without important fields
-      // Set important fields to all fields if important fields array is empty
-      if (_.isEmpty($scope.panel.important_fields)) {
-        $scope.panel.important_fields = fields.list;
-      }
       $scope.get_data();
     };
 
-    $scope.percent = kbn.to_percent;
-
     $scope.toggle_micropanel = function(field,groups) {
       var docs = _.map($scope.data,function(_d){return _d.kibana._source;});
-      var topFieldValues = kbn.top_field_values(docs,field,10,groups);
+      var topFieldValues = {};
+      var totalcount = 0;
+
+      if (!$scope.panel.calcTopFieldValuesFromAllData) {
+        topFieldValues = kbn.top_field_values(docs,field,10,groups);
+        totalcount = _.countBy(docs,function(doc){return _.contains(_.keys(doc),field);})['true'];
+      } else {
+        topFieldValues = solrSrv.getTopFieldValues(field);
+        totalcount = topFieldValues.totalcount;
+      }
+
       $scope.micropanel = {
         field: field,
         grouped: groups,
         values : topFieldValues.counts,
         hasArrays : topFieldValues.hasArrays,
         related : kbn.get_related_fields(docs,field),
-        count: _.countBy(docs,function(doc){return _.contains(_.keys(doc),field);})['true']
+        count: totalcount
       };
     };
 
@@ -217,14 +224,21 @@ function (angular, app, _, kbn, moment) {
       $scope.panelMeta.loading = true;
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
 
+      // Calculate top field values
+      if ($scope.panel.calcTopFieldValuesFromAllData) {
+        // Make sure we are not calculating too much facet fields.
+        if ($scope.panel.important_fields.length > $scope.panel.maxNumCalcTopFields) {
+          alert('You cannot specify more than ' + $scope.panel.maxNumCalcTopFields + ' fields for the calculation. Please select less fields.');
+        } else {
+          solrSrv.calcTopFieldValues($scope.panel.important_fields);
+        }
+      }
+
       // What this segment is for? => to select which indices to query.
       var _segment = _.isUndefined(segment) ? 0 : segment;
       $scope.segment = _segment;
-
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
-
       var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
-
       $scope.panel_request = request;
 
       var fq = '';
@@ -298,6 +312,12 @@ function (angular, app, _, kbn, moment) {
 
           // Keep only what we need for the set
           $scope.data = $scope.data.slice(0,$scope.panel.size * $scope.panel.pages);
+
+          // Dynamically display only non-empty fields on the field list (left side)
+          $scope.panel.important_fields = [];
+          _.each($scope.data, function(doc) {
+            $scope.panel.important_fields = _.union(_.keys(doc.kibana._source));
+          });
         } else {
           return;
         }
@@ -310,7 +330,6 @@ function (angular, app, _, kbn, moment) {
           _segment+1 < dashboard.indices.length) {
           $scope.get_data(_segment+1,$scope.query_id);
         }
-
       });
     };
 
@@ -336,24 +355,24 @@ function (angular, app, _, kbn, moment) {
       var response = request.doSearch();
 
       response.then(function(response) {
-          var blob; // the file to be written
-          // TODO: manipulating solr requests
-          // pagination (batch downloading)
-          // example: 1,000,000 rows will explode the memory !
-          if(filetype === 'json') {
-              blob = new Blob([angular.toJson(response,true)], {type: "text/json;charset=utf-8"});
-          } else if(filetype === 'csv') {
-              blob = new Blob([response.toString()], {type: "text/csv;charset=utf-8"});
-          } else if(filetype === 'xml'){
-              blob = new Blob([response.toString()], {type: "text/xml;charset=utf-8"});
-          } else {
-              // incorrect file type
-              alert('incorrect file type');
-              return false;
-          }
-          // from filesaver.js
-          window.saveAs(blob, "table"+"-"+new Date().getTime()+"."+filetype);
-          return true;
+        var blob; // the file to be written
+        // TODO: manipulating solr requests
+        // pagination (batch downloading)
+        // example: 1,000,000 rows will explode the memory !
+        if(filetype === 'json') {
+            blob = new Blob([angular.toJson(response,true)], {type: "text/json;charset=utf-8"});
+        } else if(filetype === 'csv') {
+            blob = new Blob([response.toString()], {type: "text/csv;charset=utf-8"});
+        } else if(filetype === 'xml'){
+            blob = new Blob([response.toString()], {type: "text/xml;charset=utf-8"});
+        } else {
+            // incorrect file type
+            alert('incorrect file type');
+            return false;
+        }
+        // from filesaver.js
+        window.saveAs(blob, "table"+"-"+new Date().getTime()+"."+filetype);
+        return true;
       });
     };
 

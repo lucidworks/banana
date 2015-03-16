@@ -5,7 +5,7 @@
   <i class="pointer icon-ban-circle" ng-click="fieldExists(micropanel.field,'mustNot');dismiss();"></i>
   <br>
   <small>
-    {{micropanel.count}} events in the table set
+    {{micropanel.count|thousandSeparator}} events
     <span ng-show="micropanel.hasArrays">
       as
       <a class="link" ng-class="{'strong':micropanel.grouped}" ng-click="toggle_micropanel(micropanel.field,true)">Groups</a> /
@@ -32,13 +32,14 @@
             overflow: visible;
           }
         </style>
-        <div bs-tooltip="percent(field[1],data.length)" class="bar" ng-class="micropanelColor($index)" ng-style="{width: percent(field[1],data.length)}"></div>
-        <span style="position:absolute;right:20px;">{{field[1]}}</span>
+        <div bs-tooltip="percent(field[1], micropanel.count)" class="bar" ng-class="micropanelColor($index)" ng-style="{width: percent(field[1], micropanel.count)}"></div>
+        <span style="position:absolute;right:20px;">{{field[1]|thousandSeparator}}</span>
       </td>
     </tr>
   </tbody>
 </table>
 <div class="progress" ng-show="micropanel.grouped">
-  <div ng-repeat='field in micropanel.values' bs-tooltip="field[0]+' ('+percent(field[1],data.length)+')'" class="bar {{micropanelColor($index)}}" ng-style="{width: percent(field[1],data.length)};"></div>
+  <div ng-repeat='field in micropanel.values' bs-tooltip="field[0]+' ('+percent(field[1], micropanel.count)+')'" class="bar {{micropanelColor($index)}}" ng-style="{width: percent(field[1], micropanel.count)};"></div>
 </div>
-<span ng-repeat='(field,count) in micropanel.related'><a ng-click="toggle_field(field)">{{field}}</a> ({{Math.round((count / micropanel.count) * 100)}}%), </span>
+<!-- I don't think related fields are being used? -->
+<!-- <span ng-repeat='(field,count) in micropanel.related'><a ng-click="toggle_field(field)">{{field}}</a> ({{Math.round((count / micropanel.count) * 100)}}%), </span> -->
