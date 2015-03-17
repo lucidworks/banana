@@ -14,6 +14,7 @@ require.config({
     css:                      '../vendor/require/css',
     text:                     '../bower_components/requirejs-text/text',
     moment:                   '../bower_components/moment/moment',
+    chroma:                   '../bower_components/chroma-js/chroma',
     filesaver:                '../bower_components/FileSaver/FileSaver',
 
     angular:                  '../bower_components/angular/angular',

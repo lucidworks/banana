@@ -6,5 +6,6 @@ define([
   './ngBlur',
   './ngModelOnBlur',
   './tip',
-  './confirmClick'
+  './confirmClick',
+  './colorPicker'
 ], function () {});
