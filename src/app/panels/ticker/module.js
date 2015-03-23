@@ -170,10 +170,20 @@ define([
         _.each($scope.panel.queries.ids, function(id) {
           var first_request = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet_first_range;
           var second_request = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet_second_range;
-          var request_new = request.setQuery(first_request);
+          var request_new;
+          if ($scope.panel.queries.custom != null) {
+            request_new = request.setQuery(first_request + $scope.panel.queries.custom);
+          } else {
+            request_new = request.setQuery(first_request);
+          }
           $scope.panel.queries.query += first_request + "\n\n" ;
           mypromises.push(request_new.doSearch());
-          var request_old = request.setQuery(second_request);
+          var request_old;
+          if ($scope.panel.queries.custom != null) {
+            request_old = request.setQuery(second_request + $scope.panel.queries.custom);
+          } else {
+            request_old = request.setQuery(second_request);
+          }
           $scope.panel.queries.query += second_request + "\n";
           mypromises.push(request_old.doSearch());
           $scope.panel.queries.query += "-----------\n" ;
