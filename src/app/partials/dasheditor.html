@@ -144,9 +144,30 @@
   <!-- Solr tab -->
   <div ng-show="editor.index == 3">
     <div class="row-fluid">
-      <h4>Solr Settings</h4>
+      <h4>Server Settings</h4>
     </div>
     <div class="row-fluid">
+      <h6>Choose the server</h6>
+      <form>
+        <div class="span5">
+          <input type="radio" value="zk_server" ng-model="dashboard.current.server_type" id="zk_server" ng-checked="dashboard.current.server_type == 'zk_server'">  Zookeeper Rest Server</input>
+        </div>
+        <div class="span5">
+          <input type="radio" value="solr_server" ng-model="dashboard.current.server_type" id="solr_server" ng-checked="dashboard.current.server_type == 'solr_server'">  Solr Server</input>
+        </div>
+      </form>
+    </div>
+    <div class="row-fluid" ng-show="dashboard.current.server_type == 'zk_server'">
+      <div class="span5">
+        <h6>Zookeeper Rest Server</h6>
+        <input type="text" class="input-xlarge" ng-model="dashboard.current.solr.zkHost">
+      </div>
+      <div class="span4">
+        <h6>Collection</h6>
+        <input type="text" class="input-medium" ng-model="dashboard.current.solr.core_name">
+      </div>
+    </div>
+    <div class="row-fluid" ng-show="dashboard.current.server_type == 'solr_server'">
       <div class="span5">
         <h6>Solr Server</h6>
         <input type="text" class="input-xlarge" ng-model="dashboard.current.solr.server">
