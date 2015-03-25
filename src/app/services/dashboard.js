@@ -64,6 +64,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     // Store a reference to this
     var self = this;
     var filterSrv,querySrv;
+    var current_core, current_zk;
 
     this.current = _.clone(_dash);
     this.last = {};
