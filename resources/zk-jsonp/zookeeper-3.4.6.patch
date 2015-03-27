@@ -1,0 +1,20 @@
+diff --exclude '*.git' -crN zookeeper-3.4.6.orig/src/contrib/rest/src/java/org/apache/zookeeper/server/jersey/resources/ZNodeResource.java zookeeper-3.4.6.mod/src/contrib/rest/src/java/org/apache/zookeeper/server/jersey/resources/ZNodeResource.java
+*** zookeeper-3.4.6.orig/src/contrib/rest/src/java/org/apache/zookeeper/server/jersey/resources/ZNodeResource.java	Thu Feb 20 19:14:09 2014
+--- zookeeper-3.4.6.mod/src/contrib/rest/src/java/org/apache/zookeeper/server/jersey/resources/ZNodeResource.java	Fri Mar 27 11:31:01 2015
+***************
+*** 120,126 ****
+       */
+  
+      @GET
+!     @Produces( { MediaType.APPLICATION_JSON, "application/javascript" })
+      public Response getZNodeListJSON(
+              @PathParam("path") String path,
+              @QueryParam("callback") String callback,
+--- 120,126 ----
+       */
+  
+      @GET
+!     @Produces( { "application/javascript", MediaType.APPLICATION_JSON })
+      public Response getZNodeListJSON(
+              @PathParam("path") String path,
+              @QueryParam("callback") String callback,

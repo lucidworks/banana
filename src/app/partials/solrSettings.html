@@ -1,25 +1,48 @@
-  <div class="row">
-    <div class="pull-right editor-title">New Dashboard Settings</div>
+<div class="row">
+  <div class="pull-right editor-title">New Dashboard Settings</div>
+</div>
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <h4>Server Settings</h4>
   </div>
-
-  <div class="row">
-    <div class="col-sm-12 col-md-12">
-      <div class="col-sm-6 col-md-6">
-          <h6>Solr Server</h6>
-          <input type="text" class="form-control input-xlarge" ng-model="new.server" placeholder='/solr/'>
-      </div>
-      <div class="col-sm-6 col-md-6">
-          <h6>Collection</h6>
-          <input type="text" class="form-control  input-medium" ng-model="new.core_name" placeholder="searchlogs">
-      </div>
-      <div class="row">
-        <div class="col-sm-12 col-md-12" ng-show="$scope.type == 'default-ts'">
-            <h6>Time Field</h6>
-            <input type="text" class="form-control  input-medium" ng-model="new.time_field" placeholder="timestamp">
-        </div>
-      </div>
-    </div>
+  <div class="col-md-12"> 
+    <h6>Choose a server</h6> 
+  </div> 
+  <form> 
+    <div class="col-sm-5 col-md-5"> 
+      <input type="radio" value="solr_server" ng-model="new.server_type" id="solr_server" ng-checked="new.server_type == 'solr_server'">  Solr Server</input> 
+    </div> 
+    <div class="col-sm-5 col-md-5"> 
+      <input type="radio" value="zk_server" ng-model="new.server_type" id="zk_server" ng-checked="new.server_type == 'zk_server'">  Zookeeper Rest Server</input> 
+    </div> 
+  </form> 
+</div> 
+<div class="row" ng-show="new.server_type == 'solr_server'"> 
+  <div class="col-sm-5 col-md-5"> 
+    <h6>Solr Server</h6> 
+    <input type="text" class="input-xlarge form-control" ng-model="new.server"> 
+  </div> 
+  <div class="col-sm-4 col-md-4"> 
+    <h6>Collection</h6> 
+    <input type="text" class="form-control" ng-model="new.core_name" placeholder='/solr/'> 
+  </div> 
+</div> 
+<div class="row" ng-show="new.server_type == 'zk_server'"> 
+  <div class="col-sm-5 col-md-5"> 
+    <h6>Zookeeper Rest Server <tip>Specify path to the root of ZooKeeper REST Gateway. e.g.: http://localhost:9998/znodes/v1/.</tip></h6> 
+    <input type="text" class="input-xlarge form-control" ng-model="new.zkHost" placeholder='/znodes/v1/'> 
+  </div> 
+  <div class="col-sm-4 col-md-4"> 
+    <h6>Collection</h6> 
+    <input type="text" class="form-control" ng-model="new.core_name" placeholder="searchlogs"> 
+  </div> 
+</div> 
+<div class="row">
+  <div class="col-sm-12 col-md-12" ng-show="$scope.type == 'default-ts'">
+    <h6>Time Field</h6>
+    <input type="text" class="form-control  input-medium" ng-model="new.time_field" placeholder="timestamp">
   </div>
+</div>
 <div class="modal-footer">
   <button type="button" class="btn btn-success" ng-click="create_new($scope.type);$hide();">Create</button>
   <button type="button" class="btn btn-danger" ng-click="$hide();reset_panel();close_edit()">Close</button>

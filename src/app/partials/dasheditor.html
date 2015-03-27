@@ -154,14 +154,35 @@
   <!-- Solr tab -->
   <div ng-show="editor.index == 3">
     <div class="row">
-      <div class="col-md-12">
-        <h4>Solr Settings</h4>        
+      <div class="col-sm-12 col-md-12">
+        <h4>Server Settings</h4>        
       </div>
+      <div class="col-md-12">
+        <h6>Choose the server</h6>
+      </div> 
+      <form>
+        <div class="col-sm-5 col-md-5">
+          <input type="radio" value="solr_server" ng-model="dashboard.current.server_type" id="solr_server" ng-checked="dashboard.current.server_type == 'solr_server'">  Solr Server</input>
+        </div>
+        <div class="col-sm-5 col-md-5">
+          <input type="radio" value="zk_server" ng-model="dashboard.current.server_type" id="zk_server" ng-checked="dashboard.current.server_type == 'zk_server'">  Zookeeper Rest Server</input>
+        </div>
+      </form>
     </div>
-    <div class="row">
+    <div class="row" ng-show="dashboard.current.server_type == 'solr_server'">
       <div class="col-sm-5 col-md-5">
         <h6>Solr Server</h6>
         <input type="text" class="input-xlarge form-control" ng-model="dashboard.current.solr.server">
+      </div>
+      <div class="col-sm-4 col-md-4">
+        <h6>Collection</h6>
+        <input type="text" class="form-control" ng-model="dashboard.current.solr.core_name" bs-typeahead ng-options="c as c for c in dashboard.current.solr.core_list">
+      </div>
+    </div>
+    <div class="row" ng-show="dashboard.current.server_type == 'zk_server'">
+      <div class="col-sm-5 col-md-5">
+        <h6>Zookeeper Rest Server <tip>Specify path to the root of ZooKeeper REST Gateway. e.g.: http://localhost:9998/znodes/v1/.</tip></h6>
+        <input type="text" class="input-xlarge form-control" ng-model="dashboard.current.solr.zkHost">
       </div>
       <div class="col-sm-4 col-md-4">
         <h6>Collection</h6>

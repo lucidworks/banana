@@ -49,10 +49,12 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       },
       solr: {
         server: config.solr,
+        zkHost: config.zk_server,
         core_name: config.solr_core,
         core_list: [],
         global_params: ''
-      }
+      },
+      server_type: config.server_type
     };
     
     var sjs = sjsResource(config.solr + config.solr_core);
@@ -62,6 +64,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     // Store a reference to this
     var self = this;
     var filterSrv,querySrv;
+    var current_core, current_zk, current_solr;
 
     this.current = _.clone(_dash);
     this.last = {};
@@ -115,9 +118,87 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       }
     };
 
+    // Use zookeeper rest server APIs to get available solr server address. The address is extracted from
+    // clusterstate.json only when the dashboard is loaded or when the current solr server is unreachable
+    this.get_solr_server = function() {
+      if (!self.current.solr.zkHost.endsWith('/')) {
+        self.current.solr.zkHost = self.current.solr.zkHost + '/';
+      }
+      return $http({
+        url: self.current.solr.zkHost + 'clusterstate.json?dataformat=utf8',
+        method: "JSONP",
+        params: {
+          callback : 'JSON_CALLBACK'
+        },
+        transformResponse: function(response) {
+          response = angular.fromJson(response);
+          if (typeof response.dataUtf8 === 'undefined') {
+            alertSrv.set('Error', 'No data found for collection ' + self.current.solr.core_name +
+                         '. Check the zookeeper path or select specify solr server.', 'error');
+            return false;
+          }
+          response = angular.fromJson(response.dataUtf8);
+          if (response.hasOwnProperty(self.current.solr.core_name)) {
+            var shards = angular.fromJson(response[self.current.solr.core_name]["shards"]);
+            var arr = Object.keys(shards).map(function (key) { return shards[key] });
+            var i;
+            // Check if all shards are in active state or not
+            for (i = 0; i < arr.length; i++) {
+              if (arr[i].state !== 'active') {
+                alertSrv.set('Error', 'All shards are not active currently. Please try again after some time', 'error');
+                return false;
+              }
+            }
+            i = Math.floor(Math.random()*arr.length);
+            var random_shard = arr[i];
+            arr = Object.keys(random_shard.replicas).map(function (key) { return random_shard.replicas[key] });
+            i = Math.floor(Math.random()*arr.length);
+            var random_replica = arr[i];
+            i = 0;
+            while (random_replica.state !== 'active' && i < arr.length) {
+              random_replica = arr[i];
+              i++;
+            }
+            if (random_replica.state !== 'active') {
+              alertSrv.set('Error', 'No active node present currently. Please try again after some time', 'error');
+              return false;
+            }
+            self.current.solr.server = random_replica.base_url + '/';
+            current_zk = self.current.solr.zkHost;
+            current_core = self.current.solr.core_name;
+            current_solr = self.current.solr.server;
+            if (DEBUG) { console.debug('New solr server found is: ', self.current.solr.server) };
+          } else {
+            alertSrv.set('Error', 'Collection ' + self.current.solr.core_name +
+                         ' does not exist. Please check the configuration again', 'error');
+            return false;
+          }
+        }
+      }).error(function(data, status) {
+          alertSrv.set('Error', 'Cannot connect to Zookeeper Rest server at ' + self.current.solr.zkHost, 'error');
+          return false;
+      }).success(function(data) {
+          self.refresh();
+          if (DEBUG) { console.debug('Method to fetch solr server from zookeeper called'); }
+      });
+    };
+
+    // Check if Zookeeper configuration has changed.
+    this.zk_config_changed = function() {
+      return (current_core !== self.current.solr.core_name || current_zk !== self.current.solr.zkHost 
+             || current_solr !== self.current.solr.server);
+    };
+
     // Since the dashboard is responsible for index computation, we can compute and assign the indices
     // here before telling the panels to refresh
     this.refresh = function() {
+      // If collection name is changed or zookeeper url is changed, then get new solr server url
+      // Otherwise, continue using the same solr server
+      if (self.current.server_type === 'zk_server' && self.zk_config_changed()) {
+        self.get_solr_server();
+        return;
+      }
+
       // Retrieve Solr collections for the dashboard
       kbnIndex.collections(self.current.solr.server).then(function (p) {
         if (DEBUG) { console.debug('dashboard: kbnIndex.collections p = ',p); }
@@ -181,6 +262,10 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       _.defaults(dashboard.loader,_dash.loader);
       // Solr
       _.defaults(dashboard.collection,_dash.collection);
+      // Default Zookeeper host
+      _.defaults(dashboard.zkHost, _dash.zkHost);
+      // Default server type
+      _.defaults(dashboard.server_type, _dash.server_type);
       return dashboard;
     };
 
@@ -201,6 +286,13 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       // Ok, now that we've setup the current dashboard, we can inject our services
       querySrv = $injector.get('querySrv');
       filterSrv = $injector.get('filterSrv');
+
+      // Set Solr Server as default type for older dashboards
+      if (typeof self.current.server_type === 'undefined') {
+        self.current.server_type = 'solr_server';
+      } else if (self.current.server_type === 'zk_server') {
+        self.get_solr_server();
+      }
 
       // Make sure these re-init
       querySrv.init();
@@ -315,6 +407,10 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         if(status === 0) {
           alertSrv.set('Error',"Could not contact Solr at "+config.solr+
             ". Please ensure that Solr is reachable from your system." ,'error');
+          // Try a different solr server if zookeeper server is enabled
+          if (self.current.server_type == 'zk_server') {
+            self.get_solr_server();
+          }
         } else {
           alertSrv.set('Error','Could not find dashboard named "'+id+'". Please ensure that the dashboard name is correct or exists in the system.','error');
         }

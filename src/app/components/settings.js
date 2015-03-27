@@ -11,6 +11,8 @@ function (_) {
      */
     var defaults = {
       solr: "http://"+window.location.hostname+":8983/solr/",
+      zkHost: "http://"+window.location.hostname+":9998/znodes/v1/",
+      server_type: "solr_server",
       solr_core: "logstash_logs",
       banana_index  : 'banana-int',
       USE_ADMIN_LUKE: true,
