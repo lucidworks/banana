@@ -48,7 +48,7 @@ function (Settings) {
      *     zkHost = "http://localhost:9998/znodes/v1/cluster1/solr/"
      *
      * Yo should enable JSONP in Zookeeper server before you can make request. Guide to enable
-     * JSONP in Zookeeper rest server is avaialable under resources/zk_jsonp/
+     * JSONP in Zookeeper rest server is avaialable under resources/zk-jsonp/
      *
      * The default server type used in dashboard will be set according to the parameter
      * server_type. Currently it can only have two particular values as follows:
