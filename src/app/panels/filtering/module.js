@@ -95,6 +95,15 @@ function (angular, app, _) {
         return true;
       }
     };
+  });
 
+  module.filter('truncate', function() {
+    return function(text, length) {
+      length = length || 200;
+      if (!_.isUndefined(text) && !_.isNull(text) && text.toString().length > 0) {
+        return text.length > length ? text.substr(0,length)+'...' : text;
+      }
+      return '';
+    };
   });
 });
