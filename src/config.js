@@ -92,7 +92,8 @@ function (Settings) {
       'fullTextSearch',
       'facet',
       'tagcloud',
-      'multiseries'
+      'multiseries',
+	  'sunburst'
     ]
   });
 });
