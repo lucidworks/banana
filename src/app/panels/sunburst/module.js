@@ -100,11 +100,11 @@ define([
                 fq = '&' + filterSrv.getSolrFq();
             }
             var wt_json = '&wt=json';
-		
+			var rows = '&rows=0';
 			var facet = '&facet=true'
 			var facet_pivot = '&facet.pivot=' +$scope.panel.facet_pivot_strings.join().replace(/ /g,'');
 			var facet_limits = '&facet.limit=' + $scope.panel.facet_limit;
-            $scope.panel.queries.query = querySrv.getORquery() + fq  + wt_json + facet + facet_pivot + facet_limits ;
+            $scope.panel.queries.query = querySrv.getORquery() + fq  + wt_json + facet + facet_pivot + facet_limits + rows;
 			if (DEBUG){
 				console.log($scope.panel.queries.query);
 				}
@@ -210,7 +210,7 @@ define([
                         left: 20
                     }, 
                     width = parent_width - margin.left - margin.right;
-
+					d3.selectAll("#sunbursttooltip").remove();
                     height = height - margin.top - margin.bottom;
 
 					var color = d3.scale.category20c();
@@ -256,7 +256,7 @@ define([
 				var labels = svg.selectAll("text.label")
 				  .data(partition(scope.data)); 
 				  
-				var $tooltip = $('<div>');
+				var $tooltip = $('<div id="sunbursttooltip">');
 
 				  function click(d) {
 					var parents = getAncestors(d);
