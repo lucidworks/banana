@@ -123,8 +123,7 @@ define([
                 $scope.render();
             });
 
-            // Hide the spinning wheel icon
-            $scope.panelMeta.loading = false;
+
         };
 		
 		$scope.dash = dashboard;
@@ -255,7 +254,8 @@ define([
 
 				var labels = svg.selectAll("text.label")
 				  .data(partition(scope.data)); 
-				  
+				// Hide the spinning wheel icon
+				scope.panelMeta.loading = false;
 				var $tooltip = $('<div id="sunbursttooltip">');
 
 				  function click(d) {
@@ -269,15 +269,6 @@ define([
 		  d.dx0 = d.dx;
 		}
 
-		function arcTween(a) {
-		  var i = d3.interpolate({x: a.x0, dx: a.dx0}, a);
-		  return function(t) {
-			var b = i(t);
-			a.x0 = b.x;
-			a.dx0 = b.dx;
-			return arc(b);
-		  };
-		}
 	   function mouseover(d) {
 			var parents = getAncestors(d);
 		 
