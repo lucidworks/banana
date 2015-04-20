@@ -309,7 +309,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
           // return renderTemplate(angular.fromJson(response)._source.dashboard, $routeParams);
           // return renderTemplate(JSON.stringify(source_json.dashboard), $routeParams);
-          return renderTemplate(JSON.stringify(source_json), $routeParams);
+          return renderTemplate(source_json[0], $routeParams);
         }
       }).error(function(data, status) {
         if(status === 0) {
