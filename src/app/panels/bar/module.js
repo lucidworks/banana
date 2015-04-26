@@ -142,6 +142,15 @@ define([
         });
       };
 
+      $scope.build_search = function(word) {
+        if(word) {
+          filterSrv.set({type:'terms',field:$scope.panel.field,value:word,mandate:'must'});
+        } else {
+          return;
+        }
+        dashboard.refresh();
+      };
+
       $scope.set_refresh = function(state) {
         $scope.refresh = state;
         // if 'count' mode is selected, set decimal_points to zero automatically.
@@ -179,14 +188,14 @@ define([
             var width = element.parent().width();
             var height = parseInt(scope.row.height);
 
-             var margin = {top: 40, right: 20, bottom: 30, left: 30};
+             var margin = {top: 40, right: 20, bottom: 60, left: 40};
               width = width - margin.left - margin.right;
               height = height - margin.top - margin.bottom;
 
               var formatPercent = d3.format(".0");
 
               var x = d3.scale.ordinal()
-                  .rangeRoundBands([10, width], .1);
+                  .rangeRoundBands([15, width], .1);
 
               var y = d3.scale.linear()
                   .range([height, 0]);
@@ -205,7 +214,7 @@ define([
                 .offset([-10, 0])
                 .html(function(d) {
                   return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
-                })
+                });
 
               var svg = d3.select(element[0]).append("svg")
                   .attr("width", width + margin.left + margin.right)
@@ -221,7 +230,12 @@ define([
               svg.append("g")
                   .attr("class", "x axis")
                   .attr("transform", "translate(0," + height + ")")
-                  .call(xAxis);
+                  .call(xAxis)
+                .selectAll("text")
+                  .style("text-anchor", "end")
+                  .attr("dx", "-.8em")
+                  .attr("dy", "-.55em")
+                  .attr("transform", "rotate(-60)" );
 
               svg.append("g")
                   .attr("class", "y axis")
@@ -242,7 +256,8 @@ define([
                   .attr("y", function(d) { return y(d.frequency); })
                   .attr("height", function(d) { return height - y(d.frequency); })
                   .on('mouseover', tip.show)
-                  .on('mouseout', tip.hide);
+                  .on('mouseout', tip.hide)
+                  .on('click', function(d){ tip.hide(); scope.build_search(d.letter);});
           }
         }
       };
