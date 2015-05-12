@@ -93,7 +93,8 @@ function (Settings) {
       'facet',
       'tagcloud',
       'multiseries',
-	  'sunburst'
+      'sunburst',
+      'docviewer'
     ]
   });
 });
