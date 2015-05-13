@@ -45,6 +45,12 @@ define([
     $scope.init = function() {
     };
 
+    $scope.reset = function() {
+      $scope.querySrv.list[Object.keys($scope.querySrv.list).length - 1].
+        query = _d.query;
+      $rootScope.$broadcast('refresh');
+    };
+
     $scope.refresh = function() {
       update_history(_.pluck($scope.querySrv.list,'query'));
       $rootScope.$broadcast('refresh');
