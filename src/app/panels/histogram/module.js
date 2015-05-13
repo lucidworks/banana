@@ -99,6 +99,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       legend      : true,
       'x-axis'    : true,
       'y-axis'    : true,
+      logAxis : false,
       percentage  : false,
       interactive : true,
       options     : true,
@@ -504,6 +505,35 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
           // Populate element
           try {
+
+            var yAxisConfig = {
+              show: scope.panel['y-axis'],
+              min: scope.panel.min_value? scope.panel.min_value : null, // TODO - make this adjusted dynamicmally, and add it to configuration panel
+              max: scope.panel.max_value? scope.panel.max_value: scope.panel.percentage && scope.panel.stack ? 100 : null,
+              axisLabel: scope.panel.mode
+            };
+            if (scope.panel.logAxis) {
+              _.defaults(yAxisConfig, {
+                ticks: function (axis) {
+                  var res = [], v, i = 1,
+                    ticksNumber = 8,
+                    max = axis.max === 0 ? 0 : Math.log(axis.max),
+                    min = axis.min === 0 ? 0 : Math.log(axis.min),
+                    interval = (max - min) / ticksNumber;
+                  do {
+                    v = interval * i;
+                    res.push(Math.exp(v));
+                    ++i;
+                  } while (v < max);
+                  return res;
+                },
+                transform: function (v) {
+                  return v === 0 ? 0 : Math.log(v); },
+                inverseTransform: function (v) {
+                  return v === 0 ? 0 : Math.exp(v); }
+              });
+            }
+
             var options = {
               legend: { show: false },
               series: {
@@ -534,12 +564,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                axisLabels: {
                 show: true
               },
-              yaxis: {
-                show: scope.panel['y-axis'],
-                min: scope.panel.min_value? scope.panel.min_value : null, // TODO - make this adjusted dynamicmally, and add it to configuration panel
-                max: scope.panel.max_value? scope.panel.max_value: scope.panel.percentage && scope.panel.stack ? 100 : null,
-                axisLabel: scope.panel.mode,
-              },
+              yaxis: yAxisConfig,
               xaxis: {
                 timezone: scope.panel.timezone,
                 show: scope.panel['x-axis'],
