@@ -11,3 +11,16 @@
       <span style="margin-left:3px" ng-click="toggle_important_field(field)" ng-repeat="field in $parent.panel.important_fields" class="label pointer remove label-default">{{field}} </span>
     </div>
   </div>
+  <div class="row">
+    <div class="col-sm-3 col-md-3">
+      <h6>
+        Load important field only
+        <tip>When the document to display contains lots of fields, it could be
+        better to only load fields to be displayed on the table and not all
+        fields in the document.</tip>
+      </h6>
+      <input type="checkbox"
+             ng-model="panel.isLoadingImportantFieldOnly"
+             ng-checked="panel.isLoadingImportantFieldOnly">
+    </div>
+  </div>
