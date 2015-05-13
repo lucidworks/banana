@@ -47,12 +47,23 @@
       <form class="input-append" style="width:100%;">
         <input type="text" ng-model="elasticsearch.query" ng-click="$event.stopPropagation()" ng-change="elasticsearch_dblist('title:'+elasticsearch.query+'*')" placeholder="Type to filter" class="form-control">
       </form>
-      <h6 ng-show="elasticsearch.dashboards.length">Solr stored dashboards</h6>
+      <h6 ng-show="elasticsearch.dashboards.length">Stored dashboards</h6>
       <h6 ng-hide="elasticsearch.dashboards.length">No dashboards matching your query found</h6>
       <table class="table table-condensed table-striped">
         <tbody><tr ng-repeat="row in elasticsearch.dashboards | orderBy:['id'] | limitTo:dashboard.current.loader.load_elasticsearch_size">
-          <td ng-show="dashboard.current.loader.save_elasticsearch"><a confirm-click="elasticsearch_delete(row.id)" confirmation="Are you sure you want to delete {{row.id}} dashboard?"><i class="fa fa-times"></i></a></td>
-          <td><a href="#/dashboard/solr/{{row.id}}">{{row.id}}</a></td>
+          <td>
+            <a href="#/dashboard/solr/{{row.id}}"
+               title="Open dashboard">
+              {{row.id}}
+            </a>
+          </td>
+          <td ng-show="dashboard.current.loader.save_elasticsearch">
+            <a title="Delete dashboard"
+               confirm-click="elasticsearch_delete(row.id)"
+               confirmation="Are you sure you want to delete {{row.id}} dashboard?">
+              <i class="fa fa-times text-danger"></i>
+            </a>
+          </td>
           <!--<td><a><i class="fa fa-share" ng-click="share = dashboard.share_link(row.id,'solr',row.id)" bs-modal="'app/panels/dashcontrol/share.html'"></i></a></td>-->
         </tr>
       </tbody></table>
