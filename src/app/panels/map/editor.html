@@ -22,8 +22,77 @@
     <label class="small">Stats Field <tip>This is the field that contains numerical values.</tip></label>
     <input type="text" class="form-control" bs-typeahead ng-options="field for field in fields.list" ng-model="panel.stats_field" ng-change="set_refresh(true)">
   </div>
+  <div class="col-sm-3 col-md-3" ng-show="panel.mode != 'count'">
+    <label class="small">
+      Function
+      <tip>The function used to map input values to the provided scale.</tip>
+    </label>
+    <select class="form-control"
+            ng-options="f for f in functions"
+            ng-model="panel.normalizeFunction" ng-change="set_refresh(true)"/>
+  </div>
   <div class="col-sm-3 col-md-3">
     <label class="small">Decimal Points <tip>The number of digits after the decimal point.</tip></label>
     <select class="form-control" ng-model="panel.decimal_points" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9]"></select>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-2 col-md-2">
+    <label class="small">Display zoom control</label>
+    <input type="checkbox"
+           ng-model="panel.isZoomControlEnabled"
+           ng-checked="panel.isZoomControlEnabled"
+           ng-change="set_refresh(true)">
+  </div>
+  <div class="col-sm-2 col-md-2">
+    <label class="small">Zoom on scroll</label>
+    <input type="checkbox"
+           ng-model="panel.isZoomOnScrollEnabled"
+           ng-checked="panel.isZoomOnScrollEnabled"
+           ng-change="set_refresh(true)">
+  </div>
+  <div class="col-sm-2 col-md-2">
+    <label class="small">Display legend</label>
+    <input type="checkbox"
+           ng-model="panel.isLegendDisplayed"
+           ng-checked="panel.isLegendDisplayed"
+           ng-change="set_refresh(true)">
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-6 col-md-6">
+    <label class="small">Colors</label>
+    <textarea class="form-control"
+              ng-model="listOfColors"
+              ng-model-options="{debounce: 300}"
+              ng-change="updateColors(listOfColors)"></textarea>
+  </div>
+  <div class="col-sm-3 col-md-3">
+    <label class="small">Region fill color</label>
+    <div class="input-group">
+      <input type="text"
+             class="form-control"
+             ng-model="panel.fillColor"
+             ng-change="set_refresh(true)"/>
+      <span class="input-group-addon">
+        <input type="color"
+               ng-model="panel.fillColor"
+               ng-change="set_refresh(true)"/>
+      </span>
+    </div>
+  </div>
+  <div class="col-sm-3 col-md-3">
+    <label class="small">Background color</label>
+    <div class="input-group">
+      <input type="text"
+             class="form-control"
+             ng-model="panel.backgroundColor"
+             ng-change="set_refresh(true)"/>
+      <span class="input-group-addon">
+        <input type="color"
+               ng-model="panel.backgroundColor"
+               ng-change="set_refresh(true)"/>
+      </span>
+    </div>
   </div>
 </div>
