@@ -82,6 +82,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       max_rows    : 100000,  // maximum number of rows returned from Solr (also use this for group.limit to simplify UI setting)
       value_field : null,
       group_field : null,
+      sortBy      : 'count',
+      order       : 'descending',
       auto_int    : true,
       resolution  : 100,
       interval    : '5m',
@@ -117,7 +119,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       $scope.$on('refresh',function(){
         $scope.get_data();
       });
-
       $scope.get_data();
 
     };
@@ -452,6 +453,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
     $scope.set_refresh = function (state) {
       $scope.refresh = state;
+
+      $scope.orderByField = $scope.panel.sortBy === 'count' ?
+        'hits' : 'info.alias';
+      $scope.reverseOrder = $scope.panel.order === 'ascending' ? false : true;
     };
 
     $scope.close_edit = function() {
