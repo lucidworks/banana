@@ -9001,8 +9001,8 @@
           throw new Error('ID must be set');
         }
 
-        var data = '';
-        var url = '/update?commit=true&wt=json&stream.body=<delete><query>id:"'+id+'"</query></delete>';
+        var data = 'commit=true&wt=json&stream.body=<delete><query>id:"'+id+'"</query></delete>';
+        var url = '/update';
         
         // return sjs.client.del(url, data, successcb, errorcb);
         return sjs.client.get(url, data, successcb, errorcb);
