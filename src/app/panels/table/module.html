@@ -55,10 +55,12 @@
         <tbody ng-repeat="event in data | slice:panel.offset:panel.offset+panel.size" ng-class-odd="'odd'">
           <tr ng-click="toggle_details(event)" class="pointer">
             <td ng-show="panel.fields.length<1">{{event.kibana._source|stringify|tableTruncate:panel.trimFactor:1}}</td>
-            
+
             <!-- Table columns -->
-            <td ng-show="panel.fields.length>0" ng-repeat="field in panel.fields" ng-bind-html="(event.kibana.highlight[field]||event.kibana._source[field]) |tableHighlight |tableTruncate:panel.trimFactor:panel.fields.length:field:panel.imageFields |tableDisplayImageField:field:panel.imageFields:panel.imgFieldWidth:panel.imgFieldHeight"></td>
-            
+            <td ng-show="panel.fields.length>0"
+                ng-repeat="field in panel.fields"
+                ng-bind-html-unsafe="(event.kibana.highlight[field]||event.kibana._source[field]) |tableHighlight |tableTruncate:panel.trimFactor:panel.fields.length:field:panel.imageFields |tableDisplayImageField:field:panel.imageFields:panel.imgFieldWidth:panel.imgFieldHeight | toTrusted"></td>
+
             <!-- Hyperlink column -->
             <td ng-click="" ng-show="panel.enableHyperlink &amp;&amp; panel.displayLinkIcon" ng-bind-html="event.kibana._source[panel.hyperlinkColumnForURI] |urlLinkAsIcon"></td>
             <td ng-show="panel.enableHyperlink &amp;&amp; !panel.displayLinkIcon" ng-bind-html="event.kibana._source[panel.hyperlinkColumnForURI] |urlLink"></td>
