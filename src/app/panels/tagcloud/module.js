@@ -50,6 +50,8 @@ define([
         size: 10,
         alignment: 'vertical and horizontal',
         fontScale: 1,
+        isSizeAdjusted: true,
+        isCountDisplayed: false,
         spyable: true,
         show_queries: true,
         error: '',
@@ -164,6 +166,12 @@ define([
         });
       };
 
+      $scope.build_search = function(term,negate) {
+        filterSrv.set({type:'terms',field:$scope.panel.field,value:term,
+          mandate:(negate ? 'mustNot':'must')});
+
+        dashboard.refresh();
+      };
       $scope.set_refresh = function(state) {
         $scope.refresh = state;
         // if 'count' mode is selected, set decimal_points to zero automatically.
@@ -220,8 +228,15 @@ define([
             d3.layout.cloud().size([width - 20, height - 20])
               .words(scope.data.map(function(d) {
                 return {
-                  text: d.label,
-                  size: 5 + scale(d.data / scope.hits) + parseInt(scope.panel.fontScale)
+                  value: d.label,
+                  text: d.label + (scope.panel.isCountDisplayed ? ' (' + d.data + ')' : ''),
+                  size: (scope.panel.isSizeAdjusted ?
+                    (5 +
+                      scale(d.data / scope.hits) +
+                      parseInt(scope.panel.fontScale)
+                    ) :
+                    parseInt(scope.panel.fontScale)
+                  )
                 };
               })).rotate(function() {
                 if (scope.panel.alignment == 'vertical and horizontal')
@@ -265,6 +280,11 @@ define([
                 })
                 .text(function(d) {
                   return d.text;
+                })
+                .on("click", function(d) {
+                  if(d) {
+                    scope.build_search(d.value);
+                  }
                 });
             }
           }

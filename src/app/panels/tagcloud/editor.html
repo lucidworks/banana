@@ -19,11 +19,23 @@
         <select class="input-large form-control" ng-model="panel.alignment" ng-options="f for f in ['horizontal','vertical(+90)','vertical(-90)','vertical and horizontal','Random']"></select>
         </span>
     </div>
+    <div class="col-sm-2 col-md-2">
+      <label class="small">Display count</label>
+      <input type="checkbox"
+             ng-model="panel.isCountDisplayed"
+             ng-checked="panel.isCountDisplayed">
+    </div>
+    <div class="col-sm-2 col-md-2">
+      <label class="small">Adjust size based on count</label>
+      <input type="checkbox"
+             ng-model="panel.isSizeAdjusted"
+             ng-checked="panel.isSizeAdjusted">
+    </div>
     <div class="col-sm-4 col-md-4">
         <label class="small">Font Scale
         <tip> Increase the size of the word font</tip>
         </label>
-        <select class="input-mini form-control" ng-model="panel.fontScale" ng-options="f for f in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]"></select>
+        <select class="input-mini form-control" ng-model="panel.fontScale" ng-options="f for f in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]"></select>
         </span>
     </div>
 </div>
