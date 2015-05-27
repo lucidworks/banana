@@ -464,6 +464,7 @@ function (angular, app, _, $, kbn) {
                   scope.legend = plot.getData();
                   if(!scope.$$phase) {
                     scope.$apply();
+                    render_panel();
                   }
                 });
               }
