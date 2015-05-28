@@ -70,12 +70,15 @@ function (angular, app, _, $, kbn) {
       spyable     : true,
       show_queries:true,
       error : '',
-      chartColors : querySrv.colors
+      colorMode: 'list',
+      chartColors : querySrv.colors,
+      chartColorPalette: null
     };
     _.defaults($scope.panel,_d);
 
     $scope.init = function () {
       $scope.hits = 0;
+      $scope.defaultColors = querySrv.colors;
       $scope.testMultivalued();
       $scope.$on('refresh',function(){
         $scope.get_data();
@@ -143,7 +146,7 @@ function (angular, app, _, $, kbn) {
       
       var exclude_length = $scope.panel.exclude.length; 
       var exclude_filter = '';
-      if(exclude_length > 0){
+      if (exclude_length > 0 && $scope.panel.exclude[0] !== "") {
         for (var i = 0; i < exclude_length; i++) {
           exclude_filter += '&fq=-' + $scope.panel.field +":"+ $scope.panel.exclude[i];
         }
@@ -187,10 +190,18 @@ function (angular, app, _, $, kbn) {
           }
         };
 
-        // Function for customizing chart color by using field values as colors.
+        // Function for customizing chart color by using field values as colors
+        // or by using color palette
         var addSliceColor = function(slice,color) {
           if ($scope.panel.useColorFromField && isValidHTMLColor(color)) {
             slice.color = color;
+          } else if ($scope.panel.chartColorPalette &&
+                     $scope.panel.chartColorPalette.length > 0) {
+            _.each($scope.panel.chartColorPalette, function(v) {
+              if (v.label === slice.label && isValidHTMLColor(v.color)) {
+                slice.color = v.color;
+              }
+            });
           }
           return slice;
         };
@@ -453,6 +464,7 @@ function (angular, app, _, $, kbn) {
                   scope.legend = plot.getData();
                   if(!scope.$$phase) {
                     scope.$apply();
+                    render_panel();
                   }
                 });
               }
@@ -489,7 +501,6 @@ function (angular, app, _, $, kbn) {
             $tooltip.remove();
           }
         });
-
       }
     };
   });
