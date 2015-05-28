@@ -135,7 +135,9 @@ function (angular, app, _, $, kbn) {
       var exclude_filter = '';
       if(exclude_length > 0){
         for (var i = 0; i < exclude_length; i++) {
-          exclude_filter += '&fq=-' + $scope.panel.field +":"+ $scope.panel.exclude[i];
+          if($scope.panel.exclude[i] !== "") {
+            exclude_filter += '&fq=-' + $scope.panel.field +":"+ $scope.panel.exclude[i];
+          }
         }
       }
 
