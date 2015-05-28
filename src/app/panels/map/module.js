@@ -65,6 +65,8 @@ function (angular, app, _, $) {
       isZoomControlEnabled: false,
       isZoomOnScrollEnabled: false,
       normalizeFunction: 'polynomial',
+      min_value: null,
+      max_value: null,
       index_limit : 0,
       show_queries:true,
     };
@@ -205,12 +207,32 @@ function (angular, app, _, $) {
               // the data contains both uppercase and lowercase state letters with
               // duplicate states (e.g. CA and ca). By adding the value, the map will
               // show correct counts for states with mixed-case letters.
-              if (!$scope.data[terms[i].toUpperCase()]) {
-                $scope.data[terms[i].toUpperCase()] = terms[i+1];
+              var value = terms[i+1];
+              if ($scope.panel.min_value != null &&
+                  $scope.panel.max_value != null &&
+                  (
+                    value < $scope.panel.min_value ||
+                    $scope.panel.max_value < value)
+              ) {
+                // Ignore the value
+                console.warn(terms[i].toUpperCase() +
+                    ' with value ' + value +
+                    ' rejected because out of bound [' +
+                  $scope.panel.min_value + ' - ' +
+                  $scope.panel.max_value + ']');
               } else {
-                $scope.data[terms[i].toUpperCase()] += terms[i+1];
+                if (!$scope.data[terms[i].toUpperCase()]) {
+                  $scope.data[terms[i].toUpperCase()] = value;
+                } else {
+                  $scope.data[terms[i].toUpperCase()] += value;
+                }
               }
             }
+          }
+          if ($scope.panel.min_value != null &&
+            $scope.panel.max_value != null) {
+            $scope.data.boundminvalue = $scope.panel.min_value;
+            $scope.data.boundmaxvalue = $scope.panel.max_value;
           }
         }
 

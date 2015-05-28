@@ -96,3 +96,12 @@
     </div>
   </div>
 </div>
+  <div class="col-sm-3 col-md-3" >
+    <label class="small">Minimum value <tip>When min and max value are set, values out of this range are rejected.</tip></label>
+    <input type="number" max="panel.max_value" class="form-control" ng-model="panel.min_value" ng-change="set_refresh(true)">
+  </div>
+  <div class="col-sm-3 col-md-3" >
+    <label class="small">Maximum value</label>
+    <input type="number" min="panel.min_value" class="form-control" ng-model="panel.max_value" ng-change="set_refresh(true)">
+  </div>
+</div>
