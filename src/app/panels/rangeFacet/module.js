@@ -114,9 +114,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           $scope.panel.showChart =  false;
         }
       });
-
+      $scope['defaults'] = [$scope.panel.minimum,$scope.panel.maximum];
       $scope.get_data();
-
     };
 
     $scope.alertInvalidField = function(message) {
@@ -188,6 +187,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
     //set the range filter from old configrations
     $scope.range_apply = function(){
+      $scope.panel.minimum = $scope.defaults[0];
+      $scope.panel.maximum = $scope.defaults[1];
       filterSrv.set({
         type: 'range',
         from: parseInt($scope.panel.minimum),
