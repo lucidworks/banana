@@ -55,17 +55,26 @@ function (angular, app, _, $) {
       stats_field : '',
       decimal_points : 0, // The number of digits after the decimal point
       map     : "world",
+      backgroundColor: null,
+      fillColor: '#8c8c8c',
       colors  : ['#A0E2E2', '#265656'],
       size    : 100,
       exclude : [],
       spyable : true,
+      isLegendDisplayed: false,
+      isZoomControlEnabled: false,
+      isZoomOnScrollEnabled: false,
+      normalizeFunction: 'polynomial',
       index_limit : 0,
       show_queries:true,
     };
     _.defaults($scope.panel,_d);
 
+
     $scope.init = function() {
       // $scope.testMultivalued();
+      $scope.listOfColors = $scope.panel.colors.join(',');
+      $scope.functions = ['polynomial', 'linear'];
       $scope.$on('refresh',function(){$scope.get_data();});
       $scope.get_data();
     };
@@ -221,6 +230,13 @@ function (angular, app, _, $) {
       dashboard.refresh();
     };
 
+
+    $scope.updateColors = function (newValue, oldValue) {
+      if (newValue !== oldValue) {
+        $scope.panel.colors = newValue.split(',');
+        $scope.$emit('render');
+      }
+    };
   });
 
   module.directive('map', function() {
@@ -237,32 +253,37 @@ function (angular, app, _, $) {
 
         function render_panel() {
           elem.text('');
-          $('.jvectormap-zoomin,.jvectormap-zoomout,.jvectormap-label').remove();
+          //$('.jvectormap-zoomin,.jvectormap-zoomout,.jvectormap-label').remove();
           require(['./panels/map/lib/map.'+scope.panel.map], function () {
+
+            var regionConfig = {
+              values: scope.data,
+              scale: scope.panel.colors,
+              normalizeFunction: scope.panel.normalizeFunction || 'polynomial'
+            };
+
+            if (scope.panel.isLegendDisplayed) {
+              regionConfig.legend =  {
+                vertical: true,
+                labelRender: function(v){
+                  return v.toFixed(scope.panel.decimal_points);
+                }
+              };
+            }
+
             elem.vectorMap({
               map: scope.panel.map,
-              regionStyle: {initial: {fill: '#8c8c8c'}},
-              zoomOnScroll: false,
-              backgroundColor: null,
+              regionStyle: {initial: {fill: scope.panel.fillColor || '#8c8c8c'}},
+              zoomOnScroll: scope.panel.isZoomOnScrollEnabled,
+              backgroundColor: scope.panel.backgroundColor || null,
               series: {
-                regions: [{
-                  values: scope.data,
-                  scale: scope.panel.colors,
-                  normalizeFunction: 'polynomial'
-                }]
+                regions: [regionConfig]
               },
-              onRegionLabelShow: function(event, label, code){
-                elem.children('.map-legend').show();
+              onRegionTipShow: function(event, el, code){
                 var count = _.isUndefined(scope.data[code]) ? 0 : scope.data[code];
-                // if (scope.panel.mode === 'count') {
-                //   count = count.toFixed(0);
-                // } else {
-                //   count = count.toFixed(scope.panel.decimal_points);
-                // }
-                elem.children('.map-legend').text(label.text() + ": " + count.toFixed(scope.panel.decimal_points));
-              },
-              onRegionOut: function() {
-                $('.map-legend').hide();
+                el.html(el.html() + " (" +
+                      code + "): " +
+                      count.toFixed(scope.panel.decimal_points));
               },
               onRegionClick: function(event, code) {
                 var count = _.isUndefined(scope.data[code]) ? 0 : scope.data[code];
@@ -271,8 +292,6 @@ function (angular, app, _, $) {
                 }
               }
             });
-            elem.prepend('<span class="map-legend"></span>');
-            $('.map-legend').hide();
           });
         }
       }
