@@ -2,14 +2,13 @@
 
 ## Solr 5
 
-1.  Copy two jar files into $SOLR_HOME/server/lib/:
+1.  Copy two jar files into `$SOLR_HOME/server/lib/`:
       - jetty-servlets-8.1.10.v20130312.jar
       - jetty-util-8.1.10.v20130312.jar
-        * NOTE:  jetty files v9.x.x do not work.
+        * **Note**:  Jetty files v9.x.x do not work.
 
-2.  Edit $SOLR_HOME/server/etc/webdefault.xml, by inserting the below <filter> right after <web-app> and before the other <filter> OR
-    you can just use the web.xml file in this directory:
-    * NOTE: the order of <filter> does matter
+2.  Edit `$SOLR_HOME/server/etc/webdefault.xml`, by inserting the below `<filter>` right after `<web-app>` and before the other `<filter>` OR you can just use the web.xml file in this directory:
+    * **Note**: the order of `<filter>` does matter
 
 ```
   <!-- =================================== -->
@@ -41,13 +40,12 @@
 
 ## Solr 4
 
-1.  Copy two jar files into $SOLR_HOME/example/solr-webapp/webapp/WEB-INF/lib/:
+1.  Copy two jar files into `$SOLR_HOME/example/solr-webapp/webapp/WEB-INF/lib/`:
       - jetty-servlets-8.1.14.v20131031.jar
       - jetty-util-8.1.14.v20131031.jar
-        * NOTE:  jetty files v9.x.x do not work.
+        * **Note**:  Jetty files v9.x.x do not work.
 
-2.  Edit $SOLR_HOME/example/solr-webapp/webapp/WEB-INF/web.xml, by inserting the <filter> above right after <web-app> and before the other <filter> OR
-    you can just use the web.xml file in this directory:
-    * NOTE: the order of <filter> does matter
+2.  Edit `$SOLR_HOME/example/solr-webapp/webapp/WEB-INF/web.xml`, by inserting the `<filter>` above right after `<web-app>` and before the other `<filter>` OR you can just use the web.xml file in this directory:
+    * **Note**: the order of `<filter>` does matter
 
 3.  That's it. Restart Solr server and it should work!
