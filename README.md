@@ -2,7 +2,7 @@
 
 The Banana project was forked from [Kibana](https://github.com/elastic/kibana), and works with all kinds of time series (and non-time series) data stored in [Apache Solr](https://lucene.apache.org/solr/). It uses Kibana's powerful dashboard configuration capabilities, ports key panels to work with Solr, and provides significant additional capabilities, including new panels that leverage [D3.js](http://d3js.org). 
 
-The goal is to create a rich and flexible UI, enabling users to rapidly develop end-to-end applications that leverage the power of Apache Solr. Data can be ingested into Solr through a variety of ways, including LogStash, Flume and other connectors.
+The goal is to create a rich and flexible UI, enabling users to rapidly develop end-to-end applications that leverage the power of Apache Solr. Data can be ingested into Solr through a variety of ways, including [LogStash](https://www.elastic.co/products/logstash), [Flume](https://flume.apache.org) and other connectors.
 
  
 ## IMPORTANT
