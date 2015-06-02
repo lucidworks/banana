@@ -97,7 +97,7 @@ The Solr server configured in config.js will serve as the default node for each 
 ## FAQ
 
 __Q__: How do I secure my solr endpoint so that users do not have access to it?   
-__A__: The simplest solution is to use a Apache or nginx reverse proxy (See for example https://groups.google.com/forum/#!topic/ajax-solr/pLtYfm83I98).
+__A__: The simplest solution is to use a [Apache](http://projects.apache.org/projects/http_server.html) or [nginx](http://nginx.org) reverse proxy (See for example https://groups.google.com/forum/#!topic/ajax-solr/pLtYfm83I98).
 
 
 __Q__: Can I use banana for non-time series data?  
