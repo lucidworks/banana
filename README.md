@@ -54,14 +54,14 @@ Copy banana folder to $SOLR_HOME/example/solr-webapp/webapp/
  
 Browse to http://\<solr\_server\>:\<port\_number\>/solr/banana/src/index.html#/dashboard
 
-If your Solr server/port is different from localhost:8983, edit banana/src/config.js and banana/src/app/dashboards/default.json to enter the hostname and port that you are using. Remember that banana runs within the client browser, so provide a fully qualified domain name (FQDN), because the hostname and port number you provide should be resolvable from the client machines.
+If your Solr server/port is different from [localhost:8983](http://localhost:8983), edit banana/src/config.js and banana/src/app/dashboards/default.json to enter the hostname and port that you are using. Remember that banana runs within the client browser, so provide a fully qualified domain name (FQDN), because the hostname and port number you provide should be resolvable from the client machines.
 
-If you have not created the data collections and ingested data into Solr, you will see an error message saying "Collection not found at .." You can use any connector to get data into Solr. If you want to use LogStash, please go to the Solr Output Plug-in for LogStash Page (https://github.com/LucidWorks/solrlogmanager) for code, documentation and examples.
+If you have not created the data collections and ingested data into Solr, you will see an error message saying "Collection not found at .." You can use any connector to get data into Solr. If you want to use LogStash, please go to the Solr Output Plug-in for [LogStash Page](https://github.com/LucidWorks/solrlogmanager) for code, documentation and examples.
 
 
 #### Complete SLK Stack
 
-LucidWorks has packaged Solr, LogStash (with a Solr Output Plug-in), and Banana (the Solr port of Kibana), along with example collections and dashboards in order to rapidly enable proof-of-concepts and initial development/testing. See http://www.lucidworks.com/lucidworks-silk/. 
+LucidWorks has packaged Solr, LogStash (with a Solr Output Plug-in), and Banana (the Solr port of Kibana), along with example collections and dashboards in order to rapidly enable proof-of-concepts and initial development/testing. See [http://www.lucidworks.com/lucidworks-silk/](http://www.lucidworks.com/lucidworks-silk/). 
 
 
 #### Building and installing from a war file
@@ -80,12 +80,12 @@ Run Solr:
     cd $SOLR_HOME/example/
     java -jar start.jar    
     
-Browse to http://localhost:8983/banana  (or the FQDN of your solr server).
+Browse to [http://localhost:8983/banana](http://localhost:8983/banana)  (or the FQDN of your solr server).
 
 	
 #### Banana Web App run in a WebServer
 
-Banana is an AngularJS app and can be run in any webserver that has access to Solr. You will need to enable CORS on the Solr instances that you query, or configure a proxy that makes requests to banana and Solr as same-origin. We typically recommend the latter approach.
+Banana is an [AngularJS app](https://angularjs.org) and can be run in any webserver that has access to Solr. You will need to enable [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) on the Solr instances that you query, or configure a proxy that makes requests to banana and Solr as same-origin. We typically recommend the latter approach.
 
 
 #### Storing Dashboards in Solr
