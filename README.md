@@ -38,7 +38,7 @@ If you created dashboards for Banana 1.0.0, you did not have a global filtering 
 ## Installation and QuickStart
 
 ### Requirements
-* A modern web browser. The latest version of Chrome and Firefox have been tested to work. Safari also works, except for the "Export to File" feature for saving dashboards. We recommend that you use Chrome or Firefox while building dashboards.
+* A modern web browser. The latest version of [Chrome](http://www.google.com/chrome/) and [Firefox](https://www.mozilla.org/en-US/firefox/new/) have been tested to work. [Safari](http://www.apple.com/safari/) also works, except for the "Export to File" feature for saving dashboards. We recommend that you use Chrome or Firefox while building dashboards.
 * A webserver. 
 * A browser reachable Solr server. The Solr endpoint must be open, or a proxy configured to allow access to it.
 
