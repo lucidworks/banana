@@ -63,10 +63,12 @@ function (angular, _, config) {
         if(status === 0) {
           alertSrv.set('Error',"Could not contact Solr at "+dashboard.current.solr.server+
             ". Please ensure that Solr is reachable from your system." ,'error');
-        } else {
-          alertSrv.set('Error',"Collection not found at "+dashboard.current.solr.server+dashboard.current.solr.core_name+
+        } else if (dashboard.current.server_type === 'zk_server') {
+            dashboard.get_clusterstatus();
+          } else {
+            alertSrv.set('Error',"Collection not found at "+dashboard.current.solr.server+dashboard.current.solr.core_name+
             ". Please check your configuration or create the collection. If you're using a proxy ensure it is configured correctly.",'error');
-        }
+          }
       });
 
       return request.then(function(p) {

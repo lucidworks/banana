@@ -26,8 +26,14 @@ function (angular, _) {
 
     // This function should be replaced by one-way binding feature of AngularJS 1.3
     $scope.resetNewDefaults = function() {
+      // Backward compatibility for old dashboards. Default server type will be Solr Server
+      if (typeof $scope.config.server_type === 'undefined') {
+        $scope.config.server_type = 'solr_server';
+      }
       $scope.new = {
         server: $scope.config.solr,
+        zkHost: $scope.config.zkHost,
+        server_type: $scope.config.server_type,
         core_name: $scope.config.solr_core,
         time_field: 'event_timestamp'
       };
@@ -57,6 +63,8 @@ function (angular, _) {
         success(function(data) {
           data.solr.server = $scope.new.server;
           data.solr.core_name = $scope.new.core_name;
+          data.solr.zkHost = $scope.new.zkHost;
+          data.solr.server_type = $scope.new.server_type;
           // If time series dashboard, update all timefield references in the default dashboard
           if (type === 'default-ts') {
             data.services.filter.list[0].field = $scope.new.time_field;

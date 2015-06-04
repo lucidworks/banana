@@ -35,6 +35,33 @@ function (Settings) {
     solr_core: "logstash_logs",
 
     /**
+     * The default zookeeper rest server and server type.
+     *
+     * The zkHost assumes that the clusterstate.json would be present under the root path of
+     * zookeeper. Update zkHost parameter to suit your solr root directory. For example,
+     * if path of your clusterstate.json is '/cluster1/solr/clusterstate.json' then the zkHost
+     * parameter becomes:
+     *     zkHost = "/znodes/v1/cluster1/solr/",
+     * 
+     * Usually you will have to use some kind of proxy to use relative paths. You can set
+     * complete paths too,
+     *     zkHost = "http://localhost:9998/znodes/v1/cluster1/solr/"
+     *
+     * Yo should enable JSONP in Zookeeper server before you can make request. Guide to enable
+     * JSONP in Zookeeper rest server is avaialable under resources/zk-jsonp/
+     *
+     * The default server type used in dashboard will be set according to the parameter
+     * server_type. Currently it can only have two particular values as follows:
+     *     solr_server: If you want to request to a particular solr server.
+     *     zk_server: If you want to use SolrCloud to decide which solr server to query
+     *
+     * To setup and run a Zookeeper Rest Server, refer to the following link:
+     *     https://github.com/apache/zookeeper/tree/trunk/src/contrib/rest
+     */
+     zkHost: "/znodes/v1/",
+     server_type: "solr_server",
+
+    /**
      * The default Solr index to use for storing objects internal to Banana, such as 
      * stored dashboards. If you have been using a collection named kibana-int 
      * to save your dashboards (the default provided in Banana 1.2 and earlier), then you
