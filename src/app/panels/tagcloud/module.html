@@ -1,3 +1,8 @@
 <div ng-controller='tagcloud' ng-init="init()">
+  <style>
+    [tagcloud-chart] svg g text:hover {
+      cursor: pointer
+    }
+    </style>
     <div tagcloud-chart style="overflow:hidden; position:relative"></div>
 </div>
