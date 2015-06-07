@@ -14,6 +14,15 @@
     <div class="col-sm-3 col-md-3"><h6>Rows Limit <tip>Maximum number of rows to be fetched and displayed</tip></h6>
       <input id="rows_limit" type="number" min="1" max="500" value="100" class="form-control" ng-model="panel.editor_size" ng-change="set_refresh(true)">
     </div>
+  <div class="col-sm-3 col-md-3">
+    <form>
+      <h6>Sort by</h6>
+      <select class="form-control"
+              ng-change="set_refresh(true)"
+              ng-model="panel.sortBy"
+              ng-options="f for f in ['count','index']"></select>
+      </form>
+  </div>
 </div>
 
 <div class="row">

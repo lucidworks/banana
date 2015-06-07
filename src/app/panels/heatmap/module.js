@@ -49,6 +49,7 @@ define([
                 row_size: 300,
                 editor_size: 0,
                 color:'gray',
+                sortBy  : 'count',
                 spyable: true,
                 transpose_show: true,
                 transposed: false,
@@ -110,7 +111,7 @@ define([
                 var facet = '&facet=true';
                 var facet_pivot = '&facet.pivot=' + $scope.panel.row_field + ',' + $scope.panel.col_field;
                 var facet_limit = '&facet.limit=' + $scope.panel.row_size;
-                var facet_pivot_mincount = '&facet.pivot.mincount=0';
+                var facet_pivot_mincount = '&facet.pivot.mincount=0&facet.sort=' + $scope.panel.sortBy;
 
                 $scope.panel.queries.query = querySrv.getORquery() + fq + wt_json + rows_limit + facet + facet_pivot + facet_limit + facet_pivot_mincount;
 
