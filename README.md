@@ -1,8 +1,8 @@
 # Banana
 
-The Banana project was forked from Kibana, and works with all kinds of time series (and non-time series) data stored in Apache Solr. It uses Kibana's powerful dashboard configuration capabilities, ports key panels to work with Solr, and provides significant additional capabilities, including new panels that leverage D3.js. 
+The Banana project was forked from [Kibana](https://github.com/elastic/kibana), and works with all kinds of time series (and non-time series) data stored in [Apache Solr](https://lucene.apache.org/solr/). It uses Kibana's powerful dashboard configuration capabilities, ports key panels to work with Solr, and provides significant additional capabilities, including new panels that leverage [D3.js](http://d3js.org). 
 
-The goal is to create a rich and flexible UI, enabling users to rapidly develop end-to-end applications that leverage the power of Apache Solr. Data can be ingested into Solr through a variety of ways, including LogStash, Flume and other connectors.
+The goal is to create a rich and flexible UI, enabling users to rapidly develop end-to-end applications that leverage the power of Apache Solr. Data can be ingested into Solr through a variety of ways, including [LogStash](https://www.elastic.co/products/logstash), [Flume](https://flume.apache.org) and other connectors.
 
  
 ## IMPORTANT
@@ -38,7 +38,7 @@ If you created dashboards for Banana 1.0.0, you did not have a global filtering 
 ## Installation and QuickStart
 
 ### Requirements
-* A modern web browser. The latest version of Chrome and Firefox have been tested to work. Safari also works, except for the "Export to File" feature for saving dashboards. We recommend that you use Chrome or Firefox while building dashboards.
+* A modern web browser. The latest version of [Chrome](http://www.google.com/chrome/) and [Firefox](https://www.mozilla.org/en-US/firefox/new/) have been tested to work. [Safari](http://www.apple.com/safari/) also works, except for the "Export to File" feature for saving dashboards. We recommend that you use Chrome or Firefox while building dashboards.
 * A webserver. 
 * A browser reachable Solr server. The Solr endpoint must be open, or a proxy configured to allow access to it.
 
@@ -54,14 +54,14 @@ Copy banana folder to $SOLR_HOME/example/solr-webapp/webapp/
  
 Browse to http://\<solr\_server\>:\<port\_number\>/solr/banana/src/index.html#/dashboard
 
-If your Solr server/port is different from localhost:8983, edit banana/src/config.js and banana/src/app/dashboards/default.json to enter the hostname and port that you are using. Remember that banana runs within the client browser, so provide a fully qualified domain name (FQDN), because the hostname and port number you provide should be resolvable from the client machines.
+If your Solr server/port is different from [localhost:8983](http://localhost:8983), edit banana/src/config.js and banana/src/app/dashboards/default.json to enter the hostname and port that you are using. Remember that banana runs within the client browser, so provide a fully qualified domain name (FQDN), because the hostname and port number you provide should be resolvable from the client machines.
 
-If you have not created the data collections and ingested data into Solr, you will see an error message saying "Collection not found at .." You can use any connector to get data into Solr. If you want to use LogStash, please go to the Solr Output Plug-in for LogStash Page (https://github.com/LucidWorks/solrlogmanager) for code, documentation and examples.
+If you have not created the data collections and ingested data into Solr, you will see an error message saying "Collection not found at .." You can use any connector to get data into Solr. If you want to use LogStash, please go to the Solr Output Plug-in for [LogStash Page](https://github.com/LucidWorks/solrlogmanager) for code, documentation and examples.
 
 
 #### Complete SLK Stack
 
-LucidWorks has packaged Solr, LogStash (with a Solr Output Plug-in), and Banana (the Solr port of Kibana), along with example collections and dashboards in order to rapidly enable proof-of-concepts and initial development/testing. See http://www.lucidworks.com/lucidworks-silk/. 
+LucidWorks has packaged Solr, LogStash (with a Solr Output Plug-in), and Banana (the Solr port of Kibana), along with example collections and dashboards in order to rapidly enable proof-of-concepts and initial development/testing. See [http://www.lucidworks.com/lucidworks-silk/](http://www.lucidworks.com/lucidworks-silk/). 
 
 
 #### Building and installing from a war file
@@ -80,24 +80,24 @@ Run Solr:
     cd $SOLR_HOME/example/
     java -jar start.jar    
     
-Browse to http://localhost:8983/banana  (or the FQDN of your solr server).
+Browse to [http://localhost:8983/banana](http://localhost:8983/banana)  (or the FQDN of your solr server).
 
 	
 #### Banana Web App run in a WebServer
 
-Banana is an AngularJS app and can be run in any webserver that has access to Solr. You will need to enable CORS on the Solr instances that you query, or configure a proxy that makes requests to banana and Solr as same-origin. We typically recommend the latter approach.
+Banana is an [AngularJS app](https://angularjs.org) and can be run in any webserver that has access to Solr. You will need to enable [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) on the Solr instances that you query, or configure a proxy that makes requests to banana and Solr as same-origin. We typically recommend the latter approach.
 
 
 #### Storing Dashboards in Solr
 
-If you want to save and load dashboards from Solr, create a collection using the configuration files provided in either the _resources/banana-int-solr-4.4_ (for Solr 4.4) directory or the _resources/banana-int-solr-4.5_ directory (for Solr 4.5 and above). If you are using Solr Cloud, you will need to upload the configuration into ZooKeeper and then create the collection using that configuration.
+If you want to save and load dashboards from Solr, create a collection using the configuration files provided in either the _resources/banana-int-solr-4.4_ (for Solr 4.4) directory or the _resources/banana-int-solr-4.5_ directory (for Solr 4.5 and above). If you are using Solr Cloud, you will need to upload the configuration into [ZooKeeper](https://zookeeper.apache.org) and then create the collection using that configuration.
 
 The Solr server configured in config.js will serve as the default node for each dashboard; you can configure each dashboard to point to a different Solr endpoint as long as your webserver and Solr put out the correct CORS headers. See the README file under the  _resources/enable-cors_ directory for a guide.
 
 ## FAQ
 
 __Q__: How do I secure my solr endpoint so that users do not have access to it?   
-__A__: The simplest solution is to use a Apache or nginx reverse proxy (See for example https://groups.google.com/forum/#!topic/ajax-solr/pLtYfm83I98).
+__A__: The simplest solution is to use a [Apache](http://projects.apache.org/projects/http_server.html) or [nginx](http://nginx.org) reverse proxy (See for example https://groups.google.com/forum/#!topic/ajax-solr/pLtYfm83I98).
 
 
 __Q__: Can I use banana for non-time series data?  
