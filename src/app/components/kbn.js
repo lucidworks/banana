@@ -260,6 +260,7 @@ function($, _) {
     var matches = string.match(kbn.interval_regex);
     if (!matches || !_.has(kbn.intervals_in_seconds, matches[2])) {
       throw new Error('Invalid interval string, expexcting a number followed by one of "Mwdhmsy"');
+      throw new Error('Invalid interval string, expecting a number followed by one of "Mwdhmsy"');
     } else {
       return {
         sec: kbn.intervals_in_seconds[matches[2]],
