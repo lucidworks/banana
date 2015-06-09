@@ -4,6 +4,12 @@ function($, _) {
 
   var kbn = {};
 
+  /**
+   * Return a sorted array containing all keys stored in an object (regardless of the keys' nested depth within the object)
+   *
+   * @param {Object} obj
+   * @return {Array}
+   */
   kbn.get_object_fields = function(obj) {
     var field_array = [];
     obj = kbn.flatten_json(obj._source);
@@ -99,10 +105,10 @@ function($, _) {
    /**
      * Calculate range facet interval
      *
-     * from::           Integer containing the start of range
-     * to::             Integer containing the end of range
-     * size::           Calculate to approximately this many bars
-     * user_interval::  User specified histogram interval
+     * @param {Integer} from                    Number containing the start of range
+     * @param {Integer} to                      Number containing the end of range
+     * @param {Integer} size                    Calculate to approximately this many bars
+     * @param {Integer,optional} user_interval  User-specified histogram interval (defaults to 0)
      *
      */
   kbn.calculate_gap = function(from,to,size,user_interval) {
@@ -112,6 +118,8 @@ function($, _) {
    /**
      * Round the value of interval to fit this defined resolution
      *
+     * @param {number} interval  The value to be rounded
+     * @return {number}          Rounded value
      */
   kbn.round_gap = function(interval) {
     return Math.round(interval) + 1;
@@ -120,10 +128,11 @@ function($, _) {
    /**
      * Calculate a graph interval
      *
-     * from::           Date object containing the start time
-     * to::             Date object containing the finish time
-     * size::           Calculate to approximately this many bars
-     * user_interval::  User specified histogram interval
+     * @param {Date} from            Date object containing the start time
+     * @param {Date} to              Date object containing the finish time
+     * @param {number} size          Calculate to approximately this many bars
+     * @param {number} user_interval User-specified histogram interval
+     * @return {number}
      *
      */
   kbn.calculate_interval = function(from,to,size,user_interval) {
@@ -212,9 +221,16 @@ function($, _) {
     if(numseconds){
       return numseconds + 's';
     }
-    return 'less then a second'; //'just now' //or other string you like;
+    return 'less than a second'; //'just now' //or other string you like;
   };
 
+  /**
+   * Build a human-friendly representation for the state of completion between two values, ex: kbn.to_percent(7,9) → "78%"
+   *
+   * @param {Number} number
+   * @param {Number} outof
+   * @return {String}
+  */
   kbn.to_percent = function(number,outof) {
     return Math.floor((number/outof)*10000)/100 + "%";
   };
@@ -244,6 +260,7 @@ function($, _) {
     var matches = string.match(kbn.interval_regex);
     if (!matches || !_.has(kbn.intervals_in_seconds, matches[2])) {
       throw new Error('Invalid interval string, expexcting a number followed by one of "Mwdhmsy"');
+      throw new Error('Invalid interval string, expecting a number followed by one of "Mwdhmsy"');
     } else {
       return {
         sec: kbn.intervals_in_seconds[matches[2]],
@@ -268,7 +285,19 @@ function($, _) {
     return new Date(new Date().getTime() - (kbn.interval_to_ms(string)));
   };
 
-  // LOL. hahahahaha. DIE.
+
+  /**
+   * Return a single-level object where nested object keys are concatenated representations of path syntax
+   *
+   * ex: kbn.flatten_json({"a": 1, "b" : {"c" : 25, "d" : 13}}) → {"b.d": 13, "b.c": 25, "a": 1}
+   *
+   * // LOL. hahahahaha. DIE.
+   *
+   * @param {Object} object
+   * @param {String,optional} root
+   * @param {Array,optional} array
+   * @return {Object}
+   */
   kbn.flatten_json = function(object,root,array) {
     if (typeof array === 'undefined') {
       array = {};
@@ -306,6 +335,13 @@ function($, _) {
     return kbn.sortObj(array);
   };
 
+
+  /**
+   * Sanitize string for displaying in the document by replacing characters with appropriate values for  "<",">","&","<del>","</del>", & whitespace
+   *
+   * @param {String} value
+   * @return {String}
+   */
   kbn.xmlEnt = function(value) {
     if(_.isString(value)) {
       var stg1 = value.replace(/</g, '&lt;')
@@ -341,6 +377,13 @@ function($, _) {
     return sortedObj;
   };
 
+  /**
+   * Generate HTML markup for the colored bullet associated with a query term
+   *
+   * @param {String} color      CSS/HTML color declaration for the dot
+   * @param {Integer} diameter  Size of the dot (in pixels)
+   * @return {String}
+   */
   kbn.query_color_dot = function (color, diameter) {
     return '<div class="icon-circle" style="' + [
         'display:inline-block',
