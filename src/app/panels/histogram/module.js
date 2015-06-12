@@ -467,6 +467,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     $scope.close_edit = function() {
       if($scope.refresh) {
         $scope.get_data();
+        setLegendOrder();
       }
       $scope.refresh =  false;
       $scope.$emit('render');
