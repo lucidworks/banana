@@ -82,6 +82,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       max_rows    : 100000,  // maximum number of rows returned from Solr (also use this for group.limit to simplify UI setting)
       value_field : null,
       group_field : null,
+      sortBy      : 'count',
+      order       : 'descending',
       auto_int    : true,
       resolution  : 100,
       interval    : '5m',
@@ -111,14 +113,21 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
     _.defaults($scope.panel,_d);
 
+    function setLegendOrder () {
+      $scope.orderByField = $scope.panel.sortBy === 'count' ?
+        'hits' : 'info.alias';
+      $scope.reverseOrder = $scope.panel.order === 'ascending' ? false : true;
+    }
+
     $scope.init = function() {
       // Hide view options by default
       $scope.options = false;
       $scope.$on('refresh',function(){
         $scope.get_data();
+        setLegendOrder();
       });
-
       $scope.get_data();
+      setLegendOrder();
 
     };
 
@@ -450,6 +459,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       $scope.inspector = angular.toJson(JSON.parse(request.toString()),true);
     };
 
+
     $scope.set_refresh = function (state) {
       $scope.refresh = state;
     };
@@ -457,6 +467,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     $scope.close_edit = function() {
       if($scope.refresh) {
         $scope.get_data();
+        setLegendOrder();
       }
       $scope.refresh =  false;
       $scope.$emit('render');

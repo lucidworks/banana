@@ -40,9 +40,29 @@
       <label style="white-space:nowrap;" class="small">Percent <tip>Stack as a percentage of total</tip></label>
       <input type="checkbox" ng-model="panel.percentage" ng-checked="panel.percentage">
     </div>
-    <div class="col-sm-1 col-md-1"> <label class="small">Legend</label><input type="checkbox" ng-model="panel.legend" ng-checked="panel.legend"></div>
     <div class="col-sm-1 col-md-1"> <label class="small">xAxis</label><input type="checkbox" ng-model="panel['x-axis']" ng-checked="panel['x-axis']"></div>
     <div class="col-sm-1 col-md-1"> <label class="small">yAxis</label><input type="checkbox" ng-model="panel['y-axis']" ng-checked="panel['y-axis']"></div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-1 col-md-1">
+      <label class="small">Legend</label>
+      <input type="checkbox" ng-model="panel.legend" ng-checked="panel.legend">
+    </div>
+    <div class="col-sm-2 col-md-2" ng-show="panel.legend">
+      <label class="small">Sort by</label>
+      <select class="form-control"
+              ng-change="set_refresh(true)"
+              ng-model="panel.sortBy"
+              ng-options="f for f in ['count','index']"></select>
+    </div>
+    <div class="col-sm-2 col-md-2" ng-show="panel.legend">
+      <label class="small">Order</label>
+      <select class="form-control"
+              ng-model="panel.order"
+              ng-options="f for f in ['descending','ascending']"
+              ng-change="set_refresh(true)"></select>
+    </div>
   </div>
 
   <div class="row" style="text-align:center;">
