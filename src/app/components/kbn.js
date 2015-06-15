@@ -5,7 +5,7 @@ function($, _) {
   var kbn = {};
 
   /**
-   * Return an array containing all keys stored in an object (regardless of the keys' nested depth within the object)
+   * Return a sorted array containing all keys stored in an object (regardless of the keys' nested depth within the object)
    *
    * @see    kbn.flatten_object
    * @param  {Object} obj
