@@ -47,9 +47,9 @@ If you created dashboards for Banana 1.0.0, you did not have a global filtering 
 #### Run Banana Web App within your existing Solr instance
 Run Solr at least once to create the webapp directories  
 
-		cd $SOLR_HOME/example  
-		java -jar start.jar
-		
+    cd $SOLR_HOME/example  
+    java -jar start.jar
+
 Copy banana folder to $SOLR_HOME/example/solr-webapp/webapp/
  
 Browse to http://\<solr\_server\>:\<port\_number\>/solr/banana/src/index.html#/dashboard
@@ -82,7 +82,7 @@ Run Solr:
     
 Browse to [http://localhost:8983/banana](http://localhost:8983/banana)  (or the FQDN of your solr server).
 
-	
+
 #### Banana Web App run in a WebServer
 
 Banana is an [AngularJS app](https://angularjs.org) and can be run in any webserver that has access to Solr. You will need to enable [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) on the Solr instances that you query, or configure a proxy that makes requests to banana and Solr as same-origin. We typically recommend the latter approach.
@@ -107,21 +107,20 @@ __A__: Yes, from version 1.3 onwards, non-time series data are also supported.
 ## Resources
 
 
-1.	LucidWorks SILK: http://www.lucidworks.com/lucidworks-silk/
-2.	Webinar on LucidWorks SILK: http://programs.lucidworks.com/SiLK-introduction_Register.html.
-3.	LogStash: http://logstash.net/
-4.	SILK Use Cases: https://github.com/LucidWorks/silkusecases. Provides example configuration files, schemas and dashboards required to build applications that use Solr and Banana.
-
+1. [LucidWorks SILK](http://www.lucidworks.com/lucidworks-silk/)
+2. [Webinar on LucidWorks SILK](http://programs.lucidworks.com/SiLK-introduction_Register.html)
+3. [LogStash](http://logstash.net/)
+4. [SILK Use Cases](https://github.com/LucidWorks/silkusecases), provides example configuration files, schemas and dashboards required to build applications that use Solr and Banana.
 
 
 ## Support
 
 Banana uses the dashboard configuration capabilities of Kibana (from which it is forked) and ports key panels to work with Solr. Moreover, it provides many additional capabilities like heatmaps, range facets, panel specific filters, global parameters, and visualization of "group-by" style queries. We are continuing to add many new panels that go well beyond what is available in Kibana, helping users build complete applications that leverage the data stored in Apache Solr, HDFS and a variety of sources in the enterprise. 
 
-If you have any questions, please contact Andrew Thanalertvisuti (andrew.thanalertvisuti@lucidworks.com) or Ravi Krishnamurthy (ravi.krishnamurthy@lucidworks.com).
+If you have any questions, please contact Andrew Thanalertvisuti (<andrew.thanalertvisuti@lucidworks.com>) or Ravi Krishnamurthy (<ravi.krishnamurthy@lucidworks.com>).
 
 
 ## Trademarks
 
-Kibana is a trademark of Elasticsearch BV  
+Kibana is a trademark of [Elasticsearch BV](https://www.elastic.co)
 Logstash is a trademark of Elasticsearch BV
