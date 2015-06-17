@@ -89,9 +89,11 @@ define([
     /**
      * Translate a key to the value defined in a dashboard's lang field
      *
-     * @param (String) domain       - provide an optional namespace for the key, which will be prefixed to the
-     * @param {String} key          - lang key
-     * @param {Dashboard} dashboard - reference to the currently displayed dashboard, which may or may not have a "lang" field stored with
+     * translateLanguageKey("facet", "id", {... "lang" : { "facet.id" : "Model ID" }}) → "Model ID"
+     *
+     * @param (String) domain       an optional namespace for the key
+     * @param {String} key          lang  the key that should be translated
+     * @param {Dashboard} dashboard reference to the currently displayed dashboard, which may or may not have a "lang" field stored with
      */
     this.translateLanguageKey = function(domain, key, currentDashboard) {
 
