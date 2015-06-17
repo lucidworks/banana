@@ -24,7 +24,7 @@ define([
     // var ejs = ejsResource(config.elasticsearch);
     var solrserver = dashboard.current.solr.server + dashboard.current.solr.core_name || config.solr + config.solr_core;
     var sjs = sjsResource(solrserver);
-    
+
     var _f = dashboard.current.services.filter;
 
     // Save a reference to this
@@ -85,6 +85,27 @@ define([
         }
       }
     };
+
+    /**
+     * Translate a key to the value defined in a dashboard's lang field
+     *
+     * @param (String) domain       - provide an optional namespace for the key, which will be prefixed to the
+     * @param {String} key          - lang key
+     * @param {Dashboard} dashboard - reference to the currently displayed dashboard, which may or may not have a "lang" field stored with
+     */
+    this.translateLanguageKey = function(domain, key, currentDashboard) {
+
+        var target = (domain ? domain + '.' : '') + key;
+
+        // if the dashboard has a translation for the key...
+        if (currentDashboard.lang && currentDashboard.lang.hasOwnProperty(target)) {
+          return currentDashboard.lang[target];
+        }
+
+        // otherwise return the key itself
+        return key;
+    };
+
 
     this.getBoolFilter = function(ids) {
       // A default match all filter, just in case there are no other filters
@@ -263,7 +284,7 @@ define([
           if (v.from instanceof Date) {
             start_time = new Date(v.from).toISOString();
           } else {
-            start_time = v.from;            
+            start_time = v.from;
           }
           return;
         }
