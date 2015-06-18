@@ -195,6 +195,11 @@ define([
         dashboard.refresh();
       };
 
+      $scope.facet_label = function(key) {
+
+        return filterSrv.translateLanguageKey("facet", key, dashboard.current);
+      };
+
       $scope.fieldExists = function(field, mandate) {
         // TODO: Need to take a look here.
         filterSrv.set({
@@ -243,7 +248,7 @@ define([
         $scope.panel_request = request;
 
         var fq = '';
-        if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+        if (filterSrv.getSolrFq() && filterSrv.getSolrFq()) {
           fq = '&' + filterSrv.getSolrFq();
         }
         var query_size = $scope.panel.size * $scope.panel.pages;
@@ -455,13 +460,13 @@ define([
         dashboard.refresh();
       };
 
-      // return the length of the filters with specific field 
+      // return the length of the filters with specific field
       // that will be used to detect if the filter is present or not to show close icon beside the facet
       $scope.filter_close = function(field) {
         return filterSrv.idsByTypeAndField('terms', field).length > 0;
       };
 
-      // call close filter when click in close icon 
+      // call close filter when click in close icon
       $scope.delete_filter = function(type, field) {
         filterSrv.removeByTypeAndField(type, field);
         dashboard.refresh();
