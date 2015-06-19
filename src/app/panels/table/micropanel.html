@@ -1,6 +1,6 @@
 <a class="close" ng-click="dismiss()" href="">×</a>
 <h4>
-  Micro Analysis of {{micropanel.field}}
+  Micro Analysis of {{facet_label(micropanel.field)}}
   <i class="pointer icon-search" ng-click="fieldExists(micropanel.field,'must');dismiss();"></i>
   <i class="pointer icon-ban-circle" ng-click="fieldExists(micropanel.field,'mustNot');dismiss();"></i>
   <br>
@@ -15,7 +15,7 @@
 </h4>
 <table style="width:100%;table-layout:fixed" class='table table-striped table-condensed'>
   <thead>
-    <th style="width:260px">{{micropanel.field}}</th>
+    <th style="width:260px">{{facet_label(micropanel.field)}}</th>
     <th style="width:40px">Action</th>
     <th style="width:100px;text-align:right">Count</th>
   </thead>
