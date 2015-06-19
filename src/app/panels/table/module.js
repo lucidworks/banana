@@ -376,6 +376,10 @@ function (angular, app, _, kbn, moment) {
       });
     };
 
+    $scope.facet_label = function(key) {
+        return filterSrv.translateLanguageKey("facet", key, dashboard.current);
+    };
+
     $scope.populate_modal = function(request) {
       $scope.inspector = angular.toJson(JSON.parse(request.toString()),true);
     };

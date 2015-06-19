@@ -43,8 +43,8 @@
             <div class="accordion-group" ng-repeat="field in panel.fields">
                 <div class="accordion-heading">
                     <a href="#facet_collapse_{{field | safeFragment}}" data-parent="#facetAccordion" data-toggle="collapse" class="accordion-toggle">
-                            {{field}} <i class="icon-chevron-down"></i>
-                            </a>
+                        {{facet_label(field)}} <i class="icon-chevron-down"></i>
+                    </a>
                 </div>
                 <div class="accordion-body collapse" id="facet_collapse_{{field | safeFragment}}">
                     <div class="accordion-inner">

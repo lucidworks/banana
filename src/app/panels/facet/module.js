@@ -22,6 +22,7 @@ define([
     app.useModule(module);
 
     module.controller('facet', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
+
       $scope.panelMeta = {
         modals: [{
           description: "Inspect",
@@ -56,7 +57,7 @@ define([
         fields: [],
         spyable: true,
         facet_limit: 10,
-        maxnum_facets: 5,  // Max number of facet fields that can be specified. 
+        maxnum_facets: 5,  // Max number of facet fields that can be specified.
                            // If we do too many facets on a really big data, we will run into Out Of Memory issue in JVM.
         foundResults: true,
         header_title: "Facet Fields",
@@ -94,6 +95,16 @@ define([
         }
       };
 
+      /**
+       * Translate a facet key into its human-friendly label, if provided in the dashboard's `lang` field
+       *
+       * @param key {String} the
+       */
+      $scope.facet_label = function(key) {
+
+        return filterSrv.translateLanguageKey("facet", key, dashboard.current);
+      };
+
       $scope.get_data = function(segment, query_id) {
         $scope.panel.error = false;
         delete $scope.panel.error;
@@ -125,9 +136,10 @@ define([
         $scope.panel_request = request;
 
         var fq = '';
-        if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+        if (filterSrv.getSolrFq() && filterSrv.getSolrFq()) {
           fq = '&' + filterSrv.getSolrFq();
         }
+
         var wt_json = '&wt=json';
         var facet = '&facet=true';
         var facet_fields = '';
@@ -135,7 +147,7 @@ define([
         for (var i = 0; i < $scope.panel.fields.length; i++) {
           facet_fields += '&facet.field=' + $scope.panel.fields[i];
         }
-        
+
         // Set the panel's query
         $scope.panel.queries.basic_query = querySrv.getORquery() + fq + facet + facet_fields;
         $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json;
@@ -252,13 +264,13 @@ define([
         dashboard.refresh();
       };
 
-      // return the length of the filters with specific field 
+      // return the length of the filters with specific field
       // that will be used to detect if the filter is present or not to show close icon beside the facet
       $scope.filter_close = function(field) {
         return filterSrv.idsByTypeAndField('terms', field).length > 0;
       };
 
-      // call close filter when click in close icon 
+      // call close filter when click in close icon
       $scope.delete_filter = function(type, field) {
         filterSrv.removeByTypeAndField(type, field);
         dashboard.refresh();
