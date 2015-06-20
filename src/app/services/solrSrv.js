@@ -27,7 +27,7 @@ function (angular, _, config) {
       }
       // Construct Solr query
       var fq = '';
-      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+      if (filterSrv.getSolrFq() && filterSrv.getSolrFq()) {
         fq = '&' + filterSrv.getSolrFq();
       }
       var wt = '&wt=json';

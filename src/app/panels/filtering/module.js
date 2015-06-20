@@ -37,7 +37,8 @@ function (angular, app, _) {
       $scope.filterSrv = filterSrv;
 
       var locationSearch = $location.search(),
-          mandateMap = {'+': 'must', '-': 'mustNot'}
+          mandateMap = {'+': 'must', '-': 'mustNot'};
+
       if (locationSearch.q) {
         angular.forEach(locationSearch.q.split(' '), function (value) {
           if (value) {

@@ -82,7 +82,7 @@ define([
 
         // Build Solr query
         var fq = '';
-        if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+        if (filterSrv.getSolrFq() && filterSrv.getSolrFq()) {
           fq = '&' + filterSrv.getSolrFq();
         }
         var wt_json = '&wt=json';
@@ -110,7 +110,7 @@ define([
           }
 
           var sum = 0;
-          var k = 0;
+//          var k = 0;
           var missing = 0;
           $scope.panelMeta.loading = false;
           $scope.hits = results.response.numFound;
@@ -137,8 +137,9 @@ define([
                   data: count,
                   actions: true
                 };
-                if (count / $scope.hits > $scope.maxRatio)
-                  $scope.maxRatio = count / $scope.hits
+                if (count / $scope.hits > $scope.maxRatio) {
+                  $scope.maxRatio = count / $scope.hits;
+                }
                 $scope.data.push(slice);
               }
             }
@@ -164,7 +165,7 @@ define([
       };
     });
 
-    module.directive('tagcloudChart', function(querySrv, dashboard, filterSrv) {
+    module.directive('tagcloudChart', function(/*querySrv, dashboard, filterSrv*/) {
       return {
         restrict: 'A',
         link: function(scope, element) {
@@ -181,45 +182,6 @@ define([
 
           // Function for rendering panel
           function render_panel() {
-
-            element.html("");
-
-            var el = element[0];
-            var width = element.parent().width();
-            var height = parseInt(scope.row.height);
-
-            var fill = d3.scale.category20();
-            var color = d3.scale.linear()
-              .domain([0, 1, 2, 3, 4, 5, 6, 10, 15, 20, 100])
-              .range(["#7EB26D", "#EAB839", "#6ED0E0", "#EF843C", "#E24D42", "#1F78C1", "#BA43A9", "#705DA0", "#890F02", "#0A437C", "#6D1F62", "#584477"]);
-
-            var scale = d3.scale.linear().domain([0, scope.maxRatio]).range([0, 30]);
-            var randomRotate = d3.scale.linear().domain([0, 1]).range([-90, 90]);
-
-            d3.layout.cloud().size([width - 20, height - 20])
-              .words(scope.data.map(function(d) {
-                return {
-                  text: d.label,
-                  size: 5 + scale(d.data / scope.hits) + parseInt(scope.panel.fontScale)
-                };
-              })).rotate(function() {
-                if (scope.panel.alignment == 'vertical and horizontal')
-                  return~~ (Math.random() * 2) * -90;
-                else if (scope.panel.alignment == 'horizontal')
-                  return 0;
-                else if (scope.panel.alignment == 'vertical(+90)')
-                  return 90;
-                else if (scope.panel.alignment == 'vertical(-90)')
-                  return -90;
-                else
-                  return randomRotate(Math.random());
-              })
-              .font("sans-serif")
-              .fontSize(function(d) {
-                return d.size;
-              })
-              .on("end", draw)
-              .start();
 
             function draw(words) {
               d3.select(el).append("svg")
@@ -246,6 +208,53 @@ define([
                   return d.text;
                 });
             }
+
+            element.html("");
+
+            var el = element[0];
+            var width = element.parent().width();
+            var height = parseInt(scope.row.height);
+
+            var fill = d3.scale.category20();
+/*
+            var color = d3.scale.linear()
+              .domain([0, 1, 2, 3, 4, 5, 6, 10, 15, 20, 100])
+              .range(["#7EB26D", "#EAB839", "#6ED0E0", "#EF843C", "#E24D42", "#1F78C1", "#BA43A9", "#705DA0", "#890F02", "#0A437C", "#6D1F62", "#584477"]);
+*/
+
+            var scale = d3.scale.linear().domain([0, scope.maxRatio]).range([0, 30]);
+            var randomRotate = d3.scale.linear().domain([0, 1]).range([-90, 90]);
+
+            d3.layout.cloud().size([width - 20, height - 20])
+              .words(scope.data.map(function(d) {
+                return {
+                  text: d.label,
+                  size: 5 + scale(d.data / scope.hits) + parseInt(scope.panel.fontScale)
+                };
+              })).rotate(function() {
+                if (scope.panel.alignment === 'vertical and horizontal') {
+                  return~~ (Math.random() * 2) * -90;
+                } else if (scope.panel.alignment === 'horizontal') {
+                  return 0;
+                }
+                else if (scope.panel.alignment === 'vertical(+90)') {
+                  return 90;
+                }
+                else if (scope.panel.alignment === 'vertical(-90)') {
+                  return -90;
+				}
+                else {
+                  return randomRotate(Math.random());
+                }
+              })
+              .font("sans-serif")
+              .fontSize(function(d) {
+                return d.size;
+              })
+              .on("end", draw)
+              .start();
+
+
           }
 
         }
