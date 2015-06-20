@@ -96,7 +96,7 @@ define([
 
             // Construct Solr query
             var fq = '';
-            if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+            if (filterSrv.getSolrFq() && filterSrv.getSolrFq()) {
                 fq = '&' + filterSrv.getSolrFq();
             }
             var wt_json = '&wt=json';
@@ -231,7 +231,7 @@ define([
 					.innerRadius(function(d) {return Math.sqrt(d.y);})
 					.outerRadius(function(d) { return Math.sqrt(d.y + d.dy);});
 
-				var path = svg.datum(scope.data).selectAll("path")
+				svg.datum(scope.data).selectAll("path")
 				  .data(partition.nodes)
 				.enter().append("path")
 				  .attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
@@ -247,8 +247,8 @@ define([
 				  .on("mouseleave", mouseleave)
 				  .on("click",click);
 
-				var labels = svg.selectAll("text.label")
-				  .data(partition(scope.data));
+				svg.selectAll("text.label").data(partition(scope.data));
+
 				// Hide the spinning wheel icon
 				scope.panelMeta.loading = false;
 				var $tooltip = $('<div id="sunbursttooltip">');

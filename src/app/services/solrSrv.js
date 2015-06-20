@@ -1,9 +1,8 @@
 define([
   'angular',
-  'underscore',
-  'config'
+  'underscore'
 ],
-function (angular, _, config) {
+function (angular, _) {
   'use strict';
 
   var module = angular.module('kibana.services');

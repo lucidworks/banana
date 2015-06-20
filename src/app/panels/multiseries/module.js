@@ -322,7 +322,7 @@ define([
                     };
 
                     // zoom functionality is disabled
-                    var zoom = d3.behavior.zoom()
+                    d3.behavior.zoom()
                                 .x(x)
                                 .y(y)
                                 .scaleExtent([1, 5])
