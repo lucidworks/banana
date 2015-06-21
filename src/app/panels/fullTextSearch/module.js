@@ -388,30 +388,7 @@ define([
         var response = request.doSearch();
 
         response.then(function(response) {
-          var blob; // the file to be written
-          // TODO: manipulating solr requests
-          // pagination (batch downloading)
-          // example: 1,000,000 rows will explode the memory !
-          if (filetype === 'json') {
-            blob = new Blob([angular.toJson(response, true)], {
-              type: "text/json;charset=utf-8"
-            });
-          } else if (filetype === 'csv') {
-            blob = new Blob([response.toString()], {
-              type: "text/csv;charset=utf-8"
-            });
-          } else if (filetype === 'xml') {
-            blob = new Blob([response.toString()], {
-              type: "text/xml;charset=utf-8"
-            });
-          } else {
-            // incorrect file type
-            alert('incorrect file type');
-            return false;
-          }
-          // from filesaver.js
-          window.saveAs(blob, "table" + "-" + new Date().getTime() + "." + filetype);
-          return true;
+          kbn.download_response(response, filetype, 'fulltextsearch');
         });
       };
 

@@ -1,3 +1,5 @@
+/*global angular */
+
 define(['jquery', 'underscore'],
 function($, _) {
   'use strict';
@@ -20,6 +22,35 @@ function($, _) {
     return field_array.sort();
   };
 
+  /**
+   * Save a response object to the visitor's computer
+   *
+   * @param {Object} response  sdf
+   * @param {String} type      one of "json", "csv", or "xml"
+   * @param {String} basename  serves as the basename for the file
+   * @return {Boolean}         true if the file downloaded successfully, false if not
+   */
+  kbn.download_response = function(response, type, basename) {
+
+    var blob; // the file to be written
+    // TODO: manipulating solr requests
+    // pagination (batch downloading)
+    // example: 1,000,000 rows will explode the memory !
+    if(type === 'json') {
+        blob = new Blob([angular.toJson(response,true)], {type: "text/json;charset=utf-8"});
+    } else if(type === 'csv') {
+        blob = new Blob([response.toString()], {type: "text/csv;charset=utf-8"});
+    } else if(type === 'xml'){
+        blob = new Blob([response.toString()], {type: "text/xml;charset=utf-8"});
+    } else {
+        // incorrect file type
+        alert('incorrect file type');
+        return false;
+    }
+    // from filesaver.js
+    window.saveAs(blob, basename +"-"+new Date().getTime()+"."+type);
+    return true;
+  };
 
   /**
    *
@@ -225,6 +256,12 @@ function($, _) {
     }
   };
 
+  /**
+   * Build a human-friendly description of how much time has passed since a point in time
+   *
+   * @param  {Number} seconds  The number of seconds that have passed since the event in question
+   * @return {String}          String with human-friendly relative time interval
+  */
   kbn.secondsToHms = function(seconds){
     var numyears = Math.floor(seconds / 31536000);
     if(numyears){
@@ -308,7 +345,6 @@ function($, _) {
   kbn.time_ago = function(string) {
     return new Date(new Date().getTime() - (kbn.interval_to_ms(string)));
   };
-
 
   /**
    * Return a single-level object where nested object keys are concatenated representations of path syntax
