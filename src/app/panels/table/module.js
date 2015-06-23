@@ -108,7 +108,7 @@ function (angular, app, _, kbn, moment) {
       // Solr
       $scope.sjs = $scope.sjs || sjsResource(dashboard.current.solr.server + dashboard.current.solr.core_name); // jshint ignore: line
       $scope.$on('refresh',function(){$scope.get_data();});
-      $scope.panel.exportSize = $scope.panel.size * $scope.panel.pages; 
+      $scope.panel.exportSize = $scope.panel.size * $scope.panel.pages;
       $scope.fields = fields;
       $scope.get_data();
     };
@@ -216,7 +216,7 @@ function (angular, app, _, kbn, moment) {
     $scope.get_data = function(segment,query_id) {
       $scope.panel.error =  false;
       delete $scope.panel.error;
-      
+
       // Make sure we have everything for the request to complete
       if(dashboard.indices.length === 0) {
         return;
@@ -242,7 +242,7 @@ function (angular, app, _, kbn, moment) {
       $scope.panel_request = request;
 
       var fq = '';
-      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+      if (filterSrv.getSolrFq() && filterSrv.getSolrFq()) {
         fq = '&' + filterSrv.getSolrFq();
       }
       var query_size = $scope.panel.size * $scope.panel.pages;
@@ -337,7 +337,8 @@ function (angular, app, _, kbn, moment) {
       var omitHeader = '&omitHeader=true';
       var rows_limit = '&rows=' + ($scope.panel.exportSize || ($scope.panel.size * $scope.panel.pages));
       var fl = '';
-      if (!$scope.panel.exportAll) {
+
+      if (! $scope.panel.exportAll) {
           fl = '&fl=';
           for(var i = 0; i < $scope.panel.fields.length; i++) {
               fl += $scope.panel.fields[i] + (i !== $scope.panel.fields.length - 1 ? ',' : '');
@@ -351,28 +352,11 @@ function (angular, app, _, kbn, moment) {
       } else {
         request = request.setQuery(exportQuery);
       }
-      
+
       var response = request.doSearch();
 
       response.then(function(response) {
-        var blob; // the file to be written
-        // TODO: manipulating solr requests
-        // pagination (batch downloading)
-        // example: 1,000,000 rows will explode the memory !
-        if(filetype === 'json') {
-            blob = new Blob([angular.toJson(response,true)], {type: "text/json;charset=utf-8"});
-        } else if(filetype === 'csv') {
-            blob = new Blob([response.toString()], {type: "text/csv;charset=utf-8"});
-        } else if(filetype === 'xml'){
-            blob = new Blob([response.toString()], {type: "text/xml;charset=utf-8"});
-        } else {
-            // incorrect file type
-            alert('incorrect file type');
-            return false;
-        }
-        // from filesaver.js
-        window.saveAs(blob, "table"+"-"+new Date().getTime()+"."+filetype);
-        return true;
+        kbn.download_response(response, filetype, "table");
       });
     };
 
