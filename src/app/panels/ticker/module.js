@@ -136,7 +136,7 @@ define([
 
         // Build SOLR query
         var fq = '';
-        if (filterSrv.getSolrFq(true) && filterSrv.getSolrFq(true) != '') {
+        if (filterSrv.getSolrFq(true) && filterSrv.getSolrFq(true)) {
           fq = '&' + filterSrv.getSolrFq(true);
         }
         var time_field = filterSrv.getTimeField();
@@ -145,7 +145,7 @@ define([
 
         // current time
         // make the gap equal to the difference between the start and end date
-        // this will help in reducing response size 
+        // this will help in reducing response size
         var facet_first_gap = '%2B' + diffDays($scope.time.from, $scope.time.to) + 'DAY';
         var facet_first_range = '&facet=true' +
           '&facet.range=' + time_field +
@@ -216,8 +216,8 @@ define([
                 return;
               }
               processSolrResults(results[index * 2], results[index * 2 + 1], id,index);
-            })
-          })
+            });
+          });
         }
 
       };

@@ -1,15 +1,15 @@
 /*
   ## Docviewer module
-  *  
+  *
 */
 define([
   'angular',
   'app',
   'kbn',
-  'underscore',
-  'jquery'
+  'underscore'/*,
+  'jquery'*/
 ],
-function (angular, app, kbn, _, $) {
+function (angular, app, kbn, _/*, $*/) {
   'use strict';
 
   var module = angular.module('kibana.panels.docviewer', []);
@@ -96,10 +96,10 @@ function (angular, app, kbn, _, $) {
       // Set Solr server
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
       var request = $scope.sjs.Request();
-      
+
       // Construct Solr query
       var fq = '';
-      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+      if (filterSrv.getSolrFq() && filterSrv.getSolrFq()) {
           fq = '&' + filterSrv.getSolrFq();
       }
       var wt = '&wt=json';
@@ -139,7 +139,7 @@ function (angular, app, kbn, _, $) {
         var uniquekey = $scope.data[$scope.docIndex][$scope.panel.uniqueKey];
 
         if ($scope.highlighting[uniquekey][$scope.panel.titleField]) {
-          $scope.panel.docTitle = $scope.highlighting[uniquekey][$scope.panel.titleField]
+          $scope.panel.docTitle = $scope.highlighting[uniquekey][$scope.panel.titleField];
         } else {
           $scope.panel.docTitle = $scope.data[$scope.docIndex][$scope.panel.titleField];
         }
@@ -148,7 +148,7 @@ function (angular, app, kbn, _, $) {
           $scope.panel.docContent = $scope.highlighting[uniquekey][$scope.panel.contentField];
         } else {
           $scope.panel.docContent = $scope.data[$scope.docIndex][$scope.panel.contentField];
-        }        
+        }
 
         $scope.render();
       });
@@ -163,7 +163,7 @@ function (angular, app, kbn, _, $) {
         var uniquekey = $scope.data[$scope.docIndex][$scope.panel.uniqueKey];
 
         if ($scope.highlighting[uniquekey][$scope.panel.titleField]) {
-          $scope.panel.docTitle = $scope.highlighting[uniquekey][$scope.panel.titleField]
+          $scope.panel.docTitle = $scope.highlighting[uniquekey][$scope.panel.titleField];
         } else {
           $scope.panel.docTitle = $scope.data[$scope.docIndex][$scope.panel.titleField];
         }
@@ -180,9 +180,9 @@ function (angular, app, kbn, _, $) {
       if ($scope.docIndex > 0) {
         $scope.docIndex--;
         var uniquekey = $scope.data[$scope.docIndex][$scope.panel.uniqueKey];
-        
+
         if ($scope.highlighting[uniquekey][$scope.panel.titleField]) {
-          $scope.panel.docTitle = $scope.highlighting[uniquekey][$scope.panel.titleField]
+          $scope.panel.docTitle = $scope.highlighting[uniquekey][$scope.panel.titleField];
         } else {
           $scope.panel.docTitle = $scope.data[$scope.docIndex][$scope.panel.titleField];
         }

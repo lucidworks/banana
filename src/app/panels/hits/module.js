@@ -106,7 +106,7 @@ define([
 
       //Solr Search Query
       var fq = '';
-      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+      if (filterSrv.getSolrFq() && filterSrv.getSolrFq()) {
         fq = '&' + filterSrv.getSolrFq();
       }
       var wt_json = '&wt=json';
@@ -143,7 +143,7 @@ define([
             return;
           }
           var info = dashboard.current.services.query.list[id];
-          var hits = $scope.hits;
+
           // Create series
           $scope.data[i] = {
             info: info,
@@ -154,7 +154,7 @@ define([
           };
           $scope.$emit('render');
         });
-      })
+      });
     };
 
     $scope.set_refresh = function (state) {
