@@ -81,10 +81,10 @@ function (angular, app, _, $, d3) {
       // Set Solr server
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
       var request = $scope.sjs.Request();
-      
+
       // Construct Solr query
       var fq = '';
-      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+      if (filterSrv.getSolrFq()) {
           fq = '&' + filterSrv.getSolrFq();
       }
       var wt = '&wt=csv';
@@ -150,7 +150,7 @@ function (angular, app, _, $, d3) {
 
           var chart = d3.select(element[0]).append('svg')
                         .attr('width', width)
-                        .attr('height', height)
+                        .attr('height', height);
 
           var bar = chart.selectAll('g')
                       .data(scope.data)

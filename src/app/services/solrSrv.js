@@ -1,9 +1,8 @@
 define([
   'angular',
-  'underscore',
-  'config'
+  'underscore'
 ],
-function (angular, _, config) {
+function (angular, _) {
   'use strict';
 
   var module = angular.module('kibana.services');
@@ -27,7 +26,7 @@ function (angular, _, config) {
       }
       // Construct Solr query
       var fq = '';
-      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+      if (filterSrv.getSolrFq()) {
         fq = '&' + filterSrv.getSolrFq();
       }
       var wt = '&wt=json';

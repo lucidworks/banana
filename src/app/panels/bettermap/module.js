@@ -15,7 +15,7 @@ define([
   './leaflet/leaflet-src',
   'require',
   // './leaflet/plugins', // moving it here causing error in the app, fallback to the old Kibana way.
-  
+
   'css!./module.css',
   'css!./leaflet/leaflet.css',
   'css!./leaflet/plugins.css'
@@ -79,11 +79,11 @@ function (angular, app, _, L, localRequire) {
       });
       $scope.get_data();
     };
-      
+
     $scope.set_refresh = function (state) {
       $scope.refresh = state;
-    };  
-    
+    };
+
     $scope.close_edit = function() {
       if($scope.refresh) {
         $scope.get_data();
@@ -100,7 +100,7 @@ function (angular, app, _, L, localRequire) {
         if(dashboard.indices.length === 0) {
           return;
         }
-        
+
         // check if [lat,lon] field is defined
         if(_.isUndefined($scope.panel.field)) {
           $scope.panel.error = "Please select a field that contains geo point in [lon,lat] format";
@@ -137,21 +137,21 @@ function (angular, app, _, L, localRequire) {
 
         // Build Solr query
         var fq = '';
-        if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+        if (filterSrv.getSolrFq()) {
           fq = '&' + filterSrv.getSolrFq();
         }
         var query_size = $scope.panel.size;
         var wt_json = '&wt=json';
         var rows_limit;
         var sorting = '&sort=' + filterSrv.getTimeField() + ' desc'; // Only get the latest data, sorted by time field.
-        
+
         // set the size of query result
         if (query_size !== undefined && query_size !== 0) {
           rows_limit = '&rows=' + query_size;
         } else { // default
           rows_limit = '&rows=25';
         }
-          
+
         // FIXED LatLong Query
         if($scope.panel.lat_start && $scope.panel.lat_end && $scope.panel.lon_start && $scope.panel.lon_end && $scope.panel.field) {
           fq += '&fq=' + $scope.panel.field + ':[' + $scope.panel.lat_start + ',' + $scope.panel.lon_start + ' TO ' + $scope.panel.lat_end + ',' + $scope.panel.lon_end + ']';
@@ -182,7 +182,7 @@ function (angular, app, _, L, localRequire) {
             $scope.panel.error = $scope.parse_error(results.error.msg);
             return;
           }
-          
+
           // Check that we're still on the same query, if not stop
           if($scope.query_id === query_id) {
             // Keep only what we need for the set

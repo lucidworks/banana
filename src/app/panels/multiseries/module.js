@@ -75,7 +75,7 @@ define([
             // Construct Solr query
             var request = $scope.sjs.Request();
             var fq = '';
-            if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+            if (filterSrv.getSolrFq()) {
                 fq = '&' + filterSrv.getSolrFq();
             }
             var wt_json = '&wt=json';
@@ -177,8 +177,8 @@ define([
                     }
 
                     var parent_width = $("#multiseries").width(),
-                        parent_height = $('#multiseries').parent().parent().parent().parent().height(),
-                        aspectRatio = 400 / 600;
+                        parent_height = $('#multiseries').parent().parent().parent().parent().height();
+//                        aspectRatio = 400 / 600;
 
                     var margin = {
                             top: 20,
@@ -231,7 +231,7 @@ define([
                         return (fl.indexOf(key) !== -1);
                     }));
 
-                    var y_right,y_right_color,yAxis_right,line_right,rightAxisList;
+                    var y_right,y_right_color,yAxis_right,line_right;
 
                     if(scope.panel.rightYEnabled) {
                         y_right = d3.scale.linear().range([height, 0]);
@@ -300,7 +300,7 @@ define([
                                    return {xValue: d[scope.panel.field], yValue: +d[name]};
                                })
                             };
-                        }); 
+                        });
 
                         y_right.domain([
                             d3.min(yFields_right, function(c) { return d3.min(c.values, function(v) { return v.yValue; }); }),
@@ -308,12 +308,25 @@ define([
                         ]);
                     }
 
+                    var zoomed = function() {
+                        svg.select(".x.axis").call(xAxis);
+                        svg.select(".y.axis").call(yAxis);
+                        svg.selectAll('.yfield path.line').data(yFields).attr('d', function(d) {
+                            return line(d.values);
+                        });
+                        if(scope.panel.rightYEnabled) {
+                            svg.selectAll('.yfield_right path.line').data(yFields_right).attr('d', function(d) {
+                                return line_right(d.values);
+                            });
+                        }
+                    };
+
                     // zoom functionality is disabled
-                    var zoom = d3.behavior.zoom()
+                    d3.behavior.zoom()
                                 .x(x)
                                 .y(y)
                                 .scaleExtent([1, 5])
-                                .on("zoom", zoomed);                               
+                                .on("zoom", zoomed);
 
                     var svg = d3.select(el).append("svg")
                         .attr("width", width + margin.left + margin.right)
@@ -322,7 +335,7 @@ define([
                         .attr("preserveAspectRatio", "xMidYMid")
                         .append("g")
                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-                        
+
                     svg.append("g")
                         .attr("class", "x axis")
                         .attr("transform", "translate(0," + height + ")")
@@ -357,8 +370,8 @@ define([
                     if(scope.panel.rightYEnabled) {
                         svg.append("g")
                            .attr("class", "y axis")
-                           .attr("transform", "translate(" + width + " ,0)")   
-                           .style("fill", "blue") 
+                           .attr("transform", "translate(" + width + " ,0)")
+                           .style("fill", "blue")
                            .call(yAxis_right)
                            .append("text")
                            .attr("transform", "rotate(-90)")
@@ -371,12 +384,12 @@ define([
                                      .data(yFields_right)
                                      .enter().append("g")
                                      .attr("class", "yfield_right");
-                       
+
                         yfield_right.append("path")
                            .attr("class", "line")
                            .attr("d", function(d) { return line_right(d.values); })
                            .style("stroke", function(d) { return y_right_color(d.name); })
-                           .style("fill", "transparent")
+                           .style("fill", "transparent");
                     }
 
                     if(scope.panel.showLegend) {
@@ -385,7 +398,7 @@ define([
                             .attr("height", 100)
                             .attr("width", 150)
                             .attr('transform', 'translate(30,40)');
-                            
+
                             legend.selectAll('rect')
                               .data(yFields)
                               .enter()
@@ -394,10 +407,10 @@ define([
                               .attr("y", function(d, i){ return i *  20;})
                               .attr("width", 10)
                               .attr("height", 10)
-                              .style("fill", function(d) { 
+                              .style("fill", function(d) {
                                 return color(d.name);
-                              })
-                              
+                              });
+
                             legend.selectAll('text')
                               .data(yFields)
                               .enter()
@@ -415,8 +428,8 @@ define([
                         .attr("class", "legend")
                         .attr("height", 100)
                         .attr("width", 150)
-                        .attr('transform', 'translate(30,150)')
-                        
+                        .attr('transform', 'translate(30,150)');
+
                         legend_right.selectAll('rect')
                           .data(yFields_right)
                           .enter()
@@ -425,10 +438,10 @@ define([
                           .attr("y", function(d, i){ return i *  20;})
                           .attr("width", 10)
                           .attr("height", 10)
-                          .style("fill", function(d) { 
+                          .style("fill", function(d) {
                             return y_right_color(d.name);
-                          })
-                          
+                          });
+
                         legend_right.selectAll('text')
                           .data(yFields_right)
                           .enter()
@@ -440,18 +453,6 @@ define([
                           });
                     }
 
-                    function zoomed() {
-                        svg.select(".x.axis").call(xAxis);
-                        svg.select(".y.axis").call(yAxis);   
-                        svg.selectAll('.yfield path.line').data(yFields).attr('d', function(d) {
-                            return line(d.values);
-                        });
-                        if(scope.panel.rightYEnabled) {
-                            svg.selectAll('.yfield_right path.line').data(yFields_right).attr('d', function(d) {
-                                return line_right(d.values);
-                            });
-                        }
-                    }
                 }
 
                 render_panel();

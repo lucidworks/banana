@@ -1,3 +1,5 @@
+/* global Promise */
+
 define([
   'angular',
   'underscore',
@@ -113,7 +115,7 @@ function (angular, _, config, moment) {
 
       return something.then(function(p) {
         if (DEBUG) { console.debug('kbnIndex: p=',p); }
-        
+
         // var indices = [];
         // _.each(p.data, function(v,k) {
         //   indices.push(k);
@@ -122,7 +124,7 @@ function (angular, _, config, moment) {
         //     indices.push(k);
         //   });
         // });
-      
+
         var indices = [];
 
         var timestamp_array = p.data.facet_counts.facet_ranges.event_timestamp.counts;
@@ -135,7 +137,7 @@ function (angular, _, config, moment) {
 
         // indices[] should be in this format
         // indices = ['logstash-2013.11.25'];
-        
+
         if (DEBUG) { console.debug('kbnIndex: indices=',indices); }
 
         return indices;

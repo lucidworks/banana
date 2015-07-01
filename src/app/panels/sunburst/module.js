@@ -42,10 +42,10 @@ define([
             spyable: true,
             show_queries:true,
         };
-		
+
         _.defaults($scope.panel, _d);
 		var DEBUG = true;
-		
+
         $scope.init = function() {
             $scope.$on('refresh', function() {
                 $scope.get_data();
@@ -53,14 +53,14 @@ define([
             });
             $scope.get_data();
         };
-		
+
 		$scope.parse_facet_pivot = function (data){
 			  var out = {'name' : 'root', 'children': []};
 			  for (var ob in data) {
 				out.children.push($scope.parse_item(data[ob]));
 			  }
 			  return out;
-			}
+			};
 
 		$scope.parse_item = function  (doc) {
 			  var t = {'name' : doc.value, 'size' : doc.count, 'children': []};
@@ -68,13 +68,13 @@ define([
 				t.children.push($scope.parse_item(doc.pivot[piv]));
 			  }
 			  return t;
-			}
-			
+			};
+
         $scope.get_data = function() {
             // Show progress by displaying a spinning wheel icon on panel
             $scope.panelMeta.loading = true;
             delete $scope.panel.error;
-            
+
              var request, results;
             // Set Solr server
             $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
@@ -96,12 +96,12 @@ define([
 
             // Construct Solr query
             var fq = '';
-            if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+            if (filterSrv.getSolrFq()) {
                 fq = '&' + filterSrv.getSolrFq();
             }
             var wt_json = '&wt=json';
 			var rows = '&rows=0';
-			var facet = '&facet=true'
+			var facet = '&facet=true';
 			var facet_pivot = '&facet.pivot=' +$scope.panel.facet_pivot_strings.join().replace(/ /g,'');
 			var facet_limits = '&facet.limit=' + $scope.panel.facet_limit;
             $scope.panel.queries.query = querySrv.getORquery() + fq  + wt_json + facet + facet_pivot + facet_limits + rows;
@@ -125,7 +125,7 @@ define([
 
 
         };
-		
+
 		$scope.dash = dashboard;
         $scope.set_refresh = function(state) {
             $scope.refresh = state;
@@ -150,7 +150,7 @@ define([
         $scope.pad = function(n) {
             return (n < 10 ? '0' : '') + n;
         };
-		
+
 	  $scope.set_filters = function(d) {
         if (DEBUG) {
 			console.log("Setting Filters to " +d );
@@ -163,7 +163,7 @@ define([
 			  value: d[i]
 			});
 			console.log($scope.panel.facet_pivot_strings[i].replace(/ /g,'') + ' - ' + d[i]);
-		
+
 		}
 
         dashboard.refresh();
@@ -175,19 +175,17 @@ define([
 		return {
 		  terminal: true,
 		  restrict: 'E',
-		  link: function(scope,element,attrs) {
+		  link: function(scope,element/*,attrs*/ ) { // attrs is never used
 				scope.$on('render', function() {
 					console.log("Sending SunBurzt 'render' Emit");
-			
+
                     render_panel();
                 });
 
                 angular.element(window).bind('resize', function() {
                     render_panel();
                 });
-			  
-			  var running = false;
-			  
+
 			  function render_panel () {
 					var DEBUG = true;
 					if (DEBUG){
@@ -197,17 +195,16 @@ define([
                     element.html("");
 
                     var el = element[0];
-					
+
                     var parent_width = element.parent().width(),
-                        height = parseInt(scope.row.height),
-                        padding = 50;
+                        height = parseInt(scope.row.height);
 
                     var margin = {
                         top: 30,
                         right: 20,
                         bottom: 10,
                         left: 20
-                    }, 
+                    },
                     width = parent_width - margin.left - margin.right;
 					d3.selectAll("#sunbursttooltip").remove();
                     height = height - margin.top - margin.bottom;
@@ -215,45 +212,43 @@ define([
 					var color = d3.scale.category20c();
 
 				    var radius = Math.min(width, height) / 2;
-				    var cheight = height - margin.top - margin.bottom;
-				    var cwidth = width - margin.left - margin.right;
-	  
+
 				    var svg = d3.select(el).append("svg")
 						  .style('height',height)
 						  .style('width',width)
 						.append("g")
-						  .attr("transform", "translate(" + width / 2 + "," + height * .50 + ")");
-	  
+						  .attr("transform", "translate(" + width / 2 + "," + height * 0.50 + ")");
+
 				  var partition = d3.layout.partition()
 					.sort(null)
 					.size([2 * Math.PI, radius * radius])
 					.value(function(d) {return d.size;})
-					.children(function (d) {return d.children});
+					.children(function (d) {return d.children; });
 
 				  var arc = d3.svg.arc()
-					.startAngle(function(d) { return d.x})
+					.startAngle(function(d) { return d.x; })
 					.endAngle(function(d) {return d.x + d.dx;})
 					.innerRadius(function(d) {return Math.sqrt(d.y);})
 					.outerRadius(function(d) { return Math.sqrt(d.y + d.dy);});
 
-				var path = svg.datum(scope.data).selectAll("path")
+				svg.datum(scope.data).selectAll("path")
 				  .data(partition.nodes)
 				.enter().append("path")
 				  .attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
 				  .attr("d", arc)
-				  .attr("bs-tooltip",function(d){ return "'hello'";})
+				  .attr("bs-tooltip",function(){ return "'hello'";})
 				  .style("stroke", "#fff")
-				  .style("fill", function(d) { 
+				  .style("fill", function(d) {
 					  if (d.depth > 0) {
-						return color(d.name); 
+						return color(d.name);
 					  }
 				  }) .each(stash)
 				  .on("mouseover", mouseover)
 				  .on("mouseleave", mouseleave)
 				  .on("click",click);
 
-				var labels = svg.selectAll("text.label")
-				  .data(partition(scope.data)); 
+				svg.selectAll("text.label").data(partition(scope.data));
+
 				// Hide the spinning wheel icon
 				scope.panelMeta.loading = false;
 				var $tooltip = $('<div id="sunbursttooltip">');
@@ -271,23 +266,23 @@ define([
 
 	   function mouseover(d) {
 			var parents = getAncestors(d);
-		 
+
 			d3.selectAll("path")
 			   .style("opacity",0.3);
-		 
+
 			d3.selectAll("path")
 			   .filter(function(node) {
 				 return (parents.indexOf(node) >= 0);
 			   })
 			   .style("opacity", 1);
-			   
+
 			$tooltip
 			.html(d['name']+' ('+ scope.dash.numberWithCommas(d['size']) +')')
 				.place_tt(d3.event.pageX, d3.event.pageY);
 		   }
-		   
+
 		// Restore everything to full opacity when moving off the visualization.
-		function mouseleave(d) {
+		function mouseleave() {
 		   d3.selectAll("path")
 			   .style("opacity",1);
 			$tooltip.detach();
@@ -309,5 +304,5 @@ define([
 }
 
 
-	}});
+	}; });
 });

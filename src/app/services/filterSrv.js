@@ -180,7 +180,7 @@ define([
           console.debug('filterSrv: v=', v, ' k=', k);
         }
 
-        if (v.active == true) {
+        if (v.active) {
           if (v.type === 'time') {
             time_field = v.field;
             // Check for type of timestamps
