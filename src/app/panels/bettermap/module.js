@@ -137,7 +137,7 @@ function (angular, app, _, L, localRequire) {
 
         // Build Solr query
         var fq = '';
-        if (filterSrv.getSolrFq() && filterSrv.getSolrFq()) {
+        if (filterSrv.getSolrFq()) {
           fq = '&' + filterSrv.getSolrFq();
         }
         var query_size = $scope.panel.size;

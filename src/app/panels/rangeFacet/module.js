@@ -259,7 +259,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       // Build Solr query
       var fq = '';
-      if (filterSrv.getSolrFq() && filterSrv.getSolrFq()) {
+      if (filterSrv.getSolrFq()) {
         fq = '&' + filterSrv.getSolrFq();
       }
       var wt_json = '&wt=json';

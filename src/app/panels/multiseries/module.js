@@ -75,7 +75,7 @@ define([
             // Construct Solr query
             var request = $scope.sjs.Request();
             var fq = '';
-            if (filterSrv.getSolrFq() && filterSrv.getSolrFq()) {
+            if (filterSrv.getSolrFq()) {
                 fq = '&' + filterSrv.getSolrFq();
             }
             var wt_json = '&wt=json';

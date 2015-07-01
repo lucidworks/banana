@@ -84,7 +84,7 @@ function (angular, app, _, $, d3) {
 
       // Construct Solr query
       var fq = '';
-      if (filterSrv.getSolrFq() && filterSrv.getSolrFq()) {
+      if (filterSrv.getSolrFq()) {
           fq = '&' + filterSrv.getSolrFq();
       }
       var wt = '&wt=csv';
