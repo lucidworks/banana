@@ -246,14 +246,6 @@ function (angular, app, _, $) {
     };
 
     $scope.build_search = function(field,value) {
-      var querystringObj = filterSrv.getByType("querystring");
-      _.forEach(querystringObj, function (obj) {
-        if ( obj.query.startsWith($scope.panel.field)
-              && obj['mandate'] == "must" ) {
-          filterSrv.remove(obj.id);
-        }
-      });
-
       // Set querystring to both uppercase and lowercase state values with double-quote around the value
       // to prevent query error from state=OR (Oregon)
       filterSrv.set({type:'querystring',mandate:'must',query:field+':"'+value.toUpperCase()+'" OR '+field+':"'+value.toLowerCase()+'"'});
@@ -317,10 +309,9 @@ function (angular, app, _, $) {
               },
               onRegionClick: function(event, code) {
                 var count = _.isUndefined(scope.data[code]) ? 0 : scope.data[code];
-                scope.build_search(scope.panel.field,code);
-                /*if (count !== 0) {
+                if (count !== 0) {
                   scope.build_search(scope.panel.field,code);
-                }*/
+                }
               }
             });
           });
