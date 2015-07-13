@@ -542,13 +542,23 @@ function (angular, app, _, kbn, moment) {
     };
   });
 
+
   // This filter will check the input field to see if it should be displayed as <img src="data">
   module.filter('tableDisplayImageField', function() {
     return function(data, field, imageFields, width, height) {
-      if (typeof field !== 'undefined' && imageFields.length>0 && _.contains(imageFields, field)) {
+      if (typeof field !== 'undefined' &&
+        imageFields.length>0 &&
+        _.contains(imageFields, field) &&
+        data != '') {
         return '<img style="width:' + width + '; height:' + height + ';" src="'+data+'">';
       }
       return data;
     };
   });
+
+  module.filter('toTrusted', ['$sce', function($sce){
+    return function(text) {
+      return $sce.trustAsHtml(text);
+    };
+  }]);
 });
