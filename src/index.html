@@ -38,7 +38,9 @@
       <span ng-bind-html="alert.text"></span>
       <div style="padding-right:10px" class="pull-right small"> {{$index + 1}} alert(s) </div>
     </div>
-    <div class="navbar navbar-default" role="navigation" bs-navbar>
+    <div class="navbar navbar-default"
+         data-ng-hide="noHeader"
+         role="navigation" bs-navbar>
       <div class="navbar-header">
         <span class="navbar-brand">
           {{dashboard.current.title}}
