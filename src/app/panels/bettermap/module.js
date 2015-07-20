@@ -24,6 +24,7 @@ function (angular, app, _, L, localRequire) {
   'use strict';
 
   var DEBUG = false; // DEBUG mode
+  var fitBoundsFlag = true; // flag for done fitbounds or not
 
   var module = angular.module('kibana.panels.bettermap', []);
   app.useModule(module);
@@ -65,6 +66,9 @@ function (angular, app, _, L, localRequire) {
 //      tooltip : "_id",
       field   : null,
       show_queries:true,
+      fitBoundsAuto : true,
+      lat_empty: 0,
+      lon_empty: 0,
     };
 
     _.defaults($scope.panel, _d);
@@ -89,6 +93,12 @@ function (angular, app, _, L, localRequire) {
         $scope.get_data();
       }
       $scope.refresh =  false;
+    };
+
+
+    $scope.fitBounds = function () {
+      fitBoundsFlag = true;
+      $scope.$emit('draw');
     };
 
     $scope.get_data = function(segment,query_id) {
@@ -186,11 +196,18 @@ function (angular, app, _, L, localRequire) {
           if($scope.query_id === query_id) {
             // Keep only what we need for the set
             $scope.data = $scope.data.slice(0,$scope.panel.size).concat(_.map(results.response.docs, function(hit) {
-              var latlon = hit[$scope.panel.field].split(',');
+              var latlon;
+              if( hit[$scope.panel.field]) {
+                latlon =  hit[$scope.panel.field].split(',');
+              } else {
+                latlon = [$scope.panel.lat_empty, $scope.panel.lon_empty];
+              }
+
               return {
                 coordinates : new L.LatLng(latlon[0],latlon[1]),
                 tooltip : hit[$scope.panel.tooltip]
               };
+
             }));
 
           } else {
@@ -269,8 +286,10 @@ function (angular, app, _, L, localRequire) {
             });
 
             layerGroup.addTo(map);
-
-            map.fitBounds(_.pluck(scope.data,'coordinates'));
+            if( scope.panel.fitBoundsAuto || fitBoundsFlag ) {
+              map.fitBounds(_.pluck(scope.data,'coordinates'));
+              fitBoundsFlag = false;
+            }
           });
         }
       }

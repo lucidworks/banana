@@ -49,6 +49,10 @@ function (angular) {
               'class="fa fa-info-circle pointer" bs-tooltip data-title="{{task.description}}" container="body" ></i></span>'+
           '</span>' +
 
+          '<span class="row-button extra" ng-show="panel.fitBoundsAuto != undefined && !panel.fitBoundsAuto">' +
+          '<a ng-click="fitBounds()"><i tooltip="\'fit bound\'" class="pointer icon-fire"></i>'+
+          '</a></span>' +  // bettermap fitBound action
+
           '<span class="dropdown row-button extra" container="body"  bs-tooltip data-title="Export" data-placement="bottom" ng-show="panelMeta.exportfile">' +
             '<span class="pointer" class="dropdown-toggle" data-toggle="dropdown">' +
                 '<i class="fa fa-save" class="pointer"></i>' +
