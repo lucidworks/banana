@@ -17,7 +17,8 @@ define([
   'app',
   'underscore',
   'jquery',
-  './lib/jquery.jvectormap.min'
+  './lib/jquery.jvectormap.min',
+  './lib/map.world.codes'
 ],
 function (angular, app, _, $) {
   'use strict';
@@ -55,6 +56,7 @@ function (angular, app, _, $) {
       stats_field : '',
       decimal_points : 0, // The number of digits after the decimal point
       map     : "world",
+      useNames	: false,
       colors  : ['#A0E2E2', '#265656'],
       size    : 100,
       exclude : [],
@@ -196,10 +198,21 @@ function (angular, app, _, $) {
               // the data contains both uppercase and lowercase state letters with
               // duplicate states (e.g. CA and ca). By adding the value, the map will
               // show correct counts for states with mixed-case letters.
-              if (!$scope.data[terms[i].toUpperCase()]) {
-                $scope.data[terms[i].toUpperCase()] = terms[i+1];
-              } else {
-                $scope.data[terms[i].toUpperCase()] += terms[i+1];
+              if($scope.panel.map=="world" && $scope.panel.useNames) {
+              	if(countryCodes[terms[i].toUpperCase()]) {
+                  if (!$scope.data[countryCodes[terms[i].toUpperCase()]]) {
+                    $scope.data[countryCodes[terms[i].toUpperCase()]] = terms[i+1];
+                  } else {
+                    $scope.data[countryCodes[terms[i].toUpperCase()]] += terms[i+1];
+                  }
+              	}
+              }
+              else {
+                  if (!$scope.data[terms[i].toUpperCase()]) {
+                    $scope.data[terms[i].toUpperCase()] = terms[i+1];
+                  } else {
+                    $scope.data[terms[i].toUpperCase()] += terms[i+1];
+                  }
               }
             }
           }
