@@ -73,6 +73,7 @@ function (Settings) {
      * @type {Array}
      */
     panel_names: [
+      'bar',
       'histogram',
       'map',
       'table',
