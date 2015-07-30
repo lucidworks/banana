@@ -131,7 +131,11 @@ __A__: Yes, from version 1.3 onwards, non-time series data are also supported.
 3.	LogStash: http://logstash.net/
 4.	SILK Use Cases: https://github.com/LucidWorks/silkusecases. Provides example configuration files, schemas and dashboards required to build applications that use Solr and Banana.
 
+## Publishing WAR Artifacts to Maven Central
 
+1. 	Get hold of [maven-ant-tasks-X.X.X.jar](http://search.maven.org/#search|gav|1|g%3A%22org.apache.maven%22%20AND%20a%3A%22maven-ant-tasks%22) and put it in this directory
+2. 	Execute *ant -lib . deploy* from this directory, this will sign the Maven artifacts (currently just .war) and send them to a [Sonatype OSSRH](https://oss.sonatype.org/) staging repository. Details of how to set this up can be found [here](http://central.sonatype.org/pages/ossrh-guide.html). N.B. Ensure that you have an *release* profile contained within ~/.m2/settings.xml
+3.	Once you've read, and are happy with the staging repos, close it. 
 
 ## Support
 
