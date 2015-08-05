@@ -41,7 +41,7 @@ If you created dashboards for Banana 1.0.0, you did not have a global filtering 
 * A webserver (optional).
 
 ### Installation Options
-#### Run Banana Web App within your existing Solr instance
+#### Option 1: Run Banana webapp within your existing Solr instance
 ##### Solr 5 Instructions
 1. Run Solr at least once to create the webapp directory:
 
@@ -64,10 +64,10 @@ _**NOTES:**_ If your Solr server/port is different from [localhost:8983](http://
 
 If you have not created the data collections and ingested data into Solr, you will see an error message saying "Collection not found at .." You can use any connector to get data into Solr. If you want to use LogStash, please go to the Solr Output Plug-in for [LogStash Page](https://github.com/LucidWorks/solrlogmanager) for code, documentation and examples.
 
-#### Complete SLK Stack
+#### Option 2: Complete SLK Stack
 Lucidworks has packaged Solr, LogStash (with a Solr Output Plug-in), and Banana (the Solr port of Kibana), along with example collections and dashboards in order to rapidly enable proof-of-concepts and initial development/testing. See [http://www.lucidworks.com/lucidworks-silk/](http://www.lucidworks.com/lucidworks-silk/). 
 
-#### Building and installing from a WAR file
+#### Option 3: Building and installing from a WAR file
 1. Pull the source code of Banana version that you want from the [release](https://github.com/LucidWorks/banana/tree/release) branch in the repo; For example, version *1.5.0* will be tagged as `v1.5.0`.
 2. Run a command line "ant" from within the banana directory to build the war file:
 
@@ -103,8 +103,7 @@ Lucidworks has packaged Solr, LogStash (with a Solr Output Plug-in), and Banana 
     ```
 5. Browse to [http://localhost:8983/banana](http://localhost:8983/banana)  (or the FQDN of your Solr server).
     
-#### Banana Web App run in a WebServer
-
+#### Option 4: Run Banana webapp in a web server
 Banana is an [AngularJS app](https://angularjs.org) and can be run in any webserver that has access to Solr. You will need to enable [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) on the Solr instances that you query, or configure a proxy that makes requests to banana and Solr as same-origin. We typically recommend the latter approach.
 
 #### Storing Dashboards in Solr
@@ -122,23 +121,18 @@ __A__: The simplest solution is to use a [Apache](http://projects.apache.org/pro
 __Q__: Can I use banana for non-time series data?  
 __A__: Yes, from version 1.3 onwards, non-time series data are also supported.
 
-
 ## Resources
-
 
 1.  LucidWorks SILK: http://www.lucidworks.com/lucidworks-silk/
 2.  Webinar on LucidWorks SILK: http://programs.lucidworks.com/SiLK-introduction_Register.html.
 3.  LogStash: http://logstash.net/
 4.  SILK Use Cases: https://github.com/LucidWorks/silkusecases. Provides example configuration files, schemas and dashboards required to build applications that use Solr and Banana.
 
-
-
 ## Support
 
 Banana uses the dashboard configuration capabilities of Kibana (from which it is forked) and ports key panels to work with Solr. Moreover, it provides many additional capabilities like heatmaps, range facets, panel specific filters, global parameters, and visualization of "group-by" style queries. We are continuing to add many new panels that go well beyond what is available in Kibana, helping users build complete applications that leverage the data stored in Apache Solr, HDFS and a variety of sources in the enterprise. 
 
 If you have any questions, please contact Andrew Thanalertvisuti (andrew.thanalertvisuti@lucidworks.com) or Ravi Krishnamurthy (ravi.krishnamurthy@lucidworks.com).
-
 
 ## Trademarks
 
