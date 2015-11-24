@@ -89,8 +89,7 @@ function (angular, $, _, appLevelRequire) {
     $httpProvider.defaults.useXDomain = true;
     delete $httpProvider.defaults.headers.common["X-Requested-With"];
   }]);
-  
-  // TODO: add ajax-solr ?
+
   var apps_deps = [
     'elasticjs.service',
     'solrjs.service',

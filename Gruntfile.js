@@ -17,7 +17,7 @@ module.exports = function (grunt) {
     },
     clean: {
       on_start: ['<%= destDir %>', '<%= tempDir %>'],
-      temp: ['<%= tempDir %>'],
+      temp: ['<%= tempDir %>']
     },
     less: {
       // this is the only task, other than copy, that runs on the src directory, since we don't really need
@@ -27,7 +27,7 @@ module.exports = function (grunt) {
         expand: true,
         cwd:'<%= srcDir %>/vendor/bootstrap/less/',
         src: ['bootstrap.dark.less', 'bootstrap.light.less'],
-        dest: '<%= tempDir %>/css/',
+        dest: '<%= tempDir %>/css/'
       },
       // Compile in place when not building
       src:{
@@ -46,7 +46,7 @@ module.exports = function (grunt) {
       everything_but_less_to_temp: {
         cwd: '<%= srcDir %>',
         expand: true,
-        src: ['**/*', '!**/*.less'],
+        src: ['**/*', '!**/*.less', '!**/.DS_Store'],
         dest: '<%= tempDir %>'
       }
     },
@@ -82,6 +82,7 @@ module.exports = function (grunt) {
         expand: true,
         cwd: '<%= tempDir %>',
         src: '**/*.css',
+        filter: 'isFile',
         dest: '<%= tempDir %>'
       }
     },
@@ -142,6 +143,7 @@ module.exports = function (grunt) {
         src: ['**/*.js', '!config.js', '!app/dashboards/*.js'],
         dest: '<%= destDir %>',
         cwd: '<%= destDir %>',
+        filter: 'isFile',
         options: {
           quite: true,
           compress: true,
@@ -153,7 +155,7 @@ module.exports = function (grunt) {
     'git-describe': {
       me: {
         // Target-specific file lists and/or options go here.
-      },
+      }
     },
     compress: {
       zip: {
@@ -305,8 +307,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-contrib-compress');
 
-
   // pass the config to grunt
   grunt.initConfig(config);
-
 };
