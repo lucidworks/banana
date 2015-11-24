@@ -24,7 +24,7 @@ define([
           timeInterval = Infinity,
           event = d3.dispatch("word", "end"),
           timer = null,
-          cloud = {};
+          cloud = {}; // jshint ignore:line
 
         cloud.start = function() {
 

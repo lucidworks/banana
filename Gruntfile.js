@@ -9,15 +9,11 @@ module.exports = function (grunt) {
     destDir: 'dist',
     tempDir: 'tmp',
     meta: {
-      // banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
-      //   '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-      //   '<%= pkg.homepage ? " * " + pkg.homepage + "\\n" : "" %>' +
-      //   ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-      //   ' Licensed <%= pkg.license %> */\n\n'
-      banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
-        '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-        ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-        ' Licensed <%= pkg.license %> */\n\n'
+       banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
+         '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
+         '<%= pkg.homepage ? " * " + pkg.homepage + "\\n" : "" %>' +
+         ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
+         ' Licensed <%= pkg.license %> */\n\n'
     },
     clean: {
       on_start: ['<%= destDir %>', '<%= tempDir %>'],
@@ -25,7 +21,7 @@ module.exports = function (grunt) {
     },
     less: {
       // this is the only task, other than copy, that runs on the src directory, since we don't really need
-      // the less files in the dist. Everything else runs from on temp, and require copys everything
+      // the less files in the dist. Everything else runs from on temp, and require copy everything
       // from temp -> dist
       dist:{
         expand: true,
@@ -196,23 +192,6 @@ module.exports = function (grunt) {
           }
         ]
       }
-    },
-    s3: {
-      dist: {
-        bucket: 'download.elasticsearch.org',
-        access: 'private',
-        // debug: true, // uncommment to prevent actual upload
-        upload: [
-          {
-            src: '<%= tempDir %>/<%= pkg.name %>-latest.zip',
-            dest: 'kibana/kibana/<%= pkg.name %>-latest.zip',
-          },
-          {
-            src: '<%= tempDir %>/<%= pkg.name %>-latest.tar.gz',
-            dest: 'kibana/kibana/<%= pkg.name %>-latest.tar.gz',
-          }
-        ]
-      }
     }
   };
 
@@ -270,7 +249,7 @@ module.exports = function (grunt) {
 
   // Concat and Minify the src directory into dist
   grunt.registerTask('build', [
-    // 'jshint:source',
+    'jshint:source',
     'clean:on_start',
     'less:dist',
     'copy:everything_but_less_to_temp',
@@ -304,27 +283,15 @@ module.exports = function (grunt) {
     grunt.task.run('git-describe');
   });
 
-  // build, then zip and upload to s3
+  // build, then zip
   grunt.registerTask('distribute', [
-    'distribute:load_s3_config',
     'build',
     'compress:zip',
     'compress:tgz',
-    's3:dist',
     'clean:temp'
   ]);
 
-  // collect the key and secret from the .aws-config.json file, finish configuring the s3 task
-  grunt.registerTask('distribute:load_s3_config', function () {
-    var config = grunt.file.readJSON('.aws-config.json');
-    grunt.config('s3.options', {
-      key: config.key,
-      secret: config.secret
-    });
-  });
-
   // load plugins
-  grunt.loadNpmTasks('grunt-s3');
   grunt.loadNpmTasks('grunt-ngmin');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-less');

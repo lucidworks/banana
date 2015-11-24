@@ -1,10 +1,8 @@
 {
-  "name": "angular-seed",
-  "description": "A starter project for AngularJS",
-  "version": "0.0.0",
-  "homepage": "https://github.com/angular/angular-seed",
-  "license": "MIT",
-  "private": true,
+  "name": "Banana",
+  "description": "Banana for Solr Data Visualization",
+  "homepage": "https://github.com/LucidWorks/banana/wiki",
+  "license": "Apache License",
   "dependencies": {
     "angular": "1.0.8",
     "angular-loader": "1.0.8",

@@ -17,10 +17,10 @@ define([
   'app',
   'underscore',
   'jquery',
-  './lib/jquery.jvectormap.min',
-  './lib/map.world.codes'
+  './lib/map.world.codes',
+  './lib/jquery.jvectormap.min'
 ],
-function (angular, app, _, $) {
+function (angular, app, _, $, worldmap) {
   'use strict';
 
   var module = angular.module('kibana.panels.map', []);
@@ -198,12 +198,12 @@ function (angular, app, _, $) {
               // the data contains both uppercase and lowercase state letters with
               // duplicate states (e.g. CA and ca). By adding the value, the map will
               // show correct counts for states with mixed-case letters.
-              if( ($scope.panel.map=="world" || $scope.panel.map=="world-antarctica") && $scope.panel.useNames) {
-                if(countryCodes[terms[i]]) {
-                  if (!$scope.data[countryCodes[terms[i]]]) {
-                    $scope.data[countryCodes[terms[i]]] = terms[i+1];
+              if(($scope.panel.map === 'world' || $scope.panel.map === 'world-antarctica') && $scope.panel.useNames) {
+                if(worldmap.countryCodes[terms[i]]) {
+                  if (!$scope.data[worldmap.countryCodes[terms[i]]]) {
+                    $scope.data[worldmap.countryCodes[terms[i]]] = terms[i+1];
                   } else {
-                    $scope.data[countryCodes[terms[i]]] += terms[i+1];
+                    $scope.data[worldmap.countryCodes[terms[i]]] += terms[i+1];
                   }
               	}
               }
@@ -292,7 +292,7 @@ function (angular, app, _, $) {
                   if (!scope.panel.useNames) {
                     scope.build_search(scope.panel.field, code);
                   } else {
-                    var countryNames = _.invert(countryCodes);
+                    var countryNames = _.invert(worldmap.countryCodes);
                     scope.build_search(scope.panel.field, countryNames[code]);
                   }
                 }
