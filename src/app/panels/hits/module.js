@@ -142,6 +142,7 @@ define([
             $scope.panel.error = $scope.parse_error(results[i].error);
             return;
           }
+
           var info = dashboard.current.services.query.list[id];
 
           // Create series

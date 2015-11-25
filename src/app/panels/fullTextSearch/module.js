@@ -248,7 +248,7 @@ define([
         $scope.panel_request = request;
 
         var fq = '';
-        if (filterSrv.getSolrFq() && filterSrv.getSolrFq()) {
+        if (filterSrv.getSolrFq()) {
           fq = '&' + filterSrv.getSolrFq();
         }
         var query_size = $scope.panel.size * $scope.panel.pages;

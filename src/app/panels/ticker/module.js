@@ -136,7 +136,7 @@ define([
 
         // Build SOLR query
         var fq = '';
-        if (filterSrv.getSolrFq(true) && filterSrv.getSolrFq(true)) {
+        if (filterSrv.getSolrFq(true)) {
           fq = '&' + filterSrv.getSolrFq(true);
         }
         var time_field = filterSrv.getTimeField();

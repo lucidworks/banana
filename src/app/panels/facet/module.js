@@ -136,7 +136,7 @@ define([
         $scope.panel_request = request;
 
         var fq = '';
-        if (filterSrv.getSolrFq() && filterSrv.getSolrFq()) {
+        if (filterSrv.getSolrFq()) {
           fq = '&' + filterSrv.getSolrFq();
         }
 
