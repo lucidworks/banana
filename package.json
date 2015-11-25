@@ -41,7 +41,6 @@
     "tmp": "0.0.23"
   },
   "scripts": {
-    "postinstall": "bower install",
     "prestart": "npm install",
     "start": "http-server -a 0.0.0.0 -p 8000",
     "pretest": "npm install",
