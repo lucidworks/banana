@@ -6,3 +6,4 @@ npm-debug.log
 tmp/
 build.number
 build/
+*.iml
