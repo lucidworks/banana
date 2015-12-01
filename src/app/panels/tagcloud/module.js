@@ -128,9 +128,12 @@ define([
               i++;
               var count = v[i];
               sum += count;
+
+              // if ignoreStopWords is enabled, skip this term.
               if ($scope.panel.ignoreStopWords && (stopwords.indexOf(term.toLowerCase()) > -1)) {
                 continue;
               }
+
               if (term === null) {
                 missing = count;
               } else {
