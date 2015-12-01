@@ -5,6 +5,7 @@
   * size :: top N
   * alignment :: How should I arrange the words in cloud 'horizontal and vertical' or 'Random'
   * fontScale :: Increase the font scale for all words
+  * ignoreStopWords :: Whether to Ignore Stop Words
 */
 define([
     'angular',
@@ -13,7 +14,8 @@ define([
     'jquery',
     'kbn',
     'd3',
-    './d3.layout.cloud'
+    './d3.layout.cloud',
+    './stopWords'
   ],
   function(angular, app, _, $, kbn, d3) {
     'use strict';
@@ -49,6 +51,7 @@ define([
         size: 10,
         alignment: 'vertical and horizontal',
         fontScale: 1,
+        ignoreStopWords: false,
         spyable: true,
         show_queries: true,
         error: '',
@@ -125,6 +128,9 @@ define([
               i++;
               var count = v[i];
               sum += count;
+              if ($scope.panel.ignoreStopWords && (stopwords.indexOf(term.toLowerCase()) > -1)) {
+                continue;
+              }
               if (term === null) {
                 missing = count;
               } else {
