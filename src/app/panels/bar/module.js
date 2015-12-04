@@ -15,7 +15,7 @@ define([
     'd3',
     './d3.tip'
   ],
-  function(angular, app, _, $, kbn, d3) {
+  function(angular, app, _, $, kbn, d3, d3tip) {
     'use strict';
 
     var module = angular.module('kibana.panels.bar', []);
@@ -209,20 +209,20 @@ define([
                   .orient("left")
                   .tickFormat(formatPercent);
 
-              var tip = d3.tip()
-                .attr('class', 'd3-tip')
-                .offset([-10, 0])
-                .html(function(d) {
-                  return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
-                });
-
               var svg = d3.select(element[0]).append("svg")
                   .attr("width", width + margin.left + margin.right)
                   .attr("height", height + margin.top + margin.bottom)
                 .append("g")
                   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                svg.call(tip);
+              var tip = d3tip()
+                  .attr('class', 'd3-tip')
+                  .offset([-10, 0])
+                  .html(function(d) {
+                      return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+                  });
+
+              svg.call(tip);
 
               x.domain(scope.data.map(function(d) { return d.letter; }));
               y.domain([0, d3.max(scope.data, function(d) { return d.frequency; })]);
