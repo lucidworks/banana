@@ -249,10 +249,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         var facet = $scope.sjs.DateHistogramFacet(id);
 
         if($scope.panel.mode === 'count') {
-          if (!$scope.panel.stats_field) {
-            $scope.alertInvalidField("In " + $scope.panel.mode + " mode a stats field must be specified");
-            return;
-          }
           facet = facet.field($scope.panel.time_field);
         } else {
           if(_.isNull($scope.panel.value_field)) {
