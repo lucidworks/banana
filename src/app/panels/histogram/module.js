@@ -290,7 +290,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           }
           // Convert facet ids to numbers
           // var facetIds = _.map(_.keys(results.facets),function(k){return parseInt(k, 10);});
-          // TODO: change this, Solr do faceting differently
           //var facetIds = [0]; // Need to fix this
 
           // Make sure we're still on the same query/queries
@@ -442,7 +441,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       });
 
       dashboard.refresh();
-
     };
 
     // I really don't like this function, too much dom manip. Break out into directive?
