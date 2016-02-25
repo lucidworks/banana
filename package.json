@@ -1,12 +1,12 @@
 {
-  "version": "1.4.0",
+  "version": "1.5.1",
   "name": "banana",
   "description": "Banana for Solr - A Port of Kibana",
-  "repository": "https://github.com/LucidWorks/banana",
+  "repository": "https://github.com/Lucidworks/banana",
   "license": "Apache License",
   "author": {
     "name": "Andrew Thanalertvisuti",
-    "company": "LucidWorks, Inc."
+    "company": "Lucidworks, Inc."
   },
   "devDependencies": {
     "bower": "^1.3.1",

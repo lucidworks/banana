@@ -7,9 +7,13 @@ The goal is to create a rich and flexible UI, enabling users to rapidly develop 
  
 ## IMPORTANT
 
-Pull the repo from the "release" branch; version 1.5.0 will be tagged as v1.5.0
+Pull the repo from the "release" branch; version 1.5.1 will be tagged as v1.5.1
 
-## Banana 1.5.0: Released on 2 January 2015
+## Banana 1.5.1 (Feb 25, 2016)
+
+This release contains a hotfix for a security vulnerability in jQuery v1.8.0. Banana now use jQuery v1.12.1 which is safe.
+
+## Banana 1.5.0 (Jan 2, 2015)
 
 Banana 1.5.0 contains many new features, new panels, enhancements and bug fixes to improve the overall user experience and stability. Thank you to our growing community for your suggestions and contributions! Please continue sending us your feedback, so that we can further extend and improve Banana!
 
