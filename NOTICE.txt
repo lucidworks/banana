@@ -1,0 +1,148 @@
+========================================
+ Banana
+ Copyright 2013-2016 Lucidworks, Inc.
+========================================
+
+This product includes code forked from Kibana 3.
+Copyright (c) 2012-2013 Elasticsearch BV, https://github.com/elastic/kibana/tree/3.0
+
+This product includes the D3.js JavaScript library created by Michael Bostock.
+Copyright (c) 2012 Michael Bostock, https://github.com/mbostock/d3
+
+This product includes require.js Javascript library created by James Burke.
+Copyright (c) 2010-2014 James Burke, https://github.com/jrburke/requirejs
+
+This product includes FileSaver.js Javascript library created by Eli Grey.
+Copyright (c) 2015 Eli Grey, https://github.com/eligrey/FileSaver.js
+
+This product includes Modernizr Javascript library.
+https://github.com/Modernizr/Modernizr
+
+This product includes Moment.js Javascript library.
+Copyright (c) 2011-2016 Tim Wood, Iskren Chernev, Moment.js contributors, https://github.com/moment/moment
+
+This product includes Showdown Javascript library.
+Copyright (c) 2007 John Fraser, https://github.com/showdownjs/showdown
+
+This product includes TimezoneJS.Date Javascript library.
+Copyright (c) 2010 Matthew Eernisse, https://github.com/mde/timezone-js
+
+This product includes Underscore.js Javascript library.
+Copyright (c) 2009-2016 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors, https://github.com/jashkenas/underscore
+
+This product includes AngularJS Javascript library.
+Copyright (c) 2010-2012 Google, Inc. http://angularjs.org
+
+This product includes angular-dragdrop.js Javascript library.
+Copyright (c) 2013 Amit Gharat a.k.a codef0rmer, https://github.com/codef0rmer/angular-dragdrop
+
+This product includes AngularStrap Javascript library.
+Copyright (c) 2012-2014 Olivier Louvignes, http://mgcrea.github.io/angular-strap/
+
+This product includes bootstrap-datepicker.js Javascript library.
+Copyright (c) 2012 Stefan Petre, http://www.eyecon.ro/bootstrap-datepicker
+
+This product includes Timepicker for Twitter Bootstrap Javascript library.
+Copyright (c) 2013 Joris de Wit, https://github.com/jdewit/bootstrap-timepicker
+
+This product includes Bootstrap framework.
+Copyright (c) 2013 Twitter, Inc. https://github.com/twbs/bootstrap
+
+This product includes elastic.js Javascript library.
+Copyright (c) 2013 FullScale Labs, LLC, https://github.com/fullscale/elastic.js
+
+This product includes jQuery Javascript library.
+Copyright (c) 2016 jQuery Foundation and other contributors, https://jquery.org
+
+This product includes Flot, a Javascript plotting library for jQuery.
+Copyright (c) 2007-2013 IOLA and Ole Laursen, https://github.com/flot/flot
+
+This product includes Axis Labels Plugin for flot.
+Copyright (c) 2010 Xuan Luo, http://github.com/markrcote/flot-axislabels
+
+This product includes Bower - A package manager for the web.
+Copyright (c) 2016 Twitter and other contributors, https://github.com/bower/bower
+
+This product includes Grunt Javascript Task Runner.
+Copyright (c) 2016 "Cowboy" Ben Alman, https://github.com/gruntjs/grunt
+
+This product includes grunt-contrib, a Grunt plugin.
+Copyright (c) 2016 Tyler Kellen and contributors, https://github.com/gruntjs/grunt-contrib
+
+This product includes grunt-contrib-clean, a Grunt plugin.
+Copyright (c) 2016 Tim Branyen, contributors, https://github.com/gruntjs/grunt-contrib-clean
+
+This product includes grunt-contrib-compress, a Grunt plugin.
+Copyright (c) 2016 Chris Talkington, contributors, https://github.com/gruntjs/grunt-contrib-compress
+
+This product includes grunt-contrib-copy, a Grunt plugin.
+Copyright (c) 2016 Chris Talkington, contributors, https://github.com/gruntjs/grunt-contrib-copy
+
+This product includes grunt-contrib-cssmin, a Grunt plugin.
+Copyright (c) 2016 Tim Branyen, contributors, https://github.com/gruntjs/grunt-contrib-cssmin
+
+This product includes grunt-contrib-htmlmin, a Grunt plugin.
+Copyright (c) 2016 Sindre Sorhus, contributors, https://github.com/gruntjs/grunt-contrib-htmlmin
+
+This product includes grunt-contrib-jshint, a Grunt plugin.
+Copyright (c) 2016 "Cowboy" Ben Alman, contributors, https://github.com/gruntjs/grunt-contrib-jshint
+
+This product includes grunt-contrib-less, a Grunt plugin.
+Copyright (c) 2016 Tyler Kellen, contributors, https://github.com/gruntjs/grunt-contrib-less
+
+This product includes grunt-contrib-requirejs, a Grunt plugin.
+Copyright (c) 2016 Tyler Kellen, contributors, https://github.com/gruntjs/grunt-contrib-requirejs
+
+This product includes grunt-contrib-uglify, a Grunt plugin.
+Copyright (c) 2016 "Cowboy" Ben Alman, contributors, https://github.com/gruntjs/grunt-contrib-uglify
+
+This product includes grunt-git-describe, a Grunt plugin.
+Copyright (c) 2014 Mikael Karon, https://github.com/mikaelkaron/grunt-git-describe
+
+This product includes grunt-ng-annotate, a Grunt plugin.
+Copyright (c) 2014 Michał Gołębiowski, https://github.com/mgol/grunt-ng-annotate
+
+This product includes grunt-s3, a Grunt plugin.
+Copyright (c) 2012 Aaron Forsander, https://github.com/pifantastic/grunt-s3
+
+This product includes grunt-string-replace, a Grunt plugin.
+Copyright (c) 2015 Erick Ruiz de Chavez, https://github.com/eruizdechavez/grunt-string-replace
+
+This product includes http-server, a Node.js package.
+Copyright (c) 2011 Charlie Robbins, Marak Squires, and the Contributors, https://github.com/indexzero/http-server
+
+This product includes Karma, a Test Runner for Javascript.
+Copyright (c) 2011-2014 Google, Inc., https://github.com/karma-runner/karma
+
+This product includes karma-chrome-launcher, a Karma plugin.
+Copyright (c) 2011-2013 Google, Inc., https://github.com/karma-runner/karma-chrome-launcher
+
+This product includes karma-firefox-launcher, a Karma plugin.
+Copyright (c) 2011-2013 Google, Inc., https://github.com/karma-runner/karma-firefox-launcher
+
+This product includes karma-jasmine, a Karma plugin.
+Copyright (c) 2011-2013 Google, Inc., https://github.com/karma-runner/karma-jasmine
+
+This product includes karma-junit-reporter, a Karma plugin.
+Copyright (c) 2011-2013 Google, Inc., https://github.com/karma-runner/karma-junit-reporter
+
+This product includes karma-requirejs, a Karma plugin.
+Copyright (c) 2011-2013 Google, Inc., https://github.com/karma-runner/karma-requirejs
+
+This product includes Protractor, E2E test framework for Angular apps.
+Copyright (c) 2010-2015 Google, Inc., https://github.com/angular/protractor
+
+This product includes requirejs, a Node.js package.
+Copyright (c) 2010-2014, The Dojo Foundation, https://github.com/jrburke/r.js
+
+This product includes rjs-build-analysis, a Node.js package.
+Copyright (c) 2013 Merrick Christensen, https://www.npmjs.com/package/rjs-build-analysis
+
+This product includes shelljs, a Node.js package.
+Copyright (c) 2012 Artur Adib, https://github.com/shelljs/shelljs
+
+This product includes tmp, a Node.js package.
+Copyright (c) 2014 KARASZI István, https://github.com/raszi/node-tmp
+
+This product includes grunt-ngmin, a Grunt plugin.
+Copyright (c) 2013 Brian Ford, https://github.com/btford/grunt-ngmin
