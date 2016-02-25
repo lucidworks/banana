@@ -9,15 +9,15 @@ The goal is to create a rich and flexible UI, enabling users to rapidly develop 
 
 Pull the repo from the "release" branch; version 1.5.0 will be tagged as v1.5.0
 
-## Banana 1.5.0: Released on 2 January 2015
+## Banana 1.6.0
 
-Banana 1.5.0 contains many new features, new panels, enhancements and bug fixes to improve the overall user experience and stability. Thank you to our growing community for your suggestions and contributions! Please continue sending us your feedback, so that we can further extend and improve Banana!
+Banana 1.6.0 contains many new features, new panels, enhancements and bug fixes to improve the overall user experience and stability. Thank you to our growing community for your suggestions and contributions! Please continue sending us your feedback, so that we can further extend and improve Banana!
 
 This release includes the following key new features and improvements:
 
-1. _Multi queries support_ for all panels.
-2. A new _Multi-series panel_ based on D3.js provides a way to visualize more complex datasets, such as stock prices.
-3. A new _Tag Cloud panel_ helps you to easily create a tag or word cloud from your data using facet count.
+1. _Hits panel_ can now show a stats value (e.g. min, max, mean, and etc).
+2.
+3.
 4. Various bug fixes and improvements:
     - Fix warnings and errors with grunt jshint. [PR #47](https://github.com/LucidWorks/banana/pull/47)
     - Support log axis for _Terms panel_ panel. [PR #56](https://github.com/LucidWorks/banana/pull/56)
@@ -68,7 +68,7 @@ If you have not created the data collections and ingested data into Solr, you wi
 Lucidworks has packaged Solr, LogStash (with a Solr Output Plug-in), and Banana (the Solr port of Kibana), along with example collections and dashboards in order to rapidly enable proof-of-concepts and initial development/testing. See [http://www.lucidworks.com/lucidworks-silk/](http://www.lucidworks.com/lucidworks-silk/). 
 
 #### Option 3: Building and installing from a WAR file
-1. Pull the source code of Banana version that you want from the [release](https://github.com/LucidWorks/banana/tree/release) branch in the repo; For example, version *1.5.0* will be tagged as `v1.5.0`.
+1. Pull the source code of Banana version that you want from the [release](https://github.com/LucidWorks/banana/tree/release) branch in the repo; For example, version *1.6.0* will be tagged as `v1.6.0`.
 2. Run a command line "ant" from within the banana directory to build the war file:
 
     ```bash
@@ -108,7 +108,7 @@ Banana is an [AngularJS app](https://angularjs.org) and can be run in any webser
 
 #### Storing Dashboards in Solr
 
-If you want to save and load dashboards from Solr, create a collection using the configuration files provided in either the _resources/banana-int-solr-4.4_ (for Solr 4.4) directory or the _resources/banana-int-solr-4.5_ directory (for Solr 4.5 and above). If you are using SolrCloud, you will need to upload the configuration into [ZooKeeper](https://zookeeper.apache.org) and then create the collection using that configuration.
+If you want to save and load dashboards from Solr, create a collection using the configuration files provided in either the _resources/banana-int-solr-5.0_ (for Solr 5) directory or the _resources/banana-int-solr-4.5_ directory (for Solr 4.5). If you are using SolrCloud, you will need to upload the configuration into [ZooKeeper](https://zookeeper.apache.org) and then create the collection using that configuration.
 
 The Solr server configured in config.js will serve as the default node for each dashboard; you can configure each dashboard to point to a different Solr endpoint as long as your webserver and Solr put out the correct CORS headers. See the README file under the  _resources/enable-cors_ directory for a guide.
 
