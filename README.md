@@ -7,7 +7,7 @@ including new panels that leverage [D3.js](http://d3js.org).
 
 The goal is to create a rich and flexible UI, enabling users to rapidly develop end-to-end applications that leverage
 the power of Apache Solr. Data can be ingested into Solr through a variety of ways, including
-[LogStash](https://www.elastic.co/products/logstash), [Flume](https://flume.apache.org) and other connectors.
+[Logstash](https://www.elastic.co/products/logstash), [Flume](https://flume.apache.org) and other connectors.
 
  
 ## IMPORTANT
@@ -161,7 +161,6 @@ See the README file under the  _resources/enable-cors_ directory for a guide.
 __Q__: How do I secure my Solr endpoint so that users do not have access to it?
 __A__: The simplest solution is to use an [Apache](http://projects.apache.org/projects/http_server.html) or
 [nginx](http://nginx.org) reverse proxy (See for example https://groups.google.com/forum/#!topic/ajax-solr/pLtYfm83I98).
-
 
 __Q__: Can I use banana for non-time series data?  
 __A__: Yes, from version 1.3 onwards, non-time series data are also supported.
