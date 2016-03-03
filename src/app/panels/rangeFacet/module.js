@@ -114,9 +114,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           $scope.panel.showChart =  false;
         }
       });
-
+      $scope['defaults'] = [$scope.panel.minimum,$scope.panel.maximum];
       $scope.get_data();
-
     };
 
     $scope.set_precision = function(precision) {
@@ -173,7 +172,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       dashboard.refresh();
     };
 
-    // set the configrations in settings 
+    // set the configrations in settings
     $scope.set_configrations = function(from,to){
       $scope.panel.minimum = parseInt(from);
       $scope.panel.maximum = parseInt(to);
@@ -181,6 +180,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
     //set the range filter from old configrations
     $scope.range_apply = function(){
+      $scope.panel.minimum = $scope.defaults[0];
+      $scope.panel.maximum = $scope.defaults[1];
       filterSrv.set({
         type: 'range',
         from: parseInt($scope.panel.minimum),
@@ -189,7 +190,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       });
       dashboard.refresh();
     };
-    
+
     /**
      * Fetch the data for a chunk of a queries results. Multiple segments occur when several indicies
      * need to be consulted (like timestamped logstash indicies)
@@ -229,7 +230,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       var request = $scope.sjs.Request().indices(dashboard.indices[segment]);
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
-      
+
       // Build the query
       _.each($scope.panel.queries.ids, function(id) {
         var query = $scope.sjs.FilteredQuery(
@@ -258,7 +259,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       // Build Solr query
       var fq = '';
-      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+      if (filterSrv.getSolrFq()) {
         fq = '&' + filterSrv.getSolrFq();
       }
       var wt_json = '&wt=json';
@@ -296,7 +297,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         // Convert facet ids to numbers
         // var facetIds = _.map(_.keys(results.facets),function(k){return parseInt(k, 10);});
         // TODO: change this, Solr do faceting differently
-        var facetIds = [0]; // Need to fix this
+        // var facetIds = [0]; // Need to fix this
 
         // Make sure we're still on the same query/queries
         // TODO: We probably DON'T NEED THIS unless we have to support multiple queries in query module.

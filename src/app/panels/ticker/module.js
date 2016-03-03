@@ -136,7 +136,7 @@ define([
 
         // Build SOLR query
         var fq = '';
-        if (filterSrv.getSolrFq(true) && filterSrv.getSolrFq(true) != '') {
+        if (filterSrv.getSolrFq(true)) {
           fq = '&' + filterSrv.getSolrFq(true);
         }
         var time_field = filterSrv.getTimeField();
@@ -145,7 +145,7 @@ define([
 
         // current time
         // make the gap equal to the difference between the start and end date
-        // this will help in reducing response size 
+        // this will help in reducing response size
         var facet_first_gap = '%2B' + diffDays($scope.time.from, $scope.time.to) + 'DAY';
         var facet_first_range = '&facet=true' +
           '&facet.range=' + time_field +
@@ -170,10 +170,20 @@ define([
         _.each($scope.panel.queries.ids, function(id) {
           var first_request = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet_first_range;
           var second_request = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet_second_range;
-          var request_new = request.setQuery(first_request);
+          var request_new;
+          if ($scope.panel.queries.custom != null) {
+            request_new = request.setQuery(first_request + $scope.panel.queries.custom);
+          } else {
+            request_new = request.setQuery(first_request);
+          }
           $scope.panel.queries.query += first_request + "\n\n" ;
           mypromises.push(request_new.doSearch());
-          var request_old = request.setQuery(second_request);
+          var request_old;
+          if ($scope.panel.queries.custom != null) {
+            request_old = request.setQuery(second_request + $scope.panel.queries.custom);
+          } else {
+            request_old = request.setQuery(second_request);
+          }
           $scope.panel.queries.query += second_request + "\n";
           mypromises.push(request_old.doSearch());
           $scope.panel.queries.query += "-----------\n" ;
@@ -206,8 +216,8 @@ define([
                 return;
               }
               processSolrResults(results[index * 2], results[index * 2 + 1], id,index);
-            })
-          })
+            });
+          });
         }
 
       };

@@ -63,7 +63,7 @@ define([
             // Show progress by displaying a spinning wheel icon on panel
             $scope.panelMeta.loading = true;
             delete $scope.panel.error;
-            
+
             var request, results;
             // Set Solr server
             $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
@@ -86,7 +86,7 @@ define([
 
             // Construct Solr query
             var fq = '';
-            if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+            if (filterSrv.getSolrFq()) {
                 fq = '&' + filterSrv.getSolrFq();
             }
             var wt_json = '&wt=csv';
@@ -111,7 +111,7 @@ define([
                 // build $scope.data array
                 //$scope.data = results.response.docs;
                 $scope.data = d3.csv.parse(results);
-                if($scope.data.length == 0) {
+                if(! $scope.data.length) {
                     $scope.panel.error = $scope.parse_error("There's no data to show");
                 }
                 // $scope.data = results;
@@ -176,7 +176,7 @@ define([
                         right: 20,
                         bottom: 100,
                         left: 50
-                    }, 
+                    },
                     width = parent_width - margin.left - margin.right;
 
                     height = height - margin.top - margin.bottom;

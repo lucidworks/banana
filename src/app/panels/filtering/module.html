@@ -15,6 +15,10 @@
     .filter-panel-filter ul {
       margin-bottom: 3px;
     }
+    .filter-values {
+      word-wrap: break-word;
+      overflow-x: hidden;
+    }
     .filter-must {
       border-bottom: #7EB26D 3px solid;
     }
@@ -59,9 +63,9 @@
 
       </div>
 
-      <div ng-hide="filterSrv.list[id].editing && isEditable(filterSrv.list[id])">
+      <div ng-hide="filterSrv.list[id].editing && isEditable(filterSrv.list[id])" class="filter-values">
         <ul class="unstyled">
-          <li ng-repeat="(key,value) in filterSrv.list[id]" ng-show="show_key(key)"><strong>{{key}}</strong> : {{value}}</li>
+          <li ng-repeat="(key,value) in filterSrv.list[id]" ng-show="show_key(key)"><strong>{{key}}</strong> : {{value | truncate}}</li>
         </ul>
       </div>
       <div ng-show="filterSrv.list[id].editing && isEditable(filterSrv.list[id])">

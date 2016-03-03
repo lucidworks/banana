@@ -199,7 +199,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       var request = $scope.sjs.Request().indices(dashboard.indices[segment]);
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
-      
+
 
       $scope.panel.queries.query = "";
       // Build the query
@@ -210,7 +210,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         );
 
         var facet = $scope.sjs.DateHistogramFacet(id);
-
         if($scope.panel.mode === 'count') {
           facet = facet.field(filterSrv.getTimeField());
         } else {
@@ -222,6 +221,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         }
         facet = facet.interval(_interval).facetFilter($scope.sjs.QueryFilter(query));
         request = request.facet(facet).size(0);
+
       });
 
       // Populate the inspector panel
@@ -229,7 +229,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       // Build Solr query
       var fq = '';
-      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+      if (filterSrv.getSolrFq()) {
         fq = '&' + filterSrv.getSolrFq();
       }
       var time_field = filterSrv.getTimeField();
@@ -267,7 +267,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           values_mode_query += '&group=true&group.field=' + $scope.panel.group_field + '&group.limit=' + $scope.panel.max_rows;
         }
       }
-      
+
       var mypromises = [];
        _.each($scope.panel.queries.ids, function(id) {
         var temp_q =  querySrv.getQuery(id) + wt_json + rows_limit + fq + facet + values_mode_query;
@@ -290,8 +290,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           }
           // Convert facet ids to numbers
           // var facetIds = _.map(_.keys(results.facets),function(k){return parseInt(k, 10);});
-          // TODO: change this, Solr do faceting differently
-          var facetIds = [0]; // Need to fix this
+          //var facetIds = [0]; // Need to fix this
 
           // Make sure we're still on the same query/queries
           // TODO: We probably DON'T NEED THIS unless we have to support multiple queries in query module.
@@ -442,7 +441,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       });
 
       dashboard.refresh();
-
     };
 
     // I really don't like this function, too much dom manip. Break out into directive?
@@ -598,7 +596,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             scope.plot = $.plot(elem, scope.data, options);
           } catch(e) {
             // TODO: Need to fix bug => "Invalid dimensions for plot, width = 0, height = 200"
-            console.log(e);
+            // console.log(e);
           }
         }
 

@@ -13,7 +13,7 @@
         <ul class="unstyled" style="{{panel.overflow}}:{{panel.height || row.height}};overflow-y:auto;overflow-x:hidden;">
           <li ng-style="panel.style" ng-repeat="field in fields.list" ng-show="_.isUndefined(panel.important_fields) || _.contains(panel.important_fields,field)">
             <i class="pointer" ng-class="{'icon-check': _.contains(panel.fields,field),'icon-check-empty': !_.contains(panel.fields,field)}" ng-click="toggle_field(field)"></i>
-            <a class="pointer" data-unique="1" bs-popover="'app/panels/table/micropanel.html'" data-placement="right" ng-click="toggle_micropanel(field,true)" ng-class="{label: _.contains(panel.fields,field)}">{{field}}</a>
+            <a class="pointer" data-unique="1" bs-popover="'app/panels/table/micropanel.html'" data-placement="right" ng-click="toggle_micropanel(field,true)" ng-class="{label: _.contains(panel.fields,field)}">{{facet_label(field)}}</a>
           </li>
         </ul>
       </div>
@@ -28,7 +28,7 @@
           <i ng-click="panel.offset = (panel.offset - panel.size)" ng-show="panel.offset > 0" class='icon-arrow-left pointer'></i>
         </div>
         <div class="span8" style="text-align:center">
-          <strong>{{panel.offset}}</strong> to <strong>{{dashboard.numberWithCommas(panel.offset + data.slice(panel.offset,panel.offset+panel.size).length)}}</strong>
+          <strong ng-show="hits > 0" ng-hide="hits == 0">{{panel.offset + 1}}</strong><strong ng-show="hits == 0" ng-hide="hits > 0">{{panel.offset}}</strong> to <strong>{{dashboard.numberWithCommas(panel.offset + data.slice(panel.offset,panel.offset+panel.size).length)}}</strong>
           <small> of {{dashboard.numberWithCommas(data.length)}} available for paging</small>
         </div>
         <div class="span1" style="text-align:left">
@@ -42,10 +42,10 @@
           <th style="white-space:nowrap" ng-repeat="field in panel.fields">
             <i ng-show="!$first" class="pointer link icon-caret-left" ng-click="_.move(panel.fields,$index,$index-1)"></i>
             <span  class="pointer" ng-click="set_sort(field)" ng-show='panel.sortable'>
-              {{field}}
+              {{facet_label(field)}}
               <i ng-show='field == panel.sort[0]' class="pointer link" ng-class="{'icon-chevron-up': panel.sort[1] == 'asc','icon-chevron-down': panel.sort[1] == 'desc'}"></i>
             </span>
-            <span ng-show='!panel.sortable'>{{field}}</span>
+            <span ng-show='!panel.sortable'>{{facet_label(field)}}</span>
             <i ng-show="!$last" class="pointer link icon-caret-right" ng-click="_.move(panel.fields,$index,$index+1)"></i>
           </th>
           <!-- Hyperlink column header -->
@@ -55,10 +55,10 @@
         <tbody ng-repeat="event in data | slice:panel.offset:panel.offset+panel.size" ng-class-odd="'odd'">
           <tr ng-click="toggle_details(event)" class="pointer">
             <td ng-show="panel.fields.length<1">{{event.kibana._source|stringify|tableTruncate:panel.trimFactor:1}}</td>
-            
+
             <!-- Table columns -->
             <td ng-show="panel.fields.length>0" ng-repeat="field in panel.fields" ng-bind-html-unsafe="(event.kibana.highlight[field]||event.kibana._source[field]) |tableHighlight |tableTruncate:panel.trimFactor:panel.fields.length:field:panel.imageFields |tableDisplayImageField:field:panel.imageFields:panel.imgFieldWidth:panel.imgFieldHeight"></td>
-            
+
             <!-- Hyperlink column -->
             <td ng-click="" ng-show="panel.enableHyperlink && panel.displayLinkIcon" ng-bind-html-unsafe="event.kibana._source[panel.hyperlinkColumnForURI] |urlLinkAsIcon"></td>
             <td ng-show="panel.enableHyperlink && !panel.displayLinkIcon" ng-bind-html-unsafe="event.kibana._source[panel.hyperlinkColumnForURI] |urlLink"></td>
@@ -104,7 +104,7 @@
           <i ng-click="panel.offset = (panel.offset - panel.size)" ng-show="panel.offset > 0" class='icon-arrow-left pointer'></i>
         </div>
         <div class="span4" style="text-align:center">
-          <strong>{{panel.offset}}</strong> to <strong>{{dashboard.numberWithCommas(panel.offset + data.slice(panel.offset,panel.offset+panel.size).length)}}</strong>
+          <strong ng-show="hits > 0" ng-hide="hits == 0">{{panel.offset + 1}}</strong><strong ng-show="hits == 0" ng-hide="hits > 0">{{panel.offset}}</strong> to <strong>{{dashboard.numberWithCommas(panel.offset + data.slice(panel.offset,panel.offset+panel.size).length)}}</strong>
           <small> of {{dashboard.numberWithCommas(data.length)}} available for paging</small>
         </div>
         <div class="span1" style="text-align:left">

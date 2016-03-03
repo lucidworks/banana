@@ -54,7 +54,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         global_params: ''
       }
     };
-    
+
     var sjs = sjsResource(config.solr + config.solr_core);
 
     var gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;
@@ -154,7 +154,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
                 return false;
               }
             }
-            
+
             $rootScope.$broadcast('refresh');
           });
         } else {
@@ -187,6 +187,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     this.dash_load = function(dashboard) {
       // Cancel all timers
       timer.cancel_all();
+
+      // update browser window/tab title to reflect current dashboard's title
+      document.title = dashboard.title;
 
       // Make sure the dashboard being loaded has everything required
       dashboard = dash_defaults(dashboard);
@@ -428,7 +431,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             return false;
           }
         );
-      
+
     };
 
     this.save_gist = function(title,dashboard) {
@@ -441,7 +444,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
           "description": save.title,
           "public": false,
           "files": {
-            "kibana-dashboard.json": {
+            "banana-dashboard.json": {
               "content": angular.toJson(save,true)
             }
           }

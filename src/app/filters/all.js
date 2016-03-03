@@ -66,7 +66,9 @@ define(['angular', 'jquery', 'underscore','showdown'], function(angular, $, _,Sh
       //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
       r2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim,
       //Change email addresses to mailto:: links.
-      r3 = /([a-zA-Z_0-9\.]+?@[a-zA-Z_0-9\.]+)/gim;
+      //only with line beginning or whitespace before it,
+      //so as not to re-link these ... ftp://user:password@host/path done above.
+      r3 = /(^|[\s])([a-zA-Z_0-9\.]+?@[a-zA-Z_0-9\.]+)/gim;
 
     var urlLink = function(text) {
       var t1,t2,t3;
@@ -82,7 +84,7 @@ define(['angular', 'jquery', 'underscore','showdown'], function(angular, $, _,Sh
         });
         text = t2 || text;
         _.each(text.match(r3), function() {
-          t3 = text.replace(r3, "<a href=\"mailto:$1\">$1</a>");
+          t3 = text.replace(r3, "$1<a href=\"mailto:$2\">$2</a>");
         });
         text = t3 || text;
         return text;
@@ -179,6 +181,24 @@ define(['angular', 'jquery', 'underscore','showdown'], function(angular, $, _,Sh
           .replace(/>/g, '&gt;')
           .replace(/</g, '&lt;');
         return converter.makeHtml(textConverted);
+      }
+    };
+  });
+
+  module.filter('thousandSeparator', function() {
+    return function(number) {
+      if (number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      } else {
+        return number;
+      }
+    };
+  });
+
+  module.filter('safeFragment', function() {
+    return function(text) {
+      if (text) {
+        return text.replace(/\./g, '_');
       }
     };
   });

@@ -25,7 +25,7 @@ require.config({
     'underscore-src':         '../vendor/underscore',
     bootstrap:                '../vendor/bootstrap/bootstrap',
 
-    jquery:                   '../vendor/jquery/jquery-1.8.0',
+    jquery:                   '../vendor/jquery/jquery-1.12.1',
     'jquery-ui':              '../vendor/jquery/jquery-ui-1.10.3',
 
     'extend-jquery':          'components/extend-jquery',
@@ -42,7 +42,7 @@ require.config({
     modernizr:                '../vendor/modernizr-2.6.1',
     elasticjs:                '../vendor/elasticjs/elastic-angular-client',
     solrjs:                   '../vendor/solrjs/solr-angular-client',
-    d3:                       '../vendor/d3',
+    d3:                       '../vendor/d3'
   },
   shim: {
     underscore: {

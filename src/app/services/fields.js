@@ -44,8 +44,6 @@ function (angular, _, config) {
       return fields;
     };
 
-    // TODO: add solr support
-
     this.map = function() {
       // Check USE_ADMIN_LUKE flag in config.js
       var fieldApi = '';

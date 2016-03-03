@@ -61,6 +61,10 @@ define([
       labels  : true,
       spyable : true,
       show_queries:true,
+      show_stats: false,
+      stats_type  : 'mean',
+      stats_field : '',
+      stats_decimal_points : 2
     };
     _.defaults($scope.panel,_d);
 
@@ -106,23 +110,24 @@ define([
 
       //Solr Search Query
       var fq = '';
-      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+      if (filterSrv.getSolrFq()) {
         fq = '&' + filterSrv.getSolrFq();
+      }
+      // if Show Stats
+      var stats = '';
+      if ($scope.panel.show_stats) {
+        stats = '&stats=true&stats.field=' + $scope.panel.stats_field;
       }
       var wt_json = '&wt=json';
       var rows_limit = '&rows=0'; // for hits, we do not need the actual response doc, so set rows=0
-      var facet = '';
-
-      //$scope.panel.queries.query = querySrv.getQuery(0) + fq + facet + wt_json + rows_limit;
-
       var promises = [];
       $scope.data = [];
-      $scope.hits =0;
-      $scope.panel.queries.query="";
+      $scope.hits = 0;
+      $scope.panel.queries.query = '';
 
-       _.each($scope.panel.queries.ids, function(id) {
-        var temp_q =  querySrv.getQuery(id) + fq + facet + wt_json + rows_limit;
-        $scope.panel.queries.query += temp_q + "\n";
+      _.each($scope.panel.queries.ids, function(id) {
+        var temp_q =  querySrv.getQuery(id) + fq + stats + wt_json + rows_limit;
+        $scope.panel.queries.query += temp_q + '\n';
         // Set the additional custom query
         if ($scope.panel.queries.custom !== null) {
           request = request.setQuery(temp_q + $scope.panel.queries.custom);
@@ -131,34 +136,50 @@ define([
         }
         promises.push(request.doSearch());
       });
+
       // Populate scope when we have results
       $q.all(promises).then(function(results) {
         _.each(dashboard.current.services.query.ids, function(id, i) {
           $scope.panelMeta.loading = false;
-          $scope.hits += results[i].response.numFound;
+
+          var result_value;
+
+          // check what value to show, either total count or stats
+          if (!$scope.panel.show_stats) {
+            result_value = results[i].response.numFound;
+            $scope.hits += results[i].response.numFound;
+          } else {
+            result_value = results[i].stats.stats_fields[$scope.panel.stats_field][$scope.panel.stats_type];
+            $scope.hits += results[i].stats.stats_fields[$scope.panel.stats_field][$scope.panel.stats_type];
+            $scope.hits = $scope.hits.toFixed($scope.panel.stats_decimal_points);
+          }
 
           // Check for error and abort if found
           if (!(_.isUndefined(results[i].error))) {
             $scope.panel.error = $scope.parse_error(results[i].error);
             return;
           }
+
           var info = dashboard.current.services.query.list[id];
-          var hits = $scope.hits;
+
           // Create series
           $scope.data[i] = {
             info: info,
             id: id,
-            hits: results[i].response.numFound,
-            data: [[id, results[i].response.numFound]
-            ]
+            hits: result_value,
+            data: [[id, result_value]]
           };
           $scope.$emit('render');
         });
-      })
+      });
     };
 
     $scope.set_refresh = function (state) {
       $scope.refresh = state;
+      // if not show_stats, set stats_decimal_points to zero automatically.
+      if (!$scope.panel.show_stats) {
+        $scope.panel.stats_decimal_points = 0;
+      }
     };
 
     $scope.close_edit = function() {
@@ -206,7 +227,7 @@ define([
           // Populate element
           try {
             // Add plot to scope so we can build out own legend
-            if(scope.panel.chart === 'bar') {
+            if (scope.panel.chart === 'bar') {
               scope.plot = $.plot(elem, scope.data, {
                 legend: { show: false },
                 series: {
@@ -225,7 +246,8 @@ define([
                 colors: querySrv.colors
               });
             }
-            if(scope.panel.chart === 'pie') {
+
+            if (scope.panel.chart === 'pie') {
               scope.plot = $.plot(elem, scope.data, {
                 legend: { show: false },
                 series: {

@@ -33,6 +33,7 @@ function (Settings) {
      */
     solr: "/solr/",
     solr_core: "logstash_logs",
+    timefield: 'event_timestamp',
 
     /**
      * The default Solr index to use for storing objects internal to Banana, such as 
@@ -73,6 +74,7 @@ function (Settings) {
      * @type {Array}
      */
     panel_names: [
+      'bar',
       'histogram',
       'map',
       'table',
@@ -91,7 +93,9 @@ function (Settings) {
       'fullTextSearch',
       'facet',
       'tagcloud',
-      'multiseries'
+      'multiseries',
+      'sunburst',
+      'docviewer'
     ]
   });
 });

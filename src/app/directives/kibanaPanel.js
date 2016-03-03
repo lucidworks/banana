@@ -55,7 +55,7 @@ function (angular) {
             '</span>' +
             '<ul class="dropdown-menu" style="padding:10px; left:-150px;">' +
           '<h5>Number of Rows</h5><form><input type="number" value="panel.exportSize" ng-model="panel.exportSize" placeholder="{{panel.size * panel.pages}}"/>' +
-          '<input type="checkbox" ng-model="panel.exportAll"/> All Fields <tip>If this option is checked, all fields in the Solr schema will be exported. Otherwise, only the fields that you have selected to appear in your Table view will be exported</tip></form>' +
+          '<div ng-show="panel.type==\'table\'"><input type="checkbox" ng-model="panel.exportAll"/> All Fields <tip>If this option is checked, all fields in the Solr schema will be exported. Otherwise, only the fields that you have selected to appear in your Table view will be exported</tip></div></form>' +
                 '<li>' +
                     '<h5>Export to File</h5>' +
                         '<ul class="unstyled">' +

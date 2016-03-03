@@ -1,0 +1,32 @@
+<div class="row-fluid">
+  <div class="span3">
+    <label class="small">Title Field <tip placement="right">Specify a field to show as the document's title.</tip></label>
+    <input type="text" class="input-medium" bs-typeahead="fields.list" ng-model="panel.titleField" ng-change="set_refresh(true)">
+  </div>
+  <div class="span3">
+    <label class="small">Content Field <tip>Specify a field to show as the document's content.</tip></label>
+    <input type="text" class="input-medium" bs-typeahead="fields.list" ng-model="panel.contentField" ng-change="set_refresh(true)">
+  </div>
+  <div class="span3">
+    <label class="small">Unique Key Field <tip>Specify a unique key field from Solr schema.</tip></label>
+    <input type="text" class="input-medium" bs-typeahead="fields.list" ng-model="panel.uniqueKey" ng-change="set_refresh(true)">
+  </div>
+  <div class="span3">
+    <label class="small">Max Number of Doc <tip>Specify a maximum number of documents to retrieve from Solr.</tip></label>
+    <input type="number" class="input-small" ng-model="panel.max_rows" ng-change="set_refresh(true)">
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span2">
+    <label class="small">Frag Size <tip placement="right">Specify how many characters to show for the highlighting. Input zero (unlimited) to show the whole field's content.</tip></label>
+    <input type="number"class="input-small" placeholder="0" ng-model="panel.fragsize" ng-change="set_refresh(true)">
+  </div>
+  <div class="span2">
+    <label class="small">Simple Pre <tip>Specify the opening HTML markup syntax for highlighting the matched terms.</tip></label>
+    <input type="text" class="input-small" placeholder="<mark>" ng-model="panel.simplePre" ng-change="set_refresh(true)">
+  </div>
+  <div class="span2">
+    <label class="small">Simple Post <tip>Specify the closing HTML markup syntax for highlighting the matched terms.</tip></label>
+    <input type="text" class="input-small" placeholder="</mark>" ng-model="panel.simplePost" ng-change="set_refresh(true)">
+  </div>
+</div>

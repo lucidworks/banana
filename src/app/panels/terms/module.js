@@ -33,6 +33,7 @@ function (angular, app, _, $, kbn) {
           show: $scope.panel.spyable
         }
       ],
+      exportfile: true,
       editorTabs : [
         {title:'Queries', src:'app/partials/querySelect.html'}
       ],
@@ -56,7 +57,7 @@ function (angular, app, _, $, kbn) {
       missing : false,
       other   : false,
       size    : 10,
-      // order   : 'count',
+      sortBy  : 'count',
       order   : 'descending',
       style   : { "font-size": '10pt'},
       donut   : false,
@@ -66,6 +67,7 @@ function (angular, app, _, $, kbn) {
       arrangement : 'horizontal',
       chart       : 'bar',
       counter_pos : 'above',
+      exportSize : 10000,
       lastColor : '',
       spyable     : true,
       show_queries:true,
@@ -95,7 +97,67 @@ function (angular, app, _, $, kbn) {
       }
     };
 
+
+    /**
+     *
+     *
+     * @param {String} filetype -'json', 'xml', 'csv'
+     */
+    $scope.build_query = function(filetype, isForExport) {
+
+      // Build Solr query
+      var fq = '';
+      if (filterSrv.getSolrFq()) {
+        fq = '&' + filterSrv.getSolrFq();
+      }
+      var wt_json = '&wt=' + filetype;
+      var rows_limit = isForExport ? '&rows=0' : ''; // for terms, we do not need the actual response doc, so set rows=0
+      var facet = '';
+
+      if ($scope.panel.mode === 'count') {
+        facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size + '&facet.missing=true';
+      } else {
+        // if mode != 'count' then we need to use stats query
+        // stats does not support something like facet.limit, so we have to sort and limit the results manually.
+        facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field + '&facet.missing=true';
+      }
+      facet += '&f.' + $scope.panel.field + '.facet.sort=' + ($scope.panel.sortBy || 'count');
+
+      var exclude_length = $scope.panel.exclude.length;
+      var exclude_filter = '';
+      if(exclude_length > 0){
+        for (var i = 0; i < exclude_length; i++) {
+          if($scope.panel.exclude[i] !== "") {
+            exclude_filter += '&fq=-' + $scope.panel.field +":"+ $scope.panel.exclude[i];
+          }
+        }
+      }
+
+      return querySrv.getORquery() + wt_json + rows_limit + fq + exclude_filter + facet + ($scope.panel.queries.custom != null ? $scope.panel.queries.custom : '');
+    };
+
+    $scope.exportfile = function(filetype) {
+
+      var query = this.build_query(filetype, true);
+
+      $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
+
+      var request = $scope.sjs.Request().indices(dashboard.indices),
+          response;
+
+      request.setQuery(query);
+
+      response = request.doSearch();
+
+      // Populate scope when we have results
+      response.then(function(response) {
+        kbn.download_response(response, filetype, "terms");
+      });
+
+    };
+
     $scope.get_data = function() {
+
       // Make sure we have everything for the request to complete
       if(dashboard.indices.length === 0) {
         return;
@@ -113,40 +175,12 @@ function (angular, app, _, $, kbn) {
       // Populate the inspector panel
       $scope.inspector = angular.toJson(JSON.parse(request.toString()),true);
 
-      // Build Solr query
-      var fq = '';
-      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
-        fq = '&' + filterSrv.getSolrFq();
-      }
-      var wt_json = '&wt=json';
-      var rows_limit = '&rows=0'; // for terms, we do not need the actual response doc, so set rows=0
-      var facet = '';
-
-      if ($scope.panel.mode === 'count') {
-        facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size + '&facet.missing=true';
-      } else {
-        // if mode != 'count' then we need to use stats query
-        // stats does not support something like facet.limit, so we have to sort and limit the results manually.
-        facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field + '&facet.missing=true';;
-      }
-      
-      var exclude_length = $scope.panel.exclude.length; 
-      var exclude_filter = '';
-      if(exclude_length > 0){
-        for (var i = 0; i < exclude_length; i++) {
-          exclude_filter += '&fq=-' + $scope.panel.field +":"+ $scope.panel.exclude[i];
-        }
-      }
+      var query = this.build_query('json', false);
 
       // Set the panel's query
-      $scope.panel.queries.query = querySrv.getORquery() + wt_json + rows_limit + fq + exclude_filter + facet;
+      $scope.panel.queries.query = query;
 
-      // Set the additional custom query
-      if ($scope.panel.queries.custom != null) {
-        request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
-      } else {
-        request = request.setQuery($scope.panel.queries.query);
-      }
+      request.setQuery(query);
 
       results = request.doSearch();
 
@@ -220,11 +254,13 @@ function (angular, app, _, $, kbn) {
           });
         }
         // Sort the results
+        $scope.data = _.sortBy($scope.data, function(d) {
+          return $scope.panel.sortBy === 'index' ? d.label : d.data[0][1];
+        });
         if ($scope.panel.order === 'descending') {
-          $scope.data = _.sortBy($scope.data, function(d) {return -d.data[0][1];});
-        } else {
-          $scope.data = _.sortBy($scope.data, function(d) {return d.data[0][1];});
+          $scope.data.reverse();
         }
+
         // Slice it according to panel.size, and then set the x-axis values with k.
         $scope.data = $scope.data.slice(0,$scope.panel.size);
         _.each($scope.data, function(v) {
@@ -242,7 +278,7 @@ function (angular, app, _, $, kbn) {
           data:[[k,missing]],meta:"missing",color:'#aaa',opacity:0});
         $scope.data.push({label:'Other values',
           // data:[[k+1,results.facets.terms.other]],meta:"other",color:'#444'});
-          // TODO: Hard coded to 0 for now. Solr faceting does not provide 'other' value. 
+          // TODO: Hard coded to 0 for now. Solr faceting does not provide 'other' value.
           data:[[k+1,$scope.hits-sum]],meta:"other",color:'#444'});
 
         $scope.$emit('render');

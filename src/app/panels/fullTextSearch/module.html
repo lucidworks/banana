@@ -28,11 +28,11 @@
         font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
         border-radius: 3px;
     }
-    .tab { 
-        margin-left: 10px; 
-    } 
-    .bold{ 
-        font-weight: bold; 
+    .tab {
+        margin-left: 10px;
+    }
+    .bold{
+        font-weight: bold;
         background: #B8B8B8  ;
     }
 
@@ -48,11 +48,11 @@
                 <div id="myAccordion" class="accordion">
                     <div class="accordion-group" ng-repeat="field in panel.fields">
                         <div class="accordion-heading">
-                            <a href="#collapse_{{field}}" data-parent="#myAccordion" data-toggle="collapse" class="accordion-toggle">
-                            {{field}} <i class="icon-chevron-down"></i>
+                            <a href="#collapse_{{field | safeFragment}}" data-parent="#myAccordion" data-toggle="collapse" class="accordion-toggle">
+                            {{facet_label(field)}} <i class="icon-chevron-down"></i>
                             </a>
                         </div>
-                        <div class="accordion-body collapse" id="collapse_{{field}}">
+                        <div class="accordion-body collapse" id="collapse_{{field | safeFragment}}">
                             <div class="accordion-inner">
                                 <div ng-repeat="item in facet_data[field]">
                                     <div ng-show="facet_data[field][$index]['count']>0 && $index < panel.facet_limit">
@@ -119,13 +119,13 @@
                                     <th>Value</th>
                                 </thead>
                                 <tr ng-repeat="(key,value) in event.kibana._source" ng-class-odd="'odd'">
-                                    <td>{{key}}</td>
+                                    <td>{{facet_label(key)}}</td>
                                     <td style="white-space:nowrap">
                                         <i class='icon-search pointer' ng-click="build_search(key,value)" bs-tooltip="'Add filter to match this value'"></i>
                                         <i class='icon-ban-circle pointer' ng-click="build_search(key,value,true)" bs-tooltip="'Add filter to NOT match this value'"></i>
                                         <!-- <i class="pointer icon-th" ng-click="toggle_field(key)" bs-tooltip="'Toggle table column'"></i> -->
                                     </td>
-                                    <!-- At some point we need to create a more efficient way of applying the filter pipeline 
+                                    <!-- At some point we need to create a more efficient way of applying the filter pipeline
                                     -->
                                     <td style="white-space:pre-wrap" ng-bind-html-unsafe="value|noXml|urlLink|stringify|tablebody|tableTruncate:panel.trimFactor:1"></td>
                                 </tr>
