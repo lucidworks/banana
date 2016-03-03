@@ -158,7 +158,7 @@ See the README file under the  _resources/enable-cors_ directory for a guide.
 
 ## FAQ
 
-__Q__: How do I secure my Solr endpoint so that users do not have access to it?
+__Q__: How do I secure my Solr endpoint so that users do not have access to it?  
 __A__: The simplest solution is to use an [Apache](http://projects.apache.org/projects/http_server.html) or
 [nginx](http://nginx.org) reverse proxy (See for example https://groups.google.com/forum/#!topic/ajax-solr/pLtYfm83I98).
 
