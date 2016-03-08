@@ -104,6 +104,7 @@ See [http://www.lucidworks.com/lucidworks-silk/](http://www.lucidworks.com/lucid
 1. Pull the source code of Banana version that you want from the
 [release](https://github.com/LucidWorks/banana/tree/release) branch in the repo;
 For example, version *x.y.z* will be tagged as `x.y.z`.
+
 2. Run a command line "ant" from within the banana directory to build the war file:
 
     ```bash
