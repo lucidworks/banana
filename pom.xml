@@ -27,7 +27,7 @@ limitations under the License.
     <groupId>com.lucidworks</groupId>
     <artifactId>banana</artifactId>
     <packaging>war</packaging>
-    <version>1.5.1</version>
+    <version>1.6.0</version>
     <description>The Banana project was forked from Kibana, and works with all kinds of time series (and non-time series) data stored in Apache Solr.
     </description>
     <url>https://github.com/LucidWorks/banana</url>
@@ -58,9 +58,10 @@ limitations under the License.
     </issueManagement>
     <developers>
         <developer>
-            <id></id>
-            <name></name>
-            <email></email>
+            <name>Andrew Thanalertvisuti</name>
+            <email>andrew.thana@gmail.com</email>
+            <organization>Lucidworks</organization>
+            <organizationUrl>https://lucidworks.com/</organizationUrl>
         </developer>
     </developers>
     <build>
