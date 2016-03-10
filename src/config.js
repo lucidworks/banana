@@ -31,9 +31,11 @@ function (Settings) {
      * your banana web application.
      * @type {String}
      */
-    solr: "/solr/",
-    solr_core: "logstash_logs",
-    timefield: 'event_timestamp',
+
+    // Specify Solr server and core to store the data.
+    solr: "/api/apollo/solr/",
+    solr_core: "logs",
+    timefield: "timestamp_dt",
 
     /**
      * The default Solr index to use for storing objects internal to Banana, such as 
@@ -47,7 +49,10 @@ function (Settings) {
      * internal to banana.
      * @type {String}
      */
-    banana_index: "banana-int",
+    banana_index: "system_banana",
+
+    apollo: "/api/apollo",
+    apollo_coll: "/api/apollo/collections",
 
     /**
      * The default settings will use /admin/luke API to retrieve all fields from Solr including

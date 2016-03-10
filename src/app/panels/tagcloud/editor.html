@@ -17,20 +17,17 @@
     <div class="span4">
         <label class="small">Text Alignment</label>
         <select class="input-large" ng-model="panel.alignment" ng-options="f for f in ['horizontal','vertical(+90)','vertical(-90)','vertical and horizontal','Random']"></select>
-        </span>
     </div>
     <div class="span4">
         <label class="small">Font Scale
-        <tip> Increase the size of the word font</tip>
+            <tip>Increase the size of the word font</tip>
         </label>
         <select class="input-mini" ng-model="panel.fontScale" ng-options="f for f in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]"></select>
-        </span>
     </div>
     <div class="span4">
         <label class="small">Stop Words
-        <tip> Stop Words will be ignored, if checked</tip>
+            <tip>Stop Words will be ignored, if checked.</tip>
         </label>
         <input class="input-small" ng-model="panel.ignoreStopWords" type="checkbox" ng-change="set_refresh(true)"></input>
-        </span>
     </div>
 </div>

@@ -297,8 +297,8 @@
     "dropdown_collections": false
   },
   "solr": {
-    "server": "/solr/",
-    "core_name": "collection1",
+    "server": "/api/apollo/solr/",
+    "core_name": "logs",
     "core_list": [],
     "global_params": ""
   }

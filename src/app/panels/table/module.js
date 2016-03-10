@@ -31,7 +31,7 @@ function (angular, app, _, kbn, moment) {
 
   var module = angular.module('kibana.panels.table', []);
   app.useModule(module);
-  module.controller('table', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv, solrSrv) {
+  module.controller('table', function($rootScope, $scope, $timeout, timer, fields, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -98,19 +98,58 @@ function (angular, app, _, kbn, moment) {
       maxNumCalcTopFields: 20, // Set the max number of fields for calculating top values
       calcTopFieldValuesFromAllData: false // false: calculate top field values from $scope.data
                                            // true: calculate from all data using Solr facet
+      refresh: {
+        enable: false,
+        interval: 2
+      }
     };
     _.defaults($scope.panel,_d);
-
-    $scope.percent = kbn.to_percent;
 
     $scope.init = function () {
       $scope.Math = Math;
       // Solr
       $scope.sjs = $scope.sjs || sjsResource(dashboard.current.solr.server + dashboard.current.solr.core_name); // jshint ignore: line
       $scope.$on('refresh',function(){$scope.get_data();});
-      $scope.panel.exportSize = $scope.panel.size * $scope.panel.pages;
+      $scope.panel.exportSize = $scope.panel.size * $scope.panel.pages; 
       $scope.fields = fields;
+      
+      // Backward compatibility with old dashboards without important fields
+      // Set important fields to all fields if important fields array is empty
+      if (_.isEmpty($scope.panel.important_fields)) {
+        $scope.panel.important_fields = fields.list;
+      }
+
+      // Start refresh timer if enabled
+      if ($scope.panel.refresh.enable) {
+        $scope.set_timer($scope.panel.refresh.interval);
+      }
+
       $scope.get_data();
+    };
+
+    $scope.percent = kbn.to_percent;
+
+    $scope.set_timer = function(refresh_interval) {
+      $scope.panel.refresh.interval = refresh_interval;
+      if (_.isNumber($scope.panel.refresh.interval)) {
+        timer.cancel($scope.refresh_timer);
+        $scope.realtime();
+      } else {
+        timer.cancel($scope.refresh_timer);
+      }
+    };
+
+    $scope.realtime = function() {
+      if ($scope.panel.refresh.enable) {
+        timer.cancel($scope.refresh_timer);
+
+        $scope.refresh_timer = timer.register($timeout(function() {
+          $scope.realtime();
+          $scope.get_data();
+        }, $scope.panel.refresh.interval*1000));
+      } else {
+        timer.cancel($scope.refresh_timer);
+      }
     };
 
     $scope.toggle_micropanel = function(field,groups) {
@@ -216,7 +255,6 @@ function (angular, app, _, kbn, moment) {
     $scope.get_data = function(segment,query_id) {
       $scope.panel.error =  false;
       delete $scope.panel.error;
-
       // Make sure we have everything for the request to complete
       if(dashboard.indices.length === 0) {
         return;
@@ -337,8 +375,7 @@ function (angular, app, _, kbn, moment) {
       var omitHeader = '&omitHeader=true';
       var rows_limit = '&rows=' + ($scope.panel.exportSize || ($scope.panel.size * $scope.panel.pages));
       var fl = '';
-
-      if (! $scope.panel.exportAll) {
+      if (!$scope.panel.exportAll) {
           fl = '&fl=';
           for(var i = 0; i < $scope.panel.fields.length; i++) {
               fl += $scope.panel.fields[i] + (i !== $scope.panel.fields.length - 1 ? ',' : '');
@@ -379,6 +416,10 @@ function (angular, app, _, kbn, moment) {
     };
 
     $scope.close_edit = function() {
+      // Start refresh timer if enabled
+      if ($scope.panel.refresh.enable) {
+        $scope.set_timer($scope.panel.refresh.interval);
+      }
       if($scope.refresh) {
         $scope.get_data();
       }

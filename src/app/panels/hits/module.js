@@ -26,7 +26,7 @@ define([
   var module = angular.module('kibana.panels.hits', []);
   app.useModule(module);
 
-  module.controller('hits', function($scope, $q, querySrv, dashboard, filterSrv) {
+  module.controller('hits', function($scope, $q, $timeout, timer, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -65,17 +65,49 @@ define([
       stats_type  : 'mean',
       stats_field : '',
       stats_decimal_points : 2
+      refresh: {
+        enable: false,
+        interval: 2
+      }
     };
     _.defaults($scope.panel,_d);
 
     $scope.init = function () {
       $scope.hits = 0;
 
+      // Start refresh timer if enabled
+      if ($scope.panel.refresh.enable) {
+        $scope.set_timer($scope.panel.refresh.interval);
+      }
+
       $scope.$on('refresh',function(){
         $scope.get_data();
       });
-      $scope.get_data();
 
+      $scope.get_data();
+    };
+
+    $scope.set_timer = function(refresh_interval) {
+      $scope.panel.refresh.interval = refresh_interval;
+      if (_.isNumber($scope.panel.refresh.interval)) {
+        timer.cancel($scope.refresh_timer);
+        $scope.realtime();
+      } else {
+        timer.cancel($scope.refresh_timer);
+      }
+    };
+
+    $scope.realtime = function() {
+      if ($scope.panel.refresh.enable) {
+        timer.cancel($scope.refresh_timer);
+
+        $scope.refresh_timer = timer.register($timeout(function() {
+          $scope.realtime();
+          $scope.get_data();
+        }, $scope.panel.refresh.interval*1000));
+      } else {
+        timer.cancel($scope.refresh_timer);
+      }
     };
 
     $scope.get_data = function() {
@@ -89,10 +121,9 @@ define([
 
       // Solr
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
-
       var request = $scope.sjs.Request().indices(dashboard.indices);
-
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
+
       // Build the question part of the query
       _.each($scope.panel.queries.ids, function(id) {
         var _q = $scope.sjs.FilteredQuery(
@@ -141,7 +172,6 @@ define([
       $q.all(promises).then(function(results) {
         _.each(dashboard.current.services.query.ids, function(id, i) {
           $scope.panelMeta.loading = false;
-
           var result_value;
 
           // check what value to show, either total count or stats
@@ -161,13 +191,14 @@ define([
           }
 
           var info = dashboard.current.services.query.list[id];
-
+          
           // Create series
           $scope.data[i] = {
             info: info,
             id: id,
             hits: result_value,
             data: [[id, result_value]]
+            ]
           };
           $scope.$emit('render');
         });
@@ -183,19 +214,21 @@ define([
     };
 
     $scope.close_edit = function() {
-      if($scope.refresh) {
+      // Start refresh timer if enabled
+      if ($scope.panel.refresh.enable) {
+        $scope.set_timer($scope.panel.refresh.interval);
+      }
+      if ($scope.refresh) {
         $scope.get_data();
       }
-      $scope.refresh =  false;
+      $scope.refresh = false;
       $scope.$emit('render');
     };
 
     $scope.populate_modal = function(request) {
       $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
     };
-
   });
-
 
   module.directive('hitsChart', function(querySrv) {
     return {
@@ -246,7 +279,7 @@ define([
                 colors: querySrv.colors
               });
             }
-
+            
             if (scope.panel.chart === 'pie') {
               scope.plot = $.plot(elem, scope.data, {
                 legend: { show: false },

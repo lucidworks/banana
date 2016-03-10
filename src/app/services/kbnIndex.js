@@ -32,33 +32,21 @@ function (angular, _, config, moment) {
     };
 
     // Solr: returns a promise containing an array of all collections in the Solr server.
-    // param: solr_server (e.g. http://localhost:8983/solr/)
-    this.collections = function(solr_server) {
-      return all_collections(solr_server).then(function (p) {
+    // param: apollo_coll (e.g. /api/apollo/collections)
+    this.collections = function(apollo_coll) {
+      return all_collections(apollo_coll).then(function (p) {
         return p;
       });
     };
 
     // returns a promise containing an array of all collections in Solr
-    // param: solr_server (e.g. http://localhost:8983/solr/)
-    function all_collections(solr_server) {
-      // Check USE_ADMIN_CORES flag in config.js
-      var coreApi = '';
-      if (config.USE_ADMIN_CORES) {
-        coreApi = 'admin/cores?action=STATUS&wt=json&omitHeader=true';
-      } else {
-        // admin API is disabled, then cannot retrieve the collection list from Solr.
-        // return an empty list
-        return new Promise(function(resolve) {
-          var emptyList = [];
-          resolve(emptyList);
-        });
-      }
-
+    function all_collections(apollo_coll) {
       var something = $http({
         // Use Solr Admin handler to get the list of all collections.
-        // TODO: Need to test this with SolrCloud and LWS
-        url: solr_server + coreApi,
+        // two hacks here: we're stripping the trailing "/" from the URL so the call is /solrAdmin/ instead of /solr/
+        // And we're hard-coding the "default" search cluster ...that's the only one we'll get collections for, and it
+        // is not yet configurable.
+        url: apollo_coll,
         method: "GET"
       }).error(function(data, status) {
         alertSrv.set('Error',"Could not retrieve collections from Solr (error status = "+status+")");
@@ -68,11 +56,11 @@ function (angular, _, config, moment) {
       return something.then(function (p) {
         // Parse Solr response to an array of collections
         var collections = [];
-
-        _.each(p.data.status, function(v,k) {
-          collections.push(k);
-        });
-
+        if (p) {
+          _.each(p.data, function(v) {
+            collections.push(v.id);
+          });
+        }
         if (DEBUG) { console.debug('kbnIndex: all_collections response p = ',p,'collections = ',collections); }
         return collections;
       });
@@ -115,7 +103,7 @@ function (angular, _, config, moment) {
 
       return something.then(function(p) {
         if (DEBUG) { console.debug('kbnIndex: p=',p); }
-
+        
         // var indices = [];
         // _.each(p.data, function(v,k) {
         //   indices.push(k);
@@ -124,7 +112,7 @@ function (angular, _, config, moment) {
         //     indices.push(k);
         //   });
         // });
-
+      
         var indices = [];
 
         var timestamp_array = p.data.facet_counts.facet_ranges.event_timestamp.counts;
@@ -137,7 +125,7 @@ function (angular, _, config, moment) {
 
         // indices[] should be in this format
         // indices = ['logstash-2013.11.25'];
-
+        
         if (DEBUG) { console.debug('kbnIndex: indices=',indices); }
 
         return indices;

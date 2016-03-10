@@ -1,0 +1,583 @@
+{
+  "title": "Fusion Metrics",
+  "services": {
+    "query": {
+      "idQueue": [
+        1
+      ],
+      "list": {
+        "0": {
+          "query": "*:*",
+          "alias": "",
+          "color": "#7EB26D",
+          "id": 0,
+          "pin": false,
+          "type": "lucene"
+        }
+      },
+      "ids": [
+        0
+      ]
+    },
+    "filter": {
+      "idQueue": [],
+      "list": {
+        "0": {
+          "from": "NOW/DAY-30DAY",
+          "to": "NOW/DAY%2B1DAY",
+          "field": "timestamp_tdt",
+          "type": "time",
+          "fromDateObj": "2015-11-04T04:43:51.776Z",
+          "toDateObj": "2015-12-04T04:43:51.776Z",
+          "mandate": "must",
+          "active": true,
+          "alias": "",
+          "id": 0
+        }
+      },
+      "ids": [
+        0
+      ]
+    }
+  },
+  "rows": [
+    {
+      "title": "Options",
+      "height": "50px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "title": "Set time span",
+          "error": "",
+          "span": 6,
+          "editable": true,
+          "group": [
+            "default"
+          ],
+          "type": "timepicker",
+          "mode": "relative",
+          "time_options": [
+            "5m",
+            "15m",
+            "1h",
+            "6h",
+            "12h",
+            "24h",
+            "2d",
+            "7d",
+            "30d",
+            "1y",
+            "5y"
+          ],
+          "timespan": "30d",
+          "timefield": "timestamp_tdt",
+          "timeformat": "",
+          "refresh": {
+            "enable": false,
+            "interval": 300,
+            "min": 3
+          },
+          "filter_id": 0,
+          "status": "Stable",
+          "spyable": true
+        },
+        {
+          "error": false,
+          "span": 6,
+          "editable": true,
+          "type": "query",
+          "loadingEditor": false,
+          "query": "*:*",
+          "pinned": true,
+          "history": [
+            "*:*",
+            "query_s:ipad*",
+            "query_s:ipad",
+            "params_name_s:HP* AND params_name_s:*TouchPad*",
+            "params_name_s:*HP*",
+            "params_name_s:HP*",
+            "flag_s:aggr",
+            "doc_id_s:1945531",
+            "query_s:iPad"
+          ],
+          "remember": 10,
+          "title": "Search",
+          "spyable": true
+        }
+      ]
+    },
+    {
+      "title": "Graph",
+      "height": "350px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 4,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "values",
+          "time_field": "timestamp_dt",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&wt=json&rows=100000&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&fl=timestamp_tdt mean_d\n",
+            "custom": "&fq=name_s:mem.heap.usage"
+          },
+          "max_rows": 100000,
+          "value_field": "mean_d",
+          "group_field": "",
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "12h",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1M",
+            "1y"
+          ],
+          "fill": 0,
+          "linewidth": 3,
+          "timezone": "browser",
+          "spyable": true,
+          "zoomlinks": true,
+          "bars": false,
+          "stack": false,
+          "points": false,
+          "lines": true,
+          "lines_smooth": true,
+          "legend": true,
+          "x-axis": true,
+          "y-axis": true,
+          "percentage": false,
+          "interactive": true,
+          "options": true,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "title": "Heap Memory usage (percentage)",
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
+        },
+        {
+          "span": 4,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "values",
+          "time_field": "timestamp_dt",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&wt=json&rows=100000&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&fl=timestamp_tdt mean_d\n",
+            "custom": "&fq=name_s:mem.pools.PS-Eden-Space.usage"
+          },
+          "max_rows": 100000,
+          "value_field": "mean_d",
+          "group_field": "",
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "12h",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1M",
+            "1y"
+          ],
+          "fill": 0,
+          "linewidth": 3,
+          "timezone": "browser",
+          "spyable": true,
+          "zoomlinks": true,
+          "bars": false,
+          "stack": false,
+          "points": false,
+          "lines": true,
+          "lines_smooth": true,
+          "legend": true,
+          "x-axis": true,
+          "y-axis": true,
+          "percentage": false,
+          "interactive": true,
+          "options": true,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "title": "PS-Eden-Space.usage",
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
+        },
+        {
+          "span": 4,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "values",
+          "time_field": "timestamp_dt",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&wt=json&rows=100000&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&fl=timestamp_tdt mean_d\n",
+            "custom": "&fq=name_s:mem.pools.PS-Old-Gen.usage"
+          },
+          "max_rows": 100000,
+          "value_field": "mean_d",
+          "group_field": "",
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "12h",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1M",
+            "1y"
+          ],
+          "fill": 0,
+          "linewidth": 3,
+          "timezone": "browser",
+          "spyable": true,
+          "zoomlinks": true,
+          "bars": false,
+          "stack": true,
+          "points": false,
+          "lines": true,
+          "lines_smooth": true,
+          "legend": true,
+          "x-axis": true,
+          "y-axis": true,
+          "percentage": false,
+          "interactive": true,
+          "options": true,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": false
+          },
+          "title": "mem.pools.PS-Old-Gen.usage",
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
+        }
+      ]
+    },
+    {
+      "title": "Description",
+      "height": "150px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 3,
+          "editable": true,
+          "type": "filtering",
+          "loadingEditor": false,
+          "title": "Filtering Panel",
+          "spyable": true
+        },
+        {
+          "span": 2,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=server_s&facet.limit=10&facet.missing=true",
+            "custom": ""
+          },
+          "field": "server_s",
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 10,
+          "order": "count",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "horizontal",
+          "chart": "bar",
+          "counter_pos": "none",
+          "spyable": true,
+          "time_field": "timestamp_dt",
+          "title": "Apollo hostname",
+          "mode": "count",
+          "stats_field": "value_d",
+          "decimal_points": 0,
+          "logAxis": false,
+          "lastColor": "",
+          "show_queries": true,
+          "chartColors": [
+            "#7EB26D",
+            "#EAB839",
+            "#6ED0E0",
+            "#EF843C",
+            "#E24D42",
+            "#1F78C1",
+            "#BA43A9",
+            "#705DA0",
+            "#508642",
+            "#CCA300",
+            "#447EBC",
+            "#C15C17",
+            "#890F02",
+            "#0A437C",
+            "#6D1F62",
+            "#584477",
+            "#B7DBAB",
+            "#F4D598",
+            "#70DBED",
+            "#F9BA8F",
+            "#F29191",
+            "#82B5D8",
+            "#E5A8E2",
+            "#AEA2E0",
+            "#629E51",
+            "#E5AC0E",
+            "#64B0C8",
+            "#E0752D",
+            "#BF1B00",
+            "#0A50A1",
+            "#962D82",
+            "#614D93",
+            "#9AC48A",
+            "#F2C96D",
+            "#65C5DB",
+            "#F9934E",
+            "#EA6460",
+            "#5195CE",
+            "#D683CE",
+            "#806EB7",
+            "#3F6833",
+            "#967302",
+            "#2F575E",
+            "#99440A",
+            "#58140C",
+            "#052B51",
+            "#511749",
+            "#3F2B5B",
+            "#E0F9D7",
+            "#FCEACA",
+            "#CFFAFF",
+            "#F9E2D2",
+            "#FCE2DE",
+            "#BADFF4",
+            "#F9D9F9",
+            "#DEDAF7"
+          ],
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
+        },
+        {
+          "span": 3,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "values",
+          "time_field": "timestamp_dt",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&wt=json&rows=100000&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&fl=timestamp_tdt mean_d\n",
+            "custom": "&fq=name_s:mem.pools.PS-Perm-Gen.usage"
+          },
+          "max_rows": 100000,
+          "value_field": "mean_d",
+          "group_field": null,
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "12h",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1M",
+            "1y"
+          ],
+          "fill": 0,
+          "linewidth": 3,
+          "timezone": "browser",
+          "spyable": true,
+          "zoomlinks": true,
+          "bars": false,
+          "stack": true,
+          "points": false,
+          "lines": true,
+          "lines_smooth": false,
+          "legend": true,
+          "x-axis": true,
+          "y-axis": true,
+          "percentage": false,
+          "interactive": true,
+          "options": true,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": false
+          },
+          "title": "mem.pools.PS-Perm-Gen.usage",
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
+        },
+        {
+          "span": 4,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "values",
+          "time_field": "timestamp_dt",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&wt=json&rows=100000&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&fl=timestamp_tdt value_d\n",
+            "custom": "&fq=name_s:mem.pools.Code-Cache.usage"
+          },
+          "max_rows": 100000,
+          "value_field": "value_d",
+          "group_field": null,
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "12h",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1M",
+            "1y"
+          ],
+          "fill": 0,
+          "linewidth": 3,
+          "timezone": "browser",
+          "spyable": true,
+          "zoomlinks": true,
+          "bars": false,
+          "stack": true,
+          "points": false,
+          "lines": true,
+          "lines_smooth": false,
+          "legend": true,
+          "x-axis": true,
+          "y-axis": true,
+          "percentage": false,
+          "interactive": true,
+          "options": true,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": false
+          },
+          "title": "mem.pools.Code-Cache.usage",
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
+        }
+      ]
+    }
+  ],
+  "editable": true,
+  "failover": false,
+  "index": {
+    "interval": "none",
+    "pattern": "[logstash-]YYYY.MM.DD",
+    "default": "NO_TIME_FILTER_OR_INDEX_PATTERN_NOT_MATCHED"
+  },
+  "style": "light",
+  "panel_hints": true,
+  "loader": {
+    "save_gist": false,
+    "save_elasticsearch": true,
+    "save_local": true,
+    "save_default": true,
+    "save_temp": true,
+    "save_temp_ttl_enable": true,
+    "save_temp_ttl": "30d",
+    "load_gist": true,
+    "load_elasticsearch": true,
+    "load_elasticsearch_size": 20,
+    "load_local": true,
+    "hide": false,
+    "dropdown_collections": false
+  },
+  "solr": {
+    "server": "/api/apollo/solr/",
+    "core_name": "system_metrics",
+    "core_list": []
+  }
+}

@@ -119,7 +119,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     // here before telling the panels to refresh
     this.refresh = function() {
       // Retrieve Solr collections for the dashboard
-      kbnIndex.collections(self.current.solr.server).then(function (p) {
+      kbnIndex.collections(config.apollo_coll).then(function (p) {
         if (DEBUG) { console.debug('dashboard: kbnIndex.collections p = ',p); }
         if (p.length > 0) {
           self.current.solr.core_list = p;
@@ -300,13 +300,33 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       });
     };
 
+    this.create_system_collection = function(){
+        //console.log("Creating system collection: " + config.banana_index);
+        $http({
+          url: "/api/apollo/collections/" + config.banana_index,
+          method: "PUT",
+          data:{
+
+          }
+          //TODO: handle params
+      }).error(function(data, status){
+            console.log("Error creating system collection");
+            console.log(status); //check to see if the collection exists or some other error
+            console.log(data);
+          //if it exists, that is fine
+      }).success(function(){
+          //console.log("Success creating collection");
+          //console.log(data);
+      });
+    };
+
     this.elasticsearch_load = function(type,id) {
       return $http({
-        url: config.solr + config.banana_index + '/select?wt=json&q=title:"' + id + '"',
+        url: config.solr + config.banana_index + '/select?wt=json&q=banana_title_s:"' + id + '"',
         method: "GET",
         transformResponse: function(response) {
           response = angular.fromJson(response);
-          var source_json = angular.fromJson(response.response.docs[0].dashboard);
+          var source_json = angular.fromJson(response.response.docs[0]['banana_dashboard_s']);
 
           if (DEBUG) { console.debug('dashboard: type=',type,' id=',id,' response=',response,' source_json=',source_json); }
 
@@ -365,10 +385,10 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       var request = sjs.Document(config.banana_index,type,id).source({
         // _id: id,
         id: id,
-        user: 'guest',
-        group: 'guest',
-        title: save.title,
-        dashboard: angular.toJson(save)
+        banana_user_s: 'guest',
+        banana_group_s: 'guest',
+        banana_title_s: save.title,
+        banana_dashboard_s: angular.toJson(save)
       });
 
       request = type === 'temp' && ttl ? request.ttl(ttl) : request;
@@ -444,7 +464,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
           "description": save.title,
           "public": false,
           "files": {
-            "banana-dashboard.json": {
+            "kibana-dashboard.json": {
               "content": angular.toJson(save,true)
             }
           }

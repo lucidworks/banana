@@ -23,7 +23,7 @@ function (angular, app, _, $, kbn) {
   var module = angular.module('kibana.panels.terms', []);
   app.useModule(module);
 
-  module.controller('terms', function($scope, querySrv, dashboard, filterSrv) {
+  module.controller('terms', function($scope, $timeout, timer, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -72,16 +72,27 @@ function (angular, app, _, $, kbn) {
       spyable     : true,
       show_queries:true,
       error : '',
-      chartColors : querySrv.colors
+      chartColors : querySrv.colors,
+      refresh: {
+        enable: false,
+        interval: 2
+      }
     };
     _.defaults($scope.panel,_d);
 
     $scope.init = function () {
       $scope.hits = 0;
       //$scope.testMultivalued();
+
+      // Start refresh timer if enabled
+      if ($scope.panel.refresh.enable) {
+        $scope.set_timer($scope.panel.refresh.interval);
+      }
+
       $scope.$on('refresh',function(){
         $scope.get_data();
       });
+      
       $scope.get_data();
     };
 
@@ -96,7 +107,6 @@ function (angular, app, _, $, kbn) {
         return;
       }
     };
-
 
     /**
      *
@@ -153,11 +163,32 @@ function (angular, app, _, $, kbn) {
       response.then(function(response) {
         kbn.download_response(response, filetype, "terms");
       });
+    };
 
+    $scope.set_timer = function(refresh_interval) {
+      $scope.panel.refresh.interval = refresh_interval;
+      if (_.isNumber($scope.panel.refresh.interval)) {
+        timer.cancel($scope.refresh_timer);
+        $scope.realtime();
+      } else {
+        timer.cancel($scope.refresh_timer);
+      }
+    };
+
+    $scope.realtime = function() {
+      if ($scope.panel.refresh.enable) {
+        timer.cancel($scope.refresh_timer);
+
+        $scope.refresh_timer = timer.register($timeout(function() {
+          $scope.realtime();
+          $scope.get_data();
+        }, $scope.panel.refresh.interval*1000));
+      } else {
+        timer.cancel($scope.refresh_timer);
+      }
     };
 
     $scope.get_data = function() {
-
       // Make sure we have everything for the request to complete
       if(dashboard.indices.length === 0) {
         return;
@@ -307,7 +338,12 @@ function (angular, app, _, $, kbn) {
     };
 
     $scope.close_edit = function() {
-      if($scope.refresh) {
+      // Start refresh timer if enabled
+      if ($scope.panel.refresh.enable) {
+        $scope.set_timer($scope.panel.refresh.interval);
+      }
+
+      if ($scope.refresh) {
         // $scope.testMultivalued();
         $scope.get_data();
       }

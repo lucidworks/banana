@@ -3,6 +3,7 @@
  */
 require.config({
   baseUrl: 'app',
+  waitSeconds: 0,
   // urlArgs: 'r=@REV@',
   paths: {
     config:                   '../config',
@@ -42,7 +43,7 @@ require.config({
     modernizr:                '../vendor/modernizr-2.6.1',
     elasticjs:                '../vendor/elasticjs/elastic-angular-client',
     solrjs:                   '../vendor/solrjs/solr-angular-client',
-    d3:                       '../vendor/d3'
+    d3:                       '../vendor/d3',
   },
   shim: {
     underscore: {
@@ -73,8 +74,8 @@ require.config({
     'jquery.flot.selection':['jquery', 'jquery.flot'],
     'jquery.flot.stack':    ['jquery', 'jquery.flot'],
     'jquery.flot.stackpercent':['jquery', 'jquery.flot'],
-    'jquery.flot.time':     ['jquery', 'jquery.flot'],
-    'jquery.flot.axislabels':['jquery', 'jquery.flot'],
+    'jquery.flot.time':        ['jquery', 'jquery.flot'],
+    'jquery.flot.axislabels':  ['jquery', 'jquery.flot'],
 
     'angular-sanitize':     ['angular'],
     'angular-cookies':      ['angular'],

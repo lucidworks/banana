@@ -18,6 +18,8 @@ function (angular, _) {
       // $scope.elasticsearch is used throught out this file, dashLoader.html and others.
       // So we'll keep using it for now before refactoring it to $scope.solr.
       // $scope.solr = $scope.solr || {};
+      //create the system_banana collection
+      dashboard.create_system_collection();
     };
 
     // This function should be replaced by one-way binding feature of AngularJS 1.3

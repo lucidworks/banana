@@ -50,7 +50,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
   var module = angular.module('kibana.panels.histogram', []);
   app.useModule(module);
 
-  module.controller('histogram', function($scope, $q, querySrv, dashboard, filterSrv) {
+  module.controller('histogram', function($scope, $q, $timeout, timer, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -102,10 +102,14 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       percentage  : false,
       interactive : true,
       options     : true,
-      show_queries:true,
+      show_queries: true,
       tooltip     : {
         value_type: 'cumulative',
         query_as_alias: false
+      },
+      refresh: {
+        enable: false,
+        interval: 2
       }
     };
 
@@ -114,12 +118,40 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     $scope.init = function() {
       // Hide view options by default
       $scope.options = false;
+
+      // Start refresh timer if enabled
+      if ($scope.panel.refresh.enable) {
+        $scope.set_timer($scope.panel.refresh.interval);
+      }
+
       $scope.$on('refresh',function(){
         $scope.get_data();
       });
 
       $scope.get_data();
+    };
 
+    $scope.set_timer = function(refresh_interval) {
+      $scope.panel.refresh.interval = refresh_interval;
+      if (_.isNumber($scope.panel.refresh.interval)) {
+        timer.cancel($scope.refresh_timer);
+        $scope.realtime();
+      } else {
+        timer.cancel($scope.refresh_timer);
+      }
+    };
+
+    $scope.realtime = function() {
+      if ($scope.panel.refresh.enable) {
+        timer.cancel($scope.refresh_timer);
+
+        $scope.refresh_timer = timer.register($timeout(function() {
+          $scope.realtime();
+          $scope.get_data();
+        }, $scope.panel.refresh.interval*1000));
+      } else {
+        timer.cancel($scope.refresh_timer);
+      }
     };
 
     $scope.set_interval = function(interval) {
@@ -199,7 +231,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       var request = $scope.sjs.Request().indices(dashboard.indices[segment]);
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
-
+      
 
       $scope.panel.queries.query = "";
       // Build the query
@@ -210,6 +242,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         );
 
         var facet = $scope.sjs.DateHistogramFacet(id);
+
         if($scope.panel.mode === 'count') {
           facet = facet.field(filterSrv.getTimeField());
         } else {
@@ -221,7 +254,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         }
         facet = facet.interval(_interval).facetFilter($scope.sjs.QueryFilter(query));
         request = request.facet(facet).size(0);
-
       });
 
       // Populate the inspector panel
@@ -267,7 +299,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           values_mode_query += '&group=true&group.field=' + $scope.panel.group_field + '&group.limit=' + $scope.panel.max_rows;
         }
       }
-
+      
       var mypromises = [];
        _.each($scope.panel.queries.ids, function(id) {
         var temp_q =  querySrv.getQuery(id) + wt_json + rows_limit + fq + facet + values_mode_query;
@@ -290,7 +322,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           }
           // Convert facet ids to numbers
           // var facetIds = _.map(_.keys(results.facets),function(k){return parseInt(k, 10);});
-          //var facetIds = [0]; // Need to fix this
+          // TODO: change this, Solr do faceting differently
+          // var facetIds = [0]; // Need to fix this
 
           // Make sure we're still on the same query/queries
           // TODO: We probably DON'T NEED THIS unless we have to support multiple queries in query module.
@@ -441,6 +474,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       });
 
       dashboard.refresh();
+
     };
 
     // I really don't like this function, too much dom manip. Break out into directive?
@@ -453,17 +487,20 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
     $scope.close_edit = function() {
-      if($scope.refresh) {
+      // Start refresh timer if enabled
+      if ($scope.panel.refresh.enable) {
+        $scope.set_timer($scope.panel.refresh.interval);
+      }
+      if ($scope.refresh) {
         $scope.get_data();
       }
-      $scope.refresh =  false;
+      $scope.refresh = false;
       $scope.$emit('render');
     };
 
     $scope.render = function() {
       $scope.$emit('render');
     };
-
   });
 
   module.directive('histogramChart', function(dashboard, filterSrv) {
