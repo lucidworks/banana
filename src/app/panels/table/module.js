@@ -96,8 +96,8 @@ function (angular, app, _, kbn, moment) {
       imgFieldHeight: '85px', // height of <img> (if enabled)
       show_queries: true,
       maxNumCalcTopFields: 20, // Set the max number of fields for calculating top values
-      calcTopFieldValuesFromAllData: false // false: calculate top field values from $scope.data
-                                           // true: calculate from all data using Solr facet
+      calcTopFieldValuesFromAllData: false, // false: calculate top field values from $scope.data
+                                            // true: calculate from all data using Solr facet
       refresh: {
         enable: false,
         interval: 2

@@ -64,7 +64,7 @@ define([
       show_stats: false,
       stats_type  : 'mean',
       stats_field : '',
-      stats_decimal_points : 2
+      stats_decimal_points : 2,
       refresh: {
         enable: false,
         interval: 2
@@ -198,7 +198,6 @@ define([
             id: id,
             hits: result_value,
             data: [[id, result_value]]
-            ]
           };
           $scope.$emit('render');
         });
