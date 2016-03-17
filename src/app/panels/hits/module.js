@@ -115,7 +115,10 @@ define([
       }
       // if Show Stats
       var stats = '';
-      if ($scope.panel.show_stats) {
+      if ($scope.panel.show_stats && ($scope.panel.stats_type === 'countDistinct' || $scope.panel.stats_type === 'cardinality')) {
+        stats = '&stats=true&stats.field={!'+$scope.panel.stats_type+'=true}' + $scope.panel.stats_field;
+      }
+      else if ($scope.panel.show_stats) {
         stats = '&stats=true&stats.field=' + $scope.panel.stats_field;
       }
       var wt_json = '&wt=json';
@@ -151,7 +154,10 @@ define([
           } else {
             result_value = results[i].stats.stats_fields[$scope.panel.stats_field][$scope.panel.stats_type];
             $scope.hits += results[i].stats.stats_fields[$scope.panel.stats_field][$scope.panel.stats_type];
-            $scope.hits = $scope.hits.toFixed($scope.panel.stats_decimal_points);
+            // don't round if the stats_type is countDistinct or cardinality
+            if (!($scope.panel.stats_type === 'countDistinct' || $scope.panel.stats_type === 'cardinality')) {
+                $scope.hits = $scope.hits.toFixed($scope.panel.stats_decimal_points);
+            }
           }
 
           // Check for error and abort if found
