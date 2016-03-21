@@ -9,7 +9,8 @@ The goal is to create a rich and flexible UI, enabling users to rapidly develop 
 the power of Apache Solr. Data can be ingested into Solr through a variety of ways, including
 [Logstash](https://www.elastic.co/products/logstash), [Flume](https://flume.apache.org) and other connectors.
 
- 
+Official documentation for the project is available at [Lucidworks](https://docs.lucidworks.com/display/SiLK/Banana).
+
 ## IMPORTANT
 
 Pull the repo from the `release` branch for production deployment; version x.y.z will be tagged as x.y.z
