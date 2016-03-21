@@ -1,6 +1,5 @@
 node_modules
 .aws-config.json
-dist
 bower_components
 npm-debug.log
 tmp/
