@@ -16,9 +16,12 @@
  limitations under the License.
 -->
 
-<schema name="banana-int" version="1.5">
+<schema name="bananaconfig" version="1.5">
  <fields>
+    <!-- <field name="_id" type="string" indexed="true" stored="true" required="true" multiValued="false"/> -->
     <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
+    <!-- <field name="_type" type="string" indexed="true" stored="true"/> -->
+    <!-- <field name="_source" type="string" indexed="false" stored="true"/> -->
     <field name="user" type="string" indexed="true" stored="true"/>
     <field name="group" type="string" indexed="true" stored="true"/>
     <field name="title" type="string" indexed="true" stored="true"/>
@@ -27,6 +30,7 @@
     <field name="_version_" type="long" indexed="true" stored="true"/>
  </fields>
 
+ <!-- <uniqueKey>_id</uniqueKey> -->
  <uniqueKey>id</uniqueKey>
 
   <types>

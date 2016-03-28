@@ -373,7 +373,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
       request = type === 'temp' && ttl ? request.ttl(ttl) : request;
 
-      // Solr: set sjs.client.server to use 'banana-int' for saving dashboard
+      // Solr: set sjs.client.server to use 'bananaconfig' for saving dashboard
       sjs.client.server(config.solr + config.banana_index);
 
       return request.doIndex(
@@ -393,7 +393,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     };
 
     this.elasticsearch_delete = function(id) {
-      // Set sjs.client.server to use 'banana-int' for deleting dashboard
+      // Set sjs.client.server to use 'bananaconfig' for deleting dashboard
       sjs.client.server(config.solr + config.banana_index);
 
       return sjs.Document(config.banana_index,'dashboard',id).doDelete(
