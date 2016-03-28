@@ -16,7 +16,7 @@
  limitations under the License.
 -->
 
-<schema name="banana-int" version="1.5">
+<schema name="bananaconfig" version="1.5">
  <fields>
     <!-- <field name="_id" type="string" indexed="true" stored="true" required="true" multiValued="false"/> -->
     <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
