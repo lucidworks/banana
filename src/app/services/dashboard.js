@@ -301,8 +301,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     };
 
     this.elasticsearch_load = function(type,id) {
+      var server = $routeParams.server || config.solr;
       return $http({
-        url: config.solr + config.banana_index + '/select?wt=json&q=title:"' + id + '"',
+        url: server + config.banana_index + '/select?wt=json&q=title:"' + id + '"',
         method: "GET",
         transformResponse: function(response) {
           response = angular.fromJson(response);
@@ -373,8 +374,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
       request = type === 'temp' && ttl ? request.ttl(ttl) : request;
 
-      // Solr: set sjs.client.server to use 'banana-int' for saving dashboard
-      sjs.client.server(config.solr + config.banana_index);
+      // Solr: set sjs.client.server to use 'bananaconfig' for saving dashboard
+      var solrserver = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
+      sjs.client.server(solrserver);
 
       return request.doIndex(
         // Success
@@ -393,8 +395,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     };
 
     this.elasticsearch_delete = function(id) {
-      // Set sjs.client.server to use 'banana-int' for deleting dashboard
-      sjs.client.server(config.solr + config.banana_index);
+      // Set sjs.client.server to use 'bananaconfig' for deleting dashboard
+      var solrserver = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
+      sjs.client.server(solrserver);
 
       return sjs.Document(config.banana_index,'dashboard',id).doDelete(
         // Success

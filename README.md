@@ -31,7 +31,7 @@ This release includes the following key new features and improvements:
 5.  Add an option to ignore stop words (English) in Tag cloud panel. [#174](https://github.com/lucidworks/banana/pull/174)
 6.  Add Antarctica to the World map in Map panel. [#173](https://github.com/lucidworks/banana/pull/173)
 7.  Add Sunburst panel. [#169](https://github.com/lucidworks/banana/pull/169)
-8.  Add banana-int conf directory to support Solr 5.x.
+8.  Add bananaconfig conf directory to support Solr 5.x.
 9.  Add export option to Terms panel. [#228](https://github.com/lucidworks/banana/pull/228)
 10. Various bug fixes and improvements:
     - Remove unused ajax-solr library.
@@ -148,7 +148,7 @@ latter approach.
 #### Storing Dashboards in Solr
 
 If you want to save and load dashboards from Solr, create a collection using the configuration files provided in either
-the _resources/banana-int-solr-5.0_ (for Solr 5) directory or the _resources/banana-int-solr-4.5_ directory
+the _resources/bananaconfig-solr-5.0_ (for Solr 5) directory or the _resources/bananaconfig-solr-4.5_ directory
 (for Solr 4.5). If you are using SolrCloud, you will need to upload the configuration into
 [ZooKeeper](https://zookeeper.apache.org) and then create the collection using that configuration.
 

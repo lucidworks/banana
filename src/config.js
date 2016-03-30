@@ -39,15 +39,15 @@ function (Settings) {
      * The default Solr index to use for storing objects internal to Banana, such as 
      * stored dashboards. If you have been using a collection named kibana-int 
      * to save your dashboards (the default provided in Banana 1.2 and earlier), then you
-     * simply need to replace the string "banana-int" with "kibana-int" and your old 
+     * simply need to replace the string "bananaconfig" with "kibana-int" and your old 
      * dashboards will be accessible. 
      *
-     * This banana-int (or equivalent) collection must be created and available in the 
+     * This bananaconfig (or equivalent) collection must be created and available in the 
      * default solr server specified above, which serves as the persistence store for data 
      * internal to banana.
      * @type {String}
      */
-    banana_index: "banana-int",
+    banana_index: "bananaconfig",
 
     /**
      * The default settings will use /admin/luke API to retrieve all fields from Solr including
