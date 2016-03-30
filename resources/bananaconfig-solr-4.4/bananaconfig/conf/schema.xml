@@ -24,8 +24,8 @@
     <!-- <field name="_source" type="string" indexed="false" stored="true"/> -->
     <field name="user" type="string" indexed="true" stored="true"/>
     <field name="group" type="string" indexed="true" stored="true"/>
-    <field name="title" type="string" indexed="true" stored="true"/>
-    <field name="dashboard" type="string" indexed="false" stored="true"/>
+    <field name="title" type="string" indexed="true" stored="true" multiValued="false"/>
+    <field name="dashboard" type="string" indexed="false" stored="true" multiValued="false"/>
 
     <field name="_version_" type="long" indexed="true" stored="true"/>
  </fields>
