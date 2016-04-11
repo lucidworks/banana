@@ -159,6 +159,26 @@ function (angular, _) {
         }
       });
     };
+      
+    $scope.getSavedDashboard = function(event, query, offset) {
+      // To stop dropdown-menu from disappearing after click
+      event.stopPropagation();
+      query += '&start=' + offset;
+      $scope.elasticsearch_dblist(query);  
+    };
+
+    // TODO
+    $scope.getPrevSavedDashboard = function(event) {
+      // To stop dropdown-menu from disappearing after click
+      event.stopPropagation();
+
+    };
+
+    $scope.getNextSavedDashboard = function(event) {
+      // To stop dropdown-menu from disappearing after click
+      event.stopPropagation();
+
+    };
 
     $scope.save_gist = function() {
       dashboard.save_gist($scope.gist.title).then(

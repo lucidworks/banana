@@ -335,7 +335,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
           // TODO - After saving dashboard, it will try to refresh and load the new dashboard
           // immediately, but the response will be empty causing the blank dashboard.
           // Need to figure out how to delay the loading request.
-          console.log('response = ', response);
 
           response = angular.fromJson(response);
           var source_json = angular.fromJson(response.response.docs[0]['banana_dashboard_s']);
@@ -454,10 +453,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       );
     };
 
-    this.elasticsearch_list = function(query,count) {
+    this.elasticsearch_list = function(query, count) {
       // set indices and type
-      // console.log('solr.server = ', self.current.solr.server);
-      // console.log('config = ', config);
 
       // TODO
       // var solrserver = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
@@ -470,17 +467,15 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       // But cannot do it here, it will interrupt other modules.
       // sjs.client.server(config.solr);
 
-      // console.log('query = ', query);
+      console.log('elasticsearch_list() query = ', query);
 
       return request.query(
         sjs.QueryStringQuery(query || '*:*')
         ).size(count).doSearch(
-          // Success
-          function(result) {
-            return result;
+          function(success) {
+            return success;
           },
-          // Failure
-          function() {
+          function(error) {
             return false;
           }
         );

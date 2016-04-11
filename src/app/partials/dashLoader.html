@@ -58,24 +58,35 @@
             </form>
         </li>
         <li ng-show='dashboard.current.loader.load_elasticsearch'>
-            <h5>Solr</h5>
-            <form>
+            <h5 ng-show="elasticsearch.dashboards.length">Saved Dashboards ({{hits}})</h5>
+            <h5 ng-hide="elasticsearch.dashboards.length">No dashboards matching your query found</h5>
+            <form style="margin-bottom: 0;">
                 <input type="text" ng-model="elasticsearch.query"
                        ng-change="elasticsearch_dblist('banana_title_s:'+elasticsearch.query+'*')"
                        placeholder="Type to filter"/>
             </form>
-            <h6 ng-show="elasticsearch.dashboards.length">Solr stored dashboards</h6>
-            <h6 ng-hide="elasticsearch.dashboards.length">No dashboards matching your query found</h6>
-            <table class="table table-condensed table-striped">
-                <tr ng-repeat="row in elasticsearch.dashboards | orderBy:['id'] | limitTo:dashboard.current.loader.load_elasticsearch_size">
-                    <td ng-show="dashboard.current.loader.save_elasticsearch"><a
-                        confirm-click="elasticsearch_delete(row.id)"
-                        confirmation="Are you sure you want to delete {{row.id}} dashboard?"><i class="icon-remove"></i></a>
-                    </td>
-                    <td><a href="#/dashboard/solr/{{row.id}}">{{row.id}}</a></td>
-                    <!--<td><a><i class="icon-share" ng-click="share = dashboard.share_link(row.id,'solr',row.id)" bs-modal="'app/panels/dashcontrol/share.html'"></i></a></td>-->
-                </tr>
-            </table>
+
+            <div class="pagination pagination-centered" style="margin-top: 0;">
+                <ul>
+                    <li><a ng-click="getPrevSavedDashboard($event)">Prev</a></li>
+                    <li><a ng-click="getSavedDashboard($event, 'banana_title_s:'+elasticsearch.query+'*', 0)">1</a></li>
+                    <li><a ng-click="getSavedDashboard($event, 'banana_title_s:'+elasticsearch.query+'*', 10)">2</a></li>
+                    <li><a ng-click="getSavedDashboard($event, 'banana_title_s:'+elasticsearch.query+'*', 20)">3</a></li>
+                    <li><a ng-click="getNextSavedDashboard($event)">Next</a></li>
+                </ul>
+                <table class="table table-condensed table-striped">
+                    <tr ng-repeat="row in elasticsearch.dashboards | orderBy:['id'] | limitTo:dashboard.current.loader.load_elasticsearch_size">
+                        <td class="span11" style="vertical-align: middle;"><a href="#/dashboard/solr/{{row.id}}">{{row.id}}</a></td>
+                        <td class="span1" ng-show="dashboard.current.loader.save_elasticsearch">
+                            <a class="btn btn-danger" confirm-click="elasticsearch_delete(row.id)"
+                               confirmation="Are you sure you want to delete {{row.id}} dashboard?">
+                                <i class="icon-remove"></i></a>
+                        </td>
+                        <!--<td><a><i class="icon-share" ng-click="share = dashboard.share_link(row.id,'solr',row.id)" bs-modal="'app/panels/dashcontrol/share.html'"></i></a></td>-->
+                    </tr>
+                </table>
+            </div>
+
         </li>
     </ul>
 </li>

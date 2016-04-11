@@ -18490,6 +18490,10 @@
           if (query.size && query.size > 0) {
             rowNum = '&rows=' + query.size;
           }
+            
+          // TODO I can use query.from to set offset for result
+            
+            
           queryData = 'q=' + query.query.query_string.query + rowNum + '&wt=json';
         }
 
