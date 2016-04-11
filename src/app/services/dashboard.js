@@ -16,8 +16,11 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
   var module = angular.module('kibana.services');
 
   module.service('dashboard', function($routeParams, $http, $rootScope, $injector, $location,
-    sjsResource, timer, kbnIndex, alertSrv
+    sjsResource, timer, $timeout, kbnIndex, alertSrv, lucidworksSrv
   ) {
+    // Store a reference to this
+    var self = this;
+      
     // A hash of defaults to use when loading a dashboard
     var _dash = {
       title: "",
@@ -36,6 +39,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         save_temp: true,
         save_temp_ttl_enable: true,
         save_temp_ttl: '30d',
+        save_as_public: false,
         load_gist: true,
         load_elasticsearch: true,
         load_elasticsearch_size: 10,
@@ -54,14 +58,15 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         global_params: ''
       }
     };
+      
+    // Get Fusion login username and store it.  
+    lucidworksSrv.getFusionUsername().then(function(username) {
+        _dash.username = username;
+    });
 
     var sjs = sjsResource(config.solr + config.solr_core);
-
     var gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;
-
-    // Store a reference to this
-    var self = this;
-    var filterSrv,querySrv;
+    var filterSrv, querySrv;
 
     this.current = _.clone(_dash);
     this.last = {};
@@ -322,9 +327,16 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
     this.elasticsearch_load = function(type,id) {
       return $http({
-        url: config.solr + config.banana_index + '/select?wt=json&q=banana_title_s:"' + id + '"',
+        // TODO
+        // url: config.solr + config.banana_index + '/select?wt=json&q=banana_title_s:"' + id + '"',
+        url: config.SYSTEM_BANANA_QUERY_PIPELINE + '/select?wt=json&q=banana_title_s:"' + id + '"',
         method: "GET",
         transformResponse: function(response) {
+          // TODO - After saving dashboard, it will try to refresh and load the new dashboard
+          // immediately, but the response will be empty causing the blank dashboard.
+          // Need to figure out how to delay the loading request.
+          console.log('response = ', response);
+
           response = angular.fromJson(response);
           var source_json = angular.fromJson(response.response.docs[0]['banana_dashboard_s']);
 
@@ -374,10 +386,17 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       // Clone object so we can modify it without influencing the existing obejct
       var save = _.clone(self.current);
       var id;
+      var dashboard_user = self.current.username;
+      var isPublic = false;
 
       // Change title on object clone
       if (type === 'dashboard') {
         id = save.title = _.isUndefined(title) ? self.current.title : title;
+      }
+
+      // Check if the dashboard is saved as a public dashboard (Make Public)
+      if (self.current.loader.save_as_public) {
+          isPublic = true;
       }
 
       // Create request with id as title. Rethink this.
@@ -385,28 +404,34 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       var request = sjs.Document(config.banana_index,type,id).source({
         // _id: id,
         id: id,
-        banana_user_s: 'guest',
-        banana_group_s: 'guest',
+        // TODO
+        banana_user_s: dashboard_user,
+        banana_group_s: 'none',
         banana_title_s: save.title,
-        banana_dashboard_s: angular.toJson(save)
+        banana_dashboard_s: angular.toJson(save),
+        is_public_b: isPublic
       });
 
       request = type === 'temp' && ttl ? request.ttl(ttl) : request;
 
       // Solr: set sjs.client.server to use 'banana-int' for saving dashboard
-      sjs.client.server(config.solr + config.banana_index);
+      // sjs.client.server(config.solr + config.banana_index);
+      sjs.client.server(config.SYSTEM_BANANA_INDEX_PIPELINE);
 
       return request.doIndex(
-        // Success
-        function(result) {
-          if(type === 'dashboard') {
-            // TODO
-            $location.path('/dashboard/solr/'+title);
+        function(success) {
+          if (type === 'dashboard') {
+            // TODO try to delay loading the newly saved dashboard
+            // $location.path('/dashboard/solr/'+title);
+            var ms = 2000;
+            console.log('delay loading for ', ms);
+            $timeout(function() {
+              $location.path('/dashboard/solr/' + title)
+            }, ms);
           }
-          return result;
+          return success;
         },
-        // Failure
-        function() {
+        function(error) {
           return false;
         }
       );
@@ -414,6 +439,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
     this.elasticsearch_delete = function(id) {
       // Set sjs.client.server to use 'banana-int' for deleting dashboard
+      // TODO change this to Fusion Index Pipeline
       sjs.client.server(config.solr + config.banana_index);
 
       return sjs.Document(config.banana_index,'dashboard',id).doDelete(
@@ -430,14 +456,21 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
     this.elasticsearch_list = function(query,count) {
       // set indices and type
-      var solrserver = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
-      sjs.client.server(solrserver);
+      // console.log('solr.server = ', self.current.solr.server);
+      // console.log('config = ', config);
+
+      // TODO
+      // var solrserver = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
+      // var solrserver = config.SYSTEM_BANANA_QUERY_PIPELINE;
+      sjs.client.server(config.SYSTEM_BANANA_QUERY_PIPELINE);
 
       var request = sjs.Request().indices(config.banana_index).types('dashboard');
 
       // Need to set sjs.client.server back to use 'logstash_logs' collection
       // But cannot do it here, it will interrupt other modules.
       // sjs.client.server(config.solr);
+
+      // console.log('query = ', query);
 
       return request.query(
         sjs.QueryStringQuery(query || '*:*')

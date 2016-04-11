@@ -8879,11 +8879,14 @@
 
         // Need to convert params.source to an array of a JSON obj, so it can be indexed by Solr.
         // Otherwise, SolrException "Unknown Command" will occur.
+
         params.source = [params.source];
 
         if (DEBUG) { console.debug('solrjs: params.source = ',params.source); }
 
-        var url = '/update?commit=true',
+        // TODO
+        // var url = '/update?commit=true',
+        var url = '/index?echo=false',
           data = JSON.stringify(params.source),
           paramStr = genParamStr(),
           response;
@@ -8895,6 +8898,8 @@
         if (paramStr !== '') {
           url = url + '?' + paramStr;
         }
+
+        console.log("url = ", url);
         
         if (DEBUG) { console.debug('solrjs: url=',url,', data=',data); }
 

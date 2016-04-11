@@ -97,23 +97,36 @@ function (angular, _) {
     };
 
     $scope.elasticsearch_save = function(type,ttl) {
+      console.log('elasticsearch_save(type) type = ', type);
+
       dashboard.elasticsearch_save(
         type,
         ($scope.elasticsearch.title || dashboard.current.title),
         ($scope.loader.save_temp_ttl_enable ? ttl : false)
-      ).then(
-        function(result) {
+      ).then(function(result) {
         // Solr
-        if(result.responseHeader.status === 0) {
-          alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
-            ($scope.elasticsearch.title || dashboard.current.title) + '"','success',5000);
-          if(type === 'temp') {
-            $scope.share = dashboard.share_link(dashboard.current.title,'temp',result.response.docs[0].id);
-          }
-          $scope.elasticsearch.title = '';
-        } else {
-          alertSrv.set('Save failed','Dashboard could not be saved to Solr','error',5000);
+        console.log('elasticsearch_save() result = ', result);
+
+        // if (result.responseHeader.status === 0) {
+        //   alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
+        //     ($scope.elasticsearch.title || dashboard.current.title) + '"','success',5000);
+        //   if (type === 'temp') {
+        //     $scope.share = dashboard.share_link(dashboard.current.title,'temp',result.response.docs[0].id);
+        //   }
+        //   $scope.elasticsearch.title = '';
+        // } else {
+        //   alertSrv.set('Save failed','Dashboard could not be saved to Solr','error',5000);
+        // }
+
+        alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
+          ($scope.elasticsearch.title || dashboard.current.title) + '"','success',5000);
+        if (type === 'temp') {
+          $scope.share = dashboard.share_link(dashboard.current.title,'temp',result.response.docs[0].id);
         }
+        $scope.elasticsearch.title = '';
+      }, function(error) {
+        console.log('ERROR: ' + error);
+        alertSrv.set('Save failed','Dashboard could not be saved to Solr','error',5000);
       });
     };
 

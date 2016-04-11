@@ -50,7 +50,10 @@ angular.module('solrjs.service', [])
       },
       post: function (path, data, successcb, errorcb) {
         var config = {};
-        var isUpdate = path.indexOf('/update');
+
+        // TODO
+        // var isUpdate = path.indexOf('/update');
+        var isUpdate = path.indexOf('/index');
 
         if (DEBUG) { console.debug('solr-angular-client: url=',url,', path=',path,', isUpdate=',isUpdate); }
 
