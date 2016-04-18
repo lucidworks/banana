@@ -68,11 +68,11 @@
 
             <div class="pagination pagination-centered" style="margin-top: 0;">
                 <ul>
-                    <li><a ng-click="getPrevSavedDashboard($event)">Prev</a></li>
-                    <li><a ng-click="getSavedDashboard($event, 'banana_title_s:'+elasticsearch.query+'*', 0)">1</a></li>
-                    <li><a ng-click="getSavedDashboard($event, 'banana_title_s:'+elasticsearch.query+'*', 10)">2</a></li>
-                    <li><a ng-click="getSavedDashboard($event, 'banana_title_s:'+elasticsearch.query+'*', 20)">3</a></li>
-                    <li><a ng-click="getNextSavedDashboard($event)">Next</a></li>
+                    <li ng-class="loadMenu.backwardButtonState"><a ng-click="getPrevSavedDashboard($event)"><i class="icon-backward"></i></a></li>
+                    <li ng-repeat="page in loadMenu.pages.slice(loadMenu.firstPageShown-1, loadMenu.lastPageShown)" ng-class="page.state">
+                        <a ng-click="getSavedDashboard($event, 'banana_title_s:'+elasticsearch.query+'*', page.offset, page.number)">{{page.number}}</a>
+                    </li>
+                    <li ng-class="loadMenu.forwardButtonState"><a ng-click="getNextSavedDashboard($event)"><i class="icon-forward"></i></a></li>
                 </ul>
                 <table class="table table-condensed table-striped">
                     <tr ng-repeat="row in elasticsearch.dashboards | orderBy:['id'] | limitTo:dashboard.current.loader.load_elasticsearch_size">
