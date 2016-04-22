@@ -1,9 +1,8 @@
 <!-- This file is responsible for nav bar of the dashboard -->
 <li class="dropdown" bs-tooltip="'Collections'" data-placement="bottom" style="padding-top:5px;"
-    ng-show="dashboard.current.loader.dropdown_collections"><select class="span2"
-                                                                    ng-model="dashboard.current.solr.core_name"
-                                                                    ng-change="dashboard.refresh()"
-                                                                    ng-options="c as c for c in dashboard.current.solr.core_list"></select>
+    ng-show="dashboard.current.loader.dropdown_collections">
+    <select class="span2" ng-model="dashboard.current.solr.core_name" ng-change="dashboard.refresh()"
+            ng-options="c as c for c in dashboard.current.solr.core_list | orderBy:'toString()'"></select>
 </li>
 
 <li><a bs-tooltip="'Goto saved default'" data-placement="bottom" href='#/dashboard'><i class='icon-home'></i></a></li>
