@@ -27,8 +27,8 @@ define([
                 title: 'Queries',
                 src: 'app/partials/querySelect.html'
             }],
-            status: "Experimental",
-            description: "This panel help user to plot scatter plot between two variables"
+            status: "Stable",
+            description: "This panel helps you to plot a bubble scatterplot between two to four variables."
         };
 
         // default values
@@ -40,15 +40,12 @@ define([
                 custom: ''
             },
             max_rows: 1000, // maximum number of rows returned from Solr
-            field: 'date',
-            xaxis: 'Date',
-            yaxis: 'Rates',
+            xaxis: '',
+            yaxis: '',
             xaxisLabel: '',
             yaxisLabel: '',
             colorField: '',
             bubbleSizeField: '',
-            fl: 'open,high,low,close',
-            rightAxis: 'volume', // TODO: need to remove hard coded field (volume).
             spyable: true,
             show_queries: true,
             refresh: {
@@ -126,15 +123,16 @@ define([
                 fq = '&' + filterSrv.getSolrFq();
             }
             var wt_json = '&wt=csv';
-            var fl = '&fl=' + $scope.panel.xaxis + ',' + $scope.panel.yaxis + ',' + $scope.panel.colorField;
+            var rows_limit = '&rows=' + $scope.panel.max_rows;
+            var fl = '&fl=' + $scope.panel.xaxis + ',' + $scope.panel.yaxis;
+
+            if ($scope.panel.colorField) {
+                fl += ',' + $scope.panel.colorField;
+            }
 
             if ($scope.panel.bubbleSizeField) {
                 fl += ',' + $scope.panel.bubbleSizeField;
             }
-
-            var rows_limit = '&rows=' + $scope.panel.max_rows;
-
-            //var sort = '&sort=' + $scope.panel.field + ' asc';
 
             $scope.panel.queries.query = querySrv.getORquery() + fq + fl + wt_json + rows_limit;
 
@@ -151,13 +149,27 @@ define([
             // Populate scope when we have results
             results.then(function (results) {
                 // build $scope.data array
-                //$scope.data = results.response.docs;
-                $scope.data = d3.csv.parse(results);
+                $scope.data = d3.csv.parse(results, function (d) {
+                    var value = {};
+                    // Convert string to number
+                    value[$scope.panel.xaxis] = +d[$scope.panel.xaxis];
+                    value[$scope.panel.yaxis] = +d[$scope.panel.yaxis];
+                    if ($scope.panel.colorField) {
+                        value[$scope.panel.colorField] = d[$scope.panel.colorField];
+                    }
+                    if ($scope.panel.bubbleSizeField) {
+                        value[$scope.panel.bubbleSizeField] = +d[$scope.panel.bubbleSizeField];
+                    }
+
+                    return value;
+                }, function(error, rows) {
+                    console.log('Error parsing results from Solr: ', rows);
+                });
 
                 if ($scope.data.length === 0) {
                     $scope.panel.error = $scope.parse_error("There's no data to show");
                 }
-                // $scope.data = results;
+
                 $scope.render();
             });
 
@@ -192,7 +204,6 @@ define([
         $scope.pad = function (n) {
             return (n < 10 ? '0' : '') + n;
         };
-
     });
 
     module.directive('scatterplot', function (dashboard, filterSrv) {
@@ -211,14 +222,6 @@ define([
                 // Function for rendering panel
                 function render_panel() {
                     element.html("");
-
-                    // Convert string to number  TODO should I move this code to get_data() call.
-                    scope.data.forEach(function (d) {
-                        d[scope.panel.yaxis] = +d[scope.panel.yaxis];
-                        d[scope.panel.xaxis] = +d[scope.panel.xaxis];
-                        d[scope.panel.bubbleSizeField] = +d[scope.panel.bubbleSizeField];
-                    });
-
                     var el = element[0];
                     var parent_width = element.parent().width(),
                         height = parseInt(scope.row.height),
@@ -235,13 +238,15 @@ define([
 
                     // Scales
                     var color = d3.scale.category20();
-                    var rScale = d3.scale.linear()
-                        .domain(d3.extent(scope.data, function (d) {
-                            return d[scope.panel.bubbleSizeField];
-                        }))
-                        .range([3, 20])
-                        .nice();
-
+                    var rScale;
+                    if (scope.panel.bubbleSizeField) {
+                        rScale = d3.scale.linear()
+                            .domain(d3.extent(scope.data, function (d) {
+                                return d[scope.panel.bubbleSizeField];
+                            }))
+                            .range([3, 20])
+                            .nice();
+                    }
                     var x = d3.scale.linear()
                         .range([0, width - padding * 2]);
                     var y = d3.scale.linear()
@@ -255,17 +260,10 @@ define([
                         return d[scope.panel.yaxis];
                     })).nice();
 
-                    var xAxis = d3.svg.axis()
-                        .scale(x)
-                        .orient("bottom");
-                    var yAxis = d3.svg.axis()
-                        .scale(y)
-                        .orient("left");
-
                     var svg = d3.select(el).append("svg")
                         .attr("width", width + margin.left + margin.right)
                         .attr("height", height + margin.top + margin.bottom)
-                        .attr("viewBox", "0 0 " + parent_width + " " + (height + margin.top))
+                        .attr("viewBox", "0 0 " + parent_width + " " + (height + margin.top + margin.bottom))
                         .attr("preserveAspectRatio", "xMidYMid")
                         .append("g")
                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -273,53 +271,18 @@ define([
                     // add the tooltip area to the webpage
                     var $tooltip = $('<div>');
 
-                    // X-axis label
-                    var xaxisLabel = '';
-                    if (scope.panel.xaxisLabel) {
-                        xaxisLabel = scope.panel.xaxisLabel;
-                    } else {
-                        xaxisLabel = scope.panel.xaxis;
-                    }
-                    svg.append("g")
-                        .attr("class", "x axis")
-                        .attr("transform", "translate(0," + height + ")")
-                        .call(xAxis)
-                        .append("text")
-                        .attr("class", "label")
-                        .attr("transform", "translate(" + ((width / 2) - margin.left) + " ," + 30 + ")")
-                        .style("text-anchor", "middle")
-                        .text(xaxisLabel);
-
-                    // Y-axis label
-                    var yaxisLabel = '';
-                    if (scope.panel.yaxisLabel) {
-                        yaxisLabel = scope.panel.yaxisLabel;
-                    } else {
-                        yaxisLabel = scope.panel.yaxis;
-                    }
-                    svg.append("g")
-                        .attr("class", "y axis")
-                        .call(yAxis)
-                        .append("text")
-                        .attr("class", "label")
-                        .attr("transform", "rotate(-90)")
-                        .attr("y", 0 - margin.left)
-                        .attr("x", 0 - ((height - margin.top - margin.bottom) / 2))
-                        .attr("dy", ".71em")
-                        .style("text-anchor", "end")
-                        .text(yaxisLabel);
-
                     // Bubble
                     svg.selectAll(".dot")
                         .data(scope.data)
                         .enter().append("circle")
                         .attr("class", "dot")
-
-                        // .attr("r", 3.5)
                         .attr("r", function (d) {
-                            return rScale(d[scope.panel.bubbleSizeField]);
+                            if (scope.panel.bubbleSizeField) {
+                                return rScale(d[scope.panel.bubbleSizeField]);
+                            } else {
+                                return 3;
+                            }
                         })
-
                         .attr("cx", function (d) {
                             return x(d[scope.panel.xaxis]);
                         })
@@ -340,15 +303,16 @@ define([
                             $tooltip.detach();
                         })
                         .on("click", function (d) {
-                            filterSrv.set({
-                                type: 'terms',
-                                field: scope.panel.colorField,
-                                value: d[scope.panel.colorField],
-                                mandate: 'must'
-                            });
-
-                            $tooltip.detach();
-                            dashboard.refresh();
+                            if (scope.panel.colorField) {
+                                filterSrv.set({
+                                    type: 'terms',
+                                    field: scope.panel.colorField,
+                                    value: d[scope.panel.colorField],
+                                    mandate: 'must'
+                                });
+                                $tooltip.detach();
+                                dashboard.refresh();
+                            }
                         });
 
                     if (scope.panel.colorField) {
@@ -390,6 +354,52 @@ define([
                             .attr("height", 18)
                             .style("fill", color);
                     }
+
+                    // Axis
+                    var xAxis = d3.svg.axis()
+                        .scale(x)
+                        .orient("bottom");
+                    var yAxis = d3.svg.axis()
+                        .scale(y)
+                        .orient("left");
+
+                    // X-axis label
+                    var xaxisLabel = '';
+                    if (scope.panel.xaxisLabel) {
+                        xaxisLabel = scope.panel.xaxisLabel;
+                    } else {
+                        xaxisLabel = scope.panel.xaxis;
+                    }
+
+                    svg.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + height + ")")
+                        .call(xAxis)
+                        .append("text")
+                        .attr("class", "label")
+                        .attr("transform", "translate(" + ((width / 2) - margin.left) + " ," + 30 + ")")
+                        .style("text-anchor", "middle")
+                        .text(xaxisLabel);
+
+                    // Y-axis label
+                    var yaxisLabel = '';
+                    if (scope.panel.yaxisLabel) {
+                        yaxisLabel = scope.panel.yaxisLabel;
+                    } else {
+                        yaxisLabel = scope.panel.yaxis;
+                    }
+
+                    svg.append("g")
+                        .attr("class", "y axis")
+                        .call(yAxis)
+                        .append("text")
+                        .attr("class", "label")
+                        .attr("transform", "rotate(-90)")
+                        .attr("y", 0 - margin.left)
+                        .attr("x", 0 - ((height - margin.top - margin.bottom) / 2))
+                        .attr("dy", ".71em")
+                        .style("text-anchor", "end")
+                        .text(yaxisLabel);
                 }
             }
         };
