@@ -8879,14 +8879,14 @@
 
         // Need to convert params.source to an array of a JSON obj, so it can be indexed by Solr.
         // Otherwise, SolrException "Unknown Command" will occur.
-
         params.source = [params.source];
 
         if (DEBUG) { console.debug('solrjs: params.source = ',params.source); }
 
-        // TODO
+        // Fusion Index Pipeline use /index endpoint
+        // We need to add param: commit=true, in order to force commit the saved dashboard to show up right away. 
         // var url = '/update?commit=true',
-        var url = '/index?echo=false',
+        var url = '/index?echo=false&commit=true',
           data = JSON.stringify(params.source),
           paramStr = genParamStr(),
           response;
@@ -8898,8 +8898,6 @@
         if (paramStr !== '') {
           url = url + '?' + paramStr;
         }
-
-        console.log("url = ", url);
         
         if (DEBUG) { console.debug('solrjs: url=',url,', data=',data); }
 

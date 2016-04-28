@@ -410,8 +410,7 @@ define([
 
                 request = type === 'temp' && ttl ? request.ttl(ttl) : request;
 
-                // Solr: set sjs.client.server to use 'banana-int' for saving dashboard
-                // sjs.client.server(config.solr + config.banana_index);
+                // Set sjs.client.server to use Index Pipeline for saving the dashboard.
                 sjs.client.server(config.SYSTEM_BANANA_INDEX_PIPELINE);
 
                 return request.doIndex(
