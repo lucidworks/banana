@@ -1,5 +1,7 @@
-<div class="row-fluid">
-    Explanation on how to use Hits panel ...
+<div class="row-fluid" style="margin-bottom: 10px;">
+    The panel needs to have at least one metric. For each metric, you can select a different type of stats to be shown.
+    Decimal Digit is the number of digits to display after the decimal point. And you can specify your own Label for
+    each metric (optional). Not all stats are supported for all field types. Check Solr documentation for details.
 </div>
 
 <div class="row-fluid">
@@ -7,29 +9,6 @@
 </div>
 
 <div class="row-fluid">
-    <!--<div class="span2">-->
-        <!--<label class="small">Stats Type</label>-->
-        <!--<select ng-change="set_refresh(true)" class="input-small" ng-model="panel.stats_type"-->
-                <!--ng-options="f for f in ['count','min','mean','max','sum','stddev','sumOfSquares','missing']"></select>-->
-    <!--</div>-->
-    <!--<div class="span4">-->
-        <!--<label class="small">Stats Field-->
-            <!--<tip>Not all statistics are supported for all field types. Check Solr documentation for details.</tip>-->
-        <!--</label>-->
-        <!--<input type="text" class="input-large" placeholder="Field name" bs-typeahead="fields.list"-->
-               <!--ng-model="panel.stats_field" ng-change="set_refresh(true)">-->
-    <!--</div>-->
-    <!--<div class="span2">-->
-        <!--<label class="small">Display Precision-->
-            <!--<tip>The number of digits to display after the decimal point.</tip>-->
-        <!--</label>-->
-        <!--<select class="input-mini" ng-model="panel.stats_decimal_points" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9]"-->
-                <!--ng-change="set_refresh(true)"></select>-->
-    <!--</div>-->
-    <!--<div class="span4">-->
-        <!--<label class="small">Label</label>-->
-        <!--<input type="text" class="input-large" placeholder="Pretty label" ng-model="panel.stats_fieldLabel">-->
-    <!--</div>-->
     <div class="span12">
         <table class="table table-condensed table-striped">
             <thead>
@@ -38,7 +17,7 @@
                 <th>Decimal Digits <tip>The number of digits to display after the decimal point.</tip></th>
                 <th>Label</th>
             </thead>
-            <tr ng-repeat="metric in panel.metrics" data-drag="true" jqyoui-draggable="{animate:true}">
+            <tr ng-repeat="metric in panel.metrics" data-drag="false" jqyoui-draggable="{animate:true}">
                 <td>
                     <select class="input-small" ng-change="set_refresh(true)" ng-model="metric.type"
                             ng-options="f for f in ['count','min','mean','max','sum','stddev','sumOfSquares','missing']"></select>
@@ -52,7 +31,7 @@
                             ng-change="set_refresh(true)"></select>
                 </td>
                 <td>
-                    <input type="text" class="input-large" placeholder="Pretty label" ng-model="metric.label">
+                    <input type="text" class="input-large" placeholder="Optional" ng-model="metric.label">
                 </td>
                 <td>
                     <button class="btn btn-danger" ng-click="removeMetric(metric)"><i class="icon-remove"></i></button>

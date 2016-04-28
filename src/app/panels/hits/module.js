@@ -39,7 +39,7 @@ define([
                 src: 'app/partials/querySelect.html'
             }],
             status: "Stable",
-            description: "The total hits for the current query including all the applied filters."
+            description: "Showing stats like count, min, max, and etc. for the current query including all the applied filters."
         };
 
         function Metric() {
@@ -68,11 +68,6 @@ define([
             labels: true,
             spyable: true,
             show_queries: true,
-            // show_stats: false,
-            // stats_type: 'mean',
-            // stats_field: '',
-            // stats_fieldLabel: '',
-            // stats_decimal_points: 2,
             metrics: [new Metric()],
             refresh: {
                 enable: false,
@@ -80,7 +75,6 @@ define([
             }
         };
         _.defaults($scope.panel, _d);
-
 
         $scope.init = function () {
             $scope.hits = 0;
@@ -165,11 +159,7 @@ define([
                 fq = '&' + filterSrv.getSolrFq();
             }
 
-            // TODO if Show Stats
             var stats = '&stats=true';
-            // if ($scope.panel.stats_field) {
-            //     stats = '&stats=true&stats.field=' + $scope.panel.stats_field;
-            // }
             _.each($scope.panel.metrics, function(metric) {
                 if (metric.field) {
                     stats += '&stats.field=' + metric.field;
@@ -199,26 +189,7 @@ define([
             $q.all(promises).then(function (results) {
                 _.each(dashboard.current.services.query.ids, function (id, i) {
                     $scope.panelMeta.loading = false;
-                    // var result_value;
 
-                    // check what value to show, either total count or stats
-                    // if (!$scope.panel.show_stats) {
-                    //     result_value = results[i].response.numFound;
-                    //     $scope.hits += results[i].response.numFound;
-                    // } else {
-                    //     result_value = results[i].stats.stats_fields[$scope.panel.stats_field][$scope.panel.stats_type];
-                    //     $scope.hits += results[i].stats.stats_fields[$scope.panel.stats_field][$scope.panel.stats_type];
-                    //     $scope.hits = $scope.hits.toFixed($scope.panel.stats_decimal_points);
-                    // }
-                    // if ($scope.panel.stats_field) {
-                    //     result_value = results[i].stats.stats_fields[$scope.panel.stats_field][$scope.panel.stats_type];
-                    //     $scope.hits += results[i].stats.stats_fields[$scope.panel.stats_field][$scope.panel.stats_type];
-                    //     $scope.hits = $scope.hits.toFixed($scope.panel.stats_decimal_points);
-                    // } else {
-                    //     result_value = results[i].response.numFound;
-                    //     $scope.hits += results[i].response.numFound;
-                    //     $scope.hits = $scope.hits.toFixed(0);
-                    // }
                     _.each(results[i].stats.stats_fields, function(metricValues, metricField) {
                         _.each($scope.panel.metrics, function(metric) {
                             if (metric.field === metricField) {
@@ -233,8 +204,7 @@ define([
                         return;
                     }
 
-                    var info = dashboard.current.services.query.list[id];
-
+                    // var info = dashboard.current.services.query.list[id];
                     // Create series
                     // $scope.data[i] = {
                     //     info: info,
@@ -249,10 +219,6 @@ define([
 
         $scope.set_refresh = function (state) {
             $scope.refresh = state;
-            // if not show_stats, set stats_decimal_points to zero automatically.
-            // if (!$scope.panel.show_stats) {
-            //     $scope.panel.stats_decimal_points = 0;
-            // }
         };
 
         $scope.close_edit = function () {
