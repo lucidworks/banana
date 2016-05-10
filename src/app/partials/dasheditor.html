@@ -5,6 +5,7 @@
     <div ng-repeat="tab in ['General','Rows','Controls','Solr']" data-title="{{tab}}">
     </div>
   </div>
+
   <!-- General tab -->
   <div ng-show="editor.index == 0">
     <div class="row-fluid">
@@ -25,6 +26,7 @@
       </div>
     </div>
   </div>
+
   <!-- Index tab -->
   <!--
   <div ng-show="editor.index == 1">
@@ -68,6 +70,7 @@
     </div>
   </div>
   -->
+
   <!-- Rows tab -->
   <div ng-show="editor.index == 1">
     <div class="row-fluid">
@@ -104,6 +107,7 @@
       </form>
     </div>
   </div>
+
   <!-- Controls tab -->
   <div ng-show="editor.index == 2" ng-controller="dashLoader">
     <div class="row-fluid">
@@ -137,10 +141,12 @@
         <label class="small">Solr</label><input type="checkbox" ng-model="dashboard.current.loader.load_elasticsearch" ng-checked="dashboard.current.loader.load_elasticsearch">
       </div>
       <div class="span3" ng-show="dashboard.current.loader.load_elasticsearch">
-        <label class="small">Solr list size <tip>The maximum number of dashboards to show in the loading list for Solr stored dashboards under Load menu.</tip></label><input class="input-mini" type="number" ng-model="dashboard.current.loader.load_elasticsearch_size">
+        <label class="small">Solr list size <tip>The maximum number of dashboards to show in the loading list for Solr stored dashboards under Load menu.</tip></label>
+        <input class="input-mini" type="number" ng-model="dashboard.current.loader.load_elasticsearch_size">
       </div>
     </div>
   </div>
+
   <!-- Solr tab -->
   <div ng-show="editor.index == 3">
     <div class="row-fluid">
