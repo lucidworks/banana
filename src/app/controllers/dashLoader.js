@@ -40,7 +40,8 @@ function (angular, _) {
             $scope.new = {
                 server: $scope.config.solr,
                 core_name: $scope.config.solr_core,
-                time_field: $scope.config.timefield
+                time_field: $scope.config.timefield,
+                USE_FUSION: $scope.config.USE_FUSION
             };
         };
 
