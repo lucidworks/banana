@@ -31,6 +31,7 @@ app/services/querySrv.js
 app/services/timer.js
 app/services/panelMove.js
 app/services/solrSrv.js
+app/services/lucidworksSrv.js
 app/services/all.js
 app/controllers/dash.js
 app/controllers/dashLoader.js
