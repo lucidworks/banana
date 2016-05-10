@@ -1,4 +1,4 @@
-/*! banana-fusion - v1.6.2 - 2016-05-11
+/*! banana-fusion - v1.6.3 - 2016-05-11
  * https://github.com/LucidWorks/banana/wiki
  * Copyright (c) 2016 Andrew Thanalertvisuti; Licensed Apache License */
 
