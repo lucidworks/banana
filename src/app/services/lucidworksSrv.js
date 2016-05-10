@@ -11,7 +11,7 @@ function (angular, config, _) {
     module.service('lucidworksSrv', function($http, $q) {
         var self = this;
 
-        self.fusionHost = window.protocol + '//' + window.host;
+        self.fusionHost = window.location.protocol + '//' + window.location.host;
         self.fusionSessionApi = self.fusionHost + '/api/session';
 
         self.getFusionUsername = function() {
