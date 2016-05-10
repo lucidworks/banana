@@ -53,7 +53,13 @@ function (Settings) {
     banana_queryPipeline: "system_banana-default",
     banana_indexPipeline: "system_banana-default",
 
-    // Lucidworks Fusion settings
+    /**
+     * Lucidworks Fusion settings
+     *
+     * USE_FUSION = true, mean that Banana will talk to Lucidworks Fusion APIs, instead of Solr.
+     * This mainly affect the APIs used to get the list of collections and schemas (fields).
+     */
+    USE_FUSION: true,
     apollo: "/api/apollo",
     apollo_coll: "/api/apollo/collections",
     apollo_queryPipeline: "/api/apollo/query-pipelines/",
@@ -62,6 +68,8 @@ function (Settings) {
     // Constants  
     SYSTEM_BANANA_QUERY_PIPELINE: "/api/apollo/query-pipelines/system_banana-default/collections/system_banana",
     SYSTEM_BANANA_INDEX_PIPELINE: "/api/apollo/index-pipelines/system_banana-default/collections/system_banana",
+    FUSION_API_STATIC_FIELDS: "/schema/fields",
+    FUSION_API_DYNAMIC_FIELDS: "/schema/dynamicfields",
 
     /**
      * The default settings will use /admin/luke API to retrieve all fields from Solr including
