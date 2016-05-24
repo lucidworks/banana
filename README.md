@@ -9,6 +9,14 @@ The goal is to create a rich and flexible UI, enabling users to rapidly develop 
 the power of Apache Solr. Data can be ingested into Solr through a variety of ways, including
 [Logstash](https://www.elastic.co/products/logstash), [Flume](https://flume.apache.org) and other connectors.
 
+## To Release a New Version for Fusion
+
+When you are ready to do a new release for Lucidworks Fusion. Do the following steps:
+
+1. Run `grunt build --force`
+2. Edit `package.json` by increasing the version number.
+3. Push your commit to Github.
+4. Run `npm publish`
  
 ## IMPORTANT
 
