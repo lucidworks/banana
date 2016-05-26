@@ -31,7 +31,7 @@
         "0": {
           "from": "NOW/DAY-30DAY",
           "to": "NOW/DAY%2B1DAY",
-          "field": "timestamp_dt",
+          "field": "timestamp_tdt",
           "type": "time",
           "fromDateObj": "2014-10-11T15:04:43.319Z",
           "toDateObj": "2014-11-10T16:04:43.320Z",
@@ -97,7 +97,7 @@
             "5y"
           ],
           "timespan": "30d",
-          "timefield": "timestamp_dt",
+          "timefield": "timestamp_tdt",
           "timeformat": "",
           "refresh": {
             "enable": false,
@@ -139,7 +139,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&fq=timestamp_dt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&wt=json&rows=0",
+            "query": "q=*%3A*&df=q_txt&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&wt=json&rows=0",
             "basic_query": "",
             "custom": ""
           },
@@ -186,7 +186,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_dt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=q_s&facet.limit=10",
+            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=q_s&facet.limit=10",
             "custom": ""
           },
           "mode": "count",
@@ -285,13 +285,13 @@
           "type": "histogram",
           "loadingEditor": false,
           "mode": "count",
-          "time_field": "timestamp_dt",
+          "time_field": "timestamp_tdt",
           "queries": {
             "mode": "all",
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_dt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.range=timestamp_dt&facet.range.start=NOW/DAY-30DAY&facet.range.end=NOW/DAY%2B1DAY&facet.range.gap=%2B12HOUR",
+            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.range=timestamp_tdt&facet.range.start=NOW/DAY-30DAY&facet.range.end=NOW/DAY%2B1DAY&facet.range.gap=%2B12HOUR",
             "custom": ""
           },
           "max_rows": 100000,
@@ -348,7 +348,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_dt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=q_s&facet.limit=10",
+            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=q_s&facet.limit=10",
             "custom": "&fq=numdocs_l:0"
           },
           "mode": "count",
@@ -452,7 +452,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_dt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=qtime_l",
+            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=qtime_l",
             "custom": ""
           },
           "mode": "mean",
@@ -547,7 +547,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_dt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=qtime_l",
+            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=qtime_l",
             "custom": ""
           },
           "mode": "min",
@@ -642,7 +642,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_dt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=qtime_l",
+            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=qtime_l",
             "custom": ""
           },
           "mode": "max",
@@ -746,7 +746,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_dt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=totaltime_l",
+            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=totaltime_l",
             "custom": ""
           },
           "mode": "mean",
@@ -841,7 +841,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_dt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=totaltime_l",
+            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=totaltime_l",
             "custom": ""
           },
           "mode": "min",
@@ -936,7 +936,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_dt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=totaltime_l",
+            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=totaltime_l",
             "custom": ""
           },
           "mode": "max",
@@ -1041,8 +1041,8 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&fq=timestamp_dt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&wt=json&rows=10000",
-            "basic_query": "q=*%3A*&df=q_txt&fq=timestamp_dt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]",
+            "query": "q=*%3A*&df=q_txt&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&wt=json&rows=10000",
+            "basic_query": "q=*%3A*&df=q_txt&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]",
             "custom": ""
           },
           "size": 10,
@@ -1055,7 +1055,7 @@
           },
           "overflow": "min-height",
           "fields": [
-            "timestamp_dt",
+            "timestamp_tdt",
             "q_s",
             "numdocs_l",
             "qtime_l",
