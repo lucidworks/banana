@@ -25,7 +25,7 @@
         "0": {
           "from": "NOW/DAY-2DAY",
           "to": "NOW/DAY%2B1DAY",
-          "field": "timestamp_dt",
+          "field": "timestamp_tdt",
           "type": "time",
           "fromDateObj": "2014-08-27T17:30:33.070Z",
           "toDateObj": "2014-08-29T17:30:33.071Z",
@@ -81,7 +81,7 @@
             "5y"
           ],
           "timespan": "2d",
-          "timefield": "timestamp_dt",
+          "timefield": "timestamp_tdt",
           "timeformat": "",
           "refresh": {
             "enable": false,
@@ -132,13 +132,13 @@
           "type": "histogram",
           "loadingEditor": false,
           "mode": "count",
-          "time_field": "timestamp_dt",
+          "time_field": "timestamp_tdt",
           "queries": {
             "mode": "all",
             "ids": [
               0
             ],
-            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_dt:[NOW/DAY-2DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.range=timestamp_dt&facet.range.start=NOW/DAY-2DAY&facet.range.end=NOW/DAY%2B1DAY&facet.range.gap=%2B30MINUTE",
+            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-2DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.range=timestamp_tdt&facet.range.start=NOW/DAY-2DAY&facet.range.end=NOW/DAY%2B1DAY&facet.range.gap=%2B30MINUTE",
             "custom": ""
           },
           "max_rows": 100000,
@@ -195,7 +195,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_dt:[NOW/DAY-2DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=level_s&facet.limit=10",
+            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-2DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=level_s&facet.limit=10",
             "custom": ""
           },
           "mode": "count",
@@ -289,7 +289,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_dt:[NOW/DAY-2DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=file_t&facet.limit=10",
+            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-2DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=file_t&facet.limit=10",
             "custom": ""
           },
           "mode": "count",
@@ -392,7 +392,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_dt:[NOW/DAY-2DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=host_s&facet.limit=10",
+            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-2DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=host_s&facet.limit=10",
             "custom": ""
           },
           "mode": "count",
@@ -486,7 +486,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_dt:[NOW/DAY-2DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=port_s&facet.limit=10",
+            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-2DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=port_s&facet.limit=10",
             "custom": ""
           },
           "mode": "count",
@@ -580,7 +580,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_dt:[NOW/DAY-2DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=method_t&facet.limit=10",
+            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-2DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=method_t&facet.limit=10",
             "custom": ""
           },
           "mode": "count",
@@ -685,7 +685,7 @@
           "pages": 10,
           "offset": 0,
           "sort": [
-            "timestamp_dt",
+            "timestamp_tdt",
             "desc"
           ],
           "style": {
@@ -693,7 +693,7 @@
           },
           "overflow": "min-height",
           "fields": [
-            "timestamp_dt",
+            "timestamp_tdt",
             "level_s",
             "message_s",
             "host_s",
@@ -715,14 +715,14 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&fq=timestamp_dt:[NOW/DAY-2DAY%20TO%20NOW/DAY%2B1DAY]&sort=timestamp_dt desc&wt=json&rows=1000",
-            "basic_query": "q=*%3A*&fq=timestamp_dt:[NOW/DAY-2DAY%20TO%20NOW/DAY%2B1DAY]&sort=timestamp_dt desc"
+            "query": "q=*%3A*&fq=timestamp_tdt:[NOW/DAY-2DAY%20TO%20NOW/DAY%2B1DAY]&sort=timestamp_tdt desc&wt=json&rows=1000",
+            "basic_query": "q=*%3A*&fq=timestamp_tdt:[NOW/DAY-2DAY%20TO%20NOW/DAY%2B1DAY]&sort=timestamp_tdt desc"
           },
           "field_list": true,
           "status": "Stable",
           "trimFactor": 300,
           "normTimes": true,
-          "time_field": "timestamp_dt",
+          "time_field": "timestamp_tdt",
           "saveOption": "json",
           "exportSize": 1000,
           "exportAll": true,
