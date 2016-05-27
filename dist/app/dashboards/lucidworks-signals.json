@@ -1,4 +1,4 @@
-{
+﻿{
   "title": "Fusion Signals",
   "services": {
     "query": {
@@ -26,8 +26,8 @@
       ],
       "list": {
         "0": {
-          "from": "2009-09-13T16:51:05.000Z",
-          "to": "2014-09-13T16:51:05.000Z",
+          "from": "NOW/DAY-30DAY",
+          "to": "NOW/DAY%2B1DAY",
           "field": "timestamp_tdt",
           "type": "time",
           "mandate": "must",
@@ -52,13 +52,13 @@
         {
           "title": "Set time span",
           "error": "",
-          "span": 3,
+          "span": 5,
           "editable": true,
           "group": [
             "default"
           ],
           "type": "timepicker",
-          "mode": "absolute",
+          "mode": "relative",
           "time_options": [
             "5m",
             "15m",
@@ -72,7 +72,7 @@
             "1y",
             "5y"
           ],
-          "timespan": "5y",
+          "timespan": "30d",
           "timefield": "timestamp_tdt",
           "timeformat": "",
           "refresh": {
@@ -82,11 +82,7 @@
           },
           "filter_id": 0,
           "status": "Stable",
-          "spyable": true,
-          "time": {
-            "from": "09/13/2009 12:51:05",
-            "to": "09/13/2014 12:51:05"
-          }
+          "spyable": true
         },
         {
           "error": false,
@@ -144,7 +140,7 @@
           "value_field": null,
           "auto_int": true,
           "resolution": 100,
-          "interval": "7d",
+          "interval": "12h",
           "fill": 3,
           "linewidth": 3,
           "timezone": "browser",
@@ -164,7 +160,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_tdt:[2009-09-13T16:51:05.000Z%20TO%202014-09-13T16:51:05.000Z]&facet=true&facet.range=timestamp_tdt&facet.range.start=2009-09-13T16:51:05.000Z&facet.range.end=2014-09-13T16:51:05.000Z&facet.range.gap=%2B7DAY"
+            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.range=timestamp_tdt&facet.range.start=NOW/DAY-30DAY&facet.range.end=NOW/DAY%2B1DAY&facet.range.gap=%2B12HOUR\n"
           },
           "title": "Clicks",
           "intervals": [
@@ -189,10 +185,14 @@
           },
           "max_rows": 100000,
           "group_field": null,
-          "lines_smooth": false
+          "lines_smooth": false,
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         },
         {
-          "error": false,
           "span": 6,
           "editable": true,
           "type": "terms",
@@ -202,7 +202,7 @@
             "ids": [
               0
             ],
-            "query": "q=*:*&wt=json&rows=0&fq=timestamp_tdt:[2009-07-03T22:12:02.539Z%20TO%202014-07-02T22:12:02.539Z]&facet=true&facet.field=query_s&facet.limit=20"
+            "query": "q=*%3A*&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=query_s&facet.limit=20&facet.missing=true&f.query_s.facet.sort=count"
           },
           "field": "query_s",
           "exclude": [],
@@ -283,7 +283,15 @@
             "#BADFF4",
             "#F9D9F9",
             "#DEDAF7"
-          ]
+          ],
+          "sortBy": "count",
+          "logAxis": false,
+          "exportSize": 10000,
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         }
       ]
     },
@@ -295,7 +303,6 @@
       "collapsable": true,
       "panels": [
         {
-          "error": false,
           "span": 3,
           "editable": true,
           "type": "terms",
@@ -305,7 +312,7 @@
             "ids": [
               0
             ],
-            "query": "q=*:*&wt=json&rows=0&fq=timestamp_tdt:[2009-07-03T22:12:02.539Z%20TO%202014-07-02T22:12:02.539Z]&facet=true&facet.field=doc_id_s&facet.limit=10"
+            "query": "q=*%3A*&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=doc_id_s&facet.limit=10&facet.missing=true&f.doc_id_s.facet.sort=count"
           },
           "field": "doc_id_s",
           "exclude": [],
@@ -386,10 +393,17 @@
             "#BADFF4",
             "#F9D9F9",
             "#DEDAF7"
-          ]
+          ],
+          "sortBy": "count",
+          "logAxis": false,
+          "exportSize": 10000,
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         },
         {
-          "error": false,
           "span": 3,
           "editable": true,
           "type": "terms",
@@ -399,7 +413,7 @@
             "ids": [
               0
             ],
-            "query": "q=*:*&wt=json&rows=0&fq=timestamp_tdt:[2009-07-03T22:12:02.539Z%20TO%202014-07-02T22:12:02.539Z]&facet=true&facet.field=type_s&facet.limit=10"
+            "query": "q=*%3A*&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=type_s&facet.limit=10&facet.missing=true&f.type_s.facet.sort=count"
           },
           "field": "type_s",
           "exclude": [],
@@ -480,10 +494,17 @@
             "#BADFF4",
             "#F9D9F9",
             "#DEDAF7"
-          ]
+          ],
+          "sortBy": "count",
+          "logAxis": false,
+          "exportSize": 10000,
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         },
         {
-          "error": false,
           "span": 3,
           "editable": true,
           "type": "terms",
@@ -493,7 +514,7 @@
             "ids": [
               0
             ],
-            "query": "q=*:*&wt=json&rows=0&fq=timestamp_tdt:[2009-07-03T22:12:02.539Z%20TO%202014-07-02T22:12:02.539Z]&facet=true&facet.field=flag_s&facet.limit=10"
+            "query": "q=*%3A*&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=flag_s&facet.limit=10&facet.missing=true&f.flag_s.facet.sort=count"
           },
           "field": "flag_s",
           "exclude": [],
@@ -574,10 +595,17 @@
             "#BADFF4",
             "#F9D9F9",
             "#DEDAF7"
-          ]
+          ],
+          "sortBy": "count",
+          "logAxis": false,
+          "exportSize": 10000,
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         },
         {
-          "error": false,
           "span": 3,
           "editable": true,
           "type": "terms",
@@ -587,7 +615,7 @@
             "ids": [
               0
             ],
-            "query": "q=*:*&wt=json&rows=0&fq=timestamp_tdt:[2009-07-03T22:12:02.539Z%20TO%202014-07-02T22:12:02.539Z]&facet=true&facet.field=count_i&facet.limit=10"
+            "query": "q=*%3A*&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=count_i&facet.limit=10&facet.missing=true&f.count_i.facet.sort=count"
           },
           "field": "count_i",
           "exclude": [],
@@ -668,7 +696,15 @@
             "#BADFF4",
             "#F9D9F9",
             "#DEDAF7"
-          ]
+          ],
+          "sortBy": "count",
+          "logAxis": false,
+          "exportSize": 10000,
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         }
       ]
     },
@@ -681,7 +717,6 @@
       "panels": [
         {
           "title": "All events",
-          "error": false,
           "span": 12,
           "editable": true,
           "group": [
@@ -718,8 +753,8 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&fq=timestamp_tdt:[2009-09-13T16:51:05.000Z%20TO%202014-09-13T16:51:05.000Z]&sort=count_i desc&wt=json&rows=1000",
-            "basic_query": "q=*%3A*&fq=timestamp_tdt:[2009-09-13T16:51:05.000Z%20TO%202014-09-13T16:51:05.000Z]&sort=count_i desc"
+            "query": "q=*%3A*&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&sort=count_i desc&wt=json&rows=1000",
+            "basic_query": "q=*%3A*&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&sort=count_i desc"
           },
           "field_list": true,
           "status": "Stable",
@@ -732,7 +767,15 @@
           "displayLinkIcon": true,
           "imageFields": [],
           "imgFieldWidth": "auto",
-          "imgFieldHeight": "85px"
+          "imgFieldHeight": "85px",
+          "important_fields": [],
+          "show_queries": true,
+          "maxNumCalcTopFields": 20,
+          "calcTopFieldValuesFromAllData": false,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         }
       ]
     },
@@ -777,7 +820,7 @@
     "load_elasticsearch_size": 20,
     "load_local": true,
     "hide": false,
-    "dropdown_collections": false
+    "dropdown_collections": true
   },
   "solr": {
     "server": "/api/apollo/solr/",
