@@ -79,7 +79,7 @@ define([
 
         // Build Solr query
         var fq = '';
-        if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+        if (filterSrv.getSolrFq() && filterSrv.getSolrFq() !== '') {
           fq = '&' + filterSrv.getSolrFq();
         }
         var wt_json = '&wt=json';
@@ -107,7 +107,6 @@ define([
           }
 
           var sum = 0;
-          var k = 0;
           var missing = 0;
           $scope.panelMeta.loading = false;
           $scope.hits = results.response.numFound;
@@ -132,8 +131,9 @@ define([
                   letter: term,
                   frequency: count                
               	};
-                if (count / $scope.hits > $scope.maxRatio)
-                  $scope.maxRatio = count / $scope.hits
+                if (count / $scope.hits > $scope.maxRatio) {
+                  $scope.maxRatio = count / $scope.hits;
+                }
                 $scope.data.push(slice);
               }
             }
@@ -168,7 +168,7 @@ define([
       };
     });
 
-    module.directive('barChart', function(querySrv, dashboard, filterSrv) {
+    module.directive('barChart', function() {
       return {
         restrict: 'A',
         link: function(scope, element) {
@@ -184,7 +184,6 @@ define([
           // Function for rendering panel
           function render_panel() {
             element.html("");
-            var el = element[0];
             var width = element.parent().width();
             var height = parseInt(scope.row.height);
 
@@ -195,7 +194,7 @@ define([
               var formatPercent = d3.format(".0");
 
               var x = d3.scale.ordinal()
-                  .rangeRoundBands([15, width], .1);
+                  .rangeRoundBands([15, width], 0.1);
 
               var y = d3.scale.linear()
                   .range([height, 0]);

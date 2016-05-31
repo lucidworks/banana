@@ -31,7 +31,7 @@ function (angular, app, _, kbn, moment) {
 
     var module = angular.module('kibana.panels.table', []);
     app.useModule(module);
-    module.controller('table', function ($rootScope, $scope, $timeout, timer, fields, querySrv, dashboard, filterSrv) {
+    module.controller('table', function ($rootScope, $scope, $timeout, timer, fields, querySrv, dashboard, filterSrv, solrSrv) {
         $scope.panelMeta = {
             modals: [
                 {

@@ -14,10 +14,10 @@ define([
     'jquery',
     'kbn',
     'd3',
-    './d3.layout.cloud',
-    './stopWords'
+    './stopWords',
+    './d3.layout.cloud'
   ],
-  function(angular, app, _, $, kbn, d3) {
+  function(angular, app, _, $, kbn, d3, stopwords) {
     'use strict';
 
     var module = angular.module('kibana.panels.tagcloud', []);
