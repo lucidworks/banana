@@ -419,12 +419,13 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
                         // in case it does not show up in Solr collection yet.
                         var ms = 2000;
                         $timeout(function () {
-                            $location.path('/dashboard/solr/' + title)
+                            $location.path('/dashboard/solr/' + title);
                         }, ms);
                     }
                     return success;
                 },
                 function (error) {
+                    console.log('Error: ', error);
                     return false;
                 }
             );
@@ -468,6 +469,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
                     return success;
                 },
                 function (error) {
+                    console.log('Error: ', error);
                     return false;
                 }
             );

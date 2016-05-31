@@ -57,6 +57,6 @@ function (angular, config, _) {
             }, function(error) {
                 console.log(error);
             });
-        }
+        };
     });
 });
