@@ -154,7 +154,20 @@
           "labels": true,
           "spyable": true,
           "title": "Total Hits",
-          "show_queries": true
+          "show_queries": true,
+          "metrics": [
+            {
+              "type": "count",
+              "field": "id",
+              "decimalDigits": 0,
+              "label": "",
+              "value": "0"
+            }
+          ],
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         }
       ]
     },

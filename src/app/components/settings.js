@@ -12,7 +12,7 @@ function (_) {
     var defaults = {
       solr: "http://"+window.location.hostname+":8983/solr/",
       solr_core: "logs",
-      timefield: "timestamp_dt",
+      timefield: "timestamp_tdt",
       USE_ADMIN_LUKE: true,
       USE_ADMIN_CORES: true,
       panel_names: [],
