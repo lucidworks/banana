@@ -520,7 +520,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           render_panel();
         });
 
-        scope.set_range_filter(scope.panel.chart_minimum,scope.panel.chart_maximum);
+        scope.set_range_filter(scope.panel.chart_minimum, scope.panel.chart_maximum);
         // Re-render if the window is resized
         angular.element(window).bind('resize', function(){
           render_panel();
@@ -623,18 +623,18 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             // ISSUE: SOL-76
             // If 'lines_smooth' is enabled, loop through $scope.data[] and remove zero filled entries.
             // Without zero values, the line chart will appear smooth as SiLK ;-)
-            if (scope.panel.lines_smooth) {
-              for (var i=0; i < scope.data.length; i++) { // jshint ignore: line
-                var new_data = [];
-                for (var j=0; j < scope.data[i].data.length; j++) {
-                  // if value of the timestamp !== 0, then add it to new_data
-                  if (scope.data[i].data[j][1] !== 0) {
-                    new_data.push(scope.data[i].data[j]);
-                  }
-                }
-                scope.data[i].data = new_data;
-              }
-            }
+            // if (scope.panel.lines_smooth) {
+            //   for (var k=0; k < scope.data.length; k++) {
+            //     var new_data = [];
+            //     for (var j=0; j < scope.data[k].data.length; j++) {
+            //       // if value of the timestamp !== 0, then add it to new_data
+            //       if (scope.data[k].data[j][1] !== 0) {
+            //         new_data.push(scope.data[k].data[j]);
+            //       }
+            //     }
+            //     scope.data[k].data = new_data;
+            //   }
+            // }
 
             scope.plot = $.plot(elem, scope.data, options);
           } catch(e) {
