@@ -89,9 +89,6 @@ function (angular, $, _, appLevelRequire) {
     $httpProvider.defaults.useXDomain = true;
     delete $httpProvider.defaults.headers.common["X-Requested-With"];
     // If the backend (apollo) gives us a 401, redirect to the login page.
-    // $httpProvider.responseInterceptors.push([
-    //   '$rootScope', '$log', '$location', '$q',
-    //   function($rootScope, $log, $location, $q){
     $httpProvider.responseInterceptors.push(function() {
         return function(p){
           return p.then(
@@ -108,6 +105,7 @@ function (angular, $, _, appLevelRequire) {
                     goto = '../login?return=' + window.location.pathname;
                 goto += (hash ? hash : "");
                 goto += (query ? "?" + encodeURIComponent(query) : "");
+                goto = goto.replace(/#/g, '%23');  
                 window.location = goto;
                 return;
               }
