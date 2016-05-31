@@ -12,7 +12,7 @@
   "supernew": true,
   "expr": true,
   "indent": 2,
-  "latedef": true,
+  "latedef": "nofunc",
   "newcap": true,
   "noarg": true,
   "noempty": true,
@@ -23,9 +23,9 @@
   "laxcomma": true,
   "sub": true,
   "unused": true,
+  "node": true,
 
   "maxlen": 1000,
-
   "globals": {
     "define": true,
     "require": true
