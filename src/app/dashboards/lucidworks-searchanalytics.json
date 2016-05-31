@@ -1043,7 +1043,6 @@
       "collapsable": true,
       "panels": [
         {
-          "error": false,
           "span": 12,
           "editable": true,
           "type": "table",
@@ -1054,14 +1053,17 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&wt=json&rows=10000",
-            "basic_query": "q=*%3A*&df=q_txt&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]",
+            "query": "q=*%3A*&df=q_txt&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&sort=timestamp_tdt desc&wt=json&rows=10000",
+            "basic_query": "q=*%3A*&df=q_txt&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&sort=timestamp_tdt desc",
             "custom": ""
           },
           "size": 10,
           "pages": 1000,
           "offset": 0,
-          "sort": [],
+          "sort": [
+            "timestamp_tdt",
+            "desc"
+          ],
           "group": "default",
           "style": {
             "font-size": "9pt"
@@ -1075,7 +1077,7 @@
             "totaltime_l"
           ],
           "highlight": [],
-          "sortable": false,
+          "sortable": true,
           "header": true,
           "paging": true,
           "field_list": true,
@@ -1090,7 +1092,37 @@
           "imgFieldWidth": "auto",
           "imgFieldHeight": "85px",
           "title": "Table panel",
-          "show_queries": true
+          "show_queries": true,
+          "important_fields": [
+            "_version_",
+            "collection_s",
+            "httpmethod_s",
+            "id",
+            "numdocs_l",
+            "q_s",
+            "q_txt",
+            "qtime_l",
+            "req_debug_ss",
+            "req_defType_ss",
+            "req_echoParams_ss",
+            "req_facet_ss",
+            "req_fl_ss",
+            "req_isFusionQuery_ss",
+            "req_json.nl_ss",
+            "req_lw.pipelineId_ss",
+            "req_q_ss",
+            "req_rows_ss",
+            "req_start_ss",
+            "req_wt_ss",
+            "timestamp_tdt",
+            "totaltime_l"
+          ],
+          "maxNumCalcTopFields": 20,
+          "calcTopFieldValuesFromAllData": false,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         }
       ]
     }

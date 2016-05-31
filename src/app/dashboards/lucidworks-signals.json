@@ -727,7 +727,7 @@
                     "pages": 10,
                     "offset": 0,
                     "sort": [
-                        "count_i",
+                        "timestamp_tdt",
                         "desc"
                     ],
                     "style": {
@@ -753,8 +753,8 @@
                         "ids": [
                             0
                         ],
-                        "query": "q=*%3A*&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&sort=count_i desc&wt=json&rows=1000",
-                        "basic_query": "q=*%3A*&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&sort=count_i desc"
+                        "query": "q=*%3A*&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&sort=timestamp_tdt desc&wt=json&rows=1000",
+                        "basic_query": "q=*%3A*&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&sort=timestamp_tdt desc"
                     },
                     "field_list": true,
                     "status": "Stable",
@@ -772,17 +772,10 @@
                         "_version_",
                         "count_i",
                         "doc_id_s",
+                        "filters_orig_ss",
+                        "filters_s",
                         "flag_s",
                         "id",
-                        "params.lw_browser_s",
-                        "params.lw_client_ip",
-                        "params.lw_head_field_s",
-                        "params.lw_language_s",
-                        "params.lw_platform_s",
-                        "params.lw_userAgent_s",
-                        "params.lw_userName_s",
-                        "params.source_s",
-                        "params.source_type_s",
                         "query_orig_s",
                         "query_s",
                         "query_t",
