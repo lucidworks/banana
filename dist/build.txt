@@ -134,11 +134,6 @@ app/panels/rangeFacet/module.js
 ----------------
 app/panels/rangeFacet/interval.js
 app/panels/rangeFacet/timeSeries.js
-vendor/jquery/jquery.flot.selection.js
-vendor/jquery/jquery.flot.time.js
-vendor/jquery/jquery.flot.stack.js
-vendor/jquery/jquery.flot.stackpercent.js
-vendor/jquery/jquery.flot.axislabels.js
 app/panels/rangeFacet/module.js
 
 app/panels/scatterplot/module.js
@@ -155,8 +150,8 @@ app/panels/table/module.js
 
 app/panels/tagcloud/module.js
 ----------------
-app/panels/tagcloud/d3.layout.cloud.js
 app/panels/tagcloud/stopWords.js
+app/panels/tagcloud/d3.layout.cloud.js
 app/panels/tagcloud/module.js
 
 app/panels/template/module.js
