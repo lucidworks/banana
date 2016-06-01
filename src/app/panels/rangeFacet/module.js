@@ -259,11 +259,16 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         return user_interval;
       } else {
         var gap_interval = ((to-from)/size);
+
         if (gap_interval > 1) {
           return $scope.round_gap(gap_interval);
         } else {
-          // return gap_interval.toPrecision(2);
-          return gap_interval.toFixed($scope.panel.interval_decimal);
+          var gap = gap_interval.toFixed($scope.panel.interval_decimal); // .toFixed() returns string
+          if (gap <= 0) {
+            return 1;
+          } else {
+            return gap;
+          }
         }
       }
     };
@@ -623,18 +628,18 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             // ISSUE: SOL-76
             // If 'lines_smooth' is enabled, loop through $scope.data[] and remove zero filled entries.
             // Without zero values, the line chart will appear smooth as SiLK ;-)
-            // if (scope.panel.lines_smooth) {
-            //   for (var k=0; k < scope.data.length; k++) {
-            //     var new_data = [];
-            //     for (var j=0; j < scope.data[k].data.length; j++) {
-            //       // if value of the timestamp !== 0, then add it to new_data
-            //       if (scope.data[k].data[j][1] !== 0) {
-            //         new_data.push(scope.data[k].data[j]);
-            //       }
-            //     }
-            //     scope.data[k].data = new_data;
-            //   }
-            // }
+            if (scope.panel.lines_smooth) {
+              for (var k=0; k < scope.data.length; k++) {
+                var new_data = [];
+                for (var j=0; j < scope.data[k].data.length; j++) {
+                  // if value of the timestamp !== 0, then add it to new_data
+                  if (scope.data[k].data[j][1] !== 0) {
+                    new_data.push(scope.data[k].data[j]);
+                  }
+                }
+                scope.data[k].data = new_data;
+              }
+            }
 
             scope.plot = $.plot(elem, scope.data, options);
           } catch(e) {
