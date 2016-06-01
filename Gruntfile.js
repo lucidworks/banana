@@ -99,8 +99,7 @@ module.exports = function (grunt) {
           'app/app.js',
           'vendor/angular/**/*.js',
           'vendor/elasticjs/elastic-angular-client.js',
-          'vendor/solrjs/solr-angular-client.js',
-          '!app/panels/rangeFacet/*.js'  
+          'vendor/solrjs/solr-angular-client.js'
         ],
         dest: '<%= tempDir %>'
       }
@@ -144,8 +143,7 @@ module.exports = function (grunt) {
         src: [
           '**/*.js',
           '!config.js',
-          '!app/dashboards/*.js',
-          '!app/panels/rangeFacet/*.js'  
+          '!app/dashboards/*.js'
         ],
         dest: '<%= destDir %>',
         cwd: '<%= destDir %>',
