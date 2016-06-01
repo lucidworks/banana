@@ -99,7 +99,8 @@ module.exports = function (grunt) {
           'app/app.js',
           'vendor/angular/**/*.js',
           'vendor/elasticjs/elastic-angular-client.js',
-          'vendor/solrjs/solr-angular-client.js'
+          'vendor/solrjs/solr-angular-client.js',
+          '!app/panels/rangeFacet/*.js'  
         ],
         dest: '<%= tempDir %>'
       }
@@ -140,7 +141,12 @@ module.exports = function (grunt) {
     uglify: {
       dest: {
         expand: true,
-        src: ['**/*.js', '!config.js', '!app/dashboards/*.js'],
+        src: [
+          '**/*.js',
+          '!config.js',
+          '!app/dashboards/*.js',
+          '!app/panels/rangeFacet/*.js'  
+        ],
         dest: '<%= destDir %>',
         cwd: '<%= destDir %>',
         filter: 'isFile',

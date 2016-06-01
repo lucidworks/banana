@@ -22,15 +22,7 @@ define([
   'underscore',
   'kbn',
   'moment',
-  './timeSeries',
-
-  'jquery.flot',
-  'jquery.flot.pie',
-  'jquery.flot.selection',
-  'jquery.flot.time',
-  'jquery.flot.stack',
-  'jquery.flot.stackpercent',
-  'jquery.flot.axislabels'
+  './timeSeries'
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
