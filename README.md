@@ -193,7 +193,7 @@ global parameters, and visualization of "group-by" style queries. We are continu
 beyond what is available in Kibana, helping users build complete applications that leverage the data stored in
 Apache Solr, HDFS and a variety of sources in the enterprise.
 
-If you have any questions, please visit our [Google Group Forum](https://groups.google.com/forum/#!forum/lucidworks-banana).
+If you have any questions, please email banana-support@lucidworks.com
 
 ## Trademarks
 
