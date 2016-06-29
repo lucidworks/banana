@@ -34,7 +34,7 @@
     </div>
     <div class="span2" ng-show="panel.show_stats">
       <label class="small">Type</label>
-      <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.stats_type" ng-options="f for f in ['count','min','mean','max','sum','stddev','sumOfSquares','missing']"></select>
+      <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.stats_type" ng-options="f for f in ['count','min','mean','max','sum','stddev','sumOfSquares','missing','countDistinct','cardinality']"></select>
     </div>
     <div class="span2" ng-show="panel.show_stats">
       <label class="small">Stats Field <tip>Not all statistics are supported for all field types. Check Solr documentation for details.</tip></label>
