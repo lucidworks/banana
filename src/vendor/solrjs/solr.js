@@ -8927,7 +8927,7 @@
             */
       doUpdate: function (successcb, errorcb) {
         // make sure the user has set a client
-        if (ejs.client == null) {
+        if (sjs.client == null) {
           throw new Error("No Client Set");
         }
         
@@ -8967,7 +8967,7 @@
           data.doc = params.source;
         }
         
-        return ejs.client.post(url, JSON.stringify(data), successcb, errorcb);
+        return sjs.client.post(url, JSON.stringify(data), successcb, errorcb);
       },
 
       /**

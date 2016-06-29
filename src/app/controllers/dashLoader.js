@@ -139,8 +139,14 @@ function (angular, _) {
       dashboard.elasticsearch_list(query,dashboard.current.loader.load_elasticsearch_size).then(
         function(result) {
         if (!_.isUndefined(result.response.docs)) {
-          $scope.hits = result.response.numFound;
-          $scope.elasticsearch.dashboards = result.response.docs;
+          var docs = [];
+          for (var i = 0; i < result.response.docs.length; i++) {
+            var doc ={};
+            doc['id'] = result.response.docs[i].id;
+            doc['server'] = angular.fromJson(result.response.docs[i].dashboard).solr.server;
+            docs.push(doc);
+          }
+          $scope.elasticsearch.dashboards = docs;
         }
       });
     };
