@@ -16,9 +16,16 @@ function (angular, config, _) {
 
         self.getFusionUsername = function() {
             return $http.get(self.fusionSessionApi).then(function(sessionResponse) {
-                return sessionResponse.data.user.username;
+                if (sessionResponse) {
+                    return sessionResponse.data.user.username;
+                } else {
+                    // default username is 'guest'
+                    return 'guest';
+                }
             }, function(error) {
                 console.log('ERROR: Cannot get response from Fusion Session API.', error);
+                // In case of errors or using Solr, return the default username 'guest'
+                return 'guest';
             });
         };
 

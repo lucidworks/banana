@@ -45,3 +45,24 @@
       </form>
     </div>
   </div>
+
+  <div class="row-fluid">
+    <div class="span3">
+      <form>
+        <h6>Auto Fit Bounds</h6>
+        <input type="checkbox" class="input-small" ng-model="panel.fitBoundsAuto" ng-checked="panel.fitBoundsAuto">
+      </form>
+    </div>
+    <div class="span4">
+      <form>
+        <h6>Default Latitude if not exists</h6>
+        <input type="number" pattern="[0-9]+([\.|,][0-9]+)?" step="0.01" class="input-medium" ng-model="panel.lat_empty" ng-change="set_refresh(true)">
+      </form>
+    </div>
+    <div class="span4">
+      <form>
+        <h6>Default Longitude if not exists</h6>
+        <input type="number" pattern="[0-9]+([\.|,][0-9]+)?" step="0.01" class="input-medium" ng-model="panel.lon_empty" ng-change="set_refresh(true)">
+      </form>
+    </div>
+  </div>

@@ -1,8 +1,9 @@
 define([
     'angular',
-    'underscore'
+    'underscore',
+    'config'
 ],
-function (angular, _) {
+function (angular, _, config) {
     'use strict';
 
     var module = angular.module('kibana.controllers');
@@ -18,8 +19,11 @@ function (angular, _) {
             // $scope.elasticsearch is used throught out this file, dashLoader.html and others.
             // So we'll keep using it for now before refactoring it to $scope.solr.
             // $scope.solr = $scope.solr || {};
-            //create the system_banana collection
-            dashboard.create_system_collection();
+            
+            // Create the system_banana collection for Fusion.
+            if (config.USE_FUSION) {
+                dashboard.create_system_collection();
+            }
 
             // Pagination
             $scope.loadMenu = {

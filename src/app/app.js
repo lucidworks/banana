@@ -108,6 +108,8 @@ function (angular, $, _, appLevelRequire) {
                 goto = goto.replace(/#/g, '%23');  
                 window.location = goto;
                 return;
+              } else if (err.status === 404) {
+                  console.log('http 404 encounter!');
               }
             }
           );

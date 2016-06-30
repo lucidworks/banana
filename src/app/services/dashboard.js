@@ -22,6 +22,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         // A hash of defaults to use when loading a dashboard
         var _dash = {
             title: "",
+            username: "guest", // default
             style: "dark",
             editable: true,
             failover: false,
@@ -57,10 +58,12 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             }
         };
 
-        // Get Fusion login username and store it.
-        lucidworksSrv.getFusionUsername().then(function (username) {
-            _dash.username = username;
-        });
+        // If USE_FUSION, get the login username and store it.
+        if (config.USE_FUSION) {
+            lucidworksSrv.getFusionUsername().then(function (username) {
+                _dash.username = username;
+            });
+        }
 
         var sjs = sjsResource(config.solr + config.solr_core);
         var gist_pattern = /(^\d{5,}$)|(^[a-z0-9]{10,}$)|(gist.github.com(\/*.*)\/[a-z0-9]{5,}\/*$)/;
@@ -121,7 +124,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         // here before telling the panels to refresh
         this.refresh = function () {
             // Retrieve Solr collections for the dashboard
-            kbnIndex.collections(config.apollo_coll).then(function (p) {
+            // TODO
+            console.log('self.current.solr.server = ', self.current.solr.server);
+            kbnIndex.collections(self.current.solr.server).then(function (p) {
                 if (DEBUG) {
                     console.debug('dashboard: kbnIndex.collections p = ', p);
                 }
@@ -309,7 +314,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         };
 
         this.create_system_collection = function () {
-            //console.log("Creating system collection: " + config.banana_index);
             $http({
                 url: "/api/apollo/collections/" + config.banana_index,
                 method: "PUT",

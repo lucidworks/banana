@@ -29,35 +29,71 @@ function (angular, _, config, moment) {
       });
     };
 
-    // Solr: returns a promise containing an array of all collections in the Solr server.
+    /**
+     * Get an array of all collections in Solr or Fusion.
+     * @param hostUrl
+     * @returns promise
+     */
+    // param: solr_server (e.g. http://localhost:8983/solr/)
     // param: apollo_coll (e.g. /api/apollo/collections)
-    this.collections = function(apollo_coll) {
-      return all_collections(apollo_coll).then(function (p) {
+    this.collections = function(solrServer) {
+      return all_collections(solrServer).then(function (p) {
         return p;
       });
     };
+      
+    function all_collections(solrServer) {
+      var collectionApi;
 
-    // returns a promise containing an array of all collections in Solr
-    function all_collections(apollo_coll) {
-      var something = $http({
+      // Remove trailing slash in solrServer
+      if (solrServer.endsWith('/')) {
+        solrServer = solrServer.replace(/\/$/, '');
+      }
+      console.log('solrServer = ', solrServer);
+
+      if (config.USE_FUSION) {
+        collectionApi = config.FUSION_API_COLLECTIONS;
+      } else {
+        // TODO add support for getting Solr collection names
+        if (config.USE_ADMIN_CORES) {
+          collectionApi = '/admin/cores?action=STATUS&wt=json&omitHeader=true';
+        } else {
+          // admin API is disabled, then we cannot retrieve the collection list from Solr.
+          // return an empty list
+          return new Promise(function(resolve) {
+            resolve([]);  
+          });  
+        }
+      }
+      console.log('solrServer + collectionApi = ', solrServer + collectionApi);
+        
+      var promise = $http({
         // Use Solr Admin handler to get the list of all collections.
         // two hacks here: we're stripping the trailing "/" from the URL so the call is /solrAdmin/ instead of /solr/
         // And we're hard-coding the "default" search cluster ...that's the only one we'll get collections for, and it
         // is not yet configurable.
-        url: apollo_coll,
+        url: solrServer + collectionApi,
         method: "GET"
       }).error(function(data, status) {
         alertSrv.set('Error',"Could not retrieve collections from Solr (error status = "+status+")");
         console.debug('kbnIndex: error data = ',data);
       });
 
-      return something.then(function (p) {
+      return promise.then(function (p) {
         // Parse Solr response to an array of collections
         var collections = [];
+        console.log('p = ', p);
+          
         if (p) {
-          _.each(p.data, function(v) {
-            collections.push(v.id);
-          });
+          if (config.USE_FUSION) {
+            _.each(p.data, function(v) {
+              collections.push(v.id);
+            });  
+          } else {
+            _.each(p.data.status, function(v,k) {
+              collections.push(k);  
+            });  
+          }
         }
         if (DEBUG) { console.debug('kbnIndex: all_collections response p = ',p,'collections = ',collections); }
         return collections;
