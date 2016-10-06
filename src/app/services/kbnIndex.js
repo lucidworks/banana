@@ -49,14 +49,14 @@ function (angular, _, config, moment) {
       if (solrServer.endsWith('/')) {
         solrServer = solrServer.replace(/\/$/, '');
       }
-      console.log('solrServer = ', solrServer);
 
+      // Check if use Fusion or Solr
       if (config.USE_FUSION) {
         collectionApi = config.FUSION_API_COLLECTIONS;
       } else {
-        // TODO add support for getting Solr collection names
+        // Getting Solr collection names
         if (config.USE_ADMIN_CORES) {
-          collectionApi = '/admin/cores?action=STATUS&wt=json&omitHeader=true';
+          collectionApi = solrServer + '/admin/cores?action=STATUS&wt=json&omitHeader=true';
         } else {
           // admin API is disabled, then we cannot retrieve the collection list from Solr.
           // return an empty list
@@ -65,14 +65,13 @@ function (angular, _, config, moment) {
           });  
         }
       }
-      console.log('solrServer + collectionApi = ', solrServer + collectionApi);
-        
+
       var promise = $http({
         // Use Solr Admin handler to get the list of all collections.
         // two hacks here: we're stripping the trailing "/" from the URL so the call is /solrAdmin/ instead of /solr/
         // And we're hard-coding the "default" search cluster ...that's the only one we'll get collections for, and it
         // is not yet configurable.
-        url: solrServer + collectionApi,
+        url: collectionApi,
         method: "GET"
       }).error(function(data, status) {
         alertSrv.set('Error',"Could not retrieve collections from Solr (error status = "+status+")");
@@ -82,8 +81,7 @@ function (angular, _, config, moment) {
       return promise.then(function (p) {
         // Parse Solr response to an array of collections
         var collections = [];
-        console.log('p = ', p);
-          
+
         if (p) {
           if (config.USE_FUSION) {
             _.each(p.data, function(v) {

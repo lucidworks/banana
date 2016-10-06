@@ -33,8 +33,8 @@ function (Settings) {
      */
 
     // Specify Solr server and core to store the data.
-    // solr: "/api/apollo/solr/",
-    solr: "/solr/",
+    solr: "/api/apollo/solr/",
+    // solr: "/solr/",
     solr_core: "logs",
     timefield: "timestamp_tdt",
 
@@ -50,8 +50,8 @@ function (Settings) {
      * internal to banana.
      * @type {String}
      */
-    // banana_index: "system_banana",
-    banana_index: "banana-int",
+    banana_index: "system_banana",
+    // banana_index: "banana-int",
     banana_queryPipeline: "system_banana-default",
     banana_indexPipeline: "system_banana-default",
 
@@ -61,8 +61,8 @@ function (Settings) {
      * USE_FUSION = true, mean that Banana will talk to Lucidworks Fusion APIs, instead of Solr.
      * This mainly affect the APIs used to get the list of collections and schemas (fields).
      */
-    // USE_FUSION: true,
-    USE_FUSION: false,
+    USE_FUSION: true,
+    // USE_FUSION: false,
     apollo: "/api/apollo",
     // apollo_coll: "/api/apollo/collections", => replace with FUSION_API_COLLECTIONS
     apollo_queryPipeline: "/api/apollo/query-pipelines/",

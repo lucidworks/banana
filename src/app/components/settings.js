@@ -30,7 +30,8 @@ function (_) {
       SYSTEM_BANANA_QUERY_PIPELINE: "/api/apollo/query-pipelines/system_banana-default/collections/system_banana",
       SYSTEM_BANANA_INDEX_PIPELINE: "/api/apollo/index-pipelines/system_banana-default/collections/system_banana",
       FUSION_API_STATIC_FIELDS: "/schema/fields",
-      FUSION_API_DYNAMIC_FIELDS: "/schema/dynamicfields",  
+      FUSION_API_DYNAMIC_FIELDS: "/schema/dynamicfields",
+      FUSION_API_COLLECTIONS: "/api/apollo/collections"
     };
 
     // This initializes a new hash on purpose, to avoid adding parameters to

@@ -9,6 +9,28 @@ function (angular, _, config) {
     var module = angular.module('kibana.controllers');
 
     module.controller('dashLoader', function ($scope, $http, timer, dashboard, alertSrv) {
+        var self = this;
+        // Solr and Fusion uses different field names for their schema.
+        // Solr uses banana-int collection, and Fusion uses system_banana collection.
+        self.TITLE_FIELD = 'title';
+        self.DASHBOARD_FIELD = 'dashboard';
+        self.USER_FIELD = 'user';
+        self.GROUP_FIELD = 'group';
+
+        // If USE_FUSION, change the schema field names and banana_index setting.
+        // Also, get the login username and store it.
+        if (config.USE_FUSION) {
+            config.banana_index = 'system_banana';
+            self.TITLE_FIELD = 'banana_title_s';
+            self.DASHBOARD_FIELD = 'banana_dashboard_s';
+            self.USER_FIELD = 'banana_user_s';
+            self.GROUP_FIELD = 'banana_group_s';
+        }
+
+        $scope.getTitleField = function getTitleField() {
+            return self.TITLE_FIELD;
+        };
+
         $scope.loader = dashboard.current.loader;
 
         $scope.init = function () {
@@ -150,7 +172,6 @@ function (angular, _, config) {
                         if (result.responseHeader.status === 0) {
                             alertSrv.set('Dashboard Deleted', id + ' has been deleted', 'success', 5000);
                             // Find the deleted dashboard in the cached list and remove it
-                            // var toDelete = _.where($scope.elasticsearch.dashboards,{_id:id})[0];
                             var toDelete = _.where($scope.elasticsearch.dashboards, {id: id})[0];
                             $scope.elasticsearch.dashboards = _.without($scope.elasticsearch.dashboards, toDelete);
                         } else {
@@ -170,6 +191,15 @@ function (angular, _, config) {
                         $scope.hits = result.response.numFound;
                         $scope.elasticsearch.dashboards = result.response.docs;
 
+                        var docs = [];
+                        for (var i=0; i < result.response.docs.length; i++) {
+                            var doc = {};
+                            doc.id = result.response.docs[i].id;
+                            doc.server = angular.fromJson(result.response.docs[i][self.DASHBOARD_FIELD]).solr.server;
+                            docs.push(doc);
+                        }
+                        $scope.elasticsearch.dashboards = docs;
+
                         // Handle pagination
                         $scope.loadMenu.totalPages = Math.ceil($scope.hits / dashboard.current.loader.load_elasticsearch_size);
                         var pages = [];
@@ -183,7 +213,9 @@ function (angular, _, config) {
 
                         $scope.loadMenu.pages = pages;
                         $scope.loadMenu.currentPage = 1;
-                        $scope.loadMenu.pages[0].state = 'active';
+                        if ($scope.loadMenu.pages.length > 0) {
+                          $scope.loadMenu.pages[0].state = 'active';
+                        }
                         
                         if ($scope.loadMenu.totalPages > $scope.loadMenu.maxShownPages) {
                             $scope.loadMenu.forwardButtonState = '';

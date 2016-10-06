@@ -58,8 +58,22 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             }
         };
 
-        // If USE_FUSION, get the login username and store it.
+        // Solr and Fusion uses different field names for their schema.
+        // Solr uses banana-int collection, and Fusion uses system_banana collection.
+        self.TITLE_FIELD = 'title';
+        self.DASHBOARD_FIELD = 'dashboard';
+        self.USER_FIELD = 'user';
+        self.GROUP_FIELD = 'group';
+
+        // If USE_FUSION, change the schema field names and banana_index setting.
+        // Also, get the login username and store it.
         if (config.USE_FUSION) {
+            config.banana_index = 'system_banana';
+            self.TITLE_FIELD = 'banana_title_s';
+            self.DASHBOARD_FIELD = 'banana_dashboard_s';
+            self.USER_FIELD = 'banana_user_s';
+            self.GROUP_FIELD = 'banana_group_s';
+
             lucidworksSrv.getFusionUsername().then(function (username) {
                 _dash.username = username;
             });
@@ -124,8 +138,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         // here before telling the panels to refresh
         this.refresh = function () {
             // Retrieve Solr collections for the dashboard
-            // TODO
-            console.log('self.current.solr.server = ', self.current.solr.server);
             kbnIndex.collections(self.current.solr.server).then(function (p) {
                 if (DEBUG) {
                     console.debug('dashboard: kbnIndex.collections p = ', p);
@@ -313,6 +325,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             });
         };
 
+        // This function is only used for Fusion.
         this.create_system_collection = function () {
             $http({
                 url: "/api/apollo/collections/" + config.banana_index,
@@ -330,13 +343,20 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             });
         };
 
+        // Load a saved dashboard from Solr
         this.elasticsearch_load = function (type, id) {
+            // For dashboard field, Fusion uses 'banana_dashboard_s', but Solr uses 'dashboard'
+            var server = $routeParams.server + config.banana_index || config.solr + config.banana_index;
+            if (config.USE_FUSION) {
+                server = config.SYSTEM_BANANA_QUERY_PIPELINE;
+            }
+
             return $http({
-                url: config.SYSTEM_BANANA_QUERY_PIPELINE + '/select?wt=json&q=banana_title_s:"' + id + '"',
+                url: server + '/select?wt=json&q=' + self.TITLE_FIELD + ':"' + id + '"',
                 method: "GET",
                 transformResponse: function (response) {
                     response = angular.fromJson(response);
-                    var source_json = angular.fromJson(response.response.docs[0]['banana_dashboard_s']);
+                    var source_json = angular.fromJson(response.response.docs[0][self.DASHBOARD_FIELD]);
 
                     if (DEBUG) {
                         console.debug('dashboard: type=', type, ' id=', id, ' response=', response, ' source_json=', source_json);
@@ -399,31 +419,51 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
                 isPublic = true;
             }
 
-            // Create request with id as title. Rethink this.
-            // Use id instead of _id, because it is the default field of Solr schema-less.
-            var request = sjs.Document(config.banana_index, type, id).source({
-                // _id: id,
-                id: id,
-                banana_user_s: dashboard_user,
-                banana_group_s: 'none',
-                banana_title_s: save.title,
-                banana_dashboard_s: angular.toJson(save),
-                is_public_b: isPublic
-            });
+            // Create request with id as title.
+            // var request = sjs.Document(config.banana_index, type, id).source({
+            //   id: id,
+            //   banana_user_s: dashboard_user,
+            //   banana_group_s: 'none',
+            //   banana_title_s: save.title,
+            //   banana_dashboard_s: angular.toJson(save),
+            //   is_public_b: isPublic
+            // });
+            var dashboardDoc = {};
+            dashboardDoc.id = id;
+            dashboardDoc[self.USER_FIELD] = dashboard_user;
+            dashboardDoc[self.GROUP_FIELD] = 'none';
+            dashboardDoc[self.TITLE_FIELD] = save.title;
+            dashboardDoc[self.DASHBOARD_FIELD] = angular.toJson(save);
+            if (config.USE_FUSION) {
+                dashboardDoc.is_public_b = isPublic;
+            }
 
+            var request = sjs.Document(config.banana_index, type, id).source(dashboardDoc);
             request = type === 'temp' && ttl ? request.ttl(ttl) : request;
 
-            // Set sjs.client.server to use Index Pipeline for saving the dashboard.
-            sjs.client.server(config.SYSTEM_BANANA_INDEX_PIPELINE);
+            // For Fusion, set sjs.client.server to use Index Pipeline for saving the dashboard.
+            var server = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
+            var dashboardUrl = '/dashboard/solr/' + title + '?server=' + self.current.solr.server;
+            if (config.USE_FUSION) {
+                // The index pipeline uses /index endpoint, which is different from Solr /update and accepts different params.
+                server = config.SYSTEM_BANANA_INDEX_PIPELINE;
+                dashboardUrl = '/dashboard/solr/' + title;
+            }
+
+            sjs.client.useFusion(config.USE_FUSION);
+            sjs.client.server(server);
 
             return request.doIndex(
+                config.USE_FUSION,
                 function (success) {
                     if (type === 'dashboard') {
                         // Delay loading the newly saved dashboard by 2 sec
                         // in case it does not show up in Solr collection yet.
                         var ms = 2000;
                         $timeout(function () {
-                            $location.path('/dashboard/solr/' + title);
+                            // $location.path('/dashboard/solr/' + title);
+                            // $location.url('/dashboard/solr/' + title + '?server=' + self.current.solr.server);
+                            $location.url(dashboardUrl);
                         }, ms);
                     }
                     return success;
@@ -436,11 +476,18 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         };
 
         this.elasticsearch_delete = function (id) {
+            var server = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
+            // The index pipeline use /index endpoint, which is different from Solr (/update) and accepts different params.
+            if (config.USE_FUSION) {
+                server = config.SYSTEM_BANANA_INDEX_PIPELINE;
+            }
+
             // Set sjs.client.server to use 'banana-int' for deleting dashboard
-            // TODO change this to Fusion Index Pipeline
-            sjs.client.server(config.solr + config.banana_index);
+            sjs.client.useFusion(config.USE_FUSION);
+            sjs.client.server(server);
 
             return sjs.Document(config.banana_index, 'dashboard', id).doDelete(
+                config.USE_FUSION,
                 // Success
                 function (result) {
                     return result;
@@ -452,14 +499,14 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             );
         };
 
+        // Get a list of saved dashboards from Solr
         this.elasticsearch_list = function (query, count) {
-            // set indices and type
+            var server = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
+            if (config.USE_FUSION) {
+                server = config.SYSTEM_BANANA_QUERY_PIPELINE;
+            }
 
-            // TODO
-            // var solrserver = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
-            // var solrserver = config.SYSTEM_BANANA_QUERY_PIPELINE;
-            sjs.client.server(config.SYSTEM_BANANA_QUERY_PIPELINE);
-
+            sjs.client.server(server);
             var request = sjs.Request().indices(config.banana_index).types('dashboard');
 
             // Need to set sjs.client.server back to use 'logstash_logs' collection
@@ -477,7 +524,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
                     return false;
                 }
             );
-
         };
 
         this.save_gist = function (title, dashboard) {

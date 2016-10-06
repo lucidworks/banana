@@ -614,7 +614,7 @@
         "save_as_public": false
     },
     "solr": {
-        "server": "/solr/",
+        "server": "/api/apollo/solr/",
         "core_name": "logs",
         "core_list": [],
         "global_params": "&df=message_t"
