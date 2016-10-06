@@ -34,6 +34,7 @@ function (Settings) {
 
     // Specify Solr server and core to store the data.
     solr: "/api/apollo/solr/",
+    // solr: "/solr/",
     solr_core: "logs",
     timefield: "timestamp_tdt",
 
@@ -50,6 +51,7 @@ function (Settings) {
      * @type {String}
      */
     banana_index: "system_banana",
+    // banana_index: "banana-int",
     banana_queryPipeline: "system_banana-default",
     banana_indexPipeline: "system_banana-default",
 
@@ -60,8 +62,9 @@ function (Settings) {
      * This mainly affect the APIs used to get the list of collections and schemas (fields).
      */
     USE_FUSION: true,
+    // USE_FUSION: false,
     apollo: "/api/apollo",
-    apollo_coll: "/api/apollo/collections",
+    // apollo_coll: "/api/apollo/collections", => replace with FUSION_API_COLLECTIONS
     apollo_queryPipeline: "/api/apollo/query-pipelines/",
     apollo_indexPipeline: "/api/apollo/index-pipelines/",
     
@@ -70,6 +73,7 @@ function (Settings) {
     SYSTEM_BANANA_INDEX_PIPELINE: "/api/apollo/index-pipelines/system_banana-default/collections/system_banana",
     FUSION_API_STATIC_FIELDS: "/schema/fields",
     FUSION_API_DYNAMIC_FIELDS: "/schema/dynamicfields",
+    FUSION_API_COLLECTIONS: "/api/apollo/collections",
 
     /**
      * The default settings will use /admin/luke API to retrieve all fields from Solr including

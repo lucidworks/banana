@@ -380,7 +380,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
                   for (var j = 0; j < groups.length; j++) { // jshint ignore: line
                     var docs = groups[j].doclist.docs;
-                    var numFound = groups[j].doclist.numFound;
+                    // var numFound = groups[j].doclist.numFound;
                     var group_time_series = new timeSeries.ZeroFilled({
                       interval: _interval,
                       start_date: _range && _range.from,
@@ -686,8 +686,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             var lsItemTT = group + dashboard.numberWithCommas(value) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(item.datapoint[0]).format('MM/DD HH:mm:ss') : moment(item.datapoint[0]).format('MM/DD HH:mm:ss'));
 
             var hoverSeries = item.series;
-            var x = item.datapoint[0],
-                y = item.datapoint[1];
+            var x = item.datapoint[0];
+                // y = item.datapoint[1];
 
             var lsTT = lsItemTT;
             var allSeries = scope.plot.getData();
@@ -703,7 +703,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               i = parseInt(i);
 
 
-              if (s == hoverSeries ) {
+              if (s === hoverSeries ) {
                 posSerie = i;
               }
 
@@ -715,7 +715,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               //search in current serie a point with de same position.
               for(var j= 0; j< s.data.length;j++){
                 var p = s.data[j];
-                if (p[0] == x ){
+                if (p[0] === x ){
 
                   if (scope.panel.stack && scope.panel.tooltip.value_type === 'individual' && !isNaN(p[2]))  {
                     value = p[1] - p[2];
@@ -725,7 +725,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
                   lbPositiveValue = value > 0;
 
-                  if (! scope.panel.stack && value != lnLastValue){
+                  if (! scope.panel.stack && value !== lnLastValue){
                     break;
                   }
 

@@ -84,7 +84,7 @@ function (_, Interval) {
       var curValue = 0;
       if (!isNaN(this._data[time])){
           curValue = this._data[time];
-      };
+      }
 
 
       this._data[time] = curValue + (_.isUndefined(value) ? 0 : value);

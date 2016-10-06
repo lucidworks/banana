@@ -203,10 +203,10 @@ function (angular, _, config) {
                         // Handle pagination
                         $scope.loadMenu.totalPages = Math.ceil($scope.hits / dashboard.current.loader.load_elasticsearch_size);
                         var pages = [];
-                        for (var i = 0; i < $scope.loadMenu.totalPages; i++) {
+                        for (var j = 0; j < $scope.loadMenu.totalPages; j++) {
                             pages.push({
-                                offset: i * dashboard.current.loader.load_elasticsearch_size,
-                                number: i + 1,
+                                offset: j * dashboard.current.loader.load_elasticsearch_size,
+                                number: j + 1,
                                 state: ''
                             });
                         }
