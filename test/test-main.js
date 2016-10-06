@@ -14,13 +14,14 @@ Object.keys(window.__karma__.files).forEach(function(file) {
   // }
 
   // List of test files:
-  allTestFiles.push('/base/test/unit/tableSpec.js');
+  // allTestFiles.push('/base/test/unit/tableSpec.js');
+  allTestFiles.push('/base/test/unit/dummySpec.js');
+
 });
 
 require.config({
   // Karma serves files under /base, which is the basePath from your config file
   baseUrl: '/base/src/app',
-
   paths: {
     config:                   '../config',
     settings:                 'components/settings',
@@ -35,8 +36,6 @@ require.config({
     'angular-dragdrop':       '../vendor/angular/angular-dragdrop',
     'angular-strap':          '../vendor/angular/angular-strap',
     'angular-sanitize':       '../vendor/angular/angular-sanitize',
-    'angular-mocks':          '../vendor/angular/angular-mocks',
-
     timepicker:               '../vendor/angular/timepicker',
     datepicker:               '../vendor/angular/datepicker',
 
@@ -44,7 +43,7 @@ require.config({
     'underscore-src':         '../vendor/underscore',
     bootstrap:                '../vendor/bootstrap/bootstrap',
 
-    jquery:                   '../vendor/jquery/jquery-1.8.0',
+    jquery:                   '../vendor/jquery/jquery-1.12.1',
     'jquery-ui':              '../vendor/jquery/jquery-ui-1.10.3',
 
     'extend-jquery':          'components/extend-jquery',
@@ -55,15 +54,14 @@ require.config({
     'jquery.flot.stack':      '../vendor/jquery/jquery.flot.stack',
     'jquery.flot.stackpercent':'../vendor/jquery/jquery.flot.stackpercent',
     'jquery.flot.time':       '../vendor/jquery/jquery.flot.time',
+    'jquery.flot.axislabels': '../vendor/jquery/jquery.flot.axislabels',
+    'showdown':               '../vendor/showdown',
 
     modernizr:                '../vendor/modernizr-2.6.1',
     elasticjs:                '../vendor/elasticjs/elastic-angular-client',
     solrjs:                   '../vendor/solrjs/solr-angular-client',
-    d3:                       '../vendor/d3',
-
-    tablePanel: 'panels/table/module'
+    d3:                       '../vendor/d3'
   },
-
   shim: {
     underscore: {
       exports: '_'
@@ -93,7 +91,8 @@ require.config({
     'jquery.flot.selection':['jquery', 'jquery.flot'],
     'jquery.flot.stack':    ['jquery', 'jquery.flot'],
     'jquery.flot.stackpercent':['jquery', 'jquery.flot'],
-    'jquery.flot.time':     ['jquery', 'jquery.flot'],
+    'jquery.flot.time':        ['jquery', 'jquery.flot'],
+    'jquery.flot.axislabels':  ['jquery', 'jquery.flot'],
 
     'angular-sanitize':     ['angular'],
     'angular-cookies':      ['angular'],
