@@ -23,7 +23,6 @@ function (_) {
       // Lucidworks Fusion settings
       USE_FUSION: true,  
       apollo: "/api/apollo",
-      apollo_coll: "/api/apollo/collections",
       apollo_queryPipeline: "/api/apollo/query-pipelines/",
       apollo_indexPipeline: "/api/apollo/index-pipelines/",
 

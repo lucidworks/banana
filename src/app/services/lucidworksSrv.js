@@ -30,8 +30,8 @@ function (angular, config, _) {
         };
 
         self.getFields = function(collection) {
-            var staticFieldsUrl = config.apollo_coll + '/' + collection + config.FUSION_API_STATIC_FIELDS;
-            var dynamicFieldsUrl = config.apollo_coll + '/' + collection + config.FUSION_API_DYNAMIC_FIELDS;
+            var staticFieldsUrl = config.FUSION_API_COLLECTIONS + '/' + collection + config.FUSION_API_STATIC_FIELDS;
+            var dynamicFieldsUrl = config.FUSION_API_COLLECTIONS + '/' + collection + config.FUSION_API_DYNAMIC_FIELDS;
             var promises = [];
 
             promises.push($http.get(staticFieldsUrl)

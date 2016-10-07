@@ -359,11 +359,12 @@ function (angular, app, _, kbn, moment) {
                     // Keep only what we need for the set
                     $scope.data = $scope.data.slice(0, $scope.panel.size * $scope.panel.pages);
 
+                    // TODO $scope.panel.import_fields should not be cleared, because it contains user's preference for which fields to show.
                     // Dynamically display only non-empty fields on the field list (left side)
-                    $scope.panel.important_fields = [];
-                    _.each($scope.data, function (doc) {
-                        $scope.panel.important_fields = _.union(_.keys(doc.kibana._source));
-                    });
+                    // $scope.panel.important_fields = [];
+                    // _.each($scope.data, function (doc) {
+                    //     $scope.panel.important_fields = _.union(_.keys(doc.kibana._source));
+                    // });
                 } else {
                     return;
                 }

@@ -35,7 +35,6 @@ function (angular, _, config, moment) {
      * @returns promise
      */
     // param: solr_server (e.g. http://localhost:8983/solr/)
-    // param: apollo_coll (e.g. /api/apollo/collections)
     this.collections = function(solrServer) {
       return all_collections(solrServer).then(function (p) {
         return p;

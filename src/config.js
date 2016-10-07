@@ -64,7 +64,6 @@ function (Settings) {
     USE_FUSION: true,
     // USE_FUSION: false,
     apollo: "/api/apollo",
-    // apollo_coll: "/api/apollo/collections", => replace with FUSION_API_COLLECTIONS
     apollo_queryPipeline: "/api/apollo/query-pipelines/",
     apollo_indexPipeline: "/api/apollo/index-pipelines/",
     
