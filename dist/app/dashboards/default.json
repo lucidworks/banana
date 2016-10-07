@@ -1,9 +1,12 @@
 {
-    "title": "Fusion Logs",
+    "title": "Basic Dashboard With Pointers",
     "services": {
         "query": {
             "idQueue": [
-                1
+                1,
+                2,
+                3,
+                4
             ],
             "list": {
                 "0": {
@@ -21,16 +24,15 @@
         },
         "filter": {
             "idQueue": [
-                1
+                1,
+                2
             ],
             "list": {
                 "0": {
-                    "from": "NOW/HOUR-12HOUR",
-                    "to": "NOW/HOUR%2B1HOUR",
-                    "field": "timestamp_tdt",
+                    "from": "2014-04-02T05:07:22.216Z",
+                    "to": "2014-04-02T05:22:22.216Z",
+                    "field": "event_timestamp",
                     "type": "time",
-                    "fromDateObj": "2016-05-18T23:00:47.140Z",
-                    "toDateObj": "2016-05-19T11:00:47.140Z",
                     "mandate": "must",
                     "active": true,
                     "alias": "",
@@ -44,65 +46,12 @@
     },
     "rows": [
         {
-            "title": "Options",
-            "height": "100px",
+            "title": "Overview",
+            "height": "50px",
             "editable": true,
             "collapse": false,
             "collapsable": true,
             "panels": [
-                {
-                    "error": false,
-                    "span": 6,
-                    "editable": false,
-                    "type": "column",
-                    "loadingEditor": false,
-                    "panels": [
-                        {
-                            "type": "timepicker",
-                            "mode": "relative",
-                            "timefield": "timestamp_tdt",
-                            "time_options": [
-                                "5m",
-                                "15m",
-                                "1h",
-                                "6h",
-                                "12h",
-                                "24h",
-                                "7d",
-                                "30d",
-                                "1y"
-                            ],
-                            "timespan": "12h",
-                            "height": "50px",
-                            "status": "Stable",
-                            "timeformat": "",
-                            "spyable": true,
-                            "refresh": {
-                                "enable": false,
-                                "interval": 30,
-                                "min": 3
-                            },
-                            "filter_id": 0,
-                            "error": ""
-                        },
-                        {
-                            "loading": false,
-                            "error": false,
-                            "sizeable": false,
-                            "span": 12,
-                            "height": "50px",
-                            "editable": true,
-                            "type": "query",
-                            "draggable": false,
-                            "query": "*:*",
-                            "pinned": true,
-                            "history": [],
-                            "spyable": true,
-                            "remember": 10
-                        }
-                    ],
-                    "title": "Search"
-                },
                 {
                     "error": false,
                     "span": 6,
@@ -111,14 +60,109 @@
                     "loadingEditor": false,
                     "status": "Stable",
                     "mode": "markdown",
-                    "content": "You have a few choices:\n\n* [Blank Dashboard](index.html#/dashboard/file/blank.json) I don't have much data yet, please extract some basics for me\n* [Lucidworks Fusion Signals](index.html#/dashboard/file/lucidworks-signals.json) Explore the Lucidworks Fusion Signals collection\n* [Metrics Dashboard](index.html#/dashboard/file/lucidworks-metrics.json) Show me how my system is performing\n* [Search Analytics](index.html#/dashboard/file/lucidworks-searchanalytics.json) Use this dashboard to display search analytics info from your collection",
+                    "content": "You may be seeing a message that says Solr is not reachable or that the collection is not found. Click on _Configure Dashboard_ (cog icon) on the top right and set the Solr server and collection. By default, we have configured the dashboard to point to server _http://localhost:8983_ and collection _collection1_. You can also choose how many rows you want to have in the dashboard. \n\nTo configure what panels appear in a specific row, click on the _Configure Row_  (cog icon) at the far left of the row.\n\nEach panel can be configured by clicking on _Configure_ (cog icon) near the top right of the panel (just to the left of the panel type). The span of the panel determines its width; each row has width 12, and each panel can take up all or part of this span.\n\nAfter reading these _text panels_ (which are useful for presenting information about a dashboard), you can delete them by clicking on the \"x\" towards the top right of the panel.",
                     "style": {},
-                    "title": "Explore Dashboards"
+                    "title": "Configure Dashboard"
+                },
+                {
+                    "error": false,
+                    "span": 6,
+                    "editable": true,
+                    "group": [
+                        "default"
+                    ],
+                    "type": "text",
+                    "status": "Stable",
+                    "mode": "markdown",
+                    "content": "In the row below, we have put in a _time picker_ and a _search bar._ Banana is primarily designed for time series data, and we expect every dashboard to have a time picker. You will also almost always have a search bar for user searches. \n\nBelow that there is a hidden row that contains a _filtering_ module, which is used to configure global filter queries. You will almost certainly want to have one. Clicking on any facet in the terms module will filter results by that value. You can modify each filter once it is created; you can change the value and/or choose between \"must\", \"must not\" and \"either.\"\n\nClick on the right-facing triangle to the far left of the row to _Expand Row_. You can click on the upward-facing triangle on any row in order to _Hide Row._",
+                    "style": {},
+                    "title": "Timestamps, Queries and Filters"
+                }
+            ]
+        },
+        {
+            "title": "Query and Time Window",
+            "height": "50px",
+            "editable": true,
+            "collapse": false,
+            "collapsable": true,
+            "panels": [
+                {
+                    "error": "",
+                    "span": 6,
+                    "editable": true,
+                    "type": "timepicker",
+                    "loadingEditor": false,
+                    "status": "Stable",
+                    "mode": "relative",
+                    "spyable" : true,
+                    "time_options": [
+                        "5m",
+                        "15m",
+                        "1h",
+                        "6h",
+                        "12h",
+                        "24h",
+                        "2d",
+                        "7d",
+                        "30d",
+                        "90d",
+                        "1y",
+                        "5y"
+                    ],
+                    "timespan": "15m",
+                    "timefield": "event_timestamp",
+                    "timeformat": "",
+                    "refresh": {
+                        "enable": false,
+                        "interval": 30,
+                        "min": 3
+                    },
+                    "filter_id": 0,
+                    "title": "Time Window"
+                },
+                {
+                    "error": false,
+                    "span": 6,
+                    "editable": true,
+                    "spyable" : true,
+                    "group": [
+                        "default"
+                    ],
+                    "type": "query",
+                    "label": "Search",
+                    "history": [
+                        "*"
+                    ],
+                    "remember": 10,
+                    "pinned": true,
+                    "query": "*",
+                    "title": "Search",
+                    "def_type": ""
                 }
             ]
         },
         {
             "title": "Filters",
+            "height": "50px",
+            "editable": true,
+            "collapse": true,
+            "collapsable": true,
+            "panels": [
+                {
+                    "error": false,
+                    "span": 12,
+                    "editable": true,
+                    "spyable" : true,
+                    "group": [
+                        "default"
+                    ],
+                    "type": "filtering"
+                }
+            ]
+        },
+        {
+            "title": "Facets, Histogram and Table",
             "height": "150px",
             "editable": true,
             "collapse": false,
@@ -126,26 +170,39 @@
             "panels": [
                 {
                     "error": false,
-                    "span": 6,
+                    "span": 12,
                     "editable": true,
-                    "type": "filtering",
-                    "loadingEditor": false,
-                    "spyable": true,
-                    "title": "Filter"
-                },
+                    "group": [
+                        "default"
+                    ],
+                    "type": "text",
+                    "status": "Stable",
+                    "mode": "markdown",
+                    "content": "Without knowing about your data, I cannot fully configure the panels I have provided below. However, I have provided you with some starting points, assuming that your time field is \"event_timestamp\" and that there is a field called \"message\" that you wish to facet on in order to view the top terms that appear in the \"message\" field and their frequency. If there is no data, these panels will be empty, and may give an error.\n\nThe _histogram_ panel allows you to plot either _counts_ or a specific field's (integer) _values_ across time. If you go to  _Configure_, the panel allows you to set the type of chart and what variable is plotted (if choosing the _values_ option). Moreover, when plotting values, you can specify a _group by_ field which will produce multiple charts. You can modify the time window for the entire page from within the histogram panel.\n\nThe _terms_ panel is great for visualizing facets--as pie charts, bar charts or tables. Clicking on a term will create a global filter query restricting the result set (across all panels within the page) to the field value that is selected. You could have many such panels depending on the number of fields you choose to facet on.\n\nThe *table* panel at the bottom provides you a detailed view of search results. It has attempted to list your fields to the left; select a few to view them in the table. You can sort by any field. Click on a particular row to expand the resulting document that was returned.",
+                    "style": {},
+                    "title": "Facets, Histogram and Table"
+                }
+            ]
+        },
+        {
+            "title": "Graph",
+            "height": "250px",
+            "editable": true,
+            "collapse": false,
+            "collapsable": true,
+            "panels": [
                 {
                     "span": 6,
                     "editable": true,
                     "type": "histogram",
                     "loadingEditor": false,
                     "mode": "count",
-                    "time_field": "timestamp_tdt",
                     "queries": {
                         "mode": "all",
                         "ids": [
                             0
                         ],
-                        "query": "q=*&df=message_t&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.range=timestamp_tdt&facet.range.start=NOW/HOUR-12HOUR&facet.range.end=NOW/HOUR%2B1HOUR&facet.range.gap=%2B5MINUTE\n",
+                        "query": "q=*&wt=json&rows=0",
                         "custom": ""
                     },
                     "max_rows": 100000,
@@ -153,7 +210,7 @@
                     "group_field": null,
                     "auto_int": true,
                     "resolution": 100,
-                    "interval": "5m",
+                    "interval": "10s",
                     "intervals": [
                         "auto",
                         "1s",
@@ -178,7 +235,6 @@
                     "stack": true,
                     "points": false,
                     "lines": false,
-                    "lines_smooth": false,
                     "legend": true,
                     "x-axis": true,
                     "y-axis": true,
@@ -189,347 +245,64 @@
                         "value_type": "cumulative",
                         "query_as_alias": false
                     },
-                    "title": "Log Messages",
-                    "show_queries": true,
-                    "refresh": {
-                        "enable": false,
-                        "interval": 2
-                    }
-                }
-            ]
-        },
-        {
-            "title": "Description",
-            "height": "150px",
-            "editable": true,
-            "collapse": false,
-            "collapsable": true,
-            "panels": [
-                {
-                    "span": 4,
-                    "editable": true,
-                    "type": "terms",
-                    "loadingEditor": false,
-                    "queries": {
-                        "mode": "all",
-                        "ids": [
-                            0
-                        ],
-                        "query": "q=*&df=message_t&wt=json&fq=timestamp_tdt:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=level_s&facet.limit=10&facet.missing=true&f.level_s.facet.sort=count",
-                        "custom": ""
-                    },
-                    "mode": "count",
-                    "field": "level_s",
-                    "stats_field": "",
-                    "decimal_points": 0,
-                    "exclude": [],
-                    "missing": false,
-                    "other": false,
-                    "size": 10,
-                    "order": "descending",
-                    "style": {
-                        "font-size": "10pt"
-                    },
-                    "donut": false,
-                    "tilt": false,
-                    "labels": true,
-                    "arrangement": "horizontal",
-                    "chart": "bar",
-                    "counter_pos": "above",
-                    "spyable": true,
-                    "title": "Log Levels",
-                    "lastColor": "",
-                    "chartColors": [
-                        "#7EB26D",
-                        "#EAB839",
-                        "#6ED0E0",
-                        "#EF843C",
-                        "#E24D42",
-                        "#1F78C1",
-                        "#BA43A9",
-                        "#705DA0",
-                        "#508642",
-                        "#CCA300",
-                        "#447EBC",
-                        "#C15C17",
-                        "#890F02",
-                        "#0A437C",
-                        "#6D1F62",
-                        "#584477",
-                        "#B7DBAB",
-                        "#F4D598",
-                        "#70DBED",
-                        "#F9BA8F",
-                        "#F29191",
-                        "#82B5D8",
-                        "#E5A8E2",
-                        "#AEA2E0",
-                        "#629E51",
-                        "#E5AC0E",
-                        "#64B0C8",
-                        "#E0752D",
-                        "#BF1B00",
-                        "#0A50A1",
-                        "#962D82",
-                        "#614D93",
-                        "#9AC48A",
-                        "#F2C96D",
-                        "#65C5DB",
-                        "#F9934E",
-                        "#EA6460",
-                        "#5195CE",
-                        "#D683CE",
-                        "#806EB7",
-                        "#3F6833",
-                        "#967302",
-                        "#2F575E",
-                        "#99440A",
-                        "#58140C",
-                        "#052B51",
-                        "#511749",
-                        "#3F2B5B",
-                        "#E0F9D7",
-                        "#FCEACA",
-                        "#CFFAFF",
-                        "#F9E2D2",
-                        "#FCE2DE",
-                        "#BADFF4",
-                        "#F9D9F9",
-                        "#DEDAF7"
-                    ],
-                    "logAxis": false,
-                    "show_queries": true,
-                    "sortBy": "count",
-                    "exportSize": 10000,
-                    "refresh": {
-                        "enable": false,
-                        "interval": 2
-                    }
+                    "title": "Event Counts"
                 },
                 {
-                    "span": 4,
+                    "error": false,
+                    "span": 6,
                     "editable": true,
+                    "group": [
+                        "default"
+                    ],
                     "type": "terms",
-                    "loadingEditor": false,
                     "queries": {
                         "mode": "all",
                         "ids": [
                             0
                         ],
-                        "query": "q=*&df=message_t&wt=json&fq=timestamp_tdt:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=host_s&facet.limit=10&facet.missing=true&f.host_s.facet.sort=count",
-                        "custom": ""
+                        "query": "q=*&wt=json&rows=0&fq=event_timestamp:[2014-04-02T05:07:22.000Z%20TO%202014-04-02T05:22:22.000Z]&facet=true&facet.field=message&facet.range=event_timestamp&facet.range.start=2014-04-02T05:07:22.000Z&facet.range.end=2014-04-02T05:22:22.000Z&facet.range.gap=%2B1DAY&facet.limit=100"
                     },
-                    "mode": "count",
-                    "field": "host_s",
-                    "stats_field": "",
-                    "decimal_points": 0,
+                    "field": "message",
                     "exclude": [],
                     "missing": false,
                     "other": false,
-                    "size": 10,
-                    "order": "descending",
+                    "size": 100,
+                    "order": "count",
                     "style": {
                         "font-size": "10pt"
                     },
-                    "donut": false,
-                    "tilt": false,
-                    "labels": true,
+                    "donut": true,
+                    "tilt": true,
+                    "labels": false,
                     "arrangement": "horizontal",
-                    "chart": "bar",
-                    "counter_pos": "above",
+                    "chart": "pie",
+                    "counter_pos": "none",
+                    "title": "Message Terms",
                     "spyable": true,
-                    "title": "Hosts",
-                    "lastColor": "",
-                    "chartColors": [
-                        "#7EB26D",
-                        "#EAB839",
-                        "#6ED0E0",
-                        "#EF843C",
-                        "#E24D42",
-                        "#1F78C1",
-                        "#BA43A9",
-                        "#705DA0",
-                        "#508642",
-                        "#CCA300",
-                        "#447EBC",
-                        "#C15C17",
-                        "#890F02",
-                        "#0A437C",
-                        "#6D1F62",
-                        "#584477",
-                        "#B7DBAB",
-                        "#F4D598",
-                        "#70DBED",
-                        "#F9BA8F",
-                        "#F29191",
-                        "#82B5D8",
-                        "#E5A8E2",
-                        "#AEA2E0",
-                        "#629E51",
-                        "#E5AC0E",
-                        "#64B0C8",
-                        "#E0752D",
-                        "#BF1B00",
-                        "#0A50A1",
-                        "#962D82",
-                        "#614D93",
-                        "#9AC48A",
-                        "#F2C96D",
-                        "#65C5DB",
-                        "#F9934E",
-                        "#EA6460",
-                        "#5195CE",
-                        "#D683CE",
-                        "#806EB7",
-                        "#3F6833",
-                        "#967302",
-                        "#2F575E",
-                        "#99440A",
-                        "#58140C",
-                        "#052B51",
-                        "#511749",
-                        "#3F2B5B",
-                        "#E0F9D7",
-                        "#FCEACA",
-                        "#CFFAFF",
-                        "#F9E2D2",
-                        "#FCE2DE",
-                        "#BADFF4",
-                        "#F9D9F9",
-                        "#DEDAF7"
-                    ],
-                    "logAxis": false,
-                    "show_queries": true,
-                    "sortBy": "count",
-                    "exportSize": 10000,
-                    "refresh": {
-                        "enable": false,
-                        "interval": 2
-                    }
-                },
-                {
-                    "span": 4,
-                    "editable": true,
-                    "type": "terms",
-                    "loadingEditor": false,
-                    "queries": {
-                        "mode": "all",
-                        "ids": [
-                            0
-                        ],
-                        "query": "q=*&df=message_t&wt=json&fq=timestamp_tdt:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=port_s&facet.limit=10&facet.missing=true&f.port_s.facet.sort=count",
-                        "custom": ""
-                    },
-                    "mode": "count",
-                    "field": "port_s",
-                    "stats_field": "",
-                    "decimal_points": 0,
-                    "exclude": [],
-                    "missing": false,
-                    "other": false,
-                    "size": 10,
-                    "order": "descending",
-                    "style": {
-                        "font-size": "10pt"
-                    },
-                    "donut": false,
-                    "tilt": false,
-                    "labels": true,
-                    "arrangement": "horizontal",
-                    "chart": "bar",
-                    "counter_pos": "above",
-                    "lastColor": "",
-                    "spyable": true,
-                    "chartColors": [
-                        "#7EB26D",
-                        "#EAB839",
-                        "#6ED0E0",
-                        "#EF843C",
-                        "#E24D42",
-                        "#1F78C1",
-                        "#BA43A9",
-                        "#705DA0",
-                        "#508642",
-                        "#CCA300",
-                        "#447EBC",
-                        "#C15C17",
-                        "#890F02",
-                        "#0A437C",
-                        "#6D1F62",
-                        "#584477",
-                        "#B7DBAB",
-                        "#F4D598",
-                        "#70DBED",
-                        "#F9BA8F",
-                        "#F29191",
-                        "#82B5D8",
-                        "#E5A8E2",
-                        "#AEA2E0",
-                        "#629E51",
-                        "#E5AC0E",
-                        "#64B0C8",
-                        "#E0752D",
-                        "#BF1B00",
-                        "#0A50A1",
-                        "#962D82",
-                        "#614D93",
-                        "#9AC48A",
-                        "#F2C96D",
-                        "#65C5DB",
-                        "#F9934E",
-                        "#EA6460",
-                        "#5195CE",
-                        "#D683CE",
-                        "#806EB7",
-                        "#3F6833",
-                        "#967302",
-                        "#2F575E",
-                        "#99440A",
-                        "#58140C",
-                        "#052B51",
-                        "#511749",
-                        "#3F2B5B",
-                        "#E0F9D7",
-                        "#FCEACA",
-                        "#CFFAFF",
-                        "#F9E2D2",
-                        "#FCE2DE",
-                        "#BADFF4",
-                        "#F9D9F9",
-                        "#DEDAF7"
-                    ],
-                    "title": "Ports",
-                    "logAxis": false,
-                    "show_queries": true,
-                    "sortBy": "count",
-                    "exportSize": 10000,
-                    "refresh": {
-                        "enable": false,
-                        "interval": 2
-                    }
+                    "time_field": "event_timestamp"
                 }
             ]
         },
         {
             "title": "Events",
-            "height": "350px",
+            "height": "650px",
             "editable": true,
             "collapse": false,
             "collapsable": true,
             "panels": [
                 {
-                    "title": "All events",
+                    "error": false,
                     "span": 12,
                     "editable": true,
                     "group": [
                         "default"
                     ],
                     "type": "table",
-                    "size": 20,
-                    "pages": 10,
+                    "size": 100,
+                    "pages": 5,
                     "offset": 0,
                     "sort": [
-                        "timestamp_tdt",
+                        "id",
                         "desc"
                     ],
                     "style": {
@@ -537,11 +310,7 @@
                     },
                     "overflow": "min-height",
                     "fields": [
-                        "timestamp_tdt",
-                        "level_s",
-                        "host_s",
-                        "port_s",
-                        "message_t"
+                        "message"
                     ],
                     "highlight": [],
                     "sortable": true,
@@ -553,52 +322,29 @@
                         "ids": [
                             0
                         ],
-                        "query": "q=*&df=message_t&fq=timestamp_tdt:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&sort=timestamp_tdt desc&wt=json&rows=200",
-                        "basic_query": "q=*&df=message_t&fq=timestamp_tdt:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&sort=timestamp_tdt desc"
+                        "query": "q=*&wt=json&rows=500&fq=event_timestamp:[2014-04-02T05:07:22.000Z%20TO%202014-04-02T05:22:22.000Z]&sort=id desc"
                     },
                     "field_list": true,
                     "status": "Stable",
                     "trimFactor": 300,
                     "normTimes": true,
-                    "time_field": "timestamp_tdt",
-                    "saveOption": "json",
-                    "exportSize": 200,
-                    "exportAll": true,
-                    "displayLinkIcon": true,
-                    "imageFields": [],
-                    "imgFieldWidth": "auto",
-                    "imgFieldHeight": "85px",
-                    "important_fields": [
-                        "host_s",
-                        "id",
-                        "level_s",
-                        "message_t",
-                        "port_s",
-                        "thread_s",
-                        "timestamp_tdt"
-                    ],
-                    "show_queries": true,
-                    "maxNumCalcTopFields": 20,
-                    "calcTopFieldValuesFromAllData": false,
-                    "refresh": {
-                        "enable": false,
-                        "interval": 2
-                    }
+                    "title": "Events",
+                    "time_field": "event_timestamp"
                 }
             ]
         }
     ],
     "editable": true,
-    "failover": false,
     "index": {
         "interval": "none",
         "pattern": "[logstash-]YYYY.MM.DD",
-        "default": "NO_TIME_FILTER_OR_INDEX_PATTERN_NOT_MATCHED"
+        "default": "_all"
     },
     "style": "light",
+    "failover": false,
     "panel_hints": true,
     "loader": {
-        "save_gist": false,
+        "save_gist": true,
         "save_elasticsearch": true,
         "save_local": true,
         "save_default": true,
@@ -609,15 +355,12 @@
         "load_elasticsearch": true,
         "load_elasticsearch_size": 20,
         "load_local": true,
-        "hide": false,
-        "dropdown_collections": false,
-        "save_as_public": false
+        "hide": false
     },
     "solr": {
-        "server": "/api/apollo/solr/",
-        "core_name": "logs",
+        "server": "/solr/",
+        "core_name": "collection1",
         "core_list": [],
-        "global_params": "&df=message_t"
-    },
-    "username": "guest"
+        "global_params": ""
+    }
 }
