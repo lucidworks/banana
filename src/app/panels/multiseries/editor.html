@@ -53,3 +53,13 @@
     <input type="checkbox" ng-model="panel.showRightLegend" ng-checked="panel.showRightLegend">
   </div>  
 </div>
+<div class="row-fluid">
+  <h5>Real-time (Auto-refresh)</h5>  
+  <div class="span1">
+    <label class="small">Enable</label><input type="checkbox" ng-model="panel.refresh.enable" ng-checked="panel.refresh.enable">
+  </div>
+  <div class="span2">
+    <label class="small">Interval (seconds) <tip>The minimum value is 2.</tip></label>
+    <input type="number" min="2" class="input-mini" ng-model="panel.refresh.interval">
+  </div>
+</div>

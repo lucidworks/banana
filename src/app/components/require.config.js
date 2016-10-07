@@ -3,6 +3,7 @@
  */
 require.config({
   baseUrl: 'app',
+  waitSeconds: 0,
   // urlArgs: 'r=@REV@',
   paths: {
     config:                   '../config',
@@ -73,8 +74,8 @@ require.config({
     'jquery.flot.selection':['jquery', 'jquery.flot'],
     'jquery.flot.stack':    ['jquery', 'jquery.flot'],
     'jquery.flot.stackpercent':['jquery', 'jquery.flot'],
-    'jquery.flot.time':     ['jquery', 'jquery.flot'],
-    'jquery.flot.axislabels':['jquery', 'jquery.flot'],
+    'jquery.flot.time':        ['jquery', 'jquery.flot'],
+    'jquery.flot.axislabels':  ['jquery', 'jquery.flot'],
 
     'angular-sanitize':     ['angular'],
     'angular-cookies':      ['angular'],

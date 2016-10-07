@@ -1,0 +1,179 @@
+{
+  "title": "Better Map Demo",
+  "services": {
+    "query": {
+      "idQueue": [
+        1
+      ],
+      "list": {
+        "0": {
+          "query": "*:*",
+          "alias": "",
+          "color": "#7EB26D",
+          "id": 0,
+          "pin": false,
+          "type": "lucene"
+        }
+      },
+      "ids": [
+        0
+      ]
+    },
+    "filter": {
+      "idQueue": [
+        1
+      ],
+      "list": {
+        "0": {
+          "from": "2014-01-31T22:00:00.000Z",
+          "to": "2014-04-23T09:53:36.013Z",
+          "field": "start_time",
+          "type": "time",
+          "mandate": "must",
+          "active": true,
+          "alias": "",
+          "id": 0
+        }
+      },
+      "ids": [
+        0
+      ]
+    }
+  },
+  "rows": [
+    {
+      "title": "Options",
+      "height": "50px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "filtering",
+          "loadingEditor": false
+        },
+        {
+          "title": "Set time span",
+          "error": "",
+          "span": 4,
+          "editable": true,
+          "group": [
+            "default"
+          ],
+          "type": "timepicker",
+          "mode": "since",
+          "time_options": [
+            "5m",
+            "15m",
+            "1h",
+            "6h",
+            "12h",
+            "24h",
+            "2d",
+            "7d",
+            "30d"
+          ],
+          "timespan": "30d",
+          "timefield": "start_time",
+          "timeformat": "",
+          "refresh": {
+            "enable": false,
+            "interval": 600,
+            "min": 3
+          },
+          "filter_id": 0,
+          "status": "Stable",
+          "time": {
+            "from": "02/01/2014 00:00:00",
+            "to": "04/23/2014 11:53:36"
+          }
+        },
+        {
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "query",
+          "loadingEditor": false,
+          "query": "*:*",
+          "pinned": true,
+          "history": [
+            "*:*"
+          ],
+          "remember": 10,
+          "title": "Search",
+          "def_type": ""
+        }
+      ]
+    },
+    {
+      "title": "BetterMapDemo",
+      "height": "650px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "title": "Better Map Demo",
+          "span": 12,
+          "editable": true,
+          "tooltip": "start_station_id",
+          "group": [
+            "default"
+          ],
+          "field"     : "start_station",
+          "type"      : "bettermap",
+          "size"      : 7000,
+          "time_field": "start_time",
+          "lat_start" : 40,
+          "lat_end"   : 45,
+          "lon_start" : -80,
+          "lon_end"   : -73,
+          "dist"      : 100,
+          "sort": [
+            "start_time",
+            "desc"
+          ],
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "custom": ""
+          },
+          "spyable": true,
+          "error": false
+        }
+      ]
+    }
+  ],
+  "editable": true,
+  "failover": false,
+  "index": {
+    "interval": "none",
+    "pattern": "[logstash-]YYYY.MM.DD",
+    "default": "NO_TIME_FILTER_OR_INDEX_PATTERN_NOT_MATCHED"
+  },
+  "style": "dark",
+  "panel_hints": true,
+  "loader": {
+    "save_gist": false,
+    "save_elasticsearch": true,
+    "save_local": true,
+    "save_default": true,
+    "save_temp": true,
+    "save_temp_ttl_enable": true,
+    "save_temp_ttl": "30d",
+    "load_gist": true,
+    "load_elasticsearch": true,
+    "load_elasticsearch_size": 20,
+    "load_local": true,
+    "hide": false
+  },
+  "solr": {
+    "server": "http://localhost:8983/solr/",
+    "core_name": "bike-trip-geo"
+  }
+}

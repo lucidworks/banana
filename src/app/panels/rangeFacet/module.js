@@ -1,7 +1,5 @@
 /*
-
   ## RangeFacet
-
   ### Parameters
   * fill :: Only applies to line charts. Level of area shading from 0-10
   * linewidth ::  Only applies to line charts. How thick the line should be in pixels
@@ -16,7 +14,6 @@
   * x-axis :: Show x-axis labels and grid lines
   * y-axis :: Show y-axis labels and grid lines
   * interactive :: Allow drag to select time range
-
 */
 define([
   'angular',
@@ -25,15 +22,7 @@ define([
   'underscore',
   'kbn',
   'moment',
-  './timeSeries',
-
-  'jquery.flot',
-  'jquery.flot.pie',
-  'jquery.flot.selection',
-  'jquery.flot.time',
-  'jquery.flot.stack',
-  'jquery.flot.stackpercent',
-  'jquery.flot.axislabels'
+  './timeSeries'
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
@@ -41,7 +30,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
   var module = angular.module('kibana.panels.rangeFacet', []);
   app.useModule(module);
 
-  module.controller('rangeFacet', function($scope, $q, querySrv, dashboard, filterSrv) {
+  module.controller('rangeFacet', function($scope, $q, $timeout, timer, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -73,12 +62,13 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       },
       max_rows    : 100000,  // maximum number of rows returned from Solr (also use this for group.limit to simplify UI setting)
       value_field : null,
-      group_field : null,
       fill        : 0,
       linewidth   : 3,
       auto_int    : true,
       resolution  : 100,
       interval    : '10',
+      interval_decimal: 1,   // default number of decimals to display in the chart for each range.
+                             // This number is automatically calculated.
       resolutions : [5,10,25,50,75,100],
       spyable     : true,
       zoomlinks   : true,
@@ -93,12 +83,20 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       percentage  : false,
       interactive : true,
       options     : true,
+      minimum     : 0,     // Default x-axis minimum value
+      maximum     : 1000,  // Default x-axis maximum value
+      chart_minimum: 0,    // Current min value for x-axis
+      chart_maximum: 1000, // Current max value for x-axis
       tooltip     : {
         value_type: 'cumulative',
         query_as_alias: false
       },
-      showChart:true,
-      show_queries:true,
+      showChart: true,
+      show_queries: true,
+      refresh: {
+        enable: false,
+        interval: 2
+      }
     };
 
     _.defaults($scope.panel,_d);
@@ -106,6 +104,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     $scope.init = function() {
       // Hide view options by default
       $scope.options = false;
+
+      // Start refresh timer if enabled
+      if ($scope.panel.refresh.enable) {
+        $scope.set_timer($scope.panel.refresh.interval);
+      }
+
       $scope.$on('refresh',function(){
         $scope.get_data();
         if (filterSrv.idsByTypeAndField('range',$scope.panel.range_field).length > 0) {
@@ -114,8 +118,32 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           $scope.panel.showChart =  false;
         }
       });
-      $scope['defaults'] = [$scope.panel.minimum,$scope.panel.maximum];
+
+      $scope.set_configurations($scope.panel.minimum, $scope.panel.maximum);
       $scope.get_data();
+    };
+
+    $scope.set_timer = function(refresh_interval) {
+      $scope.panel.refresh.interval = refresh_interval;
+      if (_.isNumber($scope.panel.refresh.interval)) {
+        timer.cancel($scope.refresh_timer);
+        $scope.realtime();
+      } else {
+        timer.cancel($scope.refresh_timer);
+      }
+    };
+
+    $scope.realtime = function() {
+      if ($scope.panel.refresh.enable) {
+        timer.cancel($scope.refresh_timer);
+
+        $scope.refresh_timer = timer.register($timeout(function() {
+          $scope.realtime();
+          $scope.get_data();
+        }, $scope.panel.refresh.interval*1000));
+      } else {
+        timer.cancel($scope.refresh_timer);
+      }
     };
 
     $scope.set_precision = function(precision) {
@@ -130,6 +158,22 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         $scope.panel.auto_int = true;
       }
     };
+    
+    $scope.calculate_tick_value = function(interval) {
+      if (interval >= 1) {
+        return 1;
+      } else {
+        return interval;
+      }
+    };
+
+    $scope.calculate_tick_decimals = function(interval) {
+      if (interval >= 1) {
+        return 0;
+      } else {
+        return 1;
+      }
+    };
 
     $scope.interval_label = function(interval) {
       // return $scope.panel.auto_int && interval === $scope.panel.interval ? interval+" (auto)" : interval;
@@ -141,8 +185,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
      * return type {from:number, to:number}
      */
     $scope.get_facet_range = function () {
-      var range = $scope.facet_range = filterSrv.facetRange($scope.panel.range_field);
-      return range;
+      return filterSrv.facetRange($scope.panel.range_field);
     };
 
     /*
@@ -154,43 +197,83 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       if ($scope.panel.auto_int) {
         range = $scope.get_facet_range();
         if (range) {
-          interval = kbn.calculate_gap(range.from, range.to, $scope.panel.resolution, 0);
+          interval = $scope.calculate_gap(range.from, range.to, $scope.panel.resolution, 0);
         }
       }
       $scope.panel.interval = interval || '10';
       return $scope.panel.interval;
     };
 
-    $scope.set_range_filter = function(from,to){
+    $scope.set_range_filter = function(from,to) {
       filterSrv.removeByTypeAndField('range',$scope.panel.range_field);
       filterSrv.set({
         type: 'range',
-        from: parseInt(from),
-        to: parseInt(to),
+        // from: parseFloat(from).toPrecision(2),
+        // to: parseFloat(to).toPrecision(2),
+        from: parseFloat(from).toFixed($scope.panel.interval_decimal),
+        to: parseFloat(to).toFixed($scope.panel.interval_decimal),
         field: $scope.panel.range_field
       });
       dashboard.refresh();
     };
 
-    // set the configrations in settings
-    $scope.set_configrations = function(from,to){
-      $scope.panel.minimum = parseInt(from);
-      $scope.panel.maximum = parseInt(to);
+    // set the configrations in settings 
+    $scope.set_configurations = function(from,to){
+      // $scope.panel.chart_minimum = parseFloat(from).toPrecision(2);
+      // $scope.panel.chart_maximum = parseFloat(to).toPrecision(2);
+      $scope.panel.chart_minimum = parseFloat(from).toFixed($scope.panel.interval_decimal);
+      $scope.panel.chart_maximum = parseFloat(to).toFixed($scope.panel.interval_decimal);
     };
 
     //set the range filter from old configrations
     $scope.range_apply = function(){
-      $scope.panel.minimum = $scope.defaults[0];
-      $scope.panel.maximum = $scope.defaults[1];
       filterSrv.set({
         type: 'range',
-        from: parseInt($scope.panel.minimum),
-        to: parseInt($scope.panel.maximum),
+        from: parseFloat($scope.panel.minimum),
+        to: parseFloat($scope.panel.maximum),
         field: $scope.panel.range_field
       });
+      $scope.set_configurations($scope.panel.minimum, $scope.panel.maximum);
       dashboard.refresh();
     };
 
+    /**
+     * Calculate range facet interval
+     *
+     * from::           Integer containing the start of range
+     * to::             Integer containing the end of range
+     * size::           Calculate to approximately this many bars
+     * user_interval::  User specified histogram interval
+     *
+     */
+    $scope.calculate_gap = function(from,to,size,user_interval) {
+      if (user_interval !== 0) {
+        return user_interval;
+      } else {
+        var gap_interval = ((to-from)/size);
+
+        if (gap_interval > 1) {
+          return $scope.round_gap(gap_interval);
+        } else {
+          var gap = gap_interval.toFixed($scope.panel.interval_decimal); // .toFixed() returns string
+          if (gap <= 0) {
+            return 1;
+          } else {
+            return gap;
+          }
+        }
+      }
+    };
+
+    /**
+     * Round the value of interval to fit this defined resolution
+     *
+     */
+    $scope.round_gap = function(interval) {
+      return Math.round(interval) + 1;
+    };
+
+ 
     /**
      * Fetch the data for a chunk of a queries results. Multiple segments occur when several indicies
      * need to be consulted (like timestamped logstash indicies)
@@ -207,6 +290,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
      *                            this call is made recursively for more segments
      */
     $scope.get_data = function(segment, query_id) {
+      $scope.panelMeta.loading = true;
+
       if (_.isUndefined(segment)) {
         segment = 0;
       }
@@ -218,19 +303,24 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       }
 
       var _range = $scope.get_facet_range();
-
       if ($scope.panel.auto_int) {
-        $scope.panel.interval = kbn.calculate_gap(_range.from, _range.to, $scope.panel.resolution, 0);
+        $scope.panel.interval = $scope.calculate_gap(_range.from, _range.to, $scope.panel.resolution, 0);
       }
 
-      $scope.panelMeta.loading = true;
+      // check if interval contains decimal (.)
+      var interval_str = $scope.panel.interval.toString().split('.');
+      if (interval_str.length > 1) {
+        $scope.panel.interval_decimal = interval_str[1].length;
+      } else {
+        $scope.panel.interval_decimal = 0;
+      }
 
       // Solr
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
       var request = $scope.sjs.Request().indices(dashboard.indices[segment]);
       $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
-
+      
       // Build the query
       _.each($scope.panel.queries.ids, function(id) {
         var query = $scope.sjs.FilteredQuery(
@@ -266,10 +356,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       var rows_limit = '&rows=0'; // for RangeFacet, we do not need the actual response doc, so set rows=0
       var facet = '&facet=true' +
                   '&facet.range=' + $scope.panel.range_field +
-                  '&facet.range.start=' + $scope.panel.minimum +
-                  '&facet.range.end=' + (parseInt($scope.panel.maximum)+1) +
+                  '&facet.range.start=' + (parseFloat($scope.panel.chart_minimum)) +
+                  '&facet.range.end=' + (parseFloat($scope.panel.chart_maximum)+$scope.calculate_tick_value(parseFloat($scope.panel.interval))) +
                   '&facet.range.gap=' + $scope.panel.interval;
-
       var promises = [];
       $scope.panel.queries.query = "";
 
@@ -283,6 +372,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         }
         promises.push(request.doSearch());
       });
+
       // Populate scope when we have results
       $q.all(promises).then(function(results) {
         var _range = $scope.get_facet_range();
@@ -337,7 +427,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             // Entries from facet_ranges counts
             var entries = results[index].facet_counts.facet_ranges[$scope.panel.range_field].counts;
             for (var j = 0; j < entries.length; j++) {
-              var entry_time = entries[j]; // convert to millisec
+              var entry_time = parseFloat(entries[j]).toFixed($scope.panel.interval_decimal); // convert to the same number of decimals as specified interval.
               j++;
               var entry_count = entries[j];
               numeric_series.addValue(entry_time, entry_count);
@@ -345,7 +435,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               $scope.hits += entry_count; // Entire dataset level hits counter
               $scope.range_count += 1; // count the number of ranges to help later in bar width
             }
-
             $scope.data[i] = {
               info: querySrv.list[id],
               numeric_series: numeric_series,
@@ -357,7 +446,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
           // Tell the RangeFacet directive to render.
           $scope.$emit('render');
-
+          
           // Don't need this for Solr unless we need to support multiple queries.
           // If we still have segments left, get them
           // if(segment < dashboard.indices.length-1) {
@@ -373,8 +462,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       var _range = filterSrv.facetRange($scope.panel.range_field)[1];
       if (_.isUndefined(_range)){
         _range = {
-          from: $scope.panel.minimum,
-          to: $scope.panel.maximum
+          from: $scope.panel.chart_minimum,
+          to: $scope.panel.chart_maximum
         };
       }
 
@@ -385,7 +474,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       var _from = (_center - (_timespan*factor)/2);
 
       $scope.set_range_filter(_from, _to);
-      $scope.set_configrations(_from, _to);
+      $scope.set_configurations(_from, _to);
       dashboard.refresh();
     };
 
@@ -399,10 +488,15 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
     $scope.close_edit = function() {
-      if($scope.refresh) {
+      // Start refresh timer if enabled
+      if ($scope.panel.refresh.enable) {
+        $scope.set_timer($scope.panel.refresh.interval);
+      }
+      if ($scope.refresh) {
         $scope.get_data();
       }
-      $scope.set_range_filter($scope.panel.minimum,$scope.panel.maximum);
+      $scope.set_range_filter($scope.panel.minimum, $scope.panel.maximum);
+      $scope.set_configurations($scope.panel.minimum, $scope.panel.maximum);
       $scope.refresh =  false;
       $scope.$emit('render');
     };
@@ -418,13 +512,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       restrict: 'A',
       template: '<div></div>',
       link: function(scope, elem) {
-
         // Receive render events
         scope.$on('render',function(){
           render_panel();
         });
 
-        scope.set_range_filter(scope.panel.minimum,scope.panel.maximum);
+        scope.set_range_filter(scope.panel.chart_minimum, scope.panel.chart_maximum);
         // Re-render if the window is resized
         angular.element(window).bind('resize', function(){
           render_panel();
@@ -444,7 +537,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           } catch(e) {return;}
 
           // Set barwidth based on specified interval
-          var barwidth = scope.panel.maximum - scope.panel.minimum;
+          var barwidth = scope.panel.chart_maximum - scope.panel.chart_minimum;
           // var count = scope.range_count > 15 ? scope.range_count : 15;
           var stack = scope.panel.stack ? true : null;
           var facet_range = scope.get_facet_range();
@@ -488,11 +581,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               },
               xaxis: {
                 show: scope.panel['x-axis'],
-                min: facet_range.from - 1,
-                max: facet_range.to + 1,
+                min: parseFloat(facet_range.from) - scope.calculate_tick_value(parseFloat(scope.panel.interval)),
+                max: parseFloat(facet_range.to) + scope.calculate_tick_value(parseFloat(scope.panel.interval)),
                 autoscaleMargin : scope.panel.interval,
                 minTickSize : scope.panel.interval,
-                tickDecimals: 0,
+                tickDecimals: scope.calculate_tick_decimals(scope.panel.interval),
                 axisLabel: scope.panel.range_field
               },
               grid: {
@@ -528,15 +621,15 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             // If 'lines_smooth' is enabled, loop through $scope.data[] and remove zero filled entries.
             // Without zero values, the line chart will appear smooth as SiLK ;-)
             if (scope.panel.lines_smooth) {
-              for (var i=0; i < scope.data.length; i++) { // jshint ignore: line
+              for (var k=0; k < scope.data.length; k++) {
                 var new_data = [];
-                for (var j=0; j < scope.data[i].data.length; j++) {
+                for (var j=0; j < scope.data[k].data.length; j++) {
                   // if value of the timestamp !== 0, then add it to new_data
-                  if (scope.data[i].data[j][1] !== 0) {
-                    new_data.push(scope.data[i].data[j]);
+                  if (scope.data[k].data[j][1] !== 0) {
+                    new_data.push(scope.data[k].data[j]);
                   }
                 }
-                scope.data[i].data = new_data;
+                scope.data[k].data = new_data;
               }
             }
 
@@ -566,7 +659,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             }
             $tooltip
               .html(
-                group + dashboard.numberWithCommas(value) + " [" + item.datapoint[0]+" - "+ (item.datapoint[0] + (scope.panel.interval-1)) +"]"
+                // group + dashboard.numberWithCommas(value) + " [" + item.datapoint[0].toPrecision(2) +" - "+ (item.datapoint[0] + parseFloat(scope.panel.interval)).toPrecision(2) +"]"
+                group + dashboard.numberWithCommas(value) + " [" + item.datapoint[0].toFixed(scope.panel.interval_decimal) +" - "+ (item.datapoint[0] + parseFloat(scope.panel.interval)).toFixed(scope.panel.interval_decimal) +"]"
               )
               .place_tt(pos.pageX, pos.pageY);
           } else {
@@ -576,7 +670,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
         elem.bind("plotselected", function (event, ranges) {
           scope.set_range_filter(ranges.xaxis.from, ranges.xaxis.to);
-          scope.set_configrations(ranges.xaxis.from, ranges.xaxis.to);
+          scope.set_configurations(ranges.xaxis.from, ranges.xaxis.to);
           dashboard.refresh();
         });
       }

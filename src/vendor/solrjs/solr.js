@@ -8858,7 +8858,7 @@
             @param {Function} errorcb A callback function that handles errors.
             @returns {Object} The return value is dependent on client implementation.
             */
-      doIndex: function (successcb, errorcb) {
+      doIndex: function (useFusion, successcb, errorcb) {
         // make sure the user has set a client
         if (sjs.client == null) {
           throw new Error("No Client Set");
@@ -8883,20 +8883,27 @@
 
         if (DEBUG) { console.debug('solrjs: params.source = ',params.source); }
 
-        var url = '/update?commit=true',
-          data = JSON.stringify(params.source),
-          paramStr = genParamStr(),
-          response;
-          
-        // if (id != null) {
-        //   url = url + '/' + id;
-        // }
-        
+        // Fusion Index Pipeline use /index endpoint
+        // We need to add param: commit=true, in order to force commit the saved dashboard to show up right away. 
+
+        // Check if use Fusion or Solr
+        var url = '/update?commit=true';
+        if (useFusion) {
+          url = '/index?echo=false&commit=true';
+        }
+        var data = JSON.stringify(params.source);
+        var paramStr = genParamStr();
+        var response;
+
         if (paramStr !== '') {
           url = url + '?' + paramStr;
         }
-        
+
         if (DEBUG) { console.debug('solrjs: url=',url,', data=',data); }
+
+        // if (id != null) {
+        //   url = url + '/' + id;
+        // }
 
         // // do post if id not set so one is created
         // if (id == null) {
@@ -8979,7 +8986,7 @@
             @param {Function} errorcb A callback function that handles errors.
             @returns {void} Returns the value of the callback when executing on the server.
             */
-      doDelete: function (successcb, errorcb) {
+      doDelete: function (useFusion, successcb, errorcb) {
         // make sure the user has set a client
         if (sjs.client == null) {
           throw new Error("No Client Set");
@@ -9001,11 +9008,26 @@
           throw new Error('ID must be set');
         }
 
-        var url = '/update';
-        var data = 'commit=true&wt=json&stream.body=<delete><query>id:"'+id+'"</query></delete>';
+        // Check if use Fusion or Solr
+        if (useFusion) {
+          var url = '/index';
+          var data = angular.toJson([
+            {
+              id: id,
+              commands: [
+                { name: "delete", value: id },
+                { name: "commit", value: true }
+              ]
+            }
+          ]);
+          return sjs.client.postDel(url, data, successcb, errorcb);
+        } else {
+          var url = '/update';
+          var data = 'commit=true&wt=json&stream.body=<delete><query>id:"'+id+'"</query></delete>';
+          return sjs.client.get(url, data, successcb, errorcb);
+        }
         
         // return sjs.client.del(url, data, successcb, errorcb);
-        return sjs.client.get(url, data, successcb, errorcb);
       }
 
     };
@@ -18441,7 +18463,6 @@
             @returns {Object} Returns a client specific object.
             */
       doCount: function (successcb, errorcb) {
-        console.log('doCount(): query = ');console.log(query);
         var queryData = JSON.stringify(query.query);
         // var queryData = '';
       
@@ -18485,6 +18506,10 @@
           if (query.size && query.size > 0) {
             rowNum = '&rows=' + query.size;
           }
+            
+          // TODO I can use query.from to set offset for result
+            
+            
           queryData = 'q=' + query.query.query_string.query + rowNum + '&wt=json';
         }
 

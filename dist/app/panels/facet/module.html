@@ -1,0 +1,35 @@
+<div ng-controller="facet" ng-init="init()"><style>.table-doc-table {
+        margin-left: 0px !important;
+        overflow-y: auto;
+        overflow-x: scroll;
+    }
+    ._even {
+        display: none;
+    }
+    #myAccordion {
+        width: 90%
+    }
+    .icon-chevron-down {
+        float: right;
+        text-decoration: none;
+    }
+    .icon-chevron-up {
+        float: right;
+        text-decoration: none;
+    }
+    .highlight-code {
+        padding: 2px 4px;
+        color: #d14;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        white-space: nowrap;
+        font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+        border-radius: 3px;
+    }
+    .tab {
+        margin-left: 10px;
+    }
+    .bold {
+        font-weight: bold;
+        background: #B8B8B8;
+    }</style><div class="row-fluid"><h5>{{panel.header_title}}</h5><div id="facetAccordion" class="accordion"><div class="accordion-group" ng-repeat="field in panel.fields"><div class="accordion-heading"><a href="#facet_collapse_{{field | safeFragment}}" data-parent="#facetAccordion" data-toggle="collapse" class="accordion-toggle">{{facet_label(field)}} <i class="icon-chevron-down"></i></a></div><div class="accordion-body collapse" id="facet_collapse_{{field | safeFragment}}"><div class="accordion-inner"><div ng-repeat="item in facet_data[field]"><div ng-show="facet_data[field][$index]['count']>0 && $index < panel.facet_limit"><a href="" ng-click="set_facet_filter(field,facet_data[field][$index]['value']);" class="tab">{{facet_data[field][$index]['value']}} ({{facet_data[field][$index]['count']}})</a> <a ng-show="filter_close(field)" ng-click="delete_filter('terms',field)" style="float:right"><i class="icon-remove"></i></a></div></div></div></div></div></div></div></div>

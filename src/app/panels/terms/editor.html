@@ -30,7 +30,6 @@
     <label class="small">Exclude Terms(s) (comma seperated)</label>
     <input array-join type="text" ng-model='panel.exclude' ng-change="set_refresh(true)"></input>
   </div>
-
 </div>
 <div class="row-fluid">
   <div class="span2">
@@ -85,6 +84,16 @@
 <div class="row-fluid">
   <div class="span12">
     <label class="small">Default Colors for Chart <tip>Comma separated values of color (no quote). HTML color names or hexadecimal colors are allowed (e.g. red, #FF0000, #F00 and etc). The chart series will get a color from these color values.</tip></label>
-    <textarea class="input-xxlarge" type="text" ng-model="panel.chartColors" ng-list>
+    <textarea class="input-xxlarge" type="text" ng-model="panel.chartColors" ng-list></textarea>
+  </div>
+</div>
+<div class="row-fluid">
+  <h5>Real-time (Auto-refresh)</h5>  
+  <div class="span1">
+    <label class="small">Enable</label><input type="checkbox" ng-model="panel.refresh.enable" ng-checked="panel.refresh.enable">
+  </div>
+  <div class="span2">
+    <label class="small">Interval (seconds) <tip>The minimum value is 2.</tip></label>
+    <input type="number" min="2" class="input-mini" ng-model="panel.refresh.interval">
   </div>
 </div>

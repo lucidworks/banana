@@ -140,7 +140,11 @@ module.exports = function (grunt) {
     uglify: {
       dest: {
         expand: true,
-        src: ['**/*.js', '!config.js', '!app/dashboards/*.js'],
+        src: [
+          '**/*.js',
+          '!config.js',
+          '!app/dashboards/*.js'
+        ],
         dest: '<%= destDir %>',
         cwd: '<%= destDir %>',
         filter: 'isFile',

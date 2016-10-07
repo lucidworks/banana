@@ -1,0 +1,324 @@
+{
+  "title": "Welcome Syslog Demo",
+  "services": {
+    "query": {
+      "idQueue": [
+        1
+      ],
+      "list": {
+        "0": {
+          "query": "error",
+          "alias": "",
+          "color": "#7EB26D",
+          "id": 0,
+          "pin": false,
+          "type": "lucene"
+        }
+      },
+      "ids": [
+        0
+      ]
+    },
+    "filter": {
+      "idQueue": [
+        1
+      ],
+      "list": {
+        "0": {
+          "from": "2014-04-01T07:47:30.228Z",
+          "to": "2014-04-02T07:47:30.228Z",
+          "field": "event_timestamp",
+          "type": "time",
+          "mandate": "must",
+          "active": true,
+          "alias": "",
+          "id": 0
+        }
+      },
+      "ids": [
+        0
+      ]
+    }
+  },
+  "rows": [
+    {
+      "title": "Options",
+      "height": "50px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "title": "Set time span",
+          "error": "",
+          "span": 6,
+          "editable": true,
+          "group": [
+            "default"
+          ],
+          "type": "timepicker",
+          "mode": "relative",
+          "time_options": [
+            "5m",
+            "15m",
+            "1h",
+            "6h",
+            "12h",
+            "24h",
+            "2d",
+            "7d",
+            "30d"
+          ],
+          "timespan": "24h",
+          "timefield": "event_timestamp",
+          "timeformat": "",
+          "refresh": {
+            "enable": true,
+            "interval": 600,
+            "min": 3
+          },
+          "filter_id": 0,
+          "status": "Stable"
+        },
+        {
+          "error": false,
+          "span": 6,
+          "editable": true,
+          "type": "query",
+          "loadingEditor": false,
+          "query": "*:*",
+          "pinned": true,
+          "history": [
+            "error"
+          ],
+          "remember": 10,
+          "title": "Search",
+          "def_type": ""
+        }
+      ]
+    },
+    {
+      "title": "",
+      "height": "100px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "type": "text",
+          "loadingEditor": false,
+          "status": "Stable",
+          "mode": "markdown",
+          "content": "This is the demonstration dashboard for Banana, a port of Kibana for Solr. This points to a collection called logstash\\_logs. If you followed the QuickStart instructions provided by the Solr Output Writer for LogStash, you will see example data here. \n\nTo build your own dashboards, first get time series data into a collection. Then you can begin with this dashboard and configure it to fit your needs.",
+          "style": {},
+          "title": "Welcome to Banana"
+        }
+      ]
+    },
+    {
+      "title": "Filter",
+      "height": "150px",
+      "editable": true,
+      "collapse": true,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "type": "filtering",
+          "loadingEditor": false,
+          "title": "Filter"
+        }
+      ]
+    },
+    {
+      "title": "Graph",
+      "height": "350px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 6,
+          "editable": true,
+          "group": [
+            "default"
+          ],
+          "type": "histogram",
+          "mode": "count",
+          "time_field": "event_timestamp",
+          "value_field": null,
+          "max_rows": 100000,
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "10m",
+          "fill": 3,
+          "linewidth": 3,
+          "timezone": "browser",
+          "spyable": true,
+          "zoomlinks": true,
+          "bars": true,
+          "stack": true,
+          "points": false,
+          "lines": false,
+          "legend": true,
+          "x-axis": true,
+          "y-axis": true,
+          "percentage": false,
+          "interactive": true,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=error&wt=json&rows=0&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&facet=true&facet.range=event_timestamp&facet.range.start=2014-04-01T07:47:30.228Z/DAY&facet.range.end=2014-04-02T07:47:30.228Z%2B1DAY/DAY&facet.range.gap=%2B10MINUTE",
+            "custom": ""
+          },
+          "title": "System Log Messages",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1M",
+            "1y"
+          ],
+          "options": true,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": false
+          },
+          "group_field": null,
+          "error": false
+        },
+        {
+          "error": false,
+          "span": 6,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=error&wt=json&rows=0&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&facet=true&facet.field=syslog_program&facet.range=event_timestamp&facet.range.start=2014-04-01T07:47:30.228Z&facet.range.end=2014-04-02T07:47:30.228Z&facet.range.gap=%2B1DAY&facet.limit=10",
+            "custom": ""
+          },
+          "field": "syslog_program",
+          "exclude": [],
+          "missing": true,
+          "other": true,
+          "size": 10,
+          "order": "count",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": true,
+          "tilt": true,
+          "labels": true,
+          "arrangement": "horizontal",
+          "chart": "pie",
+          "counter_pos": "none",
+          "spyable": true,
+          "title": "Programs",
+          "time_field": "event_timestamp"
+        }
+      ]
+    },
+    {
+      "title": "Events",
+      "height": "350px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "title": "All events",
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "group": [
+            "default"
+          ],
+          "type": "table",
+          "size": 10,
+          "pages": 100,
+          "offset": 0,
+          "sort": [
+            "event_timestamp",
+            "desc"
+          ],
+          "style": {
+            "font-size": "9pt"
+          },
+          "overflow": "min-height",
+          "fields": [
+            "event_timestamp",
+            "syslog_program",
+            "message"
+          ],
+          "highlight": [],
+          "sortable": true,
+          "header": true,
+          "paging": true,
+          "spyable": true,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=error&wt=json&rows=1000&fq=event_timestamp:[2014-04-01T07:47:30.228Z%20TO%202014-04-02T07:47:30.228Z]&sort=event_timestamp desc",
+            "custom": ""
+          },
+          "field_list": true,
+          "status": "Stable",
+          "trimFactor": 300,
+          "normTimes": true,
+          "time_field": "event_timestamp"
+        }
+      ]
+    }
+  ],
+  "editable": true,
+  "failover": false,
+  "index": {
+    "interval": "none",
+    "pattern": "[logstash-]YYYY.MM.DD",
+    "default": "NO_TIME_FILTER_OR_INDEX_PATTERN_NOT_MATCHED"
+  },
+  "style": "light",
+  "panel_hints": true,
+  "loader": {
+    "dropdown_collections": false,
+    "save_gist": false,
+    "save_elasticsearch": true,
+    "save_local": true,
+    "save_default": true,
+    "save_temp": true,
+    "save_temp_ttl_enable": true,
+    "save_temp_ttl": "30d",
+    "load_gist": true,
+    "load_elasticsearch": true,
+    "load_elasticsearch_size": 20,
+    "load_local": true,
+    "hide": false
+  },
+  "solr": {
+    "server": "http://localhost:8983/solr/",
+    "core_name": "logstash_logs",
+    "core_list": [],
+    "global_params": "&df=message"
+  }
+}

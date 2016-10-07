@@ -14,10 +14,10 @@ define([
     'jquery',
     'kbn',
     'd3',
-    './d3.layout.cloud',
-    './stopWords'
+    './stopWords',
+    './d3.layout.cloud'
   ],
-  function(angular, app, _, $, kbn, d3) {
+  function(angular, app, _, $, kbn, d3, stopwords) {
     'use strict';
 
     var module = angular.module('kibana.panels.tagcloud', []);
@@ -130,7 +130,7 @@ define([
               sum += count;
 
               // if ignoreStopWords is enabled, skip this term.
-              if ($scope.panel.ignoreStopWords && (stopwords.indexOf(term.toLowerCase()) > -1)) {
+              if ($scope.panel.ignoreStopWords && stopwords.indexOf(term.toLowerCase()) > -1) {
                 continue;
               }
 
@@ -251,7 +251,7 @@ define([
                 }
                 else if (scope.panel.alignment === 'vertical(-90)') {
                   return -90;
-				}
+                }
                 else {
                   return randomRotate(Math.random());
                 }
