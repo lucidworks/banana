@@ -14,7 +14,7 @@ the power of Apache Solr. Data can be ingested into Solr through a variety of wa
 When you are ready to do a new release for Lucidworks Fusion. Do the following steps:
 
 1. Edit `package.json` by increasing the version number. 
-2. Run `grunt build --force` 
+2. Run `grunt build` 
 3. Push your commit to Github.
 4. Run `npm publish`
  
@@ -24,35 +24,30 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 
 `develop` branch is used for active development and cutting edge features.
 
-## Banana 1.6.0
+## Banana 1.6.12
 
-Banana 1.6.0 contains many new features, new panels, enhancements and bug fixes to improve the overall user experience
-and stability. Thank you to our growing community for your suggestions and contributions! Please continue sending us
-your feedback, so that we can further extend and improve Banana!
+NOTES about the skipped version numbers: we want to synchronize the code base between the two branches: _develop_ and _fusion_.
+Previously the _develop_ branch was used by the community to contribute code, while the _fusion_ branch was used for Lucidworks
+Fusion. There were some conflicting codes between the two branches, which now have been resolved in this version. That is
+the reason why we have to skip the version numbers, so that both branches are in sync. The only different between
+them now are _config.js_ (which contain the app settings) and the dashboard _default.json_ (which is the first sample dashboard
+shown after installing the app).  
 
 This release includes the following key new features and improvements:
 
-1.  Hits panel can now show a stats value (e.g. min, max, mean, and etc).
-2.  Publish Banana WAR to Maven Central. [#203](https://github.com/lucidworks/banana/pull/203)
-3.  Fix d3.tip module.
-4.  Add a D3 Bar Chart panel. [#175](https://github.com/lucidworks/banana/pull/175)
-5.  Add an option to ignore stop words (English) in Tag cloud panel. [#174](https://github.com/lucidworks/banana/pull/174)
-6.  Add Antarctica to the World map in Map panel. [#173](https://github.com/lucidworks/banana/pull/173)
-7.  Add Sunburst panel. [#169](https://github.com/lucidworks/banana/pull/169)
-8.  Add banana-int conf directory to support Solr 5.x.
-9.  Add export option to Terms panel. [#228](https://github.com/lucidworks/banana/pull/228)
-10. Various bug fixes and improvements:
-    - Remove unused ajax-solr library.
-    - JSHint fixes. [#223](https://github.com/lucidworks/banana/pull/223)
-    - Update filesaver.js to the latest version . [#222](https://github.com/lucidworks/banana/pull/222)
-    - Translation of field names in Table micropanel. [#221](https://github.com/lucidworks/banana/pull/221)
-    - Allow human-friendly translations for facet fields to be defined on a per-dashboard basis. [#217](https://github.com/lucidworks/banana/pull/217)
-    - Update browser window/tab title to reflect current dashboard title. [#215](https://github.com/lucidworks/banana/pull/215)
-    - JS Docs for underscore.extended.js + kbn.js in src/app/components. [#206](https://github.com/lucidworks/banana/pull/215)
-    - Method documentation & typo clean-up in kbn.js. [#205](https://github.com/lucidworks/banana/pull/205)
-    - Fix IE bug in Map panel. [#204](https://github.com/lucidworks/banana/pull/204)
-    - Fix Terms panel bug: exclude_filter value change to empty. [#197](https://github.com/lucidworks/banana/pull/197)
-    - Centralize downloading / exporting response data. [#227](https://github.com/lucidworks/banana/pull/227)
+1.  Unify the code base between _develop_ branch and _fusion_ branch.
+2.  Fix multiple hosts issue [#279](https://github.com/lucidworks/banana/pull/279)
+3.  Add countDistinct and cardinality for hits stats [#269](https://github.com/lucidworks/banana/pull/269)
+4.  Add SUM aggregate function to Histogram panel [#252](https://github.com/lucidworks/banana/pull/252)
+5.  Query panel / Add reset action to set filter to *:* [#183](https://github.com/lucidworks/banana/pull/183)
+6.  Better map auto fit option / icon [#242](https://github.com/lucidworks/banana/pull/242)
+7.  Fix JS minify (grunt task) error in RangeFacet panel.
+8.  Fix bug in RangeFacet panel: sometimes auto-interval will return facet.range.gap = 0
+9.  Fix all jshint errors.
+10. Improved Scatterplot panel, now we can add bubble and colors.
+11. Improved Hits panel, now we can include more than one metric like avg, min, max, in addition to count.
+12. Add sorting to dashboard drop-down collections picker
+13. Add pagination to Load Dashboard menu.
 
 ## Older Release Notes
 
