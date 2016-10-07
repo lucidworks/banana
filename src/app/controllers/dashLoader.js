@@ -28,7 +28,7 @@ function (angular, _) {
         time_field: $scope.config.timefield
       };
     };
-    
+
     $scope.showDropdown = function(type) {
       // var _l = $scope.loader;
       var _l = dashboard.current.loader || $scope.loader;
@@ -45,9 +45,12 @@ function (angular, _) {
       if(type === 'share') {
         return (_l.save_temp);
       }
+      if(type === 'home') {
+        return (dashboard.current.home || $scope.home);
+      }
       return false;
     };
-    
+
     $scope.create_new = function(type) {
       $http.get('app/dashboards/' + type + '.json?' + new Date().getTime()).
         success(function(data) {
@@ -69,7 +72,7 @@ function (angular, _) {
           }
 
           dashboard.dash_load(data);
-          
+
           // Reset new dashboard defaults
           $scope.resetNewDefaults();
         }).

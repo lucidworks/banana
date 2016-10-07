@@ -57,9 +57,9 @@
           <select class="input-small" ng-model="filterSrv.list[id].mandate" ng-options="f for f in ['must','mustNot','either']"></select>
         </span>
 
-        <i class="filter-action pointer icon-remove" bs-tooltip="'Remove'" ng-click="remove(id)"></i>
-        <i class="filter-action pointer" ng-class="{'icon-check': filterSrv.list[id].active,'icon-check-empty': !filterSrv.list[id].active}" bs-tooltip="'Toggle'" ng-click="toggle(id)"></i>
-        <i class="filter-action pointer icon-edit" ng-hide="filterSrv.list[id].editing" bs-tooltip="'Edit'" ng-click="filterSrv.list[id].editing = true"></i>
+        <a alt="Remove" title="Remove" href="" style="color:black;" class="filter-action pointer icon-remove" bs-tooltip="'Remove'" ng-click="remove(id)"></a>
+        <a alt="Toggle" title="Toggle" href="" style="color:black;" class="filter-action pointer" ng-class="{'icon-check': filterSrv.list[id].active,'icon-check-empty': !filterSrv.list[id].active}" bs-tooltip="'Toggle'" ng-click="toggle(id)"></a>
+        <a alt="Edit" title="Edit" href="" style="color:black;" class="filter-action pointer icon-edit" ng-hide="filterSrv.list[id].editing" bs-tooltip="'Edit'" ng-click="filterSrv.list[id].editing = true"></a>
 
       </div>
 
@@ -79,7 +79,7 @@
       </div>
     </div>
     <!-- <span bs-modal="'app/partials/paneleditor.html'" data-toggle="modal"> -->
-    <i class="pointer icon-plus-sign" ng-click="add()" bs-tooltip="'Add a query filter'" data-placement="right"></i>
+    <a alt="Add a query filter" style="color:black;" title="Add a query filter" href="" class="pointer icon-plus-sign" ng-click="add()" bs-tooltip="'Add a query filter'" data-placement="right"></a>
     <!-- </span> -->
   </div>
 </div>

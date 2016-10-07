@@ -7,21 +7,21 @@
       </span>
       <input class="search-query panel-query" ng-class="{ 'input-block-level': unPinnedQueries.length==1, 'last-query': $last, 'has-remove': querySrv.ids.length > 1 }" bs-typeahead="panel.history" data-min-length=0 data-items=100 type="text" ng-model="querySrv.list[id].query" />
       <span class="end-query">
-        <i class="icon-search pointer" ng-click="refresh()" ng-show="$last"></i>
+        <a style="color:black;" title="Refresh" alt="Refresh" href="" class="icon-search pointer" ng-click="refresh()" ng-show="$last"></a>
         <!-- Remove the plus icon to disable multiple queries function -->
-        <i class="icon-plus pointer" ng-click="querySrv.set({})" ng-show="$last"></i>
-        <i class="icon-eraser pointer" ng-click="reset()" ng-show="$last"></i>
+        <a style="color:black;" title="New query" alt="New Query" href=""class="icon-plus pointer" ng-click="querySrv.set({})" ng-show="$last"></a>
+        <a style="color:black;" title="Erase" alt="Erase" href="" class="icon-eraser pointer" ng-click="reset()" ng-show="$last"></a>
       </span>
     </form>
   </div>
   <div style="display:inline-block" ng-repeat="id in querySrv.ids|pinnedQuery:true">
     <span class="pointer" ng-show="$first" ng-click="panel.pinned = !panel.pinned"><small class="pins">Pinned</small> <i ng-class="{'icon-caret-right':panel.pinned,'icon-caret-left':!panel.pinned}"></i></span>
     <span ng-show="panel.pinned" class="pinned badge">
-      <i class="icon-circle pointer" ng-style="{color: querySrv.list[id].color}" data-unique="1" bs-popover="'app/panels/query/meta.html'"></i><span bs-tooltip="querySrv.list[id].query"> {{querySrv.list[id].alias || querySrv.list[id].query}}</span>
+      <a class="icon-circle pointer" ng-style="{color: querySrv.list[id].color}" data-unique="1" bs-popover="'app/panels/query/meta.html'"></a><span bs-tooltip="querySrv.list[id].query"> {{querySrv.list[id].alias || querySrv.list[id].query}}</span>
     </span>
   </div>
   <span style="display:inline-block" ng-show="unPinnedQueries.length == 0">
-    <i class="icon-search pointer" ng-click="refresh()"></i>
-    <i class="icon-plus pointer" ng-click="querySrv.set({})"></i>
+    <a style="color:black;" title="Search" alt="Search" href="" bs-tooltip="'Clear Search'" class="icon-search pointer" ng-click="refresh()"></a>
+    <a style="color:black;" title="Clear Search" alt="Clear Search" bs-tooltip="'Clear Search'" href="" class="icon-plus pointer" ng-click="querySrv.set({})"></a>
   </span>
 </div>

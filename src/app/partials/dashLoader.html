@@ -1,20 +1,20 @@
 <!-- This file is responsible for nav bar of the dashboard -->
 <li class="dropdown" bs-tooltip="'Collections'" data-placement="bottom" style="padding-top:5px;" ng-show="dashboard.current.loader.dropdown_collections"><select class="span2" ng-model="dashboard.current.solr.core_name" ng-change="dashboard.refresh()" ng-options="c as c for c in dashboard.current.solr.core_list"></select></li>
 
-<li><a bs-tooltip="'Goto saved default'" data-placement="bottom" href='#/dashboard'><i class='icon-home'></i></a></li>
+<li ng-show="showDropdown('home')" ><a href="" alt="Goto saved default" title="Goto saved default" bs-tooltip="'Goto saved default'" data-placement="bottom" href='#/dashboard'><i class='icon-home'></i></a></li>
 <!-- New menu -->
 <li class="dropdown" bs-tooltip="'New'" data-placement="bottom" ng-show="showDropdown('new')" >
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+  <a href="#" alt="New" title="New"   class="dropdown-toggle" data-toggle="dropdown">
     <i class='icon-file'></i>
   </a>
   <ul class="dropdown-menu" style="padding:10px">
-    <li><a class="link" bs-modal="'app/partials/solrSettings.html'" ng-click="$scope.type='default-ts'"><i class="icon-time"></i> Time-series dashboard </a></li>
-    <li><a class="link" bs-modal="'app/partials/solrSettings.html'" ng-click="$scope.type='default-nts'"><i class="icon-th-large"></i> Non time-series dashboard </a></li>
+    <li><a href="" alt="Time-series dashboard" title="Time-series dashboard" class="link" bs-modal="'app/partials/solrSettings.html'" ng-click="$scope.type='default-ts'"><i class="icon-time"></i> Time-series dashboard </a></li>
+    <li><a href="" alt="Non time-series dashboard" title="Non time-series dashboard" class="link" bs-modal="'app/partials/solrSettings.html'" ng-click="$scope.type='default-nts'"><i class="icon-th-large"></i> Non time-series dashboard </a></li>
   </ul>
 </li>
 <!-- Load menu -->
 <li class="dropdown" bs-tooltip="'Load'" data-placement="bottom" ng-show="showDropdown('load')" >
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" ng-click="elasticsearch_dblist('title:'+elasticsearch.query+'*')">
+  <a href="" alt="Load" title="Load" href="#" class="dropdown-toggle" data-toggle="dropdown" ng-click="elasticsearch_dblist('title:'+elasticsearch.query+'*')">
     <i class='icon-folder-open'></i>
   </a>
   <ul class="dropdown-menu" style="padding:10px;z-index:1001">
@@ -57,16 +57,16 @@
 </li>
 <!-- Save menu -->
 <li class="dropdown" bs-tooltip="'Save'" data-placement="bottom" ng-show="showDropdown('save')">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+  <a alt="Save" title="Save" href="#" class="dropdown-toggle" data-toggle="dropdown">
     <i class='icon-save'></i>
   </a>
   <ul class="dropdown-menu" style="padding:10px">
     <li ng-show="dashboard.current.loader.save_default || dashboard.current.loader.save_local">
       <h5>Locally</h5>
       <ul class="unstyled">
-        <li ng-show="dashboard.current.loader.save_local"><a class="link" ng-click="dashboard.to_file()"><i class="icon-download"></i> Export to File</a> <tip>Export layout, not data, to file</tip></li>
-        <li ng-show="dashboard.current.loader.save_default"><a class="link" ng-click="set_default()"><i class="icon-bookmark"></i> Set as Browser Default</a> <tip>Store dashboard preference to browser's localStorage</tip></li>
-        <li ng-show="dashboard.current.loader.save_default"><a class="link" ng-click="purge_default()"><i class="icon-ban-circle"></i> Clear Browser Default</a></li>
+        <li ng-show="dashboard.current.loader.save_local"><a href="" alt="Export to File" title="Export to File" class="link" ng-click="dashboard.to_file()"><i class="icon-download"></i> Export to File</a> <tip>Export layout, not data, to file</tip></li>
+        <li ng-show="dashboard.current.loader.save_default"><a href="" alt="Set as Browser Default" title="Set as Browser Default" class="link" ng-click="set_default()"><i class="icon-bookmark"></i> Set as Browser Default</a> <tip>Store dashboard preference to browser's localStorage</tip></li>
+        <li ng-show="dashboard.current.loader.save_default"><a href="" alt="Export to File" title="Export to File" class="link" ng-click="purge_default()"><i class="icon-ban-circle"></i> Clear Browser Default</a></li>
       </ul>
     </li>
     <li ng-show="dashboard.current.loader.save_gist">
@@ -82,10 +82,10 @@
       <h5>Solr</h5>
       <form class="input-append">
         <input class='input-medium' placeholder="{{dashboard.current.title}}" type="text" ng-model="elasticsearch.title"/>
-        <button class="btn" ng-click="elasticsearch_save('dashboard', null)"><i class="icon-save"></i></button>
+        <button class="btn" alt="Save to Solr" title="Save to Solr" ng-click="elasticsearch_save('dashboard', null)"><i class="icon-save"></i></button>
       </form>
     </li>
   </ul>
 </li>
 <!-- Configure menu -->
-<li ng-show="dashboard.current.editable "bs-tooltip="'Configure dashboard'" data-placement="bottom"><a href='#' bs-modal="'app/partials/dasheditor.html'"><i class='icon-cog pointer'></i></a></li>
+<li ng-show="dashboard.current.editable "bs-tooltip="'Configure dashboard'" data-placement="bottom"><a title="Configuration" alt="Configuration" href='#' bs-modal="'app/partials/dasheditor.html'"><i class='icon-cog pointer'></i></a></li>
