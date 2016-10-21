@@ -6,7 +6,7 @@ exports.config = {
     'browserName': 'chrome'
   },
   specs: [
-    'e2e/*Spec.js'
+    'e2e/*.spec.js'
   ],
   framework: 'jasmine',
   jasmineNodeOpts: {
