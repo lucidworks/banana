@@ -25,6 +25,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             username: "guest", // default
             style: "dark",
             editable: true,
+            home: true,
             failover: false,
             panel_hints: true,
             rows: [],
