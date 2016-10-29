@@ -22,6 +22,7 @@ define([
     app.useModule(module);
 
     module.controller('facet', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
+
       $scope.panelMeta = {
         modals: [{
           description: "Inspect",
@@ -54,11 +55,12 @@ define([
         },
         overflow: 'min-height',
         fields: [],
-        field_list: true,
         spyable: true,
         facet_limit: 10,
+        maxnum_facets: 5,  // Max number of facet fields that can be specified.
+                           // If we do too many facets on a really big data, we will run into Out Of Memory issue in JVM.
         foundResults: true,
-        header_title: "Limit Your Search",
+        header_title: "Facet Fields",
         toggle_element: null,
         show_queries: true
       };
@@ -74,18 +76,16 @@ define([
         });
 
         $scope.panel.exportSize = $scope.panel.size * $scope.panel.pages;
-
         $scope.fields = fields;
         $scope.get_data();
       };
 
       $scope.percent = kbn.to_percent;
 
-
       $scope.add_facet_field = function(field) {
-        if (_.contains(fields.list, field) && _.indexOf($scope.panel.fields, field) === -1) {
+        if (_.contains(fields.list, field) && _.indexOf($scope.panel.fields, field) === -1 && $scope.panel.fields.length < $scope.panel.maxnum_facets) {
           $scope.panel.fields.push(field);
-          $scope.get_data();
+          $scope.set_refresh(true);
         }
       };
 
@@ -93,6 +93,16 @@ define([
         if (_.contains(fields.list, field) && _.indexOf($scope.panel.fields, field) > -1) {
           $scope.panel.fields = _.without($scope.panel.fields, field);
         }
+      };
+
+      /**
+       * Translate a facet key into its human-friendly label, if provided in the dashboard's `lang` field
+       *
+       * @param key {String} the
+       */
+      $scope.facet_label = function(key) {
+
+        return filterSrv.translateLanguageKey("facet", key, dashboard.current);
       };
 
       $scope.get_data = function(segment, query_id) {
@@ -126,12 +136,14 @@ define([
         $scope.panel_request = request;
 
         var fq = '';
-        if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+        if (filterSrv.getSolrFq()) {
           fq = '&' + filterSrv.getSolrFq();
         }
+
         var wt_json = '&wt=json';
         var facet = '&facet=true';
         var facet_fields = '';
+
         for (var i = 0; i < $scope.panel.fields.length; i++) {
           facet_fields += '&facet.field=' + $scope.panel.fields[i];
         }
@@ -252,13 +264,13 @@ define([
         dashboard.refresh();
       };
 
-      // return the length of the filters with specific field 
+      // return the length of the filters with specific field
       // that will be used to detect if the filter is present or not to show close icon beside the facet
       $scope.filter_close = function(field) {
         return filterSrv.idsByTypeAndField('terms', field).length > 0;
       };
 
-      // call close filter when click in close icon 
+      // call close filter when click in close icon
       $scope.delete_filter = function(type, field) {
         filterSrv.removeByTypeAndField(type, field);
         dashboard.refresh();

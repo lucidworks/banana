@@ -14,7 +14,7 @@ function (angular, app, _) {
   var module = angular.module('kibana.panels.filtering', []);
   app.useModule(module);
 
-  module.controller('filtering', function($scope, filterSrv, $rootScope, dashboard) {
+  module.controller('filtering', function($scope, filterSrv, $rootScope, $location, dashboard) {
 
     $scope.panelMeta = {
       modals: [{
@@ -35,6 +35,25 @@ function (angular, app, _) {
 
     $scope.init = function() {
       $scope.filterSrv = filterSrv;
+
+      var locationSearch = $location.search(),
+          mandateMap = {'+': 'must', '-': 'mustNot'};
+
+      if (locationSearch.q) {
+        angular.forEach(locationSearch.q.split(' '), function (value) {
+          if (value) {
+            var startWithMandate = value[0].match(/\+|-/) !== null,
+                mandate = startWithMandate ? mandateMap[value[0]] : 'either';
+            filterSrv.set({
+              editing   : false,
+              type      : 'querystring',
+              query     : startWithMandate ? value.substr(1, value.length) : value,
+              mandate   : mandate
+            }, undefined, true);
+          }
+        });
+        $scope.refresh();
+      }
     };
 
     $scope.remove = function(id) {
@@ -77,6 +96,15 @@ function (angular, app, _) {
         return true;
       }
     };
+  });
 
+  module.filter('truncate', function() {
+    return function(text, length) {
+      length = length || 200;
+      if (!_.isUndefined(text) && !_.isNull(text) && text.toString().length > 0) {
+        return text.length > length ? text.substr(0,length)+'...' : text;
+      }
+      return '';
+    };
   });
 });

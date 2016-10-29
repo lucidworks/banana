@@ -24,6 +24,10 @@
       <label class="small">Group By Field <tip>This field must be a single value field. Leave blank if you do not want to group the result.</tip></label>
       <input ng-change="set_refresh(true)" placeholder="Optional" bs-typeahead="fields.list" type="text" class="input-small" ng-model="panel.group_field">
     </div>
+    <div class="span3">
+      <label class="small">SUM the group's values <tip>The point value (Y) is the sum of value field in the group</tip></label>
+      <input type="checkbox" ng-model="panel.sum_value" ng-checked="panel.sum_value">
+    </div>
     <!-- <div class="span3">
       <label class="small">Max Rows/Group <tip>Specify the number of results to return for each group.</tip></label>
       <input ng-change="set_refresh(true)" placeholder="10" type="number" class="input-small" ng-model="panel.group_limit">
@@ -95,4 +99,15 @@
       <label class="small">Display Query <tip>If an alias is set, it will be shown in the tooltip. If not, should it show the query?</tip></label>
       <input type="checkbox" ng-model="panel.tooltip.query_as_alias" />
     </div>
+  </div>
+
+  <div class="row-fluid">
+      <h5>Real-time (Auto-refresh)</h5>
+      <div class="span1">
+          <label class="small">Enable</label><input type="checkbox" ng-model="panel.refresh.enable" ng-checked="panel.refresh.enable">
+      </div>
+      <div class="span2">
+          <label class="small">Interval (seconds) <tip>The minimum value is 2.</tip></label>
+          <input type="number" min="2" class="input-mini" ng-model="panel.refresh.interval">
+      </div>
   </div>

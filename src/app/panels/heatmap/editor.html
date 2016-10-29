@@ -19,7 +19,7 @@
 <div class="row-fluid">
     <div class="span3">
         <label class="small">Heatmap Color <tip>Base color for Heatmap. Intensity of the chosen color in a cell is proportional to the respective pivot facet count for that cell</tip></label>
-        <select class="input-medium" ng-model="panel.color" ng-options="c for c in ['gray','blue', 'red', 'green', 'brown']"></select>
+        <select class="input-medium" ng-model="panel.color" ng-options="c for c in ['gray','blue', 'red', 'green', 'brown']" ng-change="render()"></select>
     </div>
     <div class="span1">
         <h6>Transposed</h6><input type="checkbox" ng-model="panel.transposed" ng-checked="panel.transposed">

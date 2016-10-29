@@ -69,6 +69,30 @@ function (_, Interval) {
   };
 
   /**
+   * Add a row and sum the value
+   * @param {int}  time  The time for the value, in
+   * @param {any}  value The value at this time
+   */
+  ts.ZeroFilled.prototype.sumValue = function (time, value) {
+    if (time instanceof Date) {
+      time = getDatesTime(time);
+    } else {
+      time = base10Int(time);
+    }
+    if (!isNaN(time)) {
+
+      var curValue = 0;
+      if (!isNaN(this._data[time])){
+          curValue = this._data[time];
+      }
+
+
+      this._data[time] = curValue + (_.isUndefined(value) ? 0 : value);
+    }
+    this._cached_times = null;
+  };
+
+  /**
    * Get an array of the times that have been explicitly set in the series
    * @param  {array} include (optional) list of timestamps to include in the response
    * @return {array} An array of integer times.

@@ -1,0 +1,37 @@
+<div ng-controller="terms" ng-init="init()"><style>table.tableSection {
+        display: table;
+        width: 100%;
+    }
+    table.tableSection thead, table.tableSection tbody {
+        float: left;
+        width: 100%;
+    }
+    table.tableSection tbody {
+        overflow: auto;
+        /*height: 150px;*/
+    }
+    table.tableSection tr {
+        width: 100%;
+        display: table;
+        text-align: left;
+    }
+    table.tableSection th, table.tableSection td {
+        width: 33%;
+    }
+    .floatleft{
+      float:left;
+    }
+    .floatright{
+      float:right;
+    }
+
+    .below{
+      display: inline-block !important;
+    }
+
+    .leftRightLegend {
+      margin-left: 10px;
+      margin-right: 10px; 
+      overflow:overlay; 
+      padding-right:10px 
+    }</style><div ng-show="panel.counter_pos == 'above' && (panel.chart == 'bar' || panel.chart == 'pie')" id="{{$id}}-legend"><table class="small" ng-show="panel.arrangement == 'vertical'"><tr ng-repeat="term in legend"><td><i class="icon-circle" ng-style="{color:term.color}"></i></td><td style="padding-right:10px;padding-left:10px">{{term.label}}</td><td>{{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}</td></tr></table><div class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="term in legend" style="float:left;padding-left: 10px"><span><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}})</span></div><br></div><div style="clear:both"></div><div class="leftRightLegend" ng-style="{'max-height':row.height }" ng-show="(panel.counter_pos == 'right' || panel.counter_pos == 'left') && (panel.chart == 'bar' || panel.chart == 'pie')" id="{{$id}}-legend" ng-class="{'floatright':panel.counter_pos == 'right','floatleft':panel.counter_pos == 'left'}"><table class="small"><tr ng-repeat="term in legend"><td><i class="icon-circle" ng-style="{color:term.color}"></i></td><td style="padding-right:10px;padding-left:10px">{{term.label}}</td><td>{{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}</td></tr></table></div><div style="overflow:hidden" ng-show="panel.chart == 'pie' || panel.chart == 'bar'" terms-chart="" params="{{panel}}" style="position:relative" class="pointer" ng-style="{'floatleft':panel.counter_pos == 'right'}"></div><div ng-show="panel.counter_pos == 'below' && (panel.chart == 'bar' || panel.chart == 'pie')" id="{{$id}}-legend" ng-class="{below:panel.counter_pos == 'below'}"><table class="small" ng-show="panel.arrangement == 'vertical'"><tr ng-repeat="term in legend"><td><i class="icon-circle" ng-style="{color:term.color}"></i></td><td style="padding-right:10px;padding-left:10px">{{term.label}}</td><td>{{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}</td></tr></table><div class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="term in legend" style="float:left;padding-left: 10px"><span><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}})</span></div><br></div><table ng-style="panel.style" class="table tableSection table-striped table-condensed" ng-show="panel.chart == 'table'"><thead><th>Term</th><th>{{panel.mode | capitalize}}</th><th>Action</th></thead><tbody ng-style="{height: row.height}"><tr ng-repeat="term in data" ng-show="showMeta(term)"><td>{{term.label}}</td><td>{{term.data[0][1].toFixed(panel.decimal_points)}}</td><td><span ng-hide="term.meta == 'other'"><i class="icon-search pointer" ng-click="build_search(term)"></i> <i class="icon-ban-circle pointer" ng-click="build_search(term,true)"></i></span></td></tr></tbody></table><div id="colorTest"></div></div>

@@ -17,7 +17,7 @@ define([
                 try {
                   dashboard.dash_load(JSON.parse(e.target.result));
                   scope.$apply();
-                } catch (e) {
+                } catch (err) {
                   alertSrv.set('Loading Error', 'The file isn\'t valid JSON file', 'error',5000);
                   dashboard.refresh();
                 }

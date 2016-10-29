@@ -50,7 +50,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
   var module = angular.module('kibana.panels.histogram', []);
   app.useModule(module);
 
-  module.controller('histogram', function($scope, $q, querySrv, dashboard, filterSrv) {
+  module.controller('histogram', function($scope, $q, $timeout, timer, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -82,6 +82,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       max_rows    : 100000,  // maximum number of rows returned from Solr (also use this for group.limit to simplify UI setting)
       value_field : null,
       group_field : null,
+      sum_value   : false,
       auto_int    : true,
       resolution  : 100,
       interval    : '5m',
@@ -102,10 +103,14 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       percentage  : false,
       interactive : true,
       options     : true,
-      show_queries:true,
+      show_queries: true,
       tooltip     : {
         value_type: 'cumulative',
         query_as_alias: false
+      },
+      refresh: {
+        enable: false,
+        interval: 2
       }
     };
 
@@ -114,12 +119,40 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     $scope.init = function() {
       // Hide view options by default
       $scope.options = false;
+
+      // Start refresh timer if enabled
+      if ($scope.panel.refresh.enable) {
+        $scope.set_timer($scope.panel.refresh.interval);
+      }
+
       $scope.$on('refresh',function(){
         $scope.get_data();
       });
 
       $scope.get_data();
+    };
 
+    $scope.set_timer = function(refresh_interval) {
+      $scope.panel.refresh.interval = refresh_interval;
+      if (_.isNumber($scope.panel.refresh.interval)) {
+        timer.cancel($scope.refresh_timer);
+        $scope.realtime();
+      } else {
+        timer.cancel($scope.refresh_timer);
+      }
+    };
+
+    $scope.realtime = function() {
+      if ($scope.panel.refresh.enable) {
+        timer.cancel($scope.refresh_timer);
+
+        $scope.refresh_timer = timer.register($timeout(function() {
+          $scope.realtime();
+          $scope.get_data();
+        }, $scope.panel.refresh.interval*1000));
+      } else {
+        timer.cancel($scope.refresh_timer);
+      }
     };
 
     $scope.set_interval = function(interval) {
@@ -229,7 +262,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       // Build Solr query
       var fq = '';
-      if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+      if (filterSrv.getSolrFq()) {
         fq = '&' + filterSrv.getSolrFq();
       }
       var time_field = filterSrv.getTimeField();
@@ -291,7 +324,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           // Convert facet ids to numbers
           // var facetIds = _.map(_.keys(results.facets),function(k){return parseInt(k, 10);});
           // TODO: change this, Solr do faceting differently
-          var facetIds = [0]; // Need to fix this
+          // var facetIds = [0]; // Need to fix this
 
           // Make sure we're still on the same query/queries
           // TODO: We probably DON'T NEED THIS unless we have to support multiple queries in query module.
@@ -347,6 +380,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
                   for (var j = 0; j < groups.length; j++) { // jshint ignore: line
                     var docs = groups[j].doclist.docs;
+                    // var numFound = groups[j].doclist.numFound;
                     var group_time_series = new timeSeries.ZeroFilled({
                       interval: _interval,
                       start_date: _range && _range.from,
@@ -359,10 +393,16 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                     for (var k = 0; k < docs.length; k++) {
                       entry_time = new Date(docs[k][time_field]).getTime(); // convert to millisec
                       entry_value = docs[k][$scope.panel.value_field];
-                      group_time_series.addValue(entry_time, entry_value);
+                      if($scope.panel.sum_value) {
+                        group_time_series.sumValue(entry_time, entry_value);
+                      }else {
+                        group_time_series.addValue(entry_time, entry_value);
+                      }
+
                       hits += 1;
                       $scope.hits += 1;
                     }
+
 
                     $scope.data[j] = {
                       // info: querySrv.list[id],
@@ -376,6 +416,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                       hits: hits
                     };
                   }
+
                 } else { // Group By Field is not specified
                   entries = results[index].response.docs;
                   for (var j = 0; j < entries.length; j++) { // jshint ignore: line
@@ -455,17 +496,20 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
     $scope.close_edit = function() {
-      if($scope.refresh) {
+      // Start refresh timer if enabled
+      if ($scope.panel.refresh.enable) {
+        $scope.set_timer($scope.panel.refresh.interval);
+      }
+      if ($scope.refresh) {
         $scope.get_data();
       }
-      $scope.refresh =  false;
+      $scope.refresh = false;
       $scope.$emit('render');
     };
 
     $scope.render = function() {
       $scope.$emit('render');
     };
-
   });
 
   module.directive('histogramChart', function(dashboard, filterSrv) {
@@ -634,12 +678,80 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             } else {
               value = item.datapoint[1];
             }
+
+            var lnLastValue = value;
+
+            var lbPositiveValue = (lnLastValue>0);
+
+            var lsItemTT = group + dashboard.numberWithCommas(value) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(item.datapoint[0]).format('MM/DD HH:mm:ss') : moment(item.datapoint[0]).format('MM/DD HH:mm:ss'));
+
+            var hoverSeries = item.series;
+            var x = item.datapoint[0];
+                // y = item.datapoint[1];
+
+            var lsTT = lsItemTT;
+            var allSeries = scope.plot.getData();
+            var posSerie = -1;
+            for (var i= allSeries.length - 1 ; i>=0; i--) {
+
+              //if stack stop at the first positive value
+              if (scope.panel.stack && lbPositiveValue){
+                break;
+              }
+
+              var s = allSeries[i];
+              i = parseInt(i);
+
+
+              if (s === hoverSeries ) {
+                posSerie = i;
+              }
+
+              //not consider serie "upper" the hover serie
+              if (  i >= posSerie ){
+                continue;
+              }
+
+              //search in current serie a point with de same position.
+              for(var j= 0; j< s.data.length;j++){
+                var p = s.data[j];
+                if (p[0] === x ){
+
+                  if (scope.panel.stack && scope.panel.tooltip.value_type === 'individual' && !isNaN(p[2]))  {
+                    value = p[1] - p[2];
+                  } else {
+                    value = p[1];
+                  }
+
+                  lbPositiveValue = value > 0;
+
+                  if (! scope.panel.stack && value !== lnLastValue){
+                    break;
+                  }
+
+                  posSerie = i;
+                  lnLastValue = value;
+
+
+                  if (s.info.alias || scope.panel.tooltip.query_as_alias) {
+                    group = '<small style="font-size:0.9em;">' +
+                        '<i class="icon-circle" style="color:'+s.color+';"></i>' + ' ' +
+                        (s.info.alias || s.info.query)+
+                        '</small><br>';
+                  } else {
+                    group = kbn.query_color_dot(s.color, 15) + ' ';
+                  }
+
+                  lsItemTT = group + dashboard.numberWithCommas(value) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(p[0]).format('MM/DD HH:mm:ss') : moment(p[0]).format('MM/DD HH:mm:ss'));
+                  lsTT = lsTT +"</br>"+ lsItemTT;
+                  break;
+                }
+              }
+            }
+
+
             $tooltip
-              .html(
-                group + dashboard.numberWithCommas(value) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(item.datapoint[0]).format('MM/DD HH:mm:ss') : moment(item.datapoint[0]).format('MM/DD HH:mm:ss'))
-                // group + dashboard.numberWithCommas(value) + " @ " + moment(item.datapoint[0]).format('MM/DD HH:mm:ss')
-                // group + dashboard.numberWithCommas(value) + " @ " + moment(item.datapoint[0])
-              )
+              .html( lsTT )
               .place_tt(pos.pageX, pos.pageY);
           } else {
             $tooltip.detach();

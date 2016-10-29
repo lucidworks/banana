@@ -1,0 +1,11 @@
+<div class="row-fluid">
+  <div class="span9">
+    <h6>Facet Pivot String <tip>Separated by commas</tip></h6>
+    <input array-join bs-typeahead="fields.list" style="width:500px;" type="text" placeholder="field1,field2" class="input-small" ng-model="panel.facet_pivot_strings" ng-change="set_refresh(true)">
+  </div>
+
+  <div class="span3">
+    <h6>Facet Limit</h6>
+    <input type="number" class="input-medium" ng-model="panel.facet_limit" ng-change="set_refresh(true)">
+  </div>
+</div>

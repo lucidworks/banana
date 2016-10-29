@@ -88,9 +88,36 @@ function (angular, $, _, appLevelRequire) {
   app.config(['$httpProvider', function($httpProvider) {
     $httpProvider.defaults.useXDomain = true;
     delete $httpProvider.defaults.headers.common["X-Requested-With"];
+    // If the backend (apollo) gives us a 401, redirect to the login page.
+    $httpProvider.responseInterceptors.push(function() {
+        return function(p){
+          return p.then(
+            angular.identity,
+            function(err){
+              if( err.status === 401 ){
+                // Send in the current location for a post login redirect
+                // -- the "return" param.
+                // Do this as a relative path change since we don't know what
+                // the base/root path will be, we do know banana will always be
+                // served by the proxy at $root/banana/ - login is 1 level up.
+                var query = window.location.search,
+                    hash = window.location.hash,
+                    goto = '../login?return=' + window.location.pathname;
+                goto += (hash ? hash : "");
+                goto += (query ? "?" + encodeURIComponent(query) : "");
+                goto = goto.replace(/#/g, '%23');  
+                window.location = goto;
+                return;
+              } else if (err.status === 404) {
+                  console.log('http 404 encounter!');
+              }
+            }
+          );
+        };
+    // }]);
+    });
   }]);
   
-  // TODO: add ajax-solr ?
   var apps_deps = [
     'elasticjs.service',
     'solrjs.service',
