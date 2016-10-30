@@ -1,20 +1,4 @@
 <div class="row-fluid container" style="margin-top:10px; width:98%">
-<style>
-.nolink {
- color:black;
- text-decoration: none;
-}
-
- .nolink:focus {
- color:#1ab2ff;
- text-decoration: none;
-}
-
-.nolink:hover {
- color:#1ab2ff;
- text-decoration: none;
-}
-</style>
 
     <!-- Rows -->
     <div class="row-fluid kibana-row" ng-controller="RowCtrl" ng-repeat="(row_name, row) in dashboard.current.rows"
@@ -23,7 +7,7 @@
             <div class="row-fluid" style="padding:0px;margin:0px;position:relative;">
                 <div class="row-close span12" ng-show="row.collapse" data-placement="bottom">
                     <span class="row-button" bs-modal="'app/partials/roweditor.html'" class="pointer">
-                        <a href="" title="Configure Row" alt="Configure Row" bs-tooltip="'Configure row'" style="color:black;" data-placement="right" ng-show="row.editable" class="nolink small icon-cog pointer"></a>
+                        <a href="" title="Configure Row" alt="Configure Row" bs-tooltip="'Configure row'" data-placement="right" ng-show="row.editable" class="nolink small icon-cog pointer"></a>
                     </span>
                     <span class="row-button" ng-click="toggle_row(row)" ng-show="row.collapsable">
                         <a alt="Expand row" bs-tooltip="'Expand row'" data-placement="right" ng-show="row.editable" class="nolink small icon-expand pointer" ></a>
