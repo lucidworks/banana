@@ -25,6 +25,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             username: "guest", // default
             style: "dark",
             editable: true,
+            home: true,
             failover: false,
             panel_hints: true,
             rows: [],
@@ -346,7 +347,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         // Load a saved dashboard from Solr
         this.elasticsearch_load = function (type, id) {
             // For dashboard field, Fusion uses 'banana_dashboard_s', but Solr uses 'dashboard'
-            var server = $routeParams.server + config.banana_index || config.solr + config.banana_index;
+            var server = ($routeParams.server || config.solr) + config.banana_index;
             if (config.USE_FUSION) {
                 server = config.SYSTEM_BANANA_QUERY_PIPELINE;
             }
