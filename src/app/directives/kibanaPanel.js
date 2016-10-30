@@ -32,12 +32,12 @@ function (angular) {
           '<span class="extra row-button" ng-show="panel.editable != false">' +
             '<span confirm-click="row.panels = _.without(row.panels,panel)" '+
             'confirmation="Are you sure you want to remove this {{panel.type}} panel?" class="pointer">'+
-            '<i class="icon-remove pointer" bs-tooltip="\'Remove\'"></i></span>'+
+            '<a title="Remove" alt="Remove" href="" style="color:black;" class="icon-remove pointer" bs-tooltip="\'Remove\'"></a></span>'+
           '</span>' +
 
           '<span class="row-button extra" ng-show="panel.editable != false">' +
             '<span bs-modal="\'app/partials/paneleditor.html\'" class="pointer">'+
-            '<i class="icon-cog pointer" bs-tooltip="\'Configure\'"></i></span>'+
+            '<a title="Configure" alt="Configure" href="" style="color:black;"  class="icon-cog pointer" bs-tooltip="\'Configure\'"></a></span>'+
           '</span>' +
 
           '<span class="row-button extra" ng-show="panel.transpose_show">' +
@@ -45,17 +45,17 @@ function (angular) {
           '</span>' +
 
           '<span ng-repeat="task in panelMeta.modals" class="row-button extra" ng-show="panel.spyable">' +
-            '<span bs-modal="task.partial"class="pointer"><i ' +
-              'bs-tooltip="task.description" ng-class="task.icon" class="pointer"></i></span>'+
+            '<span bs-modal="task.partial"class="pointer">' +
+            '<a title="Inspect" alt="Inspect" href="" bs-tooltip="Inspect" style="color:black;"  ng-class="task.icon" class="pointer"></a></span>'+
           '</span>' +
 
           '<span class="row-button extra" ng-show="panel.fitBoundsAuto != undefined && !panel.fitBoundsAuto">' +
-            '<a ng-click="fitBounds()"><i tooltip="\'fit bound\'" class="pointer icon-fire"></i></a>'+
+            '<a ng-click="fitBounds()"><i tooltip="\'fit bound\'" style="color:black;"  class="pointer icon-fire"></i></a>'+
           '</span>' +  // bettermap fitBound action
-            
+
           '<span class="dropdown row-button extra" bs-tooltip="\'Export\'" data-placement="bottom" ng-show="panelMeta.exportfile">' +
             '<span class="pointer" class="dropdown-toggle" data-toggle="dropdown">' +
-                '<i class="icon-save" class="pointer"></i>' +
+                '<a title="Save" alt="Save" href="" style="color:black;"  class="icon-save" class="pointer"></a>' +
             '</span>' +
             '<ul class="dropdown-menu" style="padding:10px; left:-150px;">' +
           '<h5>Number of Rows</h5><form><input type="number" value="panel.exportSize" ng-model="panel.exportSize" placeholder="{{panel.size * panel.pages}}"/>' +
@@ -63,9 +63,9 @@ function (angular) {
                 '<li>' +
                     '<h5>Export to File</h5>' +
                         '<ul class="unstyled">' +
-                            '<li><a class="link" ng-click="exportfile(\'csv\')"><i class="icon-file"></i> CSV</a></li>' +
-                            '<li><a class="link" ng-click="exportfile(\'xml\')"><i class="icon-file"></i> XML</a></li>' +
-                            '<li><a class="link" ng-click="exportfile(\'json\')"><i class="icon-file"></i> JSON</a></li>' +
+                            '<li><a class="link" title="CSV" alt="CSV" href="" ng-click="exportfile(\'csv\')"><i class="icon-file"></i> CSV</a></li>' +
+                            '<li><a class="link" title="XML" alt="XML" href="" ng-click="exportfile(\'xml\')"><i class="icon-file"></i> XML</a></li>' +
+                            '<li><a class="link" title="JSON" alt="JSON" href="" ng-click="exportfile(\'json\')"><i class="icon-file"></i> JSON</a></li>' +
                         '</ul>' +
                 '</li>' +
             '</ul>' +

@@ -41,7 +41,7 @@ function (angular, _, config) {
             // $scope.elasticsearch is used throught out this file, dashLoader.html and others.
             // So we'll keep using it for now before refactoring it to $scope.solr.
             // $scope.solr = $scope.solr || {};
-            
+
             // Create the system_banana collection for Fusion.
             if (config.USE_FUSION) {
                 dashboard.create_system_collection();
@@ -87,6 +87,10 @@ function (angular, _, config) {
             if (type === 'share') {
                 return (_l.save_temp);
             }
+            if(type === 'home') {
+                return (dashboard.current.home || $scope.home);
+            }  
+
             return false;
         };
 
@@ -216,7 +220,7 @@ function (angular, _, config) {
                         if ($scope.loadMenu.pages.length > 0) {
                           $scope.loadMenu.pages[0].state = 'active';
                         }
-                        
+
                         if ($scope.loadMenu.totalPages > $scope.loadMenu.maxShownPages) {
                             $scope.loadMenu.forwardButtonState = '';
                         } else {
@@ -230,7 +234,7 @@ function (angular, _, config) {
         $scope.getSavedDashboard = function (event, query, offset, pageNum) {
             // To stop dropdown-menu from disappearing after click
             event.stopPropagation();
-            
+
             query += '&start=' + offset;
             dashboard.elasticsearch_list(query, dashboard.current.loader.load_elasticsearch_size).then(
                 function (result) {
@@ -247,7 +251,7 @@ function (angular, _, config) {
                 $scope.loadMenu.currentPage = pageNum;
             }
         };
-        
+
         $scope.getPrevSavedDashboard = function (event) {
             // To stop dropdown-menu from disappearing after click
             event.stopPropagation();
