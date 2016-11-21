@@ -52,8 +52,6 @@ function (Settings) {
      */
     banana_index: "system_banana",
     // banana_index: "banana-int",
-    banana_queryPipeline: "system_banana-default",
-    banana_indexPipeline: "system_banana-default",
 
     /**
      * Lucidworks Fusion settings
@@ -68,8 +66,8 @@ function (Settings) {
     apollo_indexPipeline: "/api/apollo/index-pipelines/",
     
     // Constants  
-    SYSTEM_BANANA_QUERY_PIPELINE: "/api/apollo/query-pipelines/system_banana-default/collections/system_banana",
-    SYSTEM_BANANA_INDEX_PIPELINE: "/api/apollo/index-pipelines/system_banana-default/collections/system_banana",
+    SYSTEM_BANANA_QUERY_PIPELINE: "/api/apollo/query-pipelines/_system/collections/system_banana",
+    SYSTEM_BANANA_INDEX_PIPELINE: "/api/apollo/index-pipelines/_system/collections/system_banana",
     FUSION_API_STATIC_FIELDS: "/schema/fields",
     FUSION_API_DYNAMIC_FIELDS: "/schema/dynamicfields",
     FUSION_API_COLLECTIONS: "/api/apollo/collections",
