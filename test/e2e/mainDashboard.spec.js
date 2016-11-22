@@ -7,7 +7,7 @@ describe('-- Banana: Dashboard Tests', function() {
 
     // Ensure that the user was redirected to Fusion login page
     // expect(browser.getCurrentUrl()).toEqual('http://localhost:8764/login?return=%252Fbanana%252Findex.html');
-    expect(browser.getCurrentUrl()).toEqual('http://localhost:8764/login?return=%252Fbanana%252Findex.html%23%252Fdashboard');
+      expect(browser.getCurrentUrl()).toEqual('http://localhost:8764/login?return=%252Fbanana%252Findex.html%23%252Fdashboard');
 
     var username = element(by.model('index.user.username'));
     var password = element(by.model('index.user.password'));
