@@ -23,7 +23,7 @@
 <!-- Load menu -->
 <li class="dropdown" bs-tooltip="'Load'" data-placement="bottom" ng-show="showDropdown('load')">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-        ng-click="elasticsearch_dblist(getTitleField() + ':' + elasticsearch.query + '*')">
+        ng-click="elasticsearch_dblist(elasticsearch.query)">
         <i class='icon-folder-open'></i>
     </a>
     <ul class="dropdown-menu" style="padding:10px;z-index:1001">
@@ -61,7 +61,7 @@
             <h5 ng-hide="elasticsearch.dashboards.length">No dashboards matching your query found</h5>
             <form style="margin-bottom: 0;">
                 <input type="text" ng-model="elasticsearch.query"
-                       ng-change="elasticsearch_dblist(getTitleField() + ':' + elasticsearch.query + '*')"
+                       ng-change="elasticsearch_dblist(elasticsearch.query)"
                        placeholder="Type to filter"/>
             </form>
 
@@ -69,7 +69,7 @@
                 <ul>
                     <li ng-class="loadMenu.backwardButtonState"><a ng-click="getPrevSavedDashboard($event)"><i class="icon-backward"></i></a></li>
                     <li ng-repeat="page in loadMenu.pages.slice(loadMenu.firstPageShown-1, loadMenu.lastPageShown)" ng-class="page.state">
-                        <a ng-click="getSavedDashboard($event, getTitleField() + ':' + elasticsearch.query + '*', page.offset, page.number)">{{page.number}}</a>
+                        <a ng-click="getSavedDashboard($event, elasticsearch.query, page.offset, page.number)">{{page.number}}</a>
                     </li>
                     <li ng-class="loadMenu.forwardButtonState"><a ng-click="getNextSavedDashboard($event)"><i class="icon-forward"></i></a></li>
                 </ul>

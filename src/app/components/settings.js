@@ -24,8 +24,9 @@ function (_) {
       apollo_queryPipeline: "/api/apollo/query-pipelines/",
       apollo_indexPipeline: "/api/apollo/index-pipelines/",
 
-      SYSTEM_BANANA_QUERY_PIPELINE: "/api/apollo/query-pipelines/_system/collections/system_banana",
+      SYSTEM_BANANA_QUERY_PIPELINE: "/api/apollo/query-pipelines/default/collections/system_banana",
       SYSTEM_BANANA_INDEX_PIPELINE: "/api/apollo/index-pipelines/_system/collections/system_banana",
+      SYSTEM_BANANA_BLOB_URL: "/api/apollo/blobs",
       FUSION_API_STATIC_FIELDS: "/schema/fields",
       FUSION_API_DYNAMIC_FIELDS: "/schema/dynamicfields",
       FUSION_API_COLLECTIONS: "/api/apollo/collections"

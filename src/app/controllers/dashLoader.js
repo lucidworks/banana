@@ -17,6 +17,7 @@ function (angular, _, config) {
         self.USER_FIELD = 'user';
         self.GROUP_FIELD = 'group';
 
+        // NOTES: Fusion uses Blob Store API now, so it does not need TITLE_FIELD for querying dashboards.
         // If USE_FUSION, change the schema field names and banana_index setting.
         // Also, get the login username and store it.
         if (config.USE_FUSION) {
@@ -41,11 +42,12 @@ function (angular, _, config) {
             // $scope.elasticsearch is used throught out this file, dashLoader.html and others.
             // So we'll keep using it for now before refactoring it to $scope.solr.
             // $scope.solr = $scope.solr || {};
-            
+
+            // Don't need to create system_banana collection anymore, because we'll use Blob Store API instead.
             // Create the system_banana collection for Fusion.
-            if (config.USE_FUSION) {
-                dashboard.create_system_collection();
-            }
+            // if (config.USE_FUSION) {
+            //     dashboard.create_system_collection();
+            // }
 
             // Pagination
             $scope.loadMenu = {
@@ -59,6 +61,8 @@ function (angular, _, config) {
                 backwardButtonState: 'disabled',
                 forwardButtonState: 'disabled'
             };
+
+            $scope.elasticsearch.query = '';  // query for filtering the dashboard list
         };
 
         // This function should be replaced by one-way binding feature of AngularJS 1.3
@@ -168,6 +172,14 @@ function (angular, _, config) {
         $scope.elasticsearch_delete = function (id) {
             dashboard.elasticsearch_delete(id).then(
                 function (result) {
+                    if (config.USE_FUSION) {
+                        // The result returned from Blob Store API (DELETE request) will be an empty string.
+                        // Need to return the result in Solr json format.
+                        result = {
+                          responseHeader: {status: 0}
+                        };
+                    }
+
                     if (!_.isUndefined(result)) {
                         if (result.responseHeader.status === 0) {
                             alertSrv.set('Dashboard Deleted', id + ' has been deleted', 'success', 5000);
@@ -189,15 +201,26 @@ function (angular, _, config) {
                 function (result) {
                     if (!_.isUndefined(result.response.docs)) {
                         $scope.hits = result.response.numFound;
-                        $scope.elasticsearch.dashboards = result.response.docs;
+                        // $scope.elasticsearch.dashboards = result.response.docs;
 
+                        // TODO this for loop will not work with Fusion Blob Store API
                         var docs = [];
                         for (var i=0; i < result.response.docs.length; i++) {
                             var doc = {};
-                            doc.id = result.response.docs[i].id;
-                            doc.server = angular.fromJson(result.response.docs[i][self.DASHBOARD_FIELD]).solr.server;
+                            if (config.USE_FUSION) {
+                              // Dashboard names in Blob Store will have .json appended to their names.
+                              // Remove .json from id
+                              var dotJson = result.response.docs[i].name.lastIndexOf('.json');
+                              doc.id = result.response.docs[i].name.substring(0, dotJson);
+                              // Don't need doc.server for Fusion Blob Store API.
+                              doc.server = '';
+                            } else {
+                              doc.id = result.response.docs[i].id;
+                              doc.server = angular.fromJson(result.response.docs[i][self.DASHBOARD_FIELD]).solr.server;
+                            }
                             docs.push(doc);
                         }
+
                         $scope.elasticsearch.dashboards = docs;
 
                         // Handle pagination
@@ -227,13 +250,24 @@ function (angular, _, config) {
                 });
         };
 
+        // Get the dashboard list for the specified pageNum
         $scope.getSavedDashboard = function (event, query, offset, pageNum) {
             // To stop dropdown-menu from disappearing after click
             event.stopPropagation();
-            
-            query += '&start=' + offset;
+
+            console.log('query =',query);
+            // Fusion uses Blob Store API, so Solr query will not work here.
+            if (config.USE_FUSION) {
+
+            } else {
+                // TODO: getTitleField() + ':' + elasticsearch.query + '*'
+                query += '&start=' + offset;
+            }
+
             dashboard.elasticsearch_list(query, dashboard.current.loader.load_elasticsearch_size).then(
                 function (result) {
+                    console.log('result =',result);
+
                     if (!_.isUndefined(result.response.docs)) {
                         $scope.hits = result.response.numFound;
                         $scope.elasticsearch.dashboards = result.response.docs;
