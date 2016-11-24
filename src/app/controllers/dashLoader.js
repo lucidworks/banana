@@ -261,12 +261,15 @@ function (angular, _, config) {
 
             } else {
                 // TODO: getTitleField() + ':' + elasticsearch.query + '*'
-                query += '&start=' + offset;
+                // query += '&start=' + offset;
+                query = getTitleField() + ':' + query + '*'
             }
 
             dashboard.elasticsearch_list(query, dashboard.current.loader.load_elasticsearch_size).then(
                 function (result) {
                     console.log('result =',result);
+                    // TODO need to parse the result to Solr format
+
 
                     if (!_.isUndefined(result.response.docs)) {
                         $scope.hits = result.response.numFound;
