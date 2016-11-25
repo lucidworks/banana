@@ -1,7 +1,25 @@
 describe('-- Banana: Dashboard Tests', function() {
+  
   var Dashboard = require('./mainDashboard.po.js');  
-  var dashboard = new Dashboard();  
+  // var Headerbar = require('../headerbar/headerbar.po.js');
 
+  var dashboard = new Dashboard();
+  // var hb = new Headerbar();
+
+  // var EC = protractor.ExpectedConditions;
+
+  // beforeAll(function() {
+  //   // browser.get(browser.baseUrl + '/banana/index.html#/dashboard');
+  //   // browser.refresh();
+  //   hb.selectContextFromHeader('Analytics');
+  //   browser.wait(EC.visibilityOf(dashboard.timepicker24hButton), 20000);
+  // });
+
+  // afterAll(function() {
+  //   browser.get(browser.baseUrl + '/launcher');
+  // });  
+
+  // This the login spec, in order to authenticate with Fusion and proceed with the other specs.
   it('should redirect to Fusion login page', function() {
     browser.get('index.html');
 
@@ -134,4 +152,23 @@ describe('-- Banana: Dashboard Tests', function() {
     var panels = rows.get(4).all(by.repeater('(name, panel) in row.panels|filter:isPanel'));
     expect(panels.count()).toEqual(1);
   });
+  
+  describe('Sample dashboards tests:', function(){
+    
+    it('Lucidworks Fusion Signals dashboard should load', function(){
+      browser.get('index.html#/dashboard/file/lucidworks-signals.json');
+      expect(dashboard.dashboardTitle.getText()).toEqual('Fusion Signals');
+    });
+    
+    it('Metrics Dashboard should load', function(){
+      browser.get('index.html#/dashboard/file/lucidworks-metrics.json');
+      expect(dashboard.dashboardTitle.getText()).toEqual('Fusion Metrics');
+    });
+
+    it('Search Analytics dashboard should load', function(){
+      browser.get('index.html#/dashboard/file/lucidworks-searchanalytics.json')
+      expect(dashboard.dashboardTitle.getText()).toEqual('Search Analytics');
+    });
+  });
+  
 });

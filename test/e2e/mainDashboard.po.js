@@ -46,4 +46,7 @@ module.exports = function Dashboard(){
   this.hitsPanelTitleInputs = element.all(by.css('div[ng-controller=hits] div[ng-include="\'app/partials/panelgeneral.html\'"] div div.span4 input[ng-model="panel.title"]'));
   //   Field inputs
   this.hitsPanelFieldInputs = element.all(by.css('div[ng-controller=hits] div[ng-include="edit_path(panel.type)"] div.row-fluid div.span12 table tbody tr td input[type=text][placeholder="Field name"]'));
+
+  this.dashboardTitle = element(by.binding('dashboard.current.title'));
+  
 };
