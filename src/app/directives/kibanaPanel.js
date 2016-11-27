@@ -13,7 +13,7 @@ function (angular) {
 
         '<div class="panel-extra row"><div class="panel-extra-container col-md-12 col-xs-12">' +
 
-          '<span class="extra row-button" ng-hide="panel.draggable == false"  bs-tooltip data-trigger="hover" container="body" data-placement="top" data-title="Drag&nbsp;here&nbsp;to&nbsp;move">' +
+          '<span class="extra row-button" ng-hide="panel.draggable == false || readonly"  bs-tooltip data-trigger="hover" container="body" data-placement="top" data-title="Drag&nbsp;here&nbsp;to&nbsp;move">' +
             '<span class="row-text pointer"' +
             'data-drag=true data-jqyoui-options="{revert: \'invalid\',helper:\'clone\'}"'+
             ' jqyoui-draggable="'+
@@ -25,26 +25,26 @@ function (angular) {
               'onStop:\'panelMoveStop\''+
               '}"  ng-model="row.panels">{{panel.type}}</span>'+
           '</span>' +
-          '<span class="extra row-button" ng-show="panel.draggable == false">' +
+          '<span class="extra row-button" ng-show="panel.draggable == false && !readonly">' +
             '<span class="row-text">{{panel.type}}</span>'+
           '</span>' +
 
-          '<span class="extra row-button" ng-show="panel.editable != false">' +
+          '<span class="extra row-button" ng-show="panel.editable != false && !readonly">' +
             '<span confirm-click="row.panels = _.without(row.panels,panel)" '+
             'confirmation="Are you sure you want to remove this {{panel.type}} panel?" class="pointer">'+
             '<i class="fa fa-times pointer" bs-tooltip data-title="Remove" container="body" ></i></span>'+
           '</span>' +
 
-          '<span class="row-button extra" ng-show="panel.editable != false">' +
+          '<span class="row-button extra" ng-show="panel.editable != false && !readonly">' +
             '<span bs-modal data-content-template="app/partials/paneleditor.html" class="pointer">'+
             '<i class="fa fa-cog pointer" bs-tooltip data-title="Configure" container="body" ></i></span>'+
           '</span>' +
 
-          '<span class="row-button extra" ng-show="panel.transpose_show">' +
+          '<span class="row-button extra" ng-show="panel.transpose_show && !readonly">' +
           '<span class="rotate-icon pointer" bs-tooltip data-title="Transpose Rows and Columns" ng-click="flip()" container="body" ></span>' +
           '</span>' +
 
-          '<span ng-repeat="task in panelMeta.modals" class="row-button extra" ng-show="task.show&&panel.spyable">' +
+          '<span ng-repeat="task in panelMeta.modals" class="row-button extra" ng-show="task.show && panel.spyable && !readonly">' +
             '<span bs-modal data-content-template="{{task.partial}}" class="pointer"><i ' +
               'class="fa fa-info-circle pointer" bs-tooltip data-title="{{task.description}}" container="body" ></i></span>'+
           '</span>' +
