@@ -26,10 +26,13 @@ module.exports = function Dashboard(){
   this.settingTabs = element.all(by.css('div.modal-body div.tabs ul.nav.nav-tabs li a'));
 
   // Row tab:
-  //   Row inputs
-  this.settingRowTabRowInputs = element.all(by.css('div.modal-body div div.row-fluid form div input[ng-model="row.title"][placeholder="New row"]'));
-  //   Create row button
-  this.settingCreateRowButton = element(by.buttonText('Create Row'));
+  //   Row inputs  
+  //   Row title input (use by.id is more accurate than by.css)
+  this.settingNewRowTitleInput = element(by.id('newRowTitleInput'));
+
+  //   Create row button  
+  this.settingCreateRowButton = element(by.id('createRow'));  
+
   //   Close button
   this.settingRowTabCloseButton = element(by.css('[ng-click="editor.index=0;dismiss();reset_panel();dashboard.refresh()"]'));
 
@@ -37,9 +40,9 @@ module.exports = function Dashboard(){
   //   Panel types drop-down
   this.settingPanelTabTypeDropdown = element.all(by.css('div[ng-show="editor.index == 2"] form select')).all(by.css('option[value="9"]'));
   //   Add panel buttons
-  this.settingPanelTabAddButtons = element.all(by.buttonText('Add Panel'));
+  this.settingPanelTabAddButtons = element.all(by.id('rowEditorAddPanelButton'));
   //   Close buttons
-  this.settingPanelTabCloseButtons = element.all(by.css('button[ng-click="editor.index=0;dismiss();reset_panel();close_edit()"]'));
+  this.settingPanelTabCloseButtons = element.all(by.id('rowEditorCloseButton'));
 
   // Hits panel setting:
   //   Title inputs
@@ -47,6 +50,9 @@ module.exports = function Dashboard(){
   //   Field inputs
   this.hitsPanelFieldInputs = element.all(by.css('div[ng-controller=hits] div[ng-include="edit_path(panel.type)"] div.row-fluid div.span12 table tbody tr td input[type=text][placeholder="Field name"]'));
 
-  this.dashboardTitle = element(by.binding('dashboard.current.title'));
-  
+  this.dashboardTitle = element(by.binding('dashboard.current.title'));  
+  this.newButton = element(by.css('.dropdown[bs-tooltip="\'New\'"]'));
+  this.newTSdashboard = element(by.css('.dropdown .dropdown-menu .link[ng-click="$scope.type=\'default-ts\'"]'));
+  this.newNTSdashboard = element(by.css('.dropdown .dropdown-menu .link[ng-click="$scope.type=\'default-nts\'"]'));
+  this.newDashboardCreateButtons = element.all(by.id('newDashboardCreateButton'));
 };
