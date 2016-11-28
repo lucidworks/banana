@@ -88,9 +88,8 @@ describe('-- Banana: Dashboard Tests', function(){
       //   });
       // }).first().click();      
       browser.wait(EC.elementToBeClickable(dashboard.settingRowsTab), 3000);
-      dashboard.settingRowsTab.click()
+      dashboard.settingRowsTab.click();
 
-          
       dashboard.settingNewRowTitleInput.click();
       dashboard.settingNewRowTitleInput.sendKeys('Test');
 
