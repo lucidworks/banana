@@ -25,8 +25,8 @@ module.exports = function Dashboard(){
   // Tabs in dashboard settings page
   this.settingTabs = element.all(by.css('div.modal-body div.tabs ul.nav.nav-tabs li a'));
 
-  // Row tab:
-  //   Row inputs  
+  // Rows Tab in Settings created by bs-tabs directive
+  this.settingRowsTab = element(by.css('a[data-target="#tab-02K-1"]'));
   //   Row title input (use by.id is more accurate than by.css)
   this.settingNewRowTitleInput = element(by.id('newRowTitleInput'));
 
