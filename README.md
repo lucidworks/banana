@@ -23,31 +23,12 @@ When you are ready to do a new release for Lucidworks Fusion. Do the following s
 Pull the repo from the `release` branch for production deployment; version x.y.z will be tagged as x.y.z
 
 `develop` branch is used for active development and cutting edge features.
+`fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develp`. The main difference
+is in the configuration. 
 
-## Banana 1.6.12
+## Banana 1.6.13
 
-NOTES about the skipped version numbers: we want to synchronize the code base between the two branches: _develop_ and _fusion_.
-Previously the _develop_ branch was used by the community to contribute code, while the _fusion_ branch was used for Lucidworks
-Fusion. There were some conflicting codes between the two branches, which now have been resolved in this version. That is
-the reason why we have to skip the version numbers, so that both branches are in sync. The only different between
-them now are _config.js_ (which contain the app settings) and the dashboard _default.json_ (which is the first sample dashboard
-shown after installing the app).  
-
-This release includes the following key new features and improvements:
-
-1.  Unify the code base between _develop_ branch and _fusion_ branch.
-2.  Fix multiple hosts issue [#279](https://github.com/lucidworks/banana/pull/279)
-3.  Add countDistinct and cardinality for hits stats [#269](https://github.com/lucidworks/banana/pull/269)
-4.  Add SUM aggregate function to Histogram panel [#252](https://github.com/lucidworks/banana/pull/252)
-5.  Query panel / Add reset action to set filter to *:* [#183](https://github.com/lucidworks/banana/pull/183)
-6.  Better map auto fit option / icon [#242](https://github.com/lucidworks/banana/pull/242)
-7.  Fix JS minify (grunt task) error in RangeFacet panel.
-8.  Fix bug in RangeFacet panel: sometimes auto-interval will return facet.range.gap = 0
-9.  Fix all jshint errors.
-10. Improved Scatterplot panel, now we can add bubble and colors.
-11. Improved Hits panel, now we can include more than one metric like avg, min, max, in addition to count.
-12. Add sorting to dashboard drop-down collections picker
-13. Add pagination to Load Dashboard menu.
+This release adds protractor tests to cover basic tasks. The tests only work with Fusion for now.
 
 ## Older Release Notes
 
