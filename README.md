@@ -23,7 +23,8 @@ When you are ready to do a new release for Lucidworks Fusion. Do the following s
 Pull the repo from the `release` branch for production deployment; version x.y.z will be tagged as x.y.z
 
 `develop` branch is used for active development and cutting edge features.
-`fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develp`. The main difference
+
+`fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
 ## Banana 1.6.13
