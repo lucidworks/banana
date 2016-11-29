@@ -34,7 +34,7 @@
                                                           ng-options="f for f in ['dark','light']"></select>
             </div>
             <div class="span2">
-                <label class="small">Version</label>Banana v1.6.12
+                <label class="small">Version</label>Banana v1.6.13
             </div>
         </div>
     </div>
@@ -109,7 +109,7 @@
             <form>
                 <div class="span5">
                     <label class="small">Title</label>
-                    <input type="text" class="input-large" ng-model='row.title' placeholder="New row">
+                    <input id="newRowTitleInput" type="text" class="input-large" ng-model='row.title' placeholder="New row">
                 </div>
                 <div class="span2">
                     <label class="small">Height</label>
@@ -229,7 +229,7 @@
 </div>
 
 <div class="modal-footer">
-    <button ng-click="add_row(dashboard.current,row); reset_row();" class="btn btn-success" ng-show="editor.index == 1">
+    <button id="createRow" ng-click="add_row(dashboard.current,row); reset_row();" class="btn btn-success" ng-show="editor.index == 1">
         Create Row
     </button>
     <button type="button" class="btn btn-danger" ng-click="editor.index=0;dismiss();reset_panel();dashboard.refresh()">
