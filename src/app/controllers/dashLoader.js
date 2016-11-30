@@ -241,7 +241,7 @@ function (angular, _, config) {
             } else {
                 // TODO: getTitleField() + ':' + elasticsearch.query + '*'
                 // query += '&start=' + offset;
-                query = getTitleField() + ':' + query + '*&start=' + offset;
+                query = $scope.getTitleField() + ':' + query + '*&start=' + offset;
             }
 
             dashboard.elasticsearch_list(query, dashboard.current.loader.load_elasticsearch_size).then(

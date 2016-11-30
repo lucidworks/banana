@@ -27,9 +27,11 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.13
+## Banana 1.6.14
 
-This release adds protractor tests to cover basic tasks. The tests only work with Fusion for now.
+This release includes the change to dashboard saving / loading functionalities for Fusion. Now Fusion's Blob Store API will be
+used to save, load, delete, and search dashboards. We will not need to create `system_banana` collection in Fusion anymore, and
+also, we will not use the default index pipeline and query pipeline for the dashboard operations.
 
 ## Older Release Notes
 
