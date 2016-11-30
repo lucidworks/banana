@@ -376,8 +376,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
           if (config.USE_FUSION) {
             // server = config.SYSTEM_BANANA_QUERY_PIPELINE;
-            // Use Blob Store API to load the saved dashboard json, id needs to be appended with .json
-            url = config.SYSTEM_BANANA_BLOB_URL + '/' + id + '.json';
+            // Use Blob Store API to load the saved dashboard json, id needs to be appended with config.SYSTEM_BANANA_BLOB_ID_SUFFIX.
+            url = config.SYSTEM_BANANA_BLOB_API + '/' + id + config.SYSTEM_BANANA_BLOB_ID_SUFFIX;
           }
 
           return $http({
@@ -448,8 +448,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             if (config.USE_FUSION) {
                 dashboardDoc.is_public_b = isPublic;
             }
-            // dashboard id that will be used when save to Fusion Blob Store API.
-            var blobId = encodeURIComponent(dashboardDoc.id) + '.json';
+            // Append config.SYSTEM_BANANA_BLOB_ID_SUFFIX to dashboard id that will be used when save to Fusion Blob Store API.
+            var blobId = encodeURIComponent(dashboardDoc.id) + config.SYSTEM_BANANA_BLOB_ID_SUFFIX;
 
             var request = sjs.Document(config.banana_index, type, id).source(dashboardDoc);
             request = type === 'temp' && ttl ? request.ttl(ttl) : request;
@@ -460,7 +460,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             if (config.USE_FUSION) {
                 // The index pipeline uses /index endpoint, which is different from Solr /update and accepts different params.
                 // server = config.SYSTEM_BANANA_INDEX_PIPELINE;
-                server = config.SYSTEM_BANANA_BLOB_URL;
+                server = config.SYSTEM_BANANA_BLOB_API;
                 dashboardUrl = '/dashboard/solr/' + title;
             }
 
@@ -496,9 +496,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             if (config.USE_FUSION) {
                 // server = config.SYSTEM_BANANA_INDEX_PIPELINE;
                 // Fusion uses Blob Store API to manage saved dashboards.
-                // Dashboards get saved with their names appended with '.json'
-                server = config.SYSTEM_BANANA_BLOB_URL;
-                id = id + '.json';
+                // Dashboards get saved with their names appended with config.SYSTEM_BANANA_BLOB_ID_SUFFIX
+                server = config.SYSTEM_BANANA_BLOB_API;
+                id = id + config.SYSTEM_BANANA_BLOB_ID_SUFFIX;
             }
 
             // Set sjs.client.server to use 'banana-int' for deleting dashboard
@@ -530,9 +530,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         this.elasticsearch_list = function (query, count) {
             var server = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
             if (config.USE_FUSION) {
-                // server = config.SYSTEM_BANANA_QUERY_PIPELINE;
                 // Use Blob Store API to list all dashboards
-                // server = config.SYSTEM_BANANA_BLOB_URL;
                 return lucidworksSrv.getDashboardList(query);
             }
 

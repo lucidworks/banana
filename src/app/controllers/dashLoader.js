@@ -201,27 +201,7 @@ function (angular, _, config) {
                 function (result) {
                     if (!_.isUndefined(result.response.docs)) {
                         $scope.hits = result.response.numFound;
-                        // $scope.elasticsearch.dashboards = result.response.docs;
-
-                        // TODO this for loop will not work with Fusion Blob Store API
-                        var docs = [];
-                        for (var i=0; i < result.response.docs.length; i++) {
-                            var doc = {};
-                            if (config.USE_FUSION) {
-                              // Dashboard names in Blob Store will have .json appended to their names.
-                              // Remove .json from id
-                              var dotJson = result.response.docs[i].name.lastIndexOf('.json');
-                              doc.id = result.response.docs[i].name.substring(0, dotJson);
-                              // Don't need doc.server for Fusion Blob Store API.
-                              doc.server = '';
-                            } else {
-                              doc.id = result.response.docs[i].id;
-                              doc.server = angular.fromJson(result.response.docs[i][self.DASHBOARD_FIELD]).solr.server;
-                            }
-                            docs.push(doc);
-                        }
-
-                        $scope.elasticsearch.dashboards = docs;
+                        $scope.elasticsearch.dashboards = parseDashboardList(result.response.docs);
 
                         // Handle pagination
                         $scope.loadMenu.totalPages = Math.ceil($scope.hits / dashboard.current.loader.load_elasticsearch_size);
@@ -255,25 +235,23 @@ function (angular, _, config) {
             // To stop dropdown-menu from disappearing after click
             event.stopPropagation();
 
-            console.log('query =',query);
             // Fusion uses Blob Store API, so Solr query will not work here.
             if (config.USE_FUSION) {
-
+                query = query || ''; 
             } else {
                 // TODO: getTitleField() + ':' + elasticsearch.query + '*'
                 // query += '&start=' + offset;
-                query = getTitleField() + ':' + query + '*'
+                query = getTitleField() + ':' + query + '*&start=' + offset;
             }
 
             dashboard.elasticsearch_list(query, dashboard.current.loader.load_elasticsearch_size).then(
                 function (result) {
-                    console.log('result =',result);
-                    // TODO need to parse the result to Solr format
-
-
                     if (!_.isUndefined(result.response.docs)) {
                         $scope.hits = result.response.numFound;
-                        $scope.elasticsearch.dashboards = result.response.docs;
+                        // Get the list according to pageNum (paging).
+                        var startIndex = offset;
+                        var endIndex = offset + dashboard.current.loader.load_elasticsearch_size;
+                        $scope.elasticsearch.dashboards = parseDashboardList(result.response.docs).slice(startIndex, endIndex);
                     }
                 }
             );
@@ -350,6 +328,25 @@ function (angular, _, config) {
                 });
         };
 
-    });
+        function parseDashboardList(dashboardList) {
+            var docs = [];
+            for (var i=0; i < dashboardList.length; i++) {
+                var doc = {};
+                if (config.USE_FUSION) {
+                  // Dashboard names in Blob Store will have config.SYSTEM_BANANA_BLOB_ID_SUFFIX appended to their names.
+                  // Remove config.SYSTEM_BANANA_BLOB_ID_SUFFIX from id.
+                  var idSuffix = dashboardList[i].name.lastIndexOf(config.SYSTEM_BANANA_BLOB_ID_SUFFIX);
+                  doc.id = dashboardList[i].name.substring(0, idSuffix);
+                  // Don't need doc.server for Fusion Blob Store API.
+                  doc.server = '';
+                } else {
+                  doc.id = dashboardList[i].id;
+                  doc.server = angular.fromJson(dashboardList[i][self.DASHBOARD_FIELD]).solr.server;
+                }
+                docs.push(doc);
+            }
 
+            return docs;
+        }
+    });
 });

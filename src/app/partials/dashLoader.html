@@ -65,13 +65,18 @@
                        placeholder="Type to filter"/>
             </form>
 
+            <!-- Pagination for the dashboard list -->
             <div class="pagination pagination-centered" style="margin-top: 0;" ng-show="elasticsearch.dashboards.length">
                 <ul>
-                    <li ng-class="loadMenu.backwardButtonState"><a ng-click="getPrevSavedDashboard($event)"><i class="icon-backward"></i></a></li>
+                    <li ng-class="loadMenu.backwardButtonState">
+                        <a ng-click="getPrevSavedDashboard($event)" ng-class="loadMenu.backwardButtonState"><i class="icon-backward"></i></a>
+                    </li>
                     <li ng-repeat="page in loadMenu.pages.slice(loadMenu.firstPageShown-1, loadMenu.lastPageShown)" ng-class="page.state">
                         <a ng-click="getSavedDashboard($event, elasticsearch.query, page.offset, page.number)">{{page.number}}</a>
                     </li>
-                    <li ng-class="loadMenu.forwardButtonState"><a ng-click="getNextSavedDashboard($event)"><i class="icon-forward"></i></a></li>
+                    <li ng-class="loadMenu.forwardButtonState">
+                      <a ng-click="getNextSavedDashboard($event)" ng-class="loadMenu.forwardButtonState"><i class="icon-forward"></i></a>
+                    </li>
                 </ul>
                 <table class="table table-condensed table-striped">
                     <tr ng-repeat="row in elasticsearch.dashboards | orderBy:['id'] | limitTo:dashboard.current.loader.load_elasticsearch_size">
