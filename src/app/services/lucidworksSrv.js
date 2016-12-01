@@ -71,7 +71,7 @@ define([
       self.getDashboardList = function(query) {        
         // Validate query
         query = encodeURIComponent(query) || '';
-        var url = config.SYSTEM_BANANA_BLOB_SEARCH_API + '?q=id:' + query + '*' + config.SYSTEM_BANANA_BLOB_ID_SUFFIX;
+        var url = config.SYSTEM_BANANA_BLOB_API + '?q=id:' + query + '* AND ' + config.SYSTEM_BANANA_BLOB_ID_SUBTYPE_QUERY;
         
         return $http.get(url).then(function(resp) {
           var solrResp = {
@@ -80,12 +80,6 @@ define([
               docs: _.sortBy(resp.data, 'name')
             }
           };
-
-          // NOTES: No need for _.filter() because we use BLOB_SEARCH_API.
-          // Filter resp to get only Banana dashboard json that match the query.
-          // solrResp.response.docs = _.filter(resp.data, function(blobObj) {
-          //   return blobObj.name.endsWith('.json') && blobObj.name.includes(query);
-          // });
           solrResp.response.numFound = solrResp.response.docs.length;
 
           return solrResp;
