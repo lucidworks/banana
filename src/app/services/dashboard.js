@@ -443,8 +443,10 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             request = type === 'temp' && ttl ? request.ttl(ttl) : request;
 
             // For Fusion, set sjs.client.server to use Index Pipeline for saving the dashboard.
-            var server = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
-            var dashboardUrl = '/dashboard/solr/' + title + '?server=' + self.current.solr.server;
+            var banana_server = config.banana_server || self.current.solr.server;
+            var server = banana_server + config.banana_index
+                         || config.solr + config.banana_index;
+            var dashboardUrl = '/dashboard/solr/' + title + '?server=' + banana_server;
             if (config.USE_FUSION) {
                 // The index pipeline uses /index endpoint, which is different from Solr /update and accepts different params.
                 server = config.SYSTEM_BANANA_INDEX_PIPELINE;
@@ -502,7 +504,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
         // Get a list of saved dashboards from Solr
         this.elasticsearch_list = function (query, count) {
-            var server = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
+            var server = (config.banana_server || self.current.solr.server) + config.banana_index
+                         || config.solr + config.banana_index;
             if (config.USE_FUSION) {
                 server = config.SYSTEM_BANANA_QUERY_PIPELINE;
             }
