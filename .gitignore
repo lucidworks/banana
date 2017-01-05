@@ -6,3 +6,4 @@ tmp/
 build.number
 build/
 *.iml
+.vscode/
