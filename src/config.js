@@ -52,6 +52,8 @@ function (Settings) {
      */
     // banana_index: "system_banana",
     banana_index: "banana-int",
+    // uncomment the following line to specify the URL of banana-int
+    // banana_server: "http://localhost:8983/solr/",
     banana_queryPipeline: "system_banana-default",
     banana_indexPipeline: "system_banana-default",
 
