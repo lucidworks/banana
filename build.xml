@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<project name="${name}" default="build-war" xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+  <property file="${basedir}/default.properties" />
+
+  <!-- define Maven coordinates, repository url and artifacts name etc -->
+  <property name="groupId" value="com.lucidworks" />
+  <property name="artifactId" value="${final.name}" />
+  <property name="maven-repository-url"
+    value="https://oss.sonatype.org/service/local/staging/deploy/maven2" />
+  <property name="maven-repository-id" value="sonatype-nexus-staging" />
+  <property name="maven-war" value="${build.dir}/${final.name}.war" />
+
+  <target name="build-war" description="Build application as a WAR file">
+    <war destfile="${build.dir}/${final.name}.war" webxml="${src.dir}/WEB-INF/web.xml">
+      <fileset dir="${src.dir}">
+        <include name="**/*.*" />
+      </fileset>
+    </war>
+  </target>
+
+  <!-- ================================================================== -->
+  <!-- Deploy to SonaType OSSRH -->
+  <!-- ================================================================== -->
+  <target name="deploy" depends="build-war" description="Deploy to SonaType OSSRH">
+    <!-- generate a pom file -->
+    <!--  ivy:makepom ivyfile="${ivy.file}" pomfile="${basedir}/pom.xml" templatefile="${basedir}/mvn.template"> 
+      <mapping conf="default" scope="compile"/> <mapping conf="runtime" scope="runtime"/> 
+    </ivy:makepom-->
+    <!-- sign and deploy the war artifact -->
+    <artifact:mvn>
+      <arg
+        value="org.apache.maven.plugins:maven-gpg-plugin:1.5:sign-and-deploy-file" />
+      <arg value="-Durl=${maven-repository-url}" />
+      <arg value="-DrepositoryId=${maven-repository-id}" />
+      <arg value="-DpomFile=pom.xml" />
+      <arg value="-Dfile=${maven-war}" />
+      <arg value="-Prelease" />
+    </artifact:mvn>
+  </target>
+</project>
