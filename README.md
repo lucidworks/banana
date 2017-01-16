@@ -27,9 +27,13 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.15
+## Banana 1.6.16
 
-This release adds some changes and fixes to work with Fusion's Blob Store API correctly.
+This release makes some configuration changes to improve the integration of Banana with Fusion 3.0.0. The following is the list of changes:
+
+1. All default settings and sample dashboards are set to use Fusion default query pipeline `/api/apollo/query-pipelines/_system/collections/` instead of `/api/apollo/solr/`.
+2. In Fusion Signals Dashboard, the default collection is set to `default_signals`.
+3. In Search Log Analytics Dashboard, the default collection is set to `default_log`.
 
 ## Older Release Notes
 
