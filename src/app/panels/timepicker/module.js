@@ -66,13 +66,13 @@ function (angular, app, _, moment, kbn, $) {
       switch($scope.panel.mode) {
       case 'absolute':
         $scope.time = {
-          from : moment($scope.panel.time.from,'MM/DD/YYYY HH:mm:ss') || moment(kbn.time_ago($scope.panel.timespan)),
+          from : moment(kbn.time_ago($scope.panel.timespan)),
           to   : moment($scope.panel.time.to,'MM/DD/YYYY HH:mm:ss') || moment()
         };
         break;
       case 'since':
         $scope.time = {
-          from : moment($scope.panel.time.from,'MM/DD/YYYY HH:mm:ss') || moment(kbn.time_ago($scope.panel.timespan)),
+          from : moment(kbn.time_ago($scope.panel.timespan)),
           to   : moment()
         };
         break;
