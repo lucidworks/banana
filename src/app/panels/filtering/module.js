@@ -96,6 +96,14 @@ function (angular, app, _) {
         return true;
       }
     };
+
+    $scope.decodeFilterValue = function(value) {
+      if (value instanceof Date) {
+        return value;
+      } else {
+        return decodeURIComponent(value);
+      }
+    };
   });
 
   module.filter('truncate', function() {
