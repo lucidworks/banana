@@ -69,8 +69,8 @@ function (Settings) {
     SYSTEM_BANANA_QUERY_PIPELINE: "/api/apollo/query-pipelines/default/collections/system_banana",
     SYSTEM_BANANA_INDEX_PIPELINE: "/api/apollo/index-pipelines/_system/collections/system_banana",
     SYSTEM_BANANA_BLOB_API: "/api/apollo/blobs",
-    SYSTEM_BANANA_BLOB_ID_SUBTYPE_PARAM: "subtype=banana",  // for use when saving dashboards, to create metadata field subtype_s=banana
-    SYSTEM_BANANA_BLOB_ID_SUBTYPE_QUERY: "subtype_s:banana",  // for use when searching dashboards in Blob Store
+    SYSTEM_BANANA_BLOB_ID_SUBTYPE_PARAM: "resourceType=banana",  // for use when saving dashboards, to create metadata field resourceType=banana
+    SYSTEM_BANANA_BLOB_ID_SUBTYPE_QUERY: "resourceType=banana",  // for use when searching dashboards in Blob Store
     
     FUSION_API_STATIC_FIELDS: "/schema/fields",
     FUSION_API_DYNAMIC_FIELDS: "/schema/dynamicfields",

@@ -412,6 +412,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
           });
         };
 
+        // Save a dashboard to Fusion or Solr
         this.elasticsearch_save = function (type, title, ttl) {
             // Clone object so we can modify it without influencing the existing obejct
             var save = _.clone(self.current);
@@ -447,7 +448,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             if (config.USE_FUSION) {
                 dashboardDoc.is_public_b = isPublic;
             }
-            // Add SUBTYPE_PARAM to create metadata field (subtype_s) in Blob to indicate that this is Banana dashboard object.
+            // Add SUBTYPE_PARAM to create metadata field in Blob to indicate that this is Banana dashboard object.
             var blobId = encodeURIComponent(dashboardDoc.id) + '?' + config.SYSTEM_BANANA_BLOB_ID_SUBTYPE_PARAM;
 
             var request = sjs.Document(config.banana_index, type, id).source(dashboardDoc);
@@ -522,7 +523,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             );
         };
 
-        // Get a list of saved dashboards from Solr
+        // Get a list of saved dashboards from Fusion or Solr
         this.elasticsearch_list = function (query, count) {
             var server = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
             if (config.USE_FUSION) {
