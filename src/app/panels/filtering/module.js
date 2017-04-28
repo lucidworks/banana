@@ -99,7 +99,7 @@ function (angular, app, _) {
 
     $scope.decodeFilterValue = function(value) {
       if (value instanceof Date) {
-        return value;
+        return value.toLocaleDateString() + ' ' + value.toTimeString().substring(0,17); // e.g. 4/7/2017 11:45:34 GMT+0700
       } else {
         return decodeURIComponent(value);
       }

@@ -61,12 +61,14 @@
         <i class="filter-action pointer" ng-class="{'icon-check': filterSrv.list[id].active,'icon-check-empty': !filterSrv.list[id].active}" bs-tooltip="'Toggle'" ng-click="toggle(id)"></i>
         <i class="filter-action pointer icon-edit" ng-hide="filterSrv.list[id].editing" bs-tooltip="'Edit'" ng-click="filterSrv.list[id].editing = true"></i>
       </div>
+
       <!-- Show filter keys and values -->
       <div ng-hide="filterSrv.list[id].editing && isEditable(filterSrv.list[id])" class="filter-values">
         <ul class="unstyled">
           <li ng-repeat="(key,value) in filterSrv.list[id]" ng-show="show_key(key)"><strong>{{key}}</strong> : {{ decodeFilterValue(value) | truncate }}</li>
         </ul>
       </div>
+
       <!-- When in Edit mode -->
       <div ng-show="filterSrv.list[id].editing && isEditable(filterSrv.list[id])">
         <ul class="unstyled">

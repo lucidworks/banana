@@ -88,13 +88,7 @@ function (angular, app, _, moment, kbn, $) {
       // These 3 statements basicly do everything time_apply() does
       set_timepicker($scope.time.from,$scope.time.to);
       update_panel();
-
-      // If we're in a mode where something must be calculated, clear existing filters
-      // and set new ones
-      //if($scope.panel.mode !== 'absolute') {
-        set_time_filter($scope.time);
-      //}
-
+      set_time_filter($scope.time);
       dashboard.refresh();
 
       // Start refresh timer if enabled
