@@ -4,26 +4,27 @@ module.exports = function(config) {
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '../',
 
-
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', 'requirejs'],
-
+    // frameworks: ['jasmine', 'requirejs'],
+    frameworks: ['jasmine'],
 
     // list of files / patterns to load in the browser
     files: [
-      'test/test-main.js',
-      {pattern: 'src/**/*.js', included: false},
+      // 'test/test-main.js',
+      // {pattern: 'src/**/*.js', included: false},
       // {pattern: 'bower_components/**/*.js', included: false},
 
       // {pattern: 'test/**/*Spec.js', included: false}
-      {pattern: 'test/unit/tableSpec.js', included: false}
+      // {pattern: 'test/unit/tableSpec.js', included: false}
+      'src/vendor/require/require.js',
+      'src/app/components/require.config.js',
+      'test/unit/dummySpec.js'
     ],
-
 
     // list of files to exclude
     exclude: [
-      'src/app/components/require.config.js'
+      // 'src/app/components/require.config.js'
     ],
 
 

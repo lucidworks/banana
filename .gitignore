@@ -6,4 +6,5 @@ tmp/
 build.number
 build/
 *.iml
-.vscode/
+.vscode
+.idea

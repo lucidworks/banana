@@ -358,8 +358,13 @@
         "hide": false
     },
     "solr": {
+<<<<<<< HEAD
         "server": "/solr/",
         "core_name": "collection1",
+=======
+        "server": "/api/apollo/query-pipelines/_system/collections/",
+        "core_name": "logs",
+>>>>>>> fusion
         "core_list": [],
         "global_params": ""
     }

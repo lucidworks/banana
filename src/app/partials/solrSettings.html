@@ -7,38 +7,38 @@
             <input type="checkbox" ng-model="new.USE_FUSION" style="vertical-align: top;"> <strong>Use Fusion?</strong>
         </div>
         <div class="row-fluid">
+            <div class="span7">
+                <h6>Solr Server / Fusion Query Pipeline
+                    <tip>Specify a Solr addresss or Fusion Query Pipeline, ending with /</tip>
+                </h6>
+                <input type="text" name="solrServer" ng-model="new.server" style="width: 100%;"
+                       placeholder="e.g. /api/apollo/query-pipelines/_system/collections/" ng-pattern="/\/$/" required>
+            </div>
+            <div class="span5">
+                <h6>Collection Name</h6>
+                <input type="text" class="input-large" name="solrCollection" ng-model="new.core_name"
+                       placeholder="e.g. logs" bs-typeahead="dashboard.current.solr.core_list" required>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span9" ng-show="$scope.type == 'default-ts'">
+                <h6>Time Field</h6>
+                <input type="text" class="input-large" ng-model="new.time_field" placeholder="timestamp">
+            </div>
+        </div>
+        <div class="row-fluid">
+            <!-- Validation error messages -->
             <div class="span12">
-                <div class="span6">
-                    <h6>Solr Server / Fusion Query Pipeline
-                        <tip>Specify a Solr addresss or Fusion Query Pipeline, ending with /</tip>
-                    </h6>
-                    <input type="text" class="input-xlarge" name="solrServer" ng-model="new.server"
-                           placeholder="e.g. /api/apollo/query-pipelines/default/collections/" ng-pattern="/\/$/" required>
-                </div>
-                <div class="span6">
-                    <h6>Collection Name</h6>
-                    <input type="text" class="input-medium" name="solrCollection" ng-model="new.core_name"
-                           placeholder="e.g. logs" bs-typeahead="dashboard.current.solr.core_list" required>
-                </div>
-                <div class="row-fluid">
-                    <div class="span9" ng-show="$scope.type == 'default-ts'">
-                        <h6>Time Field</h6>
-                        <input type="text" class="input-medium" ng-model="new.time_field" placeholder="timestamp">
-                    </div>
-                    <!-- Validation error messages -->
-                    <div class="span3">
-                        <ul>
-                            <li ng-show="solrForm.solrServer.$error.pattern"><span class="input-error">Solr Server needs to end with a trailing forward slash (/).</span></li>
-                            <li ng-show="solrForm.solrServer.$error.required"><span class="input-error">Please input Solr Server address.</span></li>
-                            <li ng-show="solrForm.solrCollection.$error.required"><span class="input-error">Please input Collection name.</span></li>
-                        </ul>
-                    </div>
-                </div>
+                <ul>
+                    <li ng-show="solrForm.solrServer.$error.pattern"><span class="input-error">Solr Server needs to end with a trailing forward slash (/).</span></li>
+                    <li ng-show="solrForm.solrServer.$error.required"><span class="input-error">Please input Solr Server address.</span></li>
+                    <li ng-show="solrForm.solrCollection.$error.required"><span class="input-error">Please input Collection name.</span></li>
+                </ul>
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-success" ng-click="create_new($scope.type);dismiss();">Create</button>
+        <button id="newDashboardCreateButton" type="submit" class="btn btn-success" ng-click="create_new($scope.type);dismiss();">Create</button>
         <button type="button" class="btn btn-danger" ng-click="dismiss();reset_panel();close_edit()">Close</button>
     </div>
 </form>

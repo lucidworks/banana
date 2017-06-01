@@ -31,9 +31,7 @@ function (Settings) {
      * your banana web application.
      * @type {String}
      */
-
     // Specify Solr server and core to store the data.
-    // solr: "/api/apollo/solr/",
     solr: "/solr/",
     solr_core: "logs",
     timefield: "timestamp_tdt",
@@ -50,7 +48,6 @@ function (Settings) {
      * internal to banana.
      * @type {String}
      */
-    // banana_index: "system_banana",
     banana_index: "banana-int",
     banana_queryPipeline: "system_banana-default",
     banana_indexPipeline: "system_banana-default",
@@ -68,8 +65,12 @@ function (Settings) {
     apollo_indexPipeline: "/api/apollo/index-pipelines/",
     
     // Constants  
-    SYSTEM_BANANA_QUERY_PIPELINE: "/api/apollo/query-pipelines/system_banana-default/collections/system_banana",
-    SYSTEM_BANANA_INDEX_PIPELINE: "/api/apollo/index-pipelines/system_banana-default/collections/system_banana",
+    SYSTEM_BANANA_QUERY_PIPELINE: "/api/apollo/query-pipelines/default/collections/system_banana",
+    SYSTEM_BANANA_INDEX_PIPELINE: "/api/apollo/index-pipelines/_system/collections/system_banana",
+    SYSTEM_BANANA_BLOB_API: "/api/apollo/blobs",
+    SYSTEM_BANANA_BLOB_ID_SUBTYPE_PARAM: "resourceType=banana",  // for use when saving dashboards, to create metadata field resourceType=banana
+    SYSTEM_BANANA_BLOB_ID_SUBTYPE_QUERY: "resourceType=banana",  // for use when searching dashboards in Blob Store
+    
     FUSION_API_STATIC_FIELDS: "/schema/fields",
     FUSION_API_DYNAMIC_FIELDS: "/schema/dynamicfields",
     FUSION_API_COLLECTIONS: "/api/apollo/collections",

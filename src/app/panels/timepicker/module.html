@@ -5,6 +5,7 @@
     }
   </style>
   <div class="row-fluid form-horizontal" ng-switch="panel.mode" ng-show="filterSrv.idsByType('time').length > 0">
+    <!-- Absolute  mode -->
     <div ng-switch-when="absolute" >
       <div class="timepicker-block">
         <form class="nomargin">
@@ -25,6 +26,8 @@
         </form>
       </div>
     </div>
+
+    <!-- Since mode -->
     <div ng-switch-when="since">
       <div class="timepicker-block">
         <form class="nomargin">
@@ -38,6 +41,8 @@
         </form>
       </div>
     </div>
+
+    <!-- Relative mode -->
     <div ng-switch-when="relative">
       <div class="timepicker-block">
         <form class="nomargin input-append">
