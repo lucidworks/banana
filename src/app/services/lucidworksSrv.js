@@ -71,7 +71,7 @@ define([
       self.getDashboardList = function(query) {        
         // Validate query
         query = encodeURIComponent(query) || '';
-        var url = config.SYSTEM_BANANA_BLOB_API + '?id=' + query + '*&' + config.SYSTEM_BANANA_BLOB_ID_SUBTYPE_QUERY;
+        var url = config.SYSTEM_BANANA_BLOB_API + '?q=id:' + query + '*&' + config.SYSTEM_BANANA_BLOB_ID_SUBTYPE_QUERY;
         
         return $http.get(url).then(function(resp) {
           var solrResp = {
