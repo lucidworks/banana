@@ -2,7 +2,7 @@
   ## Map
 
   ### Parameters
-  * map :: 'world', 'world-antarctica', 'us' or 'europe'
+  * map :: 'world', 'world-antarctica', 'us','france_dept' or 'europe'
   * colors :: an array of colors to use for the regions of the map. If this is a 2
               element array, jquerymap will generate shades between these colors
   * size :: How big to make the facet. Higher = more countries
