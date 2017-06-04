@@ -25,6 +25,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             username: "guest", // default
             style: "dark",
             editable: true,
+            home: true,
             failover: false,
             panel_hints: true,
             rows: [],
@@ -325,60 +326,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             });
         };
 
-        // This function is only used for Fusion.
-        this.create_system_collection = function () {
-            $http({
-                url: "/api/apollo/collections/" + config.banana_index,
-                method: "PUT",
-                data: {}
-                //TODO: handle params
-            }).error(function (data, status) {
-                console.log("Error creating system collection");
-                console.log(status); //check to see if the collection exists or some other error
-                console.log(data);
-                //if it exists, that is fine
-            }).success(function () {
-                //console.log("Success creating collection");
-                //console.log(data);
-            });
-        };
-
-        // Load a saved dashboard from Solr
-        this.elasticsearch_load = function (type, id) {
-            // For dashboard field, Fusion uses 'banana_dashboard_s', but Solr uses 'dashboard'
-            var server = $routeParams.server + config.banana_index || config.solr + config.banana_index;
-            if (config.USE_FUSION) {
-                server = config.SYSTEM_BANANA_QUERY_PIPELINE;
-            }
-
-            return $http({
-                url: server + '/select?wt=json&q=' + self.TITLE_FIELD + ':"' + id + '"',
-                method: "GET",
-                transformResponse: function (response) {
-                    response = angular.fromJson(response);
-                    var source_json = angular.fromJson(response.response.docs[0][self.DASHBOARD_FIELD]);
-
-                    if (DEBUG) {
-                        console.debug('dashboard: type=', type, ' id=', id, ' response=', response, ' source_json=', source_json);
-                    }
-
-                    // return renderTemplate(angular.fromJson(response)._source.dashboard, $routeParams);
-                    // return renderTemplate(JSON.stringify(source_json.dashboard), $routeParams);
-                    return renderTemplate(JSON.stringify(source_json), $routeParams);
-                }
-            }).error(function (data, status) {
-                if (status === 0) {
-                    alertSrv.set('Error', "Could not contact Solr at " + config.solr +
-                        ". Please ensure that Solr is reachable from your system.", 'error');
-                } else {
-                    alertSrv.set('Error', 'Could not find dashboard named "' + id + '". Please ensure that the dashboard name is correct or exists in the system.', 'error');
-                }
-                return false;
-            }).success(function (data) {
-                self.dash_load(data);
-            });
-        };
-
         this.script_load = function (file) {
             return $http({
                 url: "app/dashboards/" + file,
@@ -402,6 +349,76 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             });
         };
 
+        // NOTES: Fusion uses Blob Store API now. No need to create system collection.
+        // This function is only used for Fusion.
+        // this.create_system_collection = function () {
+        //   $http({
+        //     url: "/api/apollo/collections/" + config.banana_index,
+        //     method: "PUT",
+        //     data: {}
+        //     //TODO: handle params
+        //   }).error(function (data, status) {
+        //     console.log("Error creating system collection");
+        //     console.log(status); //check to see if the collection exists or some other error
+        //     console.log(data);
+        //     //if it exists, that is fine
+        //   }).success(function () {
+        //     //console.log("Success creating collection");
+        //     //console.log(data);
+        //   });
+        // };
+
+        // Load a saved dashboard from Solr
+        this.elasticsearch_load = function (type, id) {
+          // For dashboard field, Fusion uses 'banana_dashboard_s', but Solr uses 'dashboard'
+          var server = $routeParams.server + config.banana_index || config.solr + config.banana_index;
+          var url = server + '/select?wt=json&q=' + self.TITLE_FIELD + ':"' + id + '"';
+          var method = 'GET';
+
+          if (config.USE_FUSION) {
+            // Use Blob Store API to load the saved dashboard json.
+            url = config.SYSTEM_BANANA_BLOB_API + '/' + id;
+          }
+
+          return $http({
+            url: url,
+            method: method,
+            transformResponse: function (response) {
+              response = angular.fromJson(response);
+              var source_json = {};
+              if (config.USE_FUSION) {
+                source_json = angular.fromJson(response[0][self.DASHBOARD_FIELD]);
+              } else {
+                // Handle a case where the dashboard field is a multi-valued field (array).
+                if (response.response.docs[0][self.DASHBOARD_FIELD] instanceof Array) {
+                  source_json = angular.fromJson(response.response.docs[0][self.DASHBOARD_FIELD][0]);
+                } else {
+                  source_json = angular.fromJson(response.response.docs[0][self.DASHBOARD_FIELD]);
+                }                
+              }
+
+              if (DEBUG) {
+                console.debug('dashboard: type=', type, ' id=', id, ' response=', response, ' source_json=', source_json);
+              }
+
+              // return renderTemplate(angular.fromJson(response)._source.dashboard, $routeParams);
+              // return renderTemplate(JSON.stringify(source_json.dashboard), $routeParams);
+              return renderTemplate(JSON.stringify(source_json), $routeParams);
+            }
+          }).error(function (data, status) {
+            if (status === 0) {
+              alertSrv.set('Error', "Could not contact Solr at " + config.solr +
+                ". Please ensure that Solr is reachable from your system.", 'error');
+            } else {
+              alertSrv.set('Error', 'Could not find dashboard named "' + id + '". Please ensure that the dashboard name is correct or exists in the system.', 'error');
+            }
+            return false;
+          }).success(function (data) {
+            self.dash_load(data);
+          });
+        };
+
+        // Save a dashboard to Fusion or Solr
         this.elasticsearch_save = function (type, title, ttl) {
             // Clone object so we can modify it without influencing the existing obejct
             var save = _.clone(self.current);
@@ -437,6 +454,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             if (config.USE_FUSION) {
                 dashboardDoc.is_public_b = isPublic;
             }
+            // Add SUBTYPE_PARAM to create metadata field in Blob to indicate that this is Banana dashboard object.
+            var blobId = encodeURIComponent(dashboardDoc.id) + '?' + config.SYSTEM_BANANA_BLOB_ID_SUBTYPE_PARAM;
 
             var request = sjs.Document(config.banana_index, type, id).source(dashboardDoc);
             request = type === 'temp' && ttl ? request.ttl(ttl) : request;
@@ -446,7 +465,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             var dashboardUrl = '/dashboard/solr/' + title + '?server=' + self.current.solr.server;
             if (config.USE_FUSION) {
                 // The index pipeline uses /index endpoint, which is different from Solr /update and accepts different params.
-                server = config.SYSTEM_BANANA_INDEX_PIPELINE;
+                // server = config.SYSTEM_BANANA_INDEX_PIPELINE;
+                server = config.SYSTEM_BANANA_BLOB_API;
                 dashboardUrl = '/dashboard/solr/' + title;
             }
 
@@ -455,6 +475,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
             return request.doIndex(
                 config.USE_FUSION,
+                blobId,
                 function (success) {
                     if (type === 'dashboard') {
                         // Delay loading the newly saved dashboard by 2 sec
@@ -479,7 +500,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             var server = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
             // The index pipeline use /index endpoint, which is different from Solr (/update) and accepts different params.
             if (config.USE_FUSION) {
-                server = config.SYSTEM_BANANA_INDEX_PIPELINE;
+                // Fusion uses Blob Store API to manage saved dashboards.
+                server = config.SYSTEM_BANANA_BLOB_API;
             }
 
             // Set sjs.client.server to use 'banana-int' for deleting dashboard
@@ -490,6 +512,14 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
                 config.USE_FUSION,
                 // Success
                 function (result) {
+                    // NOTES:
+                    // The result returned from Blob Store API (DELETE request) will be an empty string.
+                    // Need to return the result in Solr json format, but for some reasons, when I tried
+                    // to format the result and returned it here. It did not work. dashLoader.js would get
+                    // an empty result. So I'll have to put this logic in dashLoader.js
+                    //   result = {
+                    //     responseHeader: {status: 0}
+                    //   };
                     return result;
                 },
                 // Failure
@@ -499,11 +529,12 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             );
         };
 
-        // Get a list of saved dashboards from Solr
+        // Get a list of saved dashboards from Fusion or Solr
         this.elasticsearch_list = function (query, count) {
             var server = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
             if (config.USE_FUSION) {
-                server = config.SYSTEM_BANANA_QUERY_PIPELINE;
+                // Use Blob Store API to list all dashboards
+                return lucidworksSrv.getDashboardList(query);
             }
 
             sjs.client.server(server);

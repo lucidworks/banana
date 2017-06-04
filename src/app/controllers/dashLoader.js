@@ -17,6 +17,7 @@ function (angular, _, config) {
         self.USER_FIELD = 'user';
         self.GROUP_FIELD = 'group';
 
+        // NOTES: Fusion uses Blob Store API now, so it does not need TITLE_FIELD for querying dashboards.
         // If USE_FUSION, change the schema field names and banana_index setting.
         // Also, get the login username and store it.
         if (config.USE_FUSION) {
@@ -41,11 +42,6 @@ function (angular, _, config) {
             // $scope.elasticsearch is used throught out this file, dashLoader.html and others.
             // So we'll keep using it for now before refactoring it to $scope.solr.
             // $scope.solr = $scope.solr || {};
-            
-            // Create the system_banana collection for Fusion.
-            if (config.USE_FUSION) {
-                dashboard.create_system_collection();
-            }
 
             // Pagination
             $scope.loadMenu = {
@@ -59,6 +55,8 @@ function (angular, _, config) {
                 backwardButtonState: 'disabled',
                 forwardButtonState: 'disabled'
             };
+
+            $scope.elasticsearch.query = '';  // query for filtering the dashboard list
         };
 
         // This function should be replaced by one-way binding feature of AngularJS 1.3
@@ -87,6 +85,10 @@ function (angular, _, config) {
             if (type === 'share') {
                 return (_l.save_temp);
             }
+            if(type === 'home') {
+                return (dashboard.current.home || $scope.home);
+            }  
+
             return false;
         };
 
@@ -140,19 +142,6 @@ function (angular, _, config) {
                 ($scope.elasticsearch.title || dashboard.current.title),
                 ($scope.loader.save_temp_ttl_enable ? ttl : false)
             ).then(function (result) {
-                // Solr
-
-                // if (result.responseHeader.status === 0) {
-                //   alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
-                //     ($scope.elasticsearch.title || dashboard.current.title) + '"','success',5000);
-                //   if (type === 'temp') {
-                //     $scope.share = dashboard.share_link(dashboard.current.title,'temp',result.response.docs[0].id);
-                //   }
-                //   $scope.elasticsearch.title = '';
-                // } else {
-                //   alertSrv.set('Save failed','Dashboard could not be saved to Solr','error',5000);
-                // }
-
                 alertSrv.set('Dashboard Saved', 'This dashboard has been saved to Solr as "' +
                     ($scope.elasticsearch.title || dashboard.current.title) + '"', 'success', 5000);
                 if (type === 'temp') {
@@ -168,6 +157,14 @@ function (angular, _, config) {
         $scope.elasticsearch_delete = function (id) {
             dashboard.elasticsearch_delete(id).then(
                 function (result) {
+                    if (config.USE_FUSION) {
+                        // The result returned from Blob Store API (DELETE request) will be an empty string.
+                        // Need to return the result in Solr json format.
+                        result = {
+                          responseHeader: {status: 0}
+                        };
+                    }
+
                     if (!_.isUndefined(result)) {
                         if (result.responseHeader.status === 0) {
                             alertSrv.set('Dashboard Deleted', id + ' has been deleted', 'success', 5000);
@@ -189,16 +186,7 @@ function (angular, _, config) {
                 function (result) {
                     if (!_.isUndefined(result.response.docs)) {
                         $scope.hits = result.response.numFound;
-                        $scope.elasticsearch.dashboards = result.response.docs;
-
-                        var docs = [];
-                        for (var i=0; i < result.response.docs.length; i++) {
-                            var doc = {};
-                            doc.id = result.response.docs[i].id;
-                            doc.server = angular.fromJson(result.response.docs[i][self.DASHBOARD_FIELD]).solr.server;
-                            docs.push(doc);
-                        }
-                        $scope.elasticsearch.dashboards = docs;
+                        $scope.elasticsearch.dashboards = parseDashboardList(result.response.docs);
 
                         // Handle pagination
                         $scope.loadMenu.totalPages = Math.ceil($scope.hits / dashboard.current.loader.load_elasticsearch_size);
@@ -216,7 +204,7 @@ function (angular, _, config) {
                         if ($scope.loadMenu.pages.length > 0) {
                           $scope.loadMenu.pages[0].state = 'active';
                         }
-                        
+
                         if ($scope.loadMenu.totalPages > $scope.loadMenu.maxShownPages) {
                             $scope.loadMenu.forwardButtonState = '';
                         } else {
@@ -227,16 +215,28 @@ function (angular, _, config) {
                 });
         };
 
+        // Get the dashboard list for the specified pageNum
         $scope.getSavedDashboard = function (event, query, offset, pageNum) {
             // To stop dropdown-menu from disappearing after click
             event.stopPropagation();
-            
-            query += '&start=' + offset;
+
+            // Fusion uses Blob Store API, so Solr query will not work here.
+            if (config.USE_FUSION) {
+                query = query || ''; 
+            } else {
+                // TODO: getTitleField() + ':' + elasticsearch.query + '*'
+                // query += '&start=' + offset;
+                query = $scope.getTitleField() + ':' + query + '*&start=' + offset;
+            }
+
             dashboard.elasticsearch_list(query, dashboard.current.loader.load_elasticsearch_size).then(
                 function (result) {
                     if (!_.isUndefined(result.response.docs)) {
                         $scope.hits = result.response.numFound;
-                        $scope.elasticsearch.dashboards = result.response.docs;
+                        // Get the list according to pageNum (paging).
+                        var startIndex = offset;
+                        var endIndex = offset + dashboard.current.loader.load_elasticsearch_size;
+                        $scope.elasticsearch.dashboards = parseDashboardList(result.response.docs).slice(startIndex, endIndex);
                     }
                 }
             );
@@ -247,7 +247,7 @@ function (angular, _, config) {
                 $scope.loadMenu.currentPage = pageNum;
             }
         };
-        
+
         $scope.getPrevSavedDashboard = function (event) {
             // To stop dropdown-menu from disappearing after click
             event.stopPropagation();
@@ -313,6 +313,27 @@ function (angular, _, config) {
                 });
         };
 
-    });
+        function parseDashboardList(dashboardList) {
+            var docs = [];
+            for (var i=0; i < dashboardList.length; i++) {
+                var doc = {};
+                if (config.USE_FUSION) {
+                  doc.id = dashboardList[i].name;
+                  // Don't need doc.server for Fusion Blob Store API.
+                  doc.server = '';
+                } else {
+                  doc.id = dashboardList[i].id;
+                  // Handle a case where the dashboard field is a multi-valued field (array).
+                  if (dashboardList[i][self.DASHBOARD_FIELD] instanceof Array) {
+                    doc.server = angular.fromJson(dashboardList[i][self.DASHBOARD_FIELD][0]).solr.server;
+                  } else {
+                    doc.server = angular.fromJson(dashboardList[i][self.DASHBOARD_FIELD]).solr.server;
+                  }                  
+                }
+                docs.push(doc);
+            }
 
+            return docs;
+        }
+    });
 });

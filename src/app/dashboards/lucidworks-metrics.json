@@ -576,7 +576,7 @@
     "dropdown_collections": false
   },
   "solr": {
-    "server": "/api/apollo/solr/",
+    "server": "/api/apollo/query-pipelines/_system/collections/",
     "core_name": "system_metrics",
     "core_list": []
   }
