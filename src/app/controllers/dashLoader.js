@@ -325,7 +325,12 @@ function (angular, _, config) {
                   doc.server = '';
                 } else {
                   doc.id = dashboardList[i].id;
-                  doc.server = angular.fromJson(dashboardList[i][self.DASHBOARD_FIELD]).solr.server;
+                  // Handle a case where the dashboard field is a multi-valued field (array).
+                  if (dashboardList[i][self.DASHBOARD_FIELD] instanceof Array) {
+                    doc.server = angular.fromJson(dashboardList[i][self.DASHBOARD_FIELD][0]).solr.server;
+                  } else {
+                    doc.server = angular.fromJson(dashboardList[i][self.DASHBOARD_FIELD]).solr.server;
+                  }
                 }
                 docs.push(doc);
             }
