@@ -389,7 +389,12 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
               if (config.USE_FUSION) {
                 source_json = angular.fromJson(response[0][self.DASHBOARD_FIELD]);
               } else {
-                source_json = angular.fromJson(response.response.docs[0][self.DASHBOARD_FIELD]);
+                // Handle a case where the dashboard field is a multi-valued field (array).
+                if (response.response.docs[0][self.DASHBOARD_FIELD] instanceof Array) {
+                  source_json = angular.fromJson(response.response.docs[0][self.DASHBOARD_FIELD][0]);
+                } else {
+                  source_json = angular.fromJson(response.response.docs[0][self.DASHBOARD_FIELD]);
+                }                
               }
 
               if (DEBUG) {
