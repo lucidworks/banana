@@ -29,31 +29,37 @@ This release includes adding support for changes in Fusion 3.1 BlobStore API, wh
 
 You can find all previous [Release Notes](https://github.com/LucidWorks/banana/wiki/Release-Notes) on our wiki page.
 
-### Changes to your dashboards
-If you created dashboards for Banana 1.0.0, you did not have a global filtering panel. In some cases, these filter
-values can be implicitly set to defaults that may lead to strange search results. We recommend updating your old
-dashboards by adding a filtering panel. A good way to do it visually is to put the filtering panel on its own row and
-hide it when it is not needed.
-
 ## Installation and Quick Start
 ### Requirements
 * A modern web browser. The latest version of [Chrome](http://www.google.com/chrome/) and
 [Firefox](https://www.mozilla.org/en-US/firefox/new/) have been tested to work. [Safari](http://www.apple.com/safari/)
 also works, except for the "Export to File" feature for saving dashboards. We recommend that you use Chrome or Firefox
 while building dashboards.
-* Solr 5 or 4.4+ (Solr server's endpoint must be open, or a proxy configured to allow access to it).
+* Solr 6.x or at least 4.4+ (Solr server's endpoint must be open, or a proxy configured to allow access to it).
 * A webserver (optional).
 
 ### Installation Options
 #### Option 1: Run Banana webapp within your existing Solr instance
-##### Solr 5 Instructions
-1. Run Solr at least once to create the webapp directory:
+##### Solr 5+ Instructions
+1. Run Solr at least once to create the webapp directory (this step might be unnecessary for Solr 6):
 
-        cd $SOLR_HOME/bin/
+        cd $SOLR_HOME/bin
         ./solr start
 
-2. Copy banana folder to $SOLR_HOME/server/solr-webapp/webapp/
-3. Browse to [http://localhost:8983/solr/banana/src/index.html](http://localhost:8983/solr/banana/src/index.html)
+2. Copy banana folder to `$SOLR_HOME/server/solr-webapp/webapp/`
+
+        cd $SOLR_HOME/server/solr-webapp/webapp
+        cp -R $BANANA_HOME/src ./banana
+
+    NOTES: For production, you should run `grunt build` command to generate the optimized code in `dist` directory. And then copy the `dist` directory to the production web server. For example:
+
+        cd $BANANA_HOME
+        npm install
+        bower install
+        grunt build
+        cp -R ./dist $SOLR_HOME/server/solr-webapp/webapp/banana
+
+3. Browse to [http://localhost:8983/solr/banana/index.html](http://localhost:8983/solr/banana/index.html)
 
 ##### Solr 4 Instructions
 1. Run Solr at least once to create the webapp directories:
@@ -80,29 +86,30 @@ example collections and dashboards in order to rapidly enable proof-of-concepts 
 See [http://www.lucidworks.com/lucidworks-silk/](http://www.lucidworks.com/lucidworks-silk/).
 
 #### Option 3: Building and installing from a WAR file
+_NOTES: This option is only applicable to Solr 5 or 4. Solr 6 has a different architecture._
 1. Pull the source code of Banana version that you want from the
 [release](https://github.com/LucidWorks/banana/tree/release) branch in the repo;
 For example, version *x.y.z* will be tagged as `x.y.z`.
 
-2. Run a command line "ant" from within the banana directory to build the war file:
+2. Run a command line `ant` from within the banana directory to build the war file:
 
     ```bash
-        cd $BANANA_REPO_HOME
+        cd $BANANA_HOME
         ant
     ```
-3. The war file will be called *banana-\<buildnumber\>.war* and will be located in $BANANA\_REPO\_HOME/build.
+3. The war file will be called *banana-\<buildnumber\>.war* and will be located in $BANANA_HOME/build.
 Copy the war file and banana's jetty context file to Solr directories:
   * For Solr 5:
 
     ```bash
-        cp $BANANA_REPO_HOME/build/banana-<buildnumber>.war $SOLR_HOME/server/webapps/banana.war
-        cp $BANANA_REPO_HOME/jetty-contexts/banana-context.xml $SOLR_HOME/server/contexts/
+        cp $BANANA_HOME/build/banana-<buildnumber>.war $SOLR_HOME/server/webapps/banana.war
+        cp $BANANA_HOME/jetty-contexts/banana-context.xml $SOLR_HOME/server/contexts/
     ```
   * For Solr 4:
 
     ```bash
-        cp $BANANA_REPO_HOME/build/banana-<buildnumber>.war $SOLR_HOME/example/webapps/banana.war
-        cp $BANANA_REPO_HOME/jetty-contexts/banana-context.xml $SOLR_HOME/example/contexts/
+        cp $BANANA_HOME/build/banana-<buildnumber>.war $SOLR_HOME/example/webapps/banana.war
+        cp $BANANA_HOME/jetty-contexts/banana-context.xml $SOLR_HOME/example/contexts/
     ```
 4. Run Solr:
   * For Solr 5:
@@ -125,9 +132,13 @@ You will need to enable [CORS](https://en.wikipedia.org/wiki/Cross-origin_resour
 you query, or configure a proxy that makes requests to banana and Solr as same-origin. We typically recommend the
 latter approach.
 
-#### Storing Dashboards in Solr
+### Storing Dashboards in Solr
+If you want to save and load dashboards from Solr, then you need to create a collection called `banana-int` first. For Solr 6, here are the steps:
 
-If you want to save and load dashboards from Solr, create a collection using the configuration files provided in either
+        cd $SOLR_HOME/bin
+        ./solr create -c banana-int
+
+For Solr 5 and 4, you have to create the `banana-int` collection using the configuration files provided in either
 the _resources/banana-int-solr-5.0_ (for Solr 5) directory or the _resources/banana-int-solr-4.5_ directory
 (for Solr 4.5). If you are using SolrCloud, you will need to upload the configuration into
 [ZooKeeper](https://zookeeper.apache.org) and then create the collection using that configuration.
@@ -135,6 +146,12 @@ the _resources/banana-int-solr-5.0_ (for Solr 5) directory or the _resources/ban
 The Solr server configured in config.js will serve as the default node for each dashboard; you can configure each
 dashboard to point to a different Solr endpoint as long as your webserver and Solr put out the correct CORS headers.
 See the README file under the  _resources/enable-cors_ directory for a guide.
+
+### Changes to your dashboards
+If you created dashboards for Banana 1.0.0, you did not have a global filtering panel. In some cases, these filter
+values can be implicitly set to defaults that may lead to strange search results. We recommend updating your old
+dashboards by adding a filtering panel. A good way to do it visually is to put the filtering panel on its own row and
+hide it when it is not needed.
 
 ## FAQ
 
