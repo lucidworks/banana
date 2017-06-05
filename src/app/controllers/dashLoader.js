@@ -337,5 +337,14 @@ function (angular, _, config) {
 
             return docs;
         }
+
+        // If banana_server url is configured in config.js, then use it to load or save dashboards.
+        // This will allow the saved dashboards to be loaded from another Solr server correctly.
+        $scope.getBananaServer = function getBananaServer(url) {
+          if (config.banana_server) {
+            url = config.banana_server;
+          }
+          return url;
+        }
     });
 });
