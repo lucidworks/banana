@@ -17,6 +17,8 @@ function (_) {
       USE_ADMIN_CORES: true,
       panel_names: [],
       banana_index: "system_banana",
+      // Uncomment the following line to specify the URL of Solr server that will be used to store and load saved dashboards.
+      // banana_server: "http://localhost:8983/solr/",
 
       // Lucidworks Fusion settings
       USE_FUSION: true,  

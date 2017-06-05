@@ -328,7 +328,7 @@ function (angular, _, config) {
                     doc.server = angular.fromJson(dashboardList[i][self.DASHBOARD_FIELD][0]).solr.server;
                   } else {
                     doc.server = angular.fromJson(dashboardList[i][self.DASHBOARD_FIELD]).solr.server;
-                  }                  
+                  }
                 }
                 docs.push(doc);
             }
