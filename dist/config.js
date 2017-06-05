@@ -34,7 +34,6 @@ function (Settings) {
 
     // Specify Solr server and core to store the data.
     solr: "/api/apollo/query-pipelines/_system/collections/",
-    // solr: "/solr/",
     solr_core: "logs",
     timefield: "timestamp_tdt",
 
@@ -51,7 +50,8 @@ function (Settings) {
      * @type {String}
      */
     banana_index: "system_banana",
-    // banana_index: "banana-int",
+    // uncomment the following line to specify the URL of banana-int
+    // banana_server: "http://localhost:8983/solr/",
 
     /**
      * Lucidworks Fusion settings
@@ -60,7 +60,6 @@ function (Settings) {
      * This mainly affect the APIs used to get the list of collections and schemas (fields).
      */
     USE_FUSION: true,
-    // USE_FUSION: false,
     apollo: "/api/apollo",
     apollo_queryPipeline: "/api/apollo/query-pipelines/",
     apollo_indexPipeline: "/api/apollo/index-pipelines/",

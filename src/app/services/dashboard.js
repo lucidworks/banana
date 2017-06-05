@@ -460,18 +460,16 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             request = type === 'temp' && ttl ? request.ttl(ttl) : request;
 
             // For Fusion, set sjs.client.server to use Index Pipeline for saving the dashboard.
-            var server = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
-            var dashboardUrl = '/dashboard/solr/' + title + '?server=' + self.current.solr.server;
+            var banana_server = config.banana_server || self.current.solr.server || config.solr;
+            var server = banana_server + config.banana_index;
+            var dashboardUrl = '/dashboard/solr/' + title + '?server=' + banana_server;
             if (config.USE_FUSION) {
-                // The index pipeline uses /index endpoint, which is different from Solr /update and accepts different params.
-                // server = config.SYSTEM_BANANA_INDEX_PIPELINE;
                 server = config.SYSTEM_BANANA_BLOB_API;
                 dashboardUrl = '/dashboard/solr/' + title;
             }
 
             sjs.client.useFusion(config.USE_FUSION);
             sjs.client.server(server);
-
             return request.doIndex(
                 config.USE_FUSION,
                 blobId,
@@ -496,7 +494,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         };
 
         this.elasticsearch_delete = function (id) {
-            var server = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
+            var banana_server = config.banana_server || self.current.solr.server || config.solr;
+            var server = banana_server + config.banana_index;
             // The index pipeline use /index endpoint, which is different from Solr (/update) and accepts different params.
             if (config.USE_FUSION) {
                 // Fusion uses Blob Store API to manage saved dashboards.
@@ -506,7 +505,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             // Set sjs.client.server to use 'banana-int' for deleting dashboard
             sjs.client.useFusion(config.USE_FUSION);
             sjs.client.server(server);
-
             return sjs.Document(config.banana_index, 'dashboard', id).doDelete(
                 config.USE_FUSION,
                 // Success
@@ -530,7 +528,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
         // Get a list of saved dashboards from Fusion or Solr
         this.elasticsearch_list = function (query, count) {
-            var server = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
+            var banana_server = config.banana_server || self.current.solr.server || config.solr;
+            var server = banana_server + config.banana_index;
             if (config.USE_FUSION) {
                 // Use Blob Store API to list all dashboards
                 return lucidworksSrv.getDashboardList(query);

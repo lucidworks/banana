@@ -1,16 +1,9 @@
 # How to Fix CORS issue for Solr
+## Solr 6
+1. Edit `$SOLR_HOME/server/etc/webdefault.xml` by inserting the following `<filter>` configuration right after `<web-app>` and before the other `<filter>`, OR you can just use the `webdefault.xml` file in this directory.
 
-## Solr 5
+    **Note**: The order of `<filter>` does matter!
 
-1.  Copy two jar files into `$SOLR_HOME/server/lib/`:
-      - jetty-servlets-8.1.10.v20130312.jar
-      - jetty-util-8.1.10.v20130312.jar
-        * **Note**:  Jetty files v9.x.x do not work.
-
-2.  Edit `$SOLR_HOME/server/etc/webdefault.xml`, by inserting the below `<filter>` right after `<web-app>` and before the other `<filter>` OR you can just use the web.xml file in this directory:
-    * **Note**: the order of `<filter>` does matter
-
-      ```
         <!-- =================================== -->
         <!--      Enable CORS for Banana         -->
         <!-- =================================== -->
@@ -35,17 +28,30 @@
           <filter-name>cross-origin</filter-name>
           <url-pattern>/*</url-pattern>
         </filter-mapping>
-      ```
-3.  That's it. Restart Solr server and it should work!
+
+2. That's it. Restart Solr and it should work!
+
+## Solr 5
+1. Copy two jar files into `$SOLR_HOME/server/lib/`:
+      - jetty-servlets-8.1.10.v20130312.jar
+      - jetty-util-8.1.10.v20130312.jar
+      
+      **Note**:  Jetty files v9.x.x do not work.
+
+2. Edit `$SOLR_HOME/server/etc/webdefault.xml` by inserting the `<filter>` configuration from step #1 for Solr 6. Put it right after `<web-app>` and before the other `<filter>`, OR you can just use the web.xml file in this directory.
+
+3. That's it. Restart Solr and it should work!
 
 ## Solr 4
-
-1.  Copy two jar files into `$SOLR_HOME/example/solr-webapp/webapp/WEB-INF/lib/`:
+1. Copy two jar files into `$SOLR_HOME/example/solr-webapp/webapp/WEB-INF/lib/`:
       - jetty-servlets-8.1.14.v20131031.jar
       - jetty-util-8.1.14.v20131031.jar
-        * **Note**:  Jetty files v9.x.x do not work.
+      
+      **Note**:  Jetty files v9.x.x do not work.
 
-2.  Edit `$SOLR_HOME/example/solr-webapp/webapp/WEB-INF/web.xml`, by inserting the `<filter>` above right after `<web-app>` and before the other `<filter>` OR you can just use the web.xml file in this directory:
-    * **Note**: the order of `<filter>` does matter
+2. Edit `$SOLR_HOME/example/solr-webapp/webapp/WEB-INF/web.xml` by inserting the `<filter>` configuration from step #1 for Solr 6. Put it right after `<web-app>` and before the other `<filter>`, OR you can just use the web.xml file in this directory.
 
-3.  That's it. Restart Solr server and it should work!
+3. That's it. Restart Solr and it should work!
+
+## References:
+1. https://www.eclipse.org/jetty/documentation/9.4.x/cross-origin-filter.html
