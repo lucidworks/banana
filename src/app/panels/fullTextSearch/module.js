@@ -34,12 +34,7 @@ define([
     //app.useModule('ui.bootstrap')
     module.controller('fullTextSearch', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
       $scope.panelMeta = {
-        modals: [{
-          description: "Inspect",
-          icon: "icon-info-sign",
-          partial: "app/partials/inspector.html",
-          show: $scope.panel.spyable
-        }],
+
         editorTabs: [{
           title: 'Paging',
           src: 'app/panels/table/pagination.html'
@@ -54,6 +49,8 @@ define([
 
       // Set and populate defaults
       var _d = {
+          display:'block',
+          icon:"icon-caret-down",
         status: "Stable",
         queries: {
           mode: 'all',
@@ -84,6 +81,7 @@ define([
         exportSize: 100,
         exportAll: true,
         facet_limit: 10,
+          linkage_id:'a',
         foundResults: true,
         show_queries:true,
       };
@@ -105,6 +103,18 @@ define([
       };
 
       $scope.percent = kbn.to_percent;
+
+        $scope.display=function() {
+            if($scope.panel.display=='none'){
+                $scope.panel.display='block';
+                $scope.panel.icon="icon-caret-down";
+
+
+            }else{
+                $scope.panel.display='none';
+                $scope.panel.icon="icon-caret-up";
+            }
+        };
 
       $scope.toggle_micropanel = function(field, groups) {
         var docs = _.map($scope.data, function(_d) {
@@ -170,29 +180,33 @@ define([
       };
 
       $scope.build_search = function(field, value, negate) {
-        var query;
-        // This needs to be abstracted somewhere
-        if (_.isArray(value)) {
-          // TODO: I don't think Solr has "AND" operator in query.
-          query = "(" + _.map(value, function(v) {
-            return angular.toJson(v);
-          }).join(" AND ") + ")";
-        } else if (_.isUndefined(value)) {
-          query = '*:*';
-          negate = !negate;
-        } else {
-          query = angular.toJson(value);
-        }
-        // TODO: Need to take a look here, not sure if need change.
-        filterSrv.set({
-          type: 'field',
-          field: field,
-          query: query,
-          mandate: (negate ? 'mustNot' : 'must')
-        });
 
-        $scope.panel.offset = 0;
-        dashboard.refresh();
+          var query;
+          // This needs to be abstracted somewhere
+          if (_.isArray(value)) {
+              // TODO: I don't think Solr has "AND" operator in query.
+              query = "(" + _.map(value, function (v) {
+                      return angular.toJson(v);
+                  }).join(" AND ") + ")";
+          } else if (_.isUndefined(value)) {
+              query = '*:*';
+              negate = !negate;
+          } else {
+              query = angular.toJson(value);
+          }
+          // TODO: Need to take a look here, not sure if need change.
+          filterSrv.set({
+              type: 'field',
+              field: field,
+              query: query,
+              mandate: (negate ? 'mustNot' : 'must')
+          });
+
+          $scope.panel.offset = 0;
+          dashboard.current.linkage_id = $scope.panel.linkage_id;
+          dashboard.current.enable_linkage=false;
+          dashboard.refresh();
+
       };
 
       $scope.facet_label = function(key) {
@@ -211,165 +225,167 @@ define([
       };
 
       $scope.get_data = function(segment, query_id) {
-        $scope.panel.error = false;
-        delete $scope.panel.error;
+          if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+          $scope.panel.error = false;
+          delete $scope.panel.error;
 
-        // Make sure we have everything for the request to complete
-        if (dashboard.indices.length === 0) {
-          return;
-        }
-        $scope.panelMeta.loading = true;
-        $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
+          // Make sure we have everything for the request to complete
+          if (dashboard.indices.length === 0) {
+              return;
+          }
+          $scope.panelMeta.loading = true;
+          $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
 
-        // What this segment is for? => to select which indices to query.
-        var _segment = _.isUndefined(segment) ? 0 : segment;
-        $scope.segment = _segment;
+          // What this segment is for? => to select which indices to query.
+          var _segment = _.isUndefined(segment) ? 0 : segment;
+          $scope.segment = _segment;
 
-        $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
+          $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
-        var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
-        var boolQuery = $scope.sjs.BoolQuery();
-        _.each($scope.panel.queries.ids, function(id) {
-          boolQuery = boolQuery.should(querySrv.getEjsObj(id));
-        });
+          var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
+          var boolQuery = $scope.sjs.BoolQuery();
+          _.each($scope.panel.queries.ids, function (id) {
+              boolQuery = boolQuery.should(querySrv.getEjsObj(id));
+          });
 
-        request = request.query(
-          $scope.sjs.FilteredQuery(
-            boolQuery,
-            filterSrv.getBoolFilter(filterSrv.ids) // search time range is provided here.
-          ))
-          .highlight(
-            $scope.sjs.Highlight($scope.panel.highlight)
-            .fragmentSize(2147483647) // Max size of a 32bit unsigned int
-            .preTags('@start-highlight@')
-            .postTags('@end-highlight@')
-        ).size($scope.panel.size * $scope.panel.pages); // Set the size of query result
+          request = request.query(
+              $scope.sjs.FilteredQuery(
+                  boolQuery,
+                  filterSrv.getBoolFilter(filterSrv.ids) // search time range is provided here.
+              ))
+              .highlight(
+                  $scope.sjs.Highlight($scope.panel.highlight)
+                      .fragmentSize(2147483647) // Max size of a 32bit unsigned int
+                      .preTags('@start-highlight@')
+                      .postTags('@end-highlight@')
+              ).size($scope.panel.size * $scope.panel.pages); // Set the size of query result
 
-        $scope.panel_request = request;
+          $scope.panel_request = request;
 
-        var fq = '';
-        if (filterSrv.getSolrFq()) {
-          fq = '&' + filterSrv.getSolrFq();
-        }
-        var query_size = $scope.panel.size * $scope.panel.pages;
-        var wt_json = '&wt=json';
-        var facet = '&facet=true';
-        var facet_fields = '';
-        for (var i = 0; i < $scope.panel.fields.length; i++) {
-          facet_fields += '&facet.field=' + $scope.panel.fields[i];
-        }
-        var rows_limit;
-        var sorting = '';
+          var fq = '';
+          if (filterSrv.getSolrFq()) {
+              fq = '&' + filterSrv.getSolrFq();
+          }
+          var query_size = $scope.panel.size * $scope.panel.pages;
+          var wt_json = '&wt=json';
+          var facet = '&facet=true';
+          var facet_fields = '';
+          for (var i = 0; i < $scope.panel.fields.length; i++) {
+              facet_fields += '&facet.field=' + $scope.panel.fields[i];
+          }
+          var rows_limit;
+          var sorting = '';
 
-        if ($scope.panel.sortable && $scope.panel.sort && $scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined) {
-          sorting = '&sort=' + $scope.panel.sort[0] + ' ' + $scope.panel.sort[1];
-        }
+          if ($scope.panel.sortable && $scope.panel.sort && $scope.panel.sort[0] !== undefined && $scope.panel.sort[1] !== undefined) {
+              sorting = '&sort=' + $scope.panel.sort[0] + ' ' + $scope.panel.sort[1];
+          }
 
-        // set the size of query result
-        if (query_size !== undefined && query_size !== 0) {
-          rows_limit = '&rows=' + query_size;
-        } else { // default
-          rows_limit = '&rows=25';
-        }
+          // set the size of query result
+          if (query_size !== undefined && query_size !== 0) {
+              rows_limit = '&rows=' + query_size;
+          } else { // default
+              rows_limit = '&rows=25';
+          }
 
-        //set highlight part in sole query
-        var highlight;
-        if ($scope.panel.body_field) {
-          highlight = '&hl=true&hl.fl=' + $scope.panel.body_field;
-        } else {
-          highlight = "";
-        }
-
-
-        // Set the panel's query
-
-        //var query = $scope.panel.searchQuery == null ? querySrv.getQuery(0) : 'q=' + $scope.panel.searchQuery
-        $scope.panel.queries.basic_query = querySrv.getORquery() + fq + facet + facet_fields + sorting;
-        $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json + rows_limit + highlight;
-
-        // Set the additional custom query
-        if ($scope.panel.queries.custom != null) {
-          request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
-        } else {
-          request = request.setQuery($scope.panel.queries.query);
-        }
-
-        var results = request.doSearch();
-
-        // Populate scope when we have results
-        results.then(function(results) {
-          $scope.panelMeta.loading = false;
-          $scope.panel.offset = 0;
-
-          if (_segment === 0) {
-            $scope.hits = 0;
-            $scope.data = [];
-            query_id = $scope.query_id = new Date().getTime();
+          //set highlight part in sole query
+          var highlight;
+          if ($scope.panel.body_field) {
+              highlight = '&hl=true&hl.fl=' + $scope.panel.body_field;
           } else {
-            // Fix BUG with wrong total event count.
-            $scope.data = [];
+              highlight = "";
           }
 
-          // Check for error and abort if found
-          if (!(_.isUndefined(results.error))) {
-            $scope.panel.error = $scope.parse_error(results.error.msg); // There's also results.error.code
-            return;
+
+          // Set the panel's query
+
+          //var query = $scope.panel.searchQuery == null ? querySrv.getQuery(0) : 'q=' + $scope.panel.searchQuery
+          $scope.panel.queries.basic_query = querySrv.getORquery() + fq + facet + facet_fields + sorting;
+          $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json + rows_limit + highlight;
+
+          // Set the additional custom query
+          if ($scope.panel.queries.custom != null) {
+              request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
+          } else {
+              request = request.setQuery($scope.panel.queries.query);
           }
 
-          // Check that we're still on the same query, if not stop
-          if ($scope.query_id === query_id) {
-            $scope.data = $scope.data.concat(_.map(results.response.docs, function(hit) {
-              var _h = _.clone(hit);
-              _h.kibana = {
-                _source: kbn.flatten_json(hit),
-                highlight: kbn.flatten_json(hit.highlighting || {})
-              };
+          var results = request.doSearch();
 
-              return _h;
-            }));
+          // Populate scope when we have results
+          results.then(function (results) {
+              $scope.panelMeta.loading = false;
+              $scope.panel.offset = 0;
 
-            // Solr does not need to accumulate hits count because it can get total count
-            // from a single faceted query.
-            $scope.hits = results.response.numFound;
-            $scope.panel.foundResults = $scope.hits === 0 ? false : true;
-            if (results.highlighting) {
-              $scope.highlighting = results.highlighting;
-              $scope.highlightingKeys = Object.keys(results.highlighting);
-
-              if ($.isEmptyObject($scope.highlighting[$scope.highlightingKeys[0]])) { // jshint ignore:line
-                $scope.highlight_flag = false;
+              if (_segment === 0) {
+                  $scope.hits = 0;
+                  $scope.data = [];
+                  query_id = $scope.query_id = new Date().getTime();
               } else {
-                $scope.highlight_flag = true;
+                  // Fix BUG with wrong total event count.
+                  $scope.data = [];
               }
-            }
-            var facet_results = results.facet_counts.facet_fields;
-            var facet_data = {};
-            _.each($scope.panel.fields, function(field) {
-              facet_data[field] = [];
-              for (var i = 0; i < facet_results[field].length; i += 2) {
-                facet_data[field].push({
-                  value: facet_results[field][i],
-                  count: facet_results[field][i + 1]
-                });
+
+              // Check for error and abort if found
+              if (!(_.isUndefined(results.error))) {
+                  $scope.panel.error = $scope.parse_error(results.error.msg); // There's also results.error.code
+                  return;
               }
-            });
-            $scope.facet_data = facet_data;
 
-            // Keep only what we need for the set
-            $scope.data = $scope.data.slice(0, $scope.panel.size * $scope.panel.pages);
-          } else {
-            return;
-          }
+              // Check that we're still on the same query, if not stop
+              if ($scope.query_id === query_id) {
+                  $scope.data = $scope.data.concat(_.map(results.response.docs, function (hit) {
+                      var _h = _.clone(hit);
+                      _h.kibana = {
+                          _source: kbn.flatten_json(hit),
+                          highlight: kbn.flatten_json(hit.highlighting || {})
+                      };
 
-          // If we're not sorting in reverse chrono order, query every index for
-          // size*pages results
-          // Otherwise, only get size*pages results then stop querying
-          if ($scope.panel.sortable && ($scope.data.length < $scope.panel.size * $scope.panel.pages || !((_.contains(filterSrv.timeField(), $scope.panel.sort[0])) && $scope.panel.sort[1] === 'desc')) &&
-            _segment + 1 < dashboard.indices.length) {
-            $scope.get_data(_segment + 1, $scope.query_id);
-          }
+                      return _h;
+                  }));
 
-        });
+                  // Solr does not need to accumulate hits count because it can get total count
+                  // from a single faceted query.
+                  $scope.hits = results.response.numFound;
+                  $scope.panel.foundResults = $scope.hits === 0 ? false : true;
+                  if (results.highlighting) {
+                      $scope.highlighting = results.highlighting;
+                      $scope.highlightingKeys = Object.keys(results.highlighting);
+
+                      if ($.isEmptyObject($scope.highlighting[$scope.highlightingKeys[0]])) { // jshint ignore:line
+                          $scope.highlight_flag = false;
+                      } else {
+                          $scope.highlight_flag = true;
+                      }
+                  }
+                  var facet_results = results.facet_counts.facet_fields;
+                  var facet_data = {};
+                  _.each($scope.panel.fields, function (field) {
+                      facet_data[field] = [];
+                      for (var i = 0; i < facet_results[field].length; i += 2) {
+                          facet_data[field].push({
+                              value: facet_results[field][i],
+                              count: facet_results[field][i + 1]
+                          });
+                      }
+                  });
+                  $scope.facet_data = facet_data;
+
+                  // Keep only what we need for the set
+                  $scope.data = $scope.data.slice(0, $scope.panel.size * $scope.panel.pages);
+              } else {
+                  return;
+              }
+
+              // If we're not sorting in reverse chrono order, query every index for
+              // size*pages results
+              // Otherwise, only get size*pages results then stop querying
+              if ($scope.panel.sortable && ($scope.data.length < $scope.panel.size * $scope.panel.pages || !((_.contains(filterSrv.timeField(), $scope.panel.sort[0])) && $scope.panel.sort[1] === 'desc')) &&
+                  _segment + 1 < dashboard.indices.length) {
+                  $scope.get_data(_segment + 1, $scope.query_id);
+              }
+
+          });
+      }
       };
 
       $scope.exportfile = function(filetype) {

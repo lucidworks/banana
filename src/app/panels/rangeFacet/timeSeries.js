@@ -7,14 +7,10 @@ function (_, Interval) {
 
   var ts = {};
 
-  function parseFloatValue(val) {
-    return parseFloat(val);
-  }
-
   // map compatable parseInt
-//  function base10Int(val) {
-//    return parseInt(val, 10);
-//  }
+  function base10Int(val) {
+    return parseInt(val, 10);
+  }
 
   // trim the ms off of a time, but return it with empty ms.
   function getDatesTime(date) {
@@ -51,8 +47,8 @@ function (_, Interval) {
 
     // will keep all values here, keyed by their time
     this._data = {};
-    this.start_value = opts.start_date && parseFloatValue(opts.start_date);
-    this.end_value = opts.end_date && parseFloatValue(opts.end_date);
+    this.start_value = opts.start_date && base10Int(opts.start_date);
+    this.end_value = opts.end_date && base10Int(opts.end_date);
     this.opts = opts;
   };
 
@@ -65,7 +61,7 @@ function (_, Interval) {
     if (time instanceof Date) {
       time = getDatesTime(time);
     } else {
-      time = parseFloatValue(time);
+      time = base10Int(time);
     }
     if (!isNaN(time)) {
       this._data[time] = (_.isUndefined(value) ? 0 : value);
@@ -79,7 +75,7 @@ function (_, Interval) {
    * @return {array} An array of integer times.
    */
   ts.ZeroFilled.prototype.getOrderedTimes = function (include) {
-    var times = _.map(_.keys(this._data), parseFloatValue);
+    var times = _.map(_.keys(this._data), base10Int);
     if (_.isArray(include)) {
       times = times.concat(include);
     }

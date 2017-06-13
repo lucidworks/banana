@@ -17,18 +17,15 @@ function (angular, app, _) {
   module.controller('filtering', function($scope, filterSrv, $rootScope, $location, dashboard) {
 
     $scope.panelMeta = {
-      modals: [{
-        description: "Inspect",
-        icon: "icon-info-sign",
-        partial: "app/partials/inspector.html",
-        show: true
-      }],
+
       status: "Stable",
       description: "A controllable list of all filters currently applied to the dashboard. You need one of these on your dashboard somewhere in order for all the panels to work properly while you are interacting with your data."
     };
 
     // Set and populate defaults
     var _d = {
+        display:'block',
+        icon:"icon-caret-down",
       spyable: true
     };
     _.defaults($scope.panel,_d);
@@ -60,6 +57,18 @@ function (angular, app, _) {
       filterSrv.remove(id);
       dashboard.refresh();
     };
+
+      $scope.display=function() {
+          if($scope.panel.display=='none'){
+              $scope.panel.display='block';
+              $scope.panel.icon="icon-caret-down";
+
+
+          }else{
+              $scope.panel.display='none';
+              $scope.panel.icon="icon-caret-up";
+          }
+      };
 
     $scope.add = function(query) {
       query = query || '*';
@@ -94,14 +103,6 @@ function (angular, app, _) {
         return false;
       } else {
         return true;
-      }
-    };
-
-    $scope.decodeFilterValue = function(value) {
-      if (value instanceof Date) {
-        return value.toLocaleDateString() + ' ' + value.toTimeString().substring(0,17); // e.g. 4/7/2017 11:45:34 GMT+0700
-      } else {
-        return decodeURIComponent(value);
       }
     };
   });

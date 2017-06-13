@@ -17,17 +17,19 @@
     box-sizing: border-box;         /* Opera/IE 8+ */
   }
 </style>
+  <div ng-style="{'display':panel.display}">
   <label class="small">Create new queries from
     <span class="panel-derive-field" ng-show="!editing" ng-click="editing=true">{{panel.field}}</span>
     <select ng-show="editing && fields.list.length>1" class="input-medium" ng-model="panel.field" ng-options="f for f in fields.list" ng-change='editing=false' ng-blur="editing=false"></select>
     <input ng-show="editing && fields.list.length<2" type="text" ng-model="panel.field" ng-blur="editing=false"/>
     ({{panel.mode}} mode)</label>
-  <div>
+  <div >
     <form class="form-search" style="position:relative" ng-submit="get_data()">
       <input class="search-query panel-derive input-block-level" bs-typeahead="panel.history" data-min-length=0 data-items=100 type="text" ng-model="panel.query"/>
       <span class="end-derive">
         <i class="icon-search pointer" ng-click="get_data()"></i>
-      </span
+      </span>
     </form>
   </div>
+</div>
 </div>

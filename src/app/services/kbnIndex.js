@@ -1,3 +1,5 @@
+/* global Promise */
+
 define([
   'angular',
   'underscore',
@@ -29,18 +31,16 @@ function (angular, _, config, moment) {
       });
     };
 
-    /**
-     * Get an array of all collections in Solr or Fusion.
-     * @param hostUrl
-     * @returns promise
-     */
+    // Solr: returns a promise containing an array of all collections in the Solr server.
     // param: solr_server (e.g. http://localhost:8983/solr/)
-    this.collections = function(solrServer) {
-      return all_collections(solrServer).then(function (p) {
+    this.collections = function(solr_server) {
+      return all_collections(solr_server).then(function (p) {
         return p;
       });
     };
-      
+
+    // returns a promise containing an array of all collections in Solr
+    // param: solr_server (e.g. http://localhost:8983/solr/)
     function all_collections(solrServer) {
       var collectionApi;
 
@@ -60,8 +60,8 @@ function (angular, _, config, moment) {
           // admin API is disabled, then we cannot retrieve the collection list from Solr.
           // return an empty list
           return new Promise(function(resolve) {
-            resolve([]);  
-          });  
+            resolve([]);
+          });
         }
       }
 
@@ -72,11 +72,21 @@ function (angular, _, config, moment) {
         // is not yet configurable.
         url: collectionApi,
         method: "GET"
-      }).error(function(data, status) {
-        alertSrv.set('Error',"Could not retrieve collections from Solr (error status = "+status+")");
-        console.debug('kbnIndex: error data = ',data);
+      }).then(function successCallback(response) {
+        // this callback will be called asynchronously
+        // when the response is available
+      }, function errorCallback(response) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+        lertSrv.set('Error',"Could not retrieve collections from Solr (error status = "+response.status+")");
+        console.debug('kbnIndex: error data = ',response.data);
       });
-
+      /*
+       error(function(data, status) {
+       alertSrv.set('Error',"Could not retrieve collections from Solr (error status = "+status+")");
+       console.debug('kbnIndex: error data = ',data);
+       });
+       */
       return promise.then(function (p) {
         // Parse Solr response to an array of collections
         var collections = [];
@@ -85,11 +95,11 @@ function (angular, _, config, moment) {
           if (config.USE_FUSION) {
             _.each(p.data, function(v) {
               collections.push(v.id);
-            });  
+            });
           } else {
             _.each(p.data.status, function(v,k) {
-              collections.push(k);  
-            });  
+              collections.push(k);
+            });
           }
         }
         if (DEBUG) { console.debug('kbnIndex: all_collections response p = ',p,'collections = ',collections); }
@@ -134,7 +144,7 @@ function (angular, _, config, moment) {
 
       return something.then(function(p) {
         if (DEBUG) { console.debug('kbnIndex: p=',p); }
-        
+
         // var indices = [];
         // _.each(p.data, function(v,k) {
         //   indices.push(k);
@@ -143,7 +153,7 @@ function (angular, _, config, moment) {
         //     indices.push(k);
         //   });
         // });
-      
+
         var indices = [];
 
         var timestamp_array = p.data.facet_counts.facet_ranges.event_timestamp.counts;
@@ -156,7 +166,7 @@ function (angular, _, config, moment) {
 
         // indices[] should be in this format
         // indices = ['logstash-2013.11.25'];
-        
+
         if (DEBUG) { console.debug('kbnIndex: indices=',indices); }
 
         return indices;

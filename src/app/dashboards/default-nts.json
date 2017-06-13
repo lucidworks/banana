@@ -81,21 +81,7 @@
           "tilt": false,
           "labels": true,
           "spyable": true,
-          "title": "Total Hits",
-          "show_queries": true,
-          "metrics": [
-            {
-              "type": "count",
-              "field": "id",
-              "decimalDigits": 0,
-              "label": "",
-              "value": "0"
-            }
-          ],
-          "refresh": {
-            "enable": false,
-            "interval": 2
-          }
+          "title": "Total Hits"
         }
       ]
     },
@@ -195,8 +181,8 @@
     "dropdown_collections": false
   },
   "solr": {
-    "server": "/api/apollo/solr/",
-    "core_name": "logs",
+    "server": "/solr/",
+    "core_name": "collection1",
     "core_list": [],
     "global_params": ""
   }

@@ -33,6 +33,7 @@
         display: inline-block;
     }
   </style>
+  <div ng-style="{'display':panel.display}">
   <div ng-show='panel.showChart'>
   <div>
     <span ng-show='panel.options'>
@@ -82,4 +83,5 @@
     </div>
     <a class='btn btn-small' ng-click="range_apply()">Create a range filter</a>
   </div>
+</div>
 </div>

@@ -17,12 +17,7 @@ define([
 
     module.controller('sunburst', function ($scope, dashboard, querySrv, filterSrv) {
         $scope.panelMeta = {
-            modals: [{
-                description: "Inspect",
-                icon: "icon-info-sign",
-                partial: "app/partials/inspector.html",
-                show: $scope.panel.spyable
-            }],
+
             editorTabs: [{
                 title: 'Queries',
                 src: 'app/partials/querySelect.html'
@@ -38,6 +33,9 @@ define([
                 query: '*:*',
                 custom: ''
             },
+            display:'block',
+            linkage_id:'a',
+            icon:"icon-caret-down",
             facet_limit: 1000, // maximum number of rows returned from Solr
             spyable: true,
             show_queries: true,
@@ -69,8 +67,19 @@ define([
             }
             return t;
         };
+        $scope.display=function() {
+            if($scope.panel.display=='none'){
+                $scope.panel.display='block';
+                $scope.panel.icon="icon-caret-down";
 
+
+            }else{
+                $scope.panel.display='none';
+                $scope.panel.icon="icon-caret-up";
+            }
+        };
         $scope.get_data = function () {
+            if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
             // Show progress by displaying a spinning wheel icon on panel
             $scope.panelMeta.loading = true;
             delete $scope.panel.error;
@@ -123,7 +132,7 @@ define([
                 $scope.render();
             });
 
-
+        }
         };
 
         $scope.dash = dashboard;

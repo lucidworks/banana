@@ -23,12 +23,7 @@ define([
 
     module.controller('bar', function($scope, querySrv, dashboard, filterSrv) {
       $scope.panelMeta = {
-        modals: [{
-          description: "Inspect",
-          icon: "icon-info-sign",
-          partial: "app/partials/inspector.html",
-          show: $scope.panel.spyable
-        }],
+
         editorTabs: [{
           title: 'Queries',
           src: 'app/partials/querySelect.html'
@@ -45,9 +40,12 @@ define([
           custom: ''
         },
         field: '',
+          display:'block',
+          icon:"icon-caret-down",
         size: 10,
         spyable: true,
-        show_queries: true,
+          linkage_id:'a',
+          show_queries: true,
         error: '',
       };
       _.defaults($scope.panel, _d);
@@ -60,95 +58,114 @@ define([
         $scope.get_data();
       };
 
+        $scope.display=function() {
+            if($scope.panel.display=='none'){
+                $scope.panel.display='block';
+                $scope.panel.icon="icon-caret-down";
+
+
+            }else{
+                $scope.panel.display='none';
+                $scope.panel.icon="icon-caret-up";
+            }
+        };
+
       $scope.get_data = function() {
-      	// Make sure we have everything for the request to complete
-        if (dashboard.indices.length === 0) {
-          return;
-        }
-        delete $scope.panel.error;
-        $scope.panelMeta.loading = true;
-        var request, results;
+          // Make sure we have everything for the request to complete
+          if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+          if (dashboard.indices.length === 0) {
+              return;
+          }
+          delete $scope.panel.error;
+          $scope.panelMeta.loading = true;
+          var request, results;
 
-        $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
+          $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
-        request = $scope.sjs.Request().indices(dashboard.indices);
-        $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
+          request = $scope.sjs.Request().indices(dashboard.indices);
+          $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
 
-        // Populate the inspector panel
-        $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
+          // Populate the inspector panel
+          $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
 
-        // Build Solr query
-        var fq = '';
-        if (filterSrv.getSolrFq() && filterSrv.getSolrFq() !== '') {
-          fq = '&' + filterSrv.getSolrFq();
-        }
-        var wt_json = '&wt=json';
-        var rows_limit = '&rows=0'; // for terms, we do not need the actual response doc, so set rows=0
-        var facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size;
+          // Build Solr query
+          var fq = '';
+          if (filterSrv.getSolrFq() && filterSrv.getSolrFq() != '') {
+              fq = '&' + filterSrv.getSolrFq();
+          }
+          var wt_json = '&wt=json';
+          var rows_limit = '&rows=0'; // for terms, we do not need the actual response doc, so set rows=0
+          var facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size;
 
-        // Set the panel's query
-        $scope.panel.queries.query = querySrv.getORquery() + wt_json + rows_limit + fq + facet;
+          // Set the panel's query
+          $scope.panel.queries.query = querySrv.getORquery() + wt_json + rows_limit + fq + facet;
 
-        // Set the additional custom query
-        if ($scope.panel.queries.custom != null) {
-          request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
-        } else {
-          request = request.setQuery($scope.panel.queries.query);
-        }
-
-        results = request.doSearch();
-
-        // Populate scope when we have results
-        results.then(function(results) {
-          // Check for error and abort if found
-          if (!(_.isUndefined(results.error))) {
-            $scope.panel.error = $scope.parse_error(results.error.msg);
-            return;
+          // Set the additional custom query
+          if ($scope.panel.queries.custom != null) {
+              request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
+          } else {
+              request = request.setQuery($scope.panel.queries.query);
           }
 
-          var sum = 0;
-          var missing = 0;
-          $scope.panelMeta.loading = false;
-          $scope.hits = results.response.numFound;
-          $scope.data = [];
-          $scope.maxRatio = 0;
+          results = request.doSearch();
 
-          $scope.yaxis_min = 0;
-          _.each(results.facet_counts.facet_fields, function(v) {
-            for (var i = 0; i < v.length; i++) {
-              var term = v[i];
-              i++;
-              var count = v[i];
-              sum += count;
-              if (term === null) {
-                missing = count;
-              } else {
-                // if count = 0, do not add it to the chart, just skip it
-                if (count === 0) {
-                  continue;
-                }
-                var slice = {
-                  letter: term,
-                  frequency: count                
-              	};
-                if (count / $scope.hits > $scope.maxRatio) {
-                  $scope.maxRatio = count / $scope.hits;
-                }
-                $scope.data.push(slice);
+          // Populate scope when we have results
+          results.then(function (results) {
+              // Check for error and abort if found
+              if (!(_.isUndefined(results.error))) {
+                  $scope.panel.error = $scope.parse_error(results.error.msg);
+                  return;
               }
-            }
+
+              var sum = 0;
+              var k = 0;
+              var missing = 0;
+              $scope.panelMeta.loading = false;
+              $scope.hits = results.response.numFound;
+              $scope.data = [];
+              $scope.maxRatio = 0;
+
+              $scope.yaxis_min = 0;
+              _.each(results.facet_counts.facet_fields, function (v) {
+                  for (var i = 0; i < v.length; i++) {
+                      var term = v[i];
+                      i++;
+                      var count = v[i];
+                      sum += count;
+                      if (term === null) {
+                          missing = count;
+                      } else {
+                          // if count = 0, do not add it to the chart, just skip it
+                          if (count === 0) {
+                              continue;
+                          }
+                          var slice = {
+                              letter: term,
+                              frequency: count
+                          };
+                          if (count / $scope.hits > $scope.maxRatio)
+                              $scope.maxRatio = count / $scope.hits
+                          $scope.data.push(slice);
+                      }
+                  }
+              });
+              $scope.$emit('render');
           });
-          $scope.$emit('render');
-        });
+      }
       };
 
       $scope.build_search = function(word) {
-        if(word) {
-          filterSrv.set({type:'terms',field:$scope.panel.field,value:word,mandate:'must'});
-        } else {
-          return;
-        }
-        dashboard.refresh();
+        //增加联动控制
+
+          if (word) {
+              filterSrv.set({type: 'terms', field: $scope.panel.field, value: word, mandate: 'must'});
+          } else {
+              return;
+          }
+          dashboard.current.linkage_id = $scope.panel.linkage_id;
+          dashboard.current.enable_linkage = false;
+          dashboard.refresh();
+
       };
 
       $scope.set_refresh = function(state) {
@@ -168,7 +185,7 @@ define([
       };
     });
 
-    module.directive('barChart', function() {
+    module.directive('barChart', function(querySrv, dashboard, filterSrv) {
       return {
         restrict: 'A',
         link: function(scope, element) {
@@ -184,6 +201,7 @@ define([
           // Function for rendering panel
           function render_panel() {
             element.html("");
+            var el = element[0];
             var width = element.parent().width();
             var height = parseInt(scope.row.height);
 
@@ -194,7 +212,7 @@ define([
               var formatPercent = d3.format(".0");
 
               var x = d3.scale.ordinal()
-                  .rangeRoundBands([15, width], 0.1);
+                  .rangeRoundBands([15, width], .1);
 
               var y = d3.scale.linear()
                   .range([height, 0]);

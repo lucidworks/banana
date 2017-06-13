@@ -37,7 +37,7 @@
     }
     </style>
 
-    <div class="row-fluid">
+    <div class="row-fluid" ng-style="{'display':panel.display}">
         <h5>{{panel.header_title}}</h5>
         <div id="facetAccordion" class="accordion">
             <div class="accordion-group" ng-repeat="field in panel.fields">

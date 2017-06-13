@@ -3,7 +3,6 @@
  */
 require.config({
   baseUrl: 'app',
-  waitSeconds: 0,
   // urlArgs: 'r=@REV@',
   paths: {
     config:                   '../config',
@@ -15,10 +14,18 @@ require.config({
     moment:                   '../vendor/moment',
     filesaver:                '../vendor/filesaver',
 
-    angular:                  '../vendor/angular/angular',
-    'angular-dragdrop':       '../vendor/angular/angular-dragdrop',
+    angular:                  '../../bower_components/angular/angular',
+    'angular-dragdrop':       '../../bower_components/angular-dragdrop/src/angular-dragdrop',
     'angular-strap':          '../vendor/angular/angular-strap',
-    'angular-sanitize':       '../vendor/angular/angular-sanitize',
+    'angular-sanitize':       '../../bower_components/angular-sanitize/angular-sanitize',
+    'angular-route':          '../../bower_components/angular-route/angular-route',
+    'angular-aria':           '../../bower_components/angular-aria/angular-aria',
+    'angular-animate':        '../../bower_components/angular-animate/angular-animate',
+    'angular-material':       '../../bower_components/angular-material/angular-material',
+    'angular-smart-table':    '../../bower_components/angular-smart-table/dist/smart-table',
+    //'angular-translate.min':  '../vendor/angular/angular-translate.min',
+    //'angular-translate-loader-static-files':  '../vendor/angular/angular-translate-loader-static-files',
+
     timepicker:               '../vendor/angular/timepicker',
     datepicker:               '../vendor/angular/datepicker',
 
@@ -27,6 +34,7 @@ require.config({
     bootstrap:                '../vendor/bootstrap/bootstrap',
 
     jquery:                   '../vendor/jquery/jquery-1.12.1',
+      cookies:                   '../vendor/jquery/jquery.cookie',
     'jquery-ui':              '../vendor/jquery/jquery-ui-1.10.3',
 
     'extend-jquery':          'components/extend-jquery',
@@ -43,7 +51,25 @@ require.config({
     modernizr:                '../vendor/modernizr-2.6.1',
     elasticjs:                '../vendor/elasticjs/elastic-angular-client',
     solrjs:                   '../vendor/solrjs/solr-angular-client',
-    d3:                       '../vendor/d3'
+    d3:                       '../vendor/d3',
+      viz:                    '../vendor/viz.v1.0.0.min',
+      kagi:                    '../vendor/kagi',
+      bubble:                    '../vendor/d3/bubble-chart',
+      centralclick:                    '../vendor/d3/central-click',
+      d3transform:                    '../vendor/d3/d3-transform',
+      extarray:                     '../vendor/d3/extarray',
+      lines:                     '../vendor/d3/lines',
+      microobserver:                     '../vendor/d3/micro-observer',
+      microplugin:                     '../vendor/d3/microplugin',
+      misc:                     '../vendor/d3/misc',
+      d3min:                       '../vendor/d3/d3.min',
+      jquerymin:                    '../vendor/d3/jquery.min',
+      Donut3D:                  '../vendor/d3/Donut3D',
+      bullet:                   '../vendor/d3/bullet',
+      echartsgl:                '../vendor/echarts-gl.min',
+      echarts:                '../vendor/echarts/echarts.min',
+      oldechart:                '../vendor/echarts.min',
+      liquidfillchart:                '../vendor/echarts-liquidfill',
   },
   shim: {
     underscore: {
@@ -74,8 +100,8 @@ require.config({
     'jquery.flot.selection':['jquery', 'jquery.flot'],
     'jquery.flot.stack':    ['jquery', 'jquery.flot'],
     'jquery.flot.stackpercent':['jquery', 'jquery.flot'],
-    'jquery.flot.time':        ['jquery', 'jquery.flot'],
-    'jquery.flot.axislabels':  ['jquery', 'jquery.flot'],
+    'jquery.flot.time':     ['jquery', 'jquery.flot'],
+    'jquery.flot.axislabels':['jquery', 'jquery.flot'],
 
     'angular-sanitize':     ['angular'],
     'angular-cookies':      ['angular'],
@@ -83,10 +109,13 @@ require.config({
     'angular-loader':       ['angular'],
     'angular-mocks':        ['angular'],
     'angular-resource':     ['angular'],
-    'angular-route':        ['angular'],
+    'angular-aria':     ['angular'],
+    'angular-animate':     ['angular'],
+    'angular-material':        ['angular', 'angular-aria', 'angular-animate'],
     'angular-touch':        ['angular'],
-
+    'angular-route':        ['angular'],
     'angular-strap':        ['angular', 'bootstrap','timepicker', 'datepicker'],
+    'angular-smart-table':             ['angular'],
 
     timepicker:             ['jquery', 'bootstrap'],
     datepicker:             ['jquery', 'bootstrap'],

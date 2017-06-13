@@ -6,7 +6,7 @@
       overflow-x: scroll;
     }
   </style>
-  <div class="row-fluid">
+  <div ng-style="{'display':panel.display}" class="row-fluid">
     <div ng-class="{'span3':panel.field_list}" ng-show="panel.field_list">
       <div class="sidebar-nav">
         <h5>Fields <i class=" icon-chevron-sign-left pointer " ng-click="panel.field_list = !panel.field_list" bs-tooltip="'Hide field list'" ng-show="panel.field_list"></i></h5>

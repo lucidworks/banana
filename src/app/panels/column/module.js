@@ -28,6 +28,8 @@ function (angular, app, _, config) {
 
     // Set and populate defaults
     var _d = {
+        display:'block',
+        icon:"icon-caret-down",
       panels : []
     };
     _.defaults($scope.panel,_d);
@@ -44,6 +46,18 @@ function (angular, app, _, config) {
         });
       }
     };
+
+      $scope.display=function() {
+          if($scope.panel.display=='none'){
+              $scope.panel.display='block';
+              $scope.panel.icon="icon-caret-down";
+
+
+          }else{
+              $scope.panel.display='none';
+              $scope.panel.icon="icon-caret-up";
+          }
+      };
 
     $scope.send_render = function() {
       $scope.$broadcast('render');

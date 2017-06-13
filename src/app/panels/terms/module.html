@@ -38,9 +38,30 @@
       overflow:overlay; 
       padding-right:10px 
     }
-    </style>
+
+    .label{
+      font-size:22.5px;
+      fill:#ffffff;
+      text-anchor:middle;
+      alignment-baseline:middle;
+    }
+    .face{
+      stroke:#c8c8c8;
+      stroke-width:2;
+    }
+    .minorTicks{
+      stroke-width:2;
+      stroke:white;
+    }
+    .majorTicks{
+      stroke:white;
+      stroke-width:3;
+    }
+
+</style>
+  <div ng-style="{'display':panel.display}">
   <!-- START Pie or bar chart -->
-  <div ng-show="panel.counter_pos == 'above' && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend'>
+  <div ng-show="panel.counter_pos == 'above' && (panel.chart == 'bar' || panel.chart == 'pie' || panel.chart == 'dashboard' || panel.chart == 'ebar' )" id='{{$id}}-legend'>
     <!-- vertical legend above -->
     <table class="small" ng-show="panel.arrangement == 'vertical'">
       <tr ng-repeat="term in legend">
@@ -55,8 +76,10 @@
     </div><br>
 
   </div>
-
-  <!-- keep legend from over lapping -->
+  <div ng-show="panel.chart == 'hits'"><div class="pointer" ng-style="panel.style" style="line-height:1;text-align:center"><i class="icon icon-user" style="float:left;margin-left:20px;line-height:0.9"></i>{{data.length - 2}} </div></div>
+    <!-- <div ng-show="panel.chart == 'd3'"><div class="pointer" ng-style="panel.style" style="line-height:1;text-align:center"><svg style="line-height:1"></svg> </div></div>-->
+    <!-- <div ng-show="panel.chart == 'hit'"><div class="pointer" ng-style="panel.style" style="line-height:1;text-align:center"><iframe width=100% height=100% name=aa frameborder=0 src=http://www.baidu.com></iframe></div></div>-->
+    <!-- keep legend from over lapping -->
   <div style="clear:both"></div>
 
   <div class="leftRightLegend " ng-style="{'max-height':row.height }" ng-show="(panel.counter_pos == 'right' || panel.counter_pos == 'left') && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend' ng-class="{'floatright':panel.counter_pos == 'right','floatleft':panel.counter_pos == 'left'}">
@@ -69,9 +92,9 @@
     </table>
   </div>
 
-  <div style="overflow:hidden" ng-show="panel.chart == 'pie' || panel.chart == 'bar'" terms-chart params="{{panel}}" style="position:relative" class="pointer" ng-style="{'floatleft':panel.counter_pos == 'right'}"></div>
+  <div style="overflow:hidden" ng-show="panel.chart == 'pie' || panel.chart == 'bar' || panel.chart == 'dashboard' || panel.chart == 'ebar' || panel.chart=='d3pie'||panel.chart == 'd3'" terms-chart params="{{panel}}" style="position:relative" class="pointer" ng-style="{'floatleft':panel.counter_pos == 'right'}" id='{{$id}}'></div>
 
-  <div ng-show="panel.counter_pos == 'below' && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend' ng-class="{below:panel.counter_pos == 'below'}">
+  <div ng-show="panel.counter_pos == 'below' && (panel.chart == 'bar' || panel.chart == 'pie' || panel.chart == 'dashboard' || panel.chart == 'ebar' )" id='{{$id}}-legend' ng-class="{below:panel.counter_pos == 'below'}">
     <!-- vertical legend below -->
     <table class="small" ng-show="panel.arrangement == 'vertical'">
       <tr ng-repeat="term in legend">
@@ -95,7 +118,7 @@
       <th>{{panel.mode | capitalize}}</th>
       <th>Action</th>
     </thead>
-    <tbody ng-style="{height: row.height}">
+    <tbody ng-style="{height: panel.height}">
     <tr ng-repeat="term in data" ng-show="showMeta(term)">
       <td>{{term.label}}</td>
       <td>{{term.data[0][1].toFixed(panel.decimal_points)}}</td>
@@ -111,4 +134,5 @@
   <!-- END Table -->
   <!-- Dummy div for testing color name -->
   <div id="colorTest"></div>
+</div>
 </div>

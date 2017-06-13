@@ -17,14 +17,7 @@ define([
 
         module.controller('heatmap', function ($scope, dashboard, querySrv, filterSrv) {
             $scope.panelMeta = {
-                modals: [
-                    {
-                        description: "Inspect",
-                        icon: "icon-info-sign",
-                        partial: "app/partials/inspector.html",
-                        show: $scope.panel.spyable
-                    }
-                ],
+
                 editorTabs: [
                     {
                         title: 'Queries',
@@ -44,6 +37,9 @@ define([
                     custom: ''
                 },
                 size: 0,
+                display:'block',
+                linkage_id:'a',
+                icon:"icon-caret-down",
                 row_field: 'start_station_name',
                 col_field: 'gender',
                 row_size: 300,
@@ -71,8 +67,19 @@ define([
             $scope.randomNumberRange = function(min, max) {
                 return Math.floor(Math.random() * (max - min + 1) + min);
             };
+            $scope.display=function() {
+                if($scope.panel.display=='none'){
+                    $scope.panel.display='block';
+                    $scope.panel.icon="icon-caret-down";
 
+
+                }else{
+                    $scope.panel.display='none';
+                    $scope.panel.icon="icon-caret-up";
+                }
+            };
             $scope.get_data = function () {
+                if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
                 // Show progress by displaying a spinning wheel icon on panel
                 $scope.panelMeta.loading = true;
                 delete $scope.panel.error;
@@ -96,7 +103,7 @@ define([
                         boolQuery,
                         filterSrv.getBoolFilter(filterSrv.ids)
                     ))
-                .size($scope.panel.size); // Set the size of query result
+                    .size($scope.panel.size); // Set the size of query result
 
                 $scope.populate_modal(request);
                 // --------------------- END OF ELASTIC SEARCH PART ---------------------------------------
@@ -127,12 +134,12 @@ define([
                 // Populate scope when we have results
                 results.then(function (results) {
                     // Check for error and abort if found
-                      if(!(_.isUndefined(results.error))) {
+                    if (!(_.isUndefined(results.error))) {
                         $scope.panel.error = $scope.parse_error(results.error.msg);
                         $scope.init_arrays();
                         $scope.render();
                         return;
-                      }
+                    }
                     // build $scope.data array
                     var facets = results.facet_counts.facet_pivot;
                     var key = Object.keys(facets)[0];
@@ -146,6 +153,7 @@ define([
                 });
                 // Hide the spinning wheel icon
                 $scope.panelMeta.loading = false;
+            }
             };
 
             $scope.init_arrays = function() {
