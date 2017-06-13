@@ -39,18 +39,12 @@ function (angular, app, _) {
 
       $scope.rowSpan = function(row) {
         var panels = _.filter(row.panels, function(p) {
-            var a = $scope.isPanel(p);
-            var d =a ;
           return $scope.isPanel(p);
         });
-        var e =_.reduce(_.pluck(panels,'span'), function(p,v) {
-            var b = p+v;
-            var c =b;
+        _.reduce(_.pluck(panels,'span'), function(p,v) {
             return p+v;
         },0);
         return _.reduce(_.pluck(panels,'span'), function(p,v) {
-            var b = p+v;
-            var c =b;
           return p+v;
         },0);
 
@@ -61,9 +55,9 @@ function (angular, app, _) {
         $scope.$broadcast('render');
       };
 
-      $scope.remove = function(id) {
+      $scope.remove = function() {
           var ids = dashboard.current.filterids;
-          if (ids[ids.length-1]!=0){
+          if (ids[ids.length-1] !== 0){
               filterSrv.remove(ids[ids.length-1]);
               dashboard.refresh();}
       };

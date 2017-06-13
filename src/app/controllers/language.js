@@ -3,7 +3,7 @@ define([
 
         'underscore'
     ],
-    function (angular, _) {
+    function (angular) {
         'use strict';
 
         var module = angular.module('kibana.controllers');
