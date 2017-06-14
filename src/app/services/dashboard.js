@@ -247,22 +247,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         return string.match(gist_pattern)[0].replace(/.*\//, '');
       }
     };
-//check session and show head  (wang zhan)
-//       this.checkShow = function() {
-//
-//           var username = $.cookie('username');
-//            //var a = sessionStorage.getItem(realUsername);
-//           //if(username==realUsername&&password==realPassword){
-//               //self.current.headHide = false;
-//           if(typeof(username)!="undefined"){
-//             return true;
-//           }else{
-//               window.location.href = window.location.origin+window.location.pathname+"login.html";
-//               return false;
-//           }
-//
-//       };
-//page switch (wang zhan)
+
       this.page_switch = function(string) {
 
           return $http({
@@ -291,17 +276,17 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       }
     };
     this.is_refresh = function(){
-        if (self.current.style != self.current.isstyle){
-        if(self.current.style=='dark'||self.current.isstyle=='dark'){
+        if (self.current.style !== self.current.isstyle){
+        if(self.current.style === 'dark' || self.current.isstyle === 'dark'){
             self.refresh();
         }
             self.current.isstyle = self.current.style;
         }
     };
-      this.remove = function(id) {
+      this.remove = function() {
           var ids = self.current.filterids;
           if(self.current.isSearch){
-            if(self.current.searchID==ids[ids.length-1]){
+            if(self.current.searchID === ids[ids.length-1]){
               filterSrv.remove(self.current.searchID);
               self.current.isSearch  = false;
                 self.refresh();}else{
@@ -309,7 +294,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
                 self.refresh();
             }
           }else{
-          if (ids[ids.length-1]!=0){
+          if (ids[ids.length-1] !== 0){
               filterSrv.remove(ids[ids.length-1]);
               self.refresh();}else
                 {
@@ -331,9 +316,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       return true;
     };
       this.color_change = function(){
-        if(self.current.style=='blue'){
+        if(self.current.style === 'blue'){
             document.getElementById('setting').style.background='#f5f5f5';
-        }else if(self.current.style=='dark'){
+        }else if(self.current.style === 'dark'){
             document.getElementById('setting').style.background='#52575c';
         }else{
             document.getElementById('setting').style.background='#c1c1c1';
@@ -544,9 +529,9 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
     };
       this.save_pdf = function() {
         var background_color = '#272b30';
-          if(self.current.style=='blue'){
+          if(self.current.style === 'blue'){
               background_color = '#5bc0de';
-          }else if(self.current.style=='light'){
+          }else if(self.current.style === 'light'){
               background_color = '#fff';
           }
           html2canvas(document.getElementById("bodyContent"), {
