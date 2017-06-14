@@ -581,8 +581,9 @@ var option_nodata = {
 };
 		
 		var idd = scope.$id;
-         
-            // Populate element
+          var echarts = require('echarts');
+
+          // Populate element
             try {
 				
 				 var labelcolor = false;

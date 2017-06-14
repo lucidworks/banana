@@ -1,69 +1,43 @@
 <div ng-controller='statistics' ng-init="init()">
-  <style type="text/css">
-    table td {
-      word-break: break-all;
-    }
-    .highlight {
-      padding: 2px 4px;
-      color: #d14;
-      background-color: #f7f7f9;
-      border: 1px solid #e1e1e8;
-      white-space: nowrap;
-      font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
-      border-radius: 3px;
-    }
-  </style>
   <div ng-style="{'display':panel.display }">
-
+    <style type="text/css">
+      table td {
+        word-break: break-all;
+      }
+    </style>
   <!-- START Table -->
-    <input type="text" ng-model="query" ng-change="search()" class="input-large search-query" placeholder="Search">
-    <table st-table="data" class="table table-striped">
-    <thead>
-      <th class="term">Term&nbsp;<a ng-click="sort_by('term')"><i class="icon-sort"></i></a></th>
-      <th class="count">Count&nbsp;<a ng-click="sort_by('count')"><i class="icon-sort"></i></a></th>
-      <th class="mean">Mean&nbsp;<a ng-click="sort_by('mean')"><i class="icon-sort"></i></a></th>
-      <th class="max">Max&nbsp;<a ng-click="sort_by('max')"><i class="icon-sort"></i></a></th>
-      <th class="min">Min&nbsp;<a ng-click="sort_by('min')"><i class="icon-sort"></i></a></th>
-      <th class="stddev">Std&nbsp;<a ng-click="sort_by('stddev')"><i class="icon-sort"></i></a></th>
-      <th>Action</th>
-    </thead>
-    <tfoot>
-    <td colspan="6">
-      <div class="pagination pull-right">
-        <ul>
-          <li ng-class="{disabled: currentPage == 0}">
-            <a href ng-click="prevPage()">« Prev</a>
-          </li>
-          <li ng-repeat="n in range(pagedItems.length)"
-              ng-class="{active: n == currentPage}"
-              ng-click="setPage()">
-            <a href ng-bind="n + 1">1</a>
-          </li>
-          <li ng-class="{disabled: currentPage == pagedItems.length - 1}">
-            <a href ng-click="nextPage()">Next »</a>
-          </li>
-        </ul>
-      </div>
-    </td>
-    </tfoot>
-    <tbody>
-    <tr ng-repeat="term in pagedItems[currentPage]">
-      <td>{{term.term}}</td>
-      <td>{{term.count}}</td>
-      <td>{{term.mean.toFixed(panel.decimal_points)}}</td>
-      <td>{{term.max}}</td>
-      <td>{{term.min}}</td>
-      <td>{{term.stddev.toFixed(panel.decimal_points)}}</td>
-      <td>
-        <span ng-hide="term.meta == 'other'">
-          <i class='icon-search pointer' ng-click="build_search(term)"></i>
-          <i class='icon-ban-circle pointer' ng-click="build_search(term,true)"></i>
-        </span>
-      </td>
-    </tr>
-    </tbody>
-  </table>
 
+    <table st-table="displayedCollection" st-safe-src="data" class="table table-striped">
+      <thead>
+      <tr>
+        <th st-sort="term">Iterm</th>
+        <th st-sort="count">Count</th>
+        <th ng-show="panel.mode === 'statistic'" st-sort="mean">Mean</th>
+      </tr>
+      <tr>
+        <th>
+          <input st-search="'firstName'" placeholder="search for firstname" class="input-sm form-control" type="search"/>
+        </th>
+        <th colspan="4">
+          <input st-search placeholder="global search" class="input-sm form-control" type="search"/>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="row in displayedCollection">
+        <td>{{row.term}}</td>
+        <td>{{row.count}}</td>
+        <td ng-show="panel.mode === 'statistic'">{{row.mean}}</td>
+      </tr>
+      </tbody>
+      <tfoot>
+      <tr>
+        <td colspan="5">
+          <div st-pagination="" st-items-by-page="panel.itemsByPage" st-displayed-pages="panel.displayPage" class="pagination pull-right"></div>
+        </td>
+      </tr>
+      </tfoot>
+    </table>
   <!-- END Table -->
   <!-- Dummy div for testing color name -->
   <div id="colorTest"></div>

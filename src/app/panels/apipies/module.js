@@ -468,6 +468,8 @@ var option_nodata = {
 		
 		
 		var idd = scope.$id;
+          var echarts = require('echarts');
+
           //require(['jquery.flot.pie'], function(){
             // Populate element
             try {

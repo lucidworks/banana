@@ -16,12 +16,12 @@ define([
         'underscore',
         'jquery',
         'kbn',
-        'smart-table'
+        'angular-smart-table',
     ],
     function (angular, app, _, $, kbn) {
         'use strict';
 
-        var module = angular.module('kibana.panels.statistics', []);
+        var module = angular.module('kibana.panels.statistics', ['smart-table']);
         app.useModule(module);
 
         module.controller('statistics', function($scope, $timeout, $filter, timer, querySrv, dashboard, filterSrv) {
@@ -42,7 +42,7 @@ define([
                     query       : '*:*',
                     custom      : ''
                 },
-                mode    : 'count', // mode to tell which number will be used to plot the chart.
+                mode    : 'statistic', // mode to tell which number will be used to plot the chart.
                 field   : '',
                 stats_field : '',
                 decimal_points : 0, // The number of digits after the decimal point
@@ -75,9 +75,12 @@ define([
                 refresh: {
                     enable: false,
                     interval: 2
-                }
+                },
+              itemsByPage: 10,
+              displayPage: 10,
             };
             _.defaults($scope.panel,_d);
+
 
             $scope.init = function () {
                 $scope.hits = 0;
@@ -106,6 +109,7 @@ define([
                     return;
                 }
             };
+
             $scope.display=function() {
                 if($scope.panel.display=='none'){
                     $scope.panel.display='block';
@@ -117,13 +121,8 @@ define([
                     $scope.panel.icon="icon-caret-up";
                 }
             };
-            /**
-             *
-             *
-             * @param {String} filetype -'json', 'xml', 'csv'
-             */
-            $scope.build_query = function(filetype, isForExport) {
 
+            $scope.build_query = function(filetype, isForExport) {
                 // Build Solr query
                 var fq = '';
                 if (filterSrv.getSolrFq()) {
@@ -136,8 +135,6 @@ define([
                 if ($scope.panel.mode === 'count') {
                     facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size + '&facet.missing=true';
                 } else {
-                    // if mode != 'count' then we need to use stats query
-                    // stats does not support something like facet.limit, so we have to sort and limit the results manually.
                     facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field + '&facet.missing=true';
                 }
                 facet += '&f.' + $scope.panel.field + '.facet.sort=' + ($scope.panel.sortBy || 'count');
@@ -151,7 +148,6 @@ define([
                         }
                     }
                 }
-
                 return querySrv.getORquery() + wt_json + rows_limit + fq + exclude_filter + facet + ($scope.panel.queries.custom != null ? $scope.panel.queries.custom : '');
             };
 
@@ -198,241 +194,75 @@ define([
             };
 
             $scope.get_data = function() {
-                if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
-                    // Make sure we have everything for the request to complete
-                    if (dashboard.indices.length === 0) {
-                        return;
+              console.log("Get Data");
+              // Make sure we have everything for the request to complete
+              if (dashboard.indices.length === 0) {
+                return;
+              }
+
+              delete $scope.panel.error;
+              $scope.panelMeta.loading = true;
+              var request, results;
+
+              $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
+
+              request = $scope.sjs.Request().indices(dashboard.indices);
+              $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
+
+              // Populate the inspector panel
+              $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
+
+              var query = this.build_query('json', false);
+
+              // Set the panel's query
+              $scope.panel.queries.query = query;
+
+              request.setQuery(query);
+              results = request.doSearch();
+              // Populate scope when we have results
+              results.then(function successCallback(response) {
+                var sum = 0;
+                var k = 0;
+                var missing = 0;
+                $scope.panelMeta.loading = false;
+                $scope.hits = response.response.numFound;
+                $scope.data = [];
+                $scope.yaxis_min = null;
+                // this callback will be called asynchronously
+                // when the response is available
+                $scope.yaxis_min = null;
+                console.log(response);
+                if ($scope.panel.mode === 'count') {
+                  var temp_data = response.facet_counts.facet_fields[$scope.panel.field];
+                  for(var i=0; i<temp_data.length; i=i+2){
+                    var slice = {
+                      term: temp_data[i],
+                      count: temp_data[i+1],
                     }
-
-                    delete $scope.panel.error;
-                    $scope.panelMeta.loading = true;
-                    var request, results;
-
-                    $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
-
-                    request = $scope.sjs.Request().indices(dashboard.indices);
-                    $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
-
-                    // Populate the inspector panel
-                    $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
-
-                    var query = this.build_query('json', false);
-
-                    // Set the panel's query
-                    $scope.panel.queries.query = query;
-
-                    request.setQuery(query);
-                    console.log(query);
-                    results = request.doSearch();
-
-                    // Populate scope when we have results
-                    results.then(function (results) {
-                            // Check for error and abort if found
-                            if (!(_.isUndefined(results.error))) {
-                                $scope.panel.error = $scope.parse_error(results.error.msg);
-                                $scope.data = [];
-                                $scope.panelMeta.loading = false;
-                                $scope.$emit('render');
-                                return;
-                            }
-
-                            // Function for validating HTML color by assign it to a dummy <div id="colorTest">
-                            // and let the browser do the work of validation.
-                            var isValidHTMLColor = function (color) {
-                                // clear attr first, before comparison
-                                $('#colorTest').removeAttr('style');
-                                var valid = $('#colorTest').css('color');
-                                $('#colorTest').css('color', color);
-
-                                if (valid === $('#colorTest').css('color')) {
-                                    return false;
-                                } else {
-                                    return true;
-                                }
-                            };
-
-                            // Function for customizing chart color by using field values as colors.
-                            var addSliceColor = function (slice, color) {
-                                if ($scope.panel.useColorFromField && isValidHTMLColor(color)) {
-                                    slice.color = color;
-                                }
-                                return slice;
-                            };
-
-                            var sum = 0;
-                            var k = 0;
-                            var missing = 0;
-                            $scope.panelMeta.loading = false;
-                            $scope.hits = results.response.numFound;
-                            $scope.data = [];
-
-                            if ($scope.panel.mode === 'count') {
-                                // In count mode, the y-axis min should be zero because count value cannot be negative.
-                                $scope.yaxis_min = 0;
-                                _.each(results.facet_counts.facet_fields, function (v) {
-                                    for (var i = 0; i < v.length; i++) {
-                                        var term = v[i];
-                                        i++;
-                                        var count = v[i];
-                                        sum += count;
-                                        if (term === null) {
-                                            missing = count;
-                                        } else {
-                                            // if count = 0, do not add it to the chart, just skip it
-                                            if (count === 0) {
-                                                continue;
-                                            }
-                                            var slice = {term: term, data: [[k, count]], actions: true};
-                                            slice = addSliceColor(slice, term);
-                                            $scope.data.push(slice);
-                                        }
-                                    }
-                                });
-                            } else {
-                                // In stats mode, set y-axis min to null so jquery.flot will set the scale automatically.
-                                $scope.yaxis_min = null;
-                                _.each(results.stats.stats_fields[$scope.panel.stats_field].facets[$scope.panel.field], function (stats_obj, facet_field) {
-                                    //var slice = {label: facet_field, data: [[k, stats_obj['mean'], stats_obj['count'], stats_obj['max'], stats_obj['min'], stats_obj['stddev'], facet_field]], actions: true};
-                                    var slice = {term: facet_field, index: k, mean: stats_obj['mean'], count: stats_obj['count'], max: stats_obj['max'], min: stats_obj['min'], stddev: stats_obj['stddev'], actions: true};
-                                    $scope.data.push(slice);
-                                });
-                            }
-
-
-                            // Slice it according to panel.size, and then set the x-axis values with k.
-
-                            $scope.data = $scope.data.slice(0, $scope.panel.size);
-
-                            if ($scope.panel.field && $scope.fields.typeList[$scope.panel.field] && $scope.fields.typeList[$scope.panel.field].schema.indexOf("T") > -1) {
-                                $scope.hits = sum;
-                            }
-                            /*
-                            $scope.data.push({
-                                label: 'Missing field',
-                                // data:[[k,results.facets.terms.missing]],meta:"missing",color:'#aaa',opacity:0});
-                                // TODO: Hard coded to 0 for now. Solr faceting does not provide 'missing' value.
-                                data: [[k, missing]], meta: "missing", color: '#aaa', opacity: 0
-                            });
-                            $scope.data.push({
-                                label: 'Other values',
-                                // data:[[k+1,results.facets.terms.other]],meta:"other",color:'#444'});
-                                // TODO: Hard coded to 0 for now. Solr faceting does not provide 'other' value.
-                                data: [[k + 1, $scope.hits - sum]], meta: "other", color: '#444'
-                            });
-                            */
-
-                            $scope.$emit('render');
-
-                            $scope.sortingOrder = 'count';
-                            $scope.reverse = false;
-                            $scope.filteredItems = [];
-                            $scope.groupedItems = [];
-                            $scope.itemsPerPage = 10;
-                            $scope.pagedItems = [];
-                            $scope.currentPage = 0;
-
-                            // init the filtered items
-                            var searchMatch = function (haystack, needle) {
-                                if (!needle) {
-                                    return true;
-                                }
-                                var res = haystack.toLowerCase().indexOf(needle.toLowerCase()) !== -1;
-                                return res;
-                            };
-
-                            $scope.search = function () {
-                                $scope.filteredItems = $filter('filter')($scope.data, function (item) {
-                                    if (searchMatch(item['term'], $scope.query)) {
-                                        return true;
-                                    }
-                                    return false;
-                                });
-                                if ($scope.sortingOrder !== '') {
-                                    $scope.filteredItems = _.sortBy($scope.data, $scope.sortingOrder);
-                                }
-                                $scope.currentPage = 0;
-                                $scope.groupToPages();
-                            };
-
-
-                            // calculate page in place
-                            $scope.groupToPages = function () {
-                                $scope.pagedItems = [];
-
-                                for (var i = 0; i < $scope.filteredItems.length; i++) {
-                                    if (i % $scope.itemsPerPage === 0) {
-                                        $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredItems[i] ];
-                                    } else {
-                                        $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredItems[i]);
-                                    }
-                                }
-                            };
-
-                            $scope.prevPage = function () {
-                                if ($scope.currentPage > 0) {
-                                    $scope.currentPage--;
-                                }
-                            };
-
-                            $scope.nextPage = function () {
-                                if ($scope.currentPage < $scope.pagedItems.length - 1) {
-                                    $scope.currentPage++;
-                                }
-                            };
-
-                            $scope.setPage = function () {
-                                $scope.currentPage = this.n;
-                            };
-
-                            // functions have been describe process the data for display
-                            $scope.range = function (size,start, end) {
-                                var ret = [];
-
-                                if (size < end) {
-                                    end = size;
-                                    if(size<$scope.gap){
-                                        start = 0;
-                                    }else{
-                                        start = size-$scope.gap;
-                                    }
-
-                                }
-                                for (var i = start; i < end; i++) {
-                                    ret.push(i);
-                                }
-                                return ret;
-                            };
-                            $scope.search();
-
-                            $scope.sort_by = function(newSortingOrder) {
-                                if ($scope.sortingOrder == newSortingOrder){
-                                    $scope.reverse = !$scope.reverse;
-                                    console.log($scope.reverse);
-                                    $scope.filteredItems.reverse();
-                                }
-                                else {
-                                    $scope.reverse = true;
-                                    $scope.sortingOrder = newSortingOrder;
-                                    $scope.filteredItems = _.sortBy($scope.data, $scope.sortingOrder);
-                                    $scope.filteredItems.reverse();
-                                }
-                                $scope.groupToPages();
-                                // icon setup
-
-                                $('th i').each(function(){
-                                    // icon reset
-                                    $(this).removeClass().addClass('icon-sort');
-                                });
-                                if (!$scope.reverse)
-                                    $('th.'+newSortingOrder+' i').removeClass().addClass('icon-chevron-up');
-                                else
-                                    $('th.'+newSortingOrder+' i').removeClass().addClass('icon-chevron-down');
-
-                            };
-
-                    });
-
+                    $scope.data.push(slice);
+                  }
                 }
+                else {
+                  _.each(response.stats.stats_fields[$scope.panel.stats_field].facets[$scope.panel.field], function (stats_obj, facet_field) {
+                    //var slice = {label: facet_field, data: [[k, stats_obj['mean'], stats_obj['count'], stats_obj['max'], stats_obj['min'], stats_obj['stddev'], facet_field]], actions: true};
+                    var slice = {
+                      term: facet_field,
+                      index: k,
+                      mean: stats_obj['mean'],
+                      count: stats_obj['count'],
+                      max: stats_obj['max'],
+                      min: stats_obj['min'],
+                      stddev: stats_obj['stddev'],
+                      actions: true
+                    };
+                    $scope.data.push(slice);
+                  });
+                }
+              }, function errorCallback(response) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+              });
+                $scope.$emit('render');
             };
 
             $scope.build_search = function(term,negate) {
@@ -479,7 +309,6 @@ define([
                 }
                 return true;
             };
-
 
         });
 

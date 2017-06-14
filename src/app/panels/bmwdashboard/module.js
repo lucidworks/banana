@@ -621,8 +621,9 @@ var option_nodata = {
 };
 		
 		var idd = scope.$id;
-         
-            // Populate element
+          var echarts = require('echarts');
+
+          // Populate element
             try {
               // Add plot to scope so we can build out own legend
               if(scope.panel.chart === 'dashboard') {

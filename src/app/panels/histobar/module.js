@@ -34,9 +34,8 @@ define([
   'underscore',
   'kbn',
   'moment',
-  './timeSeries'
-
-  
+  './timeSeries',
+  'echarts'
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
@@ -584,7 +583,7 @@ var option_nodata = {
 				
 				 var labelcolor = false;
 				 var isspan = false;
-					if (dashboard.current.style === 'dark'){
+				 if (dashboard.current.style === 'dark'){
 							labelcolor = true;
 						}
                 if (scope.panel.span <5){
@@ -592,13 +591,13 @@ var option_nodata = {
                 }
               // Add plot to scope so we can build out own legend
               if(scope.panel.chart === 'histobar') {
-				  
-				  
 
-				  
-			var myChart = echarts.init(document.getElementById(idd));
+
+
+        var echarts = require('echarts');
+        var myChart = echarts.init(document.getElementById(idd));
         
-var option = {
+        var option = {
     
 	 grid: {
         left: '3%',

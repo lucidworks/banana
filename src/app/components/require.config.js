@@ -48,9 +48,17 @@ require.config({
     'jquery.flot.axislabels': '../vendor/jquery/jquery.flot.axislabels',
     'showdown':               '../vendor/showdown',
 
+    echarts:                  '../../node_modules/echarts/dist/echarts',
+    'echarts-liquidfill':     '../../node_modules/echarts-liquidfill/dist/echarts-liquidfill',
+    'echarts-wordcloud':     '../../node_modules/echarts-wordcloud/dist/echarts-wordcloud',
     modernizr:                '../vendor/modernizr-2.6.1',
     elasticjs:                '../vendor/elasticjs/elastic-angular-client',
     solrjs:                   '../vendor/solrjs/solr-angular-client',
+
+    d3:                       '../../node_modules/build/d3',
+    viz:                    '../vendor/viz.v1.0.0.min',
+
+    /*
     d3:                       '../vendor/d3',
       viz:                    '../vendor/viz.v1.0.0.min',
       kagi:                    '../vendor/kagi',
@@ -66,10 +74,7 @@ require.config({
       jquerymin:                    '../vendor/d3/jquery.min',
       Donut3D:                  '../vendor/d3/Donut3D',
       bullet:                   '../vendor/d3/bullet',
-      echartsgl:                '../vendor/echarts-gl.min',
-      echarts:                '../vendor/echarts/echarts.min',
-      oldechart:                '../vendor/echarts.min',
-      liquidfillchart:                '../vendor/echarts-liquidfill',
+      */
   },
   shim: {
     underscore: {
@@ -121,6 +126,8 @@ require.config({
     datepicker:             ['jquery', 'bootstrap'],
 
     elasticjs:              ['angular', '../vendor/elasticjs/elastic'],
-    solrjs:                 ['angular', '../vendor/solrjs/solr']
+    solrjs:                 ['angular', '../vendor/solrjs/solr'],
+
+    'echarts-liquidfill':   ['echarts'],
   }
 });

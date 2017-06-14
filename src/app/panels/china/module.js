@@ -414,7 +414,7 @@ function (angular, app, _, $, kbn) {
             colors = scope.panel.chartColors;
           }
 		 
-var option_nodata = {  
+        var option_nodata = {
     series: [{
        
         type: 'wordCloud',
@@ -445,7 +445,9 @@ var option_nodata = {
 };
 		
 		
-		var idd = scope.$id;
+		    var idd = scope.$id;
+          var echarts = require('echarts');
+
           require(['jquery.flot.pie'], function(){
             // Populate element
             try {

@@ -16,8 +16,8 @@ define([
   'underscore',
   'jquery',
   'kbn',
-  'd3.v3',
-  'viz'
+  'd3',
+  'viz',
 ],
 function (angular, app, _, $, kbn) {
   'use strict';

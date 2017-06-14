@@ -15,8 +15,9 @@ define([
   'app',
   'underscore',
   'jquery',
-  'kbn'
-
+  'kbn',
+  'echarts',
+  'echarts-liquidfill',
 ],
 function (angular, app, _, $, kbn) {
   'use strict';
@@ -440,8 +441,8 @@ function (angular, app, _, $, kbn) {
             colors = scope.panel.chartColors;
           }
 		 
-var option_nodata = {  
-    series: [{
+    var option_nodata = {
+      series: [{
        
         type: 'wordCloud',
         //size: ['9%', '99%'],
@@ -472,15 +473,15 @@ var option_nodata = {
 		
 		
 		var idd = scope.$id;
-          //require(['oldechart','liquidfillchart'], function(){
-            // Populate element
-            try {
-				 var labelcolor = false;
-					if (dashboard.current.style === 'dark'){
-							labelcolor = true;
-						}
+    try {
+        var labelcolor = false;
+        if (dashboard.current.style === 'dark'){
+            labelcolor = true;
+        }
               // Add plot to scope so we can build out own legend
-              if(scope.panel.chart === 'dashboard') {
+        var echarts = require('echarts');
+
+        if(scope.panel.chart === 'dashboard') {
 				  
 				  
 		var AP_1 = 0.0;
@@ -499,134 +500,134 @@ var option_nodata = {
 		APdex = parseInt(100*(AP_1+AP_2)/AP_n);
 		//APdex = (AP_1+AP_2)/AP_n;
 		}
-				  
-			var myChart = echarts.init(document.getElementById(idd));
+
+    var myChart = echarts.init(document.getElementById(idd));
 
         
-			var option = {
-   
-   
-				toolbox: {
-					show : false,
-					feature : {
-							mark : {show: false},
-							restore : {show: false},
-							saveAsImage : {show: false}
-						}
-					},
-				grid: {
-					left: '0%',
-					right: '0%',
-					bottom: '0%',
-					top: 90
-				},
-				series : [
-					{
-					name:'Health',
-			 
-					type:'gauge',
-					min:scope.panel.dashboard_max,
-					max:scope.panel.dashboard_min,
-					splitNumber:scope.panel.dashboard_splitNumber,
-					radius: '96%',
-					axisLine: {            // 坐标轴线
-							lineStyle: {       // 属性lineStyle控制线条样式
-								color: [[0.6, colors[0]],[0.82, colors[1]],[1, colors[2]]],//'#1e90ff''#F6AB60''#EB5768'
-								width: 5,
-								shadowColor : labelcolor?'#ddfdfa':colors[7], //默认透明
-								shadowBlur: 40
-							}
-					},
-					axisLabel: {            // 坐标轴小标记
-						textStyle: {       // 属性lineStyle控制线条样式
-							fontWeight: 'bolder',
-							color: labelcolor?'#fff':'#696969',
-							shadowColor : labelcolor?'#fff':colors[7], //默认透明
-							shadowBlur: 40,
-							fontStyle: 'italic',
-							fontSize:scope.panel.fontsize
-						}
-					},
-					axisTick: {            // 坐标轴小标记
-						length :18,        // 属性length控制线长
-						lineStyle: {       // 属性lineStyle控制线条样式
-							color: 'auto',
-							shadowColor : labelcolor?'#fff':colors[7], //默认透明
-							shadowBlur: 40
-						}
-					},
-					splitLine: {           // 分隔线
-						length :28,         // 属性length控制线长
-						lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
-							width:4,
-							color: labelcolor?'#fff':colors[8],
-							shadowColor : labelcolor?'#fff':colors[7], //默认透明
-							shadowBlur: 40
-						}
-					},
-					pointer: {           // 指针
-						length:'90%',
-						width:3
-					},
-					itemStyle:{
-						normal:{
-							color:labelcolor?'#fff':colors[6],
-							shadowColor: colors[7],
-							shadowBlur: 30,
-							borderWidth:2,
-							borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-								offset: 0, color: colors[4] // 0% 处的颜色
-								}, {
-								offset: 0.7, color: colors[5] // 70% 处的颜色
-								},{
-								offset: 1, color: '#fff' // 100% 处的颜色
-							}], false)
-						},
-						emphasis:{
-							color:labelcolor?'#fff':'#696969',
-							shadowColor: colors[3],
-							shadowBlur: 30,
-							borderWidth:2,
-							borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-								offset: 0, color: 'red' // 0% 处的颜色
-							}, {
-								offset: 0.7, color: '#50d1f1' // 100% 处的颜色
-							},{
-								offset: 1, color: '#fff' // 100% 处的颜色
-							}], false)
-					
-						}
-					},
-					title : {
-						textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-							fontWeight: 'bolder',
-							fontSize: scope.panel.fontsize+18,
-							fontStyle: 'italic',
-							color: labelcolor?'#fff':'#696969',
-							shadowColor :labelcolor?'#fff':'#696969', //默认透明
-							shadowBlur: 40
-						}
-					},
-					detail : {
-						formatter:'{value}%',
-                      // x, y，单位px
-						textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-							fontWeight: 'bolder',
-							color: labelcolor?'#fff':'#696969',
-							fontSize:scope.panel.fontsize+10
-						}
-					},
-					data:[{value: APdex, name: scope.panel.title}]
-				}
-     
-    ]
+    var option = {
+
+
+      toolbox: {
+        show : false,
+        feature : {
+            mark : {show: false},
+            restore : {show: false},
+            saveAsImage : {show: false}
+          }
+        },
+      grid: {
+        left: '0%',
+        right: '0%',
+        bottom: '0%',
+        top: 90
+      },
+      series : [
+        {
+        name:'Health',
+
+        type:'gauge',
+        min:scope.panel.dashboard_max,
+        max:scope.panel.dashboard_min,
+        splitNumber:scope.panel.dashboard_splitNumber,
+        radius: '96%',
+        axisLine: {            // 坐标轴线
+            lineStyle: {       // 属性lineStyle控制线条样式
+              color: [[0.6, colors[0]],[0.82, colors[1]],[1, colors[2]]],//'#1e90ff''#F6AB60''#EB5768'
+              width: 5,
+              shadowColor : labelcolor?'#ddfdfa':colors[7], //默认透明
+              shadowBlur: 40
+            }
+        },
+        axisLabel: {            // 坐标轴小标记
+          textStyle: {       // 属性lineStyle控制线条样式
+            fontWeight: 'bolder',
+            color: labelcolor?'#fff':'#696969',
+            shadowColor : labelcolor?'#fff':colors[7], //默认透明
+            shadowBlur: 40,
+            fontStyle: 'italic',
+            fontSize:scope.panel.fontsize
+          }
+        },
+        axisTick: {            // 坐标轴小标记
+          length :18,        // 属性length控制线长
+          lineStyle: {       // 属性lineStyle控制线条样式
+            color: 'auto',
+            shadowColor : labelcolor?'#fff':colors[7], //默认透明
+            shadowBlur: 40
+          }
+        },
+        splitLine: {           // 分隔线
+          length :28,         // 属性length控制线长
+          lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+            width:4,
+            color: labelcolor?'#fff':colors[8],
+            shadowColor : labelcolor?'#fff':colors[7], //默认透明
+            shadowBlur: 40
+          }
+        },
+        pointer: {           // 指针
+          length:'90%',
+          width:3
+        },
+        itemStyle:{
+          normal:{
+            color:labelcolor?'#fff':colors[6],
+            shadowColor: colors[7],
+            shadowBlur: 30,
+            borderWidth:2,
+            borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0, color: colors[4] // 0% 处的颜色
+              }, {
+              offset: 0.7, color: colors[5] // 70% 处的颜色
+              },{
+              offset: 1, color: '#fff' // 100% 处的颜色
+            }], false)
+          },
+          emphasis:{
+            color:labelcolor?'#fff':'#696969',
+            shadowColor: colors[3],
+            shadowBlur: 30,
+            borderWidth:2,
+            borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0, color: 'red' // 0% 处的颜色
+            }, {
+              offset: 0.7, color: '#50d1f1' // 100% 处的颜色
+            },{
+              offset: 1, color: '#fff' // 100% 处的颜色
+            }], false)
+
+          }
+        },
+        title : {
+          textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+            fontWeight: 'bolder',
+            fontSize: scope.panel.fontsize+18,
+            fontStyle: 'italic',
+            color: labelcolor?'#fff':'#696969',
+            shadowColor :labelcolor?'#fff':'#696969', //默认透明
+            shadowBlur: 40
+          }
+        },
+        detail : {
+          formatter:'{value}%',
+                    // x, y，单位px
+          textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+            fontWeight: 'bolder',
+            color: labelcolor?'#fff':'#696969',
+            fontSize:scope.panel.fontsize+10
+          }
+        },
+        data:[{value: APdex, name: scope.panel.title}]
+      }
+
+  ]
 };
-        // 使用刚指定的配置项和数据显示图表。
-			  myChart.setOption(option);
-			  
-			  }
+      // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+    }
 				 
-			            if(scope.panel.chart === 'pie') {
+        if(scope.panel.chart === 'pie') {
 							  
 			var myChart1 = echarts.init(document.getElementById(idd));
             
@@ -714,8 +715,7 @@ var option_nodata = {
 				}
 
 			  }
-			    
-			  
+
 			  if(scope.panel.chart === 'rosepie') {
 					  
 					var myChart2 = echarts.init(document.getElementById(idd));
@@ -905,7 +905,7 @@ var option_nodata = {
 				  
 			  }
 
-                if(scope.panel.chart === 'horizontalBar') {
+        if(scope.panel.chart === 'horizontalBar') {
 					scope.label.reverse();
                     var myChart33 = echarts.init(document.getElementById(idd));
                     var option33 = {
@@ -1131,7 +1131,7 @@ var option_nodata = {
 				}
 			  }
          
-		 if(scope.panel.chart === 'bars'){
+		    if(scope.panel.chart === 'bars'){
 	
 	var islength = 0;
 	if(scope.data.length>5){
@@ -1232,7 +1232,7 @@ var option_nodata = {
 				  
 			  }
 			  
-	if(scope.panel.chart === 'funnel'){
+	      if(scope.panel.chart === 'funnel'){
 		
 		
 	var myChart6 = echarts.init(document.getElementById(idd));
@@ -1327,7 +1327,7 @@ var option_nodata = {
 				}
 	}
 
-       if(scope.panel.chart === 'ebar') {
+        if(scope.panel.chart === 'ebar') {
 
 
                     var myChart7 = echarts.init(document.getElementById(idd));
@@ -1438,7 +1438,7 @@ var option_nodata = {
                     }
                 }
 
-                if(scope.panel.chart === 'liquidfill') {
+        if(scope.panel.chart === 'liquidfill') {
 
 
                     var myChart8 = echarts.init(document.getElementById(idd));
@@ -1536,18 +1536,13 @@ var option_nodata = {
                     }
                 }
 
-              // Populate legend
-
-
             } catch(e) {
               elem.text(e);
             }
-         // });
         }
       
 
         var $tooltip = $('<div>');
-      
 
       }
     };

@@ -72,13 +72,13 @@ function (angular, _, config, moment) {
         // is not yet configurable.
         url: collectionApi,
         method: "GET"
-      }).then(function successCallback() {
+      }).then(function successCallback(response) {
         // this callback will be called asynchronously
         // when the response is available
       }, function errorCallback(response) {
         // called asynchronously if an error occurs
         // or server returns response with an error status.
-        alertSrv.set('Error',"Could not retrieve collections from Solr (error status = "+response.status+")");
+        lertSrv.set('Error',"Could not retrieve collections from Solr (error status = "+response.status+")");
         console.debug('kbnIndex: error data = ',response.data);
       });
       /*

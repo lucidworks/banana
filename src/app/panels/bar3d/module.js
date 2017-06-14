@@ -467,7 +467,9 @@ var option_nodata = {
 		
 		
 		var idd = scope.$id;
-         //require(['echartsgl'], function(){
+          var echarts = require('echarts');
+
+          //require(['echartsgl'], function(){
             // Populate element
             try {
 				 var labelcolor = false;

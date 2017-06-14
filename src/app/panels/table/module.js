@@ -113,8 +113,6 @@ function (angular, app, _, kbn, moment) {
           if($scope.panel.display=='none'){
               $scope.panel.display='block';
               $scope.panel.icon="icon-caret-down";
-
-
           }else{
               $scope.panel.display='none';
               $scope.panel.icon="icon-caret-up";

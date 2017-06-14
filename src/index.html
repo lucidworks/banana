@@ -41,14 +41,7 @@
     <!--<script src="http://vizjs.org/viz.v1.0.0.min.js"></script>-->
     <script src="vendor/pdf/html2canvas.js"></script>
     <script src="vendor/pdf/html2canvas.svg.min.js"></script>
-    <script src="vendor/echarts.min.js"></script>
-    <script src="vendor/echarts-world.js"></script>
-    <!-- <script src="vendor/echarts.china.map.js"></script>-->
-    <script src="vendor/echarts-liquidfill.js"></script>
-    <script src="vendor/echarts-gl.min.js"></script>
-	<!--<script src="vendor/china.js"></script>-->
-	<!--<script src="vendor/bmap.min.js"></script>-->
-	<!--<script src="vendor/baidumap.js"></script>-->
+
     <script src="vendor/require/require.js"></script>
     <script src="app/components/require.config.js"></script>
     <!--<script src="vendor/jquery/jquery.cookie.js"></script>-->
@@ -92,12 +85,10 @@
     <div ng-include="'app/partials/skin-config.html'" class="ng-scope" ></div>
     <div class="container-fluid main">
       <div class="row-fluid">
-
-             <span  style="position:absolute; left:50%; top:50%; margin:-25px 0 0 -25px ;" ng-show="dashboard.current.loading">
-               <i class="icon-spinner icon-spin icon-5x"></i>
-             </span>
-
-        <div ng-view ></div>
+          <span  style="position:absolute; left:50%; top:50%; margin:-25px 0 0 -25px ;" ng-show="dashboard.current.loading">
+            <i class="icon-spinner icon-spin icon-5x"></i>
+          </span>
+          <div ng-view ></div>
       </div>
     </div>
     </div>
