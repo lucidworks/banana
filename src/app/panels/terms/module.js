@@ -17,8 +17,9 @@ define([
   'jquery',
   'kbn',
   'echarts',
-  'viz'
-],
+  'd3',
+  'viz',
+  ],
 function (angular, app, _, $, kbn) {
   'use strict';
 
@@ -507,11 +508,11 @@ var option_nodata = {
 		
 		var idd = scope.$id;
     var echarts = require('echarts');
+    var d3 = require("d3");
 
     require(['jquery.flot.pie'], function(){
       // Populate element
-      try {
-				
+
 				var labelcolor = false;
 					if (dashboard.current.style === 'dark'){
             labelcolor = true;
@@ -519,257 +520,257 @@ var option_nodata = {
         // Add plot to scope so we can build out own legend
         if(scope.panel.chart === 'dashboard') {
 
-    var myChart = echarts.init(document.getElementById(idd));
+          var myChart = echarts.init(document.getElementById(idd));
 
-    var option = {
-   
-   
-    toolbox: {
-        show : false,
-        feature : {
-            mark : {show: false},
-            restore : {show: false},
-            saveAsImage : {show: false}
-        }
-    },
-	grid: {
-        left: '0%',
-        right: '0%',
-        bottom: '0%',
-		top: 90
-    },
-    series : [
-        {
-            name:'Health',
-			 
-            type:'gauge',
-            min:100,
-            max:0,
-            splitNumber:10,
-            radius: '96%',
-            axisLine: {            // 坐标轴线
-                lineStyle: {       // 属性lineStyle控制线条样式
-                    color: [[0.6, '#1e90ff'],[0.82, '#F6AB60'],[1, '#EB5768']],
-                    width: 5,
-                    shadowColor : '#ddfdfa', //默认透明
-                    shadowBlur: 40
-                }
-            },
-            axisLabel: {            // 坐标轴小标记
-                textStyle: {       // 属性lineStyle控制线条样式
-                    fontWeight: 'bolder',
-                    color: labelcolor?'#fff':'#696969',
-                    shadowColor : '#fff', //默认透明
-                    shadowBlur: 40,
-					fontStyle: 'italic',
-					fontSize:scope.panel.fontsize
-                }
-            },
-            axisTick: {            // 坐标轴小标记
-                length :18,        // 属性length控制线长
-                lineStyle: {       // 属性lineStyle控制线条样式
-                    color: 'auto',
-                    shadowColor : '#fff', //默认透明
-                    shadowBlur: 40
-                }
-            },
-            splitLine: {           // 分隔线
-                length :28,         // 属性length控制线长
-                lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
-                    width:4,
-                    color: '#fff',
-                    shadowColor : '#fff', //默认透明
-                    shadowBlur: 40
-                }
-            },
-            pointer: {           // 分隔线
-               length:'90%',
-				width:3
-            },
-			itemStyle:{
-				normal:{
-					color:'#fff',
-					shadowColor: '#f55351',
-					shadowBlur: 30,
-					borderWidth:2,
-					borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-						offset: 0, color: 'red' // 0% 处的颜色
-						}, {
-						offset: 0.7, color: '#f8750d' // 100% 处的颜色
-						},{
-					offset: 1, color: '#fff' // 100% 处的颜色
-					}], false)
-				},
-				emphasis:{
-					color:'#fff',
-					shadowColor: '#fff',
-					shadowBlur: 30,
-					borderWidth:2,
-					borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-						offset: 0, color: 'red' // 0% 处的颜色
-						}, {
-						offset: 0.7, color: '#50d1f1' // 100% 处的颜色
-						},{
-					offset: 1, color: '#fff' // 100% 处的颜色
-					}], false)
-					
-				}
-			},
-            title : {
-                textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                    fontWeight: 'bolder',
-                    fontSize: scope.panel.fontsize+20,
-                    fontStyle: 'italic',
-                    color: labelcolor?'#fff':'#696969',
-                    shadowColor : '#fff', //默认透明
-                    shadowBlur: 40
-                }
-            },
-            detail : {
-				formatter:'{value}%',
-                      // x, y，单位px
-                textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                    fontWeight: 'bolder',
-                    color: labelcolor?'#fff':'#696969',
-					fontSize:scope.panel.fontsize+10
-                }
-            },
-            data:[{value: APdex, name: 'Health State'}]
-        }
-     
-    ]
-};
+          var option = {
 
-    var option_health_nodata = {
-   
-   
-    toolbox: {
-        show : false,
-        feature : {
-            mark : {show: false},
-            restore : {show: false},
-            saveAsImage : {show: false}
-        }
-    },
-	grid: {
-        left: '0%',
-        right: '0%',
-        bottom: '0%',
-		top: 90
-    },
-    series : [
-        {
-            name:'Health',
-			 
-            type:'gauge',
-            min:100,
-            max:0,
-            splitNumber:10,
-            radius: '96%',
-            axisLine: {            // 坐标轴线
-                lineStyle: {       // 属性lineStyle控制线条样式
-                    color: [[0.6, '#1e90ff'],[0.82, '#F6AB60'],[1, '#EB5768']],
-                    width: 5,
-                    shadowColor : '#ddfdfa', //默认透明
-                    shadowBlur: 40
-                }
-            },
-            axisLabel: {            // 坐标轴小标记
-                textStyle: {       // 属性lineStyle控制线条样式
-                    fontWeight: 'bolder',
-                    color: labelcolor?'#fff':'#696969',
-                    shadowColor : '#fff', //默认透明
-                    shadowBlur: 40,
-					fontStyle: 'italic',
-					fontSize:scope.panel.fontsize
-                }
-            },
-            axisTick: {            // 坐标轴小标记
-                length :18,        // 属性length控制线长
-                lineStyle: {       // 属性lineStyle控制线条样式
-                    color: 'auto',
-                    shadowColor : '#fff', //默认透明
-                    shadowBlur: 40
-                }
-            },
-            splitLine: {           // 分隔线
-                length :28,         // 属性length控制线长
-                lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
-                    width:4,
-                    color: '#fff',
-                    shadowColor : '#fff', //默认透明
-                    shadowBlur: 40
-                }
-            },
-            pointer: {           // 分隔线
-               length:'90%',
-				width:3
-            },
-			itemStyle:{
-				normal:{
-					color:'#fff',
-					shadowColor: '#f55351',
-					shadowBlur: 30,
-					borderWidth:2,
-					borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-						offset: 0, color: 'red' // 0% 处的颜色
-						}, {
-						offset: 0.7, color: '#f8750d' // 100% 处的颜色
-						},{
-					offset: 1, color: '#fff' // 100% 处的颜色
-					}], false)
-				},
-				emphasis:{
-					color:'#fff',
-					shadowColor: '#fff',
-					shadowBlur: 30,
-					borderWidth:2,
-					borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-						offset: 0, color: 'red' // 0% 处的颜色
-						}, {
-						offset: 0.7, color: '#50d1f1' // 100% 处的颜色
-						},{
-					offset: 1, color: '#fff' // 100% 处的颜色
-					}], false)
-					
-				}
-			},
-            title : {
-                textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                    fontWeight: 'bolder',
-                    fontSize: scope.panel.fontsize+15,
-                    fontStyle: 'italic',
-                    color: labelcolor?'#fff':'#696969',
-                    shadowColor : '#fff', //默认透明
-                    shadowBlur: 40
-                }
-            },
-            detail : {
-				formatter:'{value}%',
-                      // x, y，单位px
-                textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                    fontWeight: 'bolder',
-                    color: labelcolor?'#fff':'#696969',
-					fontSize:scope.panel.fontsize+10
-                }
-            },
-            data:[{value: 0, name: 'Health State(no data)'}]
-        }
-     
-    ]
-};
 
-		if(chartData.length === 0){
-				myChart.setOption(option_health_nodata);}else{
-					 myChart.setOption(option);
-				}
-        // 使用刚指定的配置项和数据显示图表。
-			 
-			  
+          toolbox: {
+              show : false,
+              feature : {
+                  mark : {show: false},
+                  restore : {show: false},
+                  saveAsImage : {show: false}
+              }
+          },
+        grid: {
+              left: '0%',
+              right: '0%',
+              bottom: '0%',
+          top: 90
+          },
+          series : [
+              {
+                  name:'Health',
+
+                  type:'gauge',
+                  min:100,
+                  max:0,
+                  splitNumber:10,
+                  radius: '96%',
+                  axisLine: {            // 坐标轴线
+                      lineStyle: {       // 属性lineStyle控制线条样式
+                          color: [[0.6, '#1e90ff'],[0.82, '#F6AB60'],[1, '#EB5768']],
+                          width: 5,
+                          shadowColor : '#ddfdfa', //默认透明
+                          shadowBlur: 40
+                      }
+                  },
+                  axisLabel: {            // 坐标轴小标记
+                      textStyle: {       // 属性lineStyle控制线条样式
+                          fontWeight: 'bolder',
+                          color: labelcolor?'#fff':'#696969',
+                          shadowColor : '#fff', //默认透明
+                          shadowBlur: 40,
+                fontStyle: 'italic',
+                fontSize:scope.panel.fontsize
+                      }
+                  },
+                  axisTick: {            // 坐标轴小标记
+                      length :18,        // 属性length控制线长
+                      lineStyle: {       // 属性lineStyle控制线条样式
+                          color: 'auto',
+                          shadowColor : '#fff', //默认透明
+                          shadowBlur: 40
+                      }
+                  },
+                  splitLine: {           // 分隔线
+                      length :28,         // 属性length控制线长
+                      lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                          width:4,
+                          color: '#fff',
+                          shadowColor : '#fff', //默认透明
+                          shadowBlur: 40
+                      }
+                  },
+                  pointer: {           // 分隔线
+                     length:'90%',
+              width:3
+                  },
+            itemStyle:{
+              normal:{
+                color:'#fff',
+                shadowColor: '#f55351',
+                shadowBlur: 30,
+                borderWidth:2,
+                borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                  offset: 0, color: 'red' // 0% 处的颜色
+                  }, {
+                  offset: 0.7, color: '#f8750d' // 100% 处的颜色
+                  },{
+                offset: 1, color: '#fff' // 100% 处的颜色
+                }], false)
+              },
+              emphasis:{
+                color:'#fff',
+                shadowColor: '#fff',
+                shadowBlur: 30,
+                borderWidth:2,
+                borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                  offset: 0, color: 'red' // 0% 处的颜色
+                  }, {
+                  offset: 0.7, color: '#50d1f1' // 100% 处的颜色
+                  },{
+                offset: 1, color: '#fff' // 100% 处的颜色
+                }], false)
+
+              }
+            },
+                  title : {
+                      textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                          fontWeight: 'bolder',
+                          fontSize: scope.panel.fontsize+20,
+                          fontStyle: 'italic',
+                          color: labelcolor?'#fff':'#696969',
+                          shadowColor : '#fff', //默认透明
+                          shadowBlur: 40
+                      }
+                  },
+                  detail : {
+              formatter:'{value}%',
+                            // x, y，单位px
+                      textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                          fontWeight: 'bolder',
+                          color: labelcolor?'#fff':'#696969',
+                fontSize:scope.panel.fontsize+10
+                      }
+                  },
+                  data:[{value: APdex, name: 'Health State'}]
+              }
+
+          ]
+      };
+
+          var option_health_nodata = {
+
+
+          toolbox: {
+              show : false,
+              feature : {
+                  mark : {show: false},
+                  restore : {show: false},
+                  saveAsImage : {show: false}
+              }
+          },
+        grid: {
+              left: '0%',
+              right: '0%',
+              bottom: '0%',
+          top: 90
+          },
+          series : [
+              {
+                  name:'Health',
+
+                  type:'gauge',
+                  min:100,
+                  max:0,
+                  splitNumber:10,
+                  radius: '96%',
+                  axisLine: {            // 坐标轴线
+                      lineStyle: {       // 属性lineStyle控制线条样式
+                          color: [[0.6, '#1e90ff'],[0.82, '#F6AB60'],[1, '#EB5768']],
+                          width: 5,
+                          shadowColor : '#ddfdfa', //默认透明
+                          shadowBlur: 40
+                      }
+                  },
+                  axisLabel: {            // 坐标轴小标记
+                      textStyle: {       // 属性lineStyle控制线条样式
+                          fontWeight: 'bolder',
+                          color: labelcolor?'#fff':'#696969',
+                          shadowColor : '#fff', //默认透明
+                          shadowBlur: 40,
+                fontStyle: 'italic',
+                fontSize:scope.panel.fontsize
+                      }
+                  },
+                  axisTick: {            // 坐标轴小标记
+                      length :18,        // 属性length控制线长
+                      lineStyle: {       // 属性lineStyle控制线条样式
+                          color: 'auto',
+                          shadowColor : '#fff', //默认透明
+                          shadowBlur: 40
+                      }
+                  },
+                  splitLine: {           // 分隔线
+                      length :28,         // 属性length控制线长
+                      lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                          width:4,
+                          color: '#fff',
+                          shadowColor : '#fff', //默认透明
+                          shadowBlur: 40
+                      }
+                  },
+                  pointer: {           // 分隔线
+                     length:'90%',
+              width:3
+                  },
+            itemStyle:{
+              normal:{
+                color:'#fff',
+                shadowColor: '#f55351',
+                shadowBlur: 30,
+                borderWidth:2,
+                borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                  offset: 0, color: 'red' // 0% 处的颜色
+                  }, {
+                  offset: 0.7, color: '#f8750d' // 100% 处的颜色
+                  },{
+                offset: 1, color: '#fff' // 100% 处的颜色
+                }], false)
+              },
+              emphasis:{
+                color:'#fff',
+                shadowColor: '#fff',
+                shadowBlur: 30,
+                borderWidth:2,
+                borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                  offset: 0, color: 'red' // 0% 处的颜色
+                  }, {
+                  offset: 0.7, color: '#50d1f1' // 100% 处的颜色
+                  },{
+                offset: 1, color: '#fff' // 100% 处的颜色
+                }], false)
+
+              }
+            },
+                  title : {
+                      textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                          fontWeight: 'bolder',
+                          fontSize: scope.panel.fontsize+15,
+                          fontStyle: 'italic',
+                          color: labelcolor?'#fff':'#696969',
+                          shadowColor : '#fff', //默认透明
+                          shadowBlur: 40
+                      }
+                  },
+                  detail : {
+              formatter:'{value}%',
+                            // x, y，单位px
+                      textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                          fontWeight: 'bolder',
+                          color: labelcolor?'#fff':'#696969',
+                fontSize:scope.panel.fontsize+10
+                      }
+                  },
+                  data:[{value: 0, name: 'Health State(no data)'}]
+              }
+
+          ]
+      };
+
+          if(chartData.length === 0){
+              myChart.setOption(option_health_nodata);}else{
+                 myChart.setOption(option);
+              }
+              // 使用刚指定的配置项和数据显示图表。
+
+
 			  
 			  }
 			  
-			            if(scope.panel.chart === 'ebar') {
+        if(scope.panel.chart === 'ebar') {
 				  var arrdata = [];	
 					var arrlabel = [];	
 					var top4 = 5;
@@ -894,36 +895,37 @@ var option_nodata = {
 				}
 			  }
 
-                if(scope.panel.chart === 'd3') {
-                    var svg=d3.select(el).append("svg").attr("width", width)
-                        .attr("height", height);
-                    var g=svg.append("g").attr("transform","translate(" + parent_width / 2 + "," + height / 2 + ")");
-                    var domain = [0,100];
+			  var svg;
+        if(scope.panel.chart === 'd3') {
+            svg=d3.select(el).append("svg").attr("width", width)
+                .attr("height", height);
+            var g=svg.append("g").attr("transform","translate(" + parent_width / 2 + "," + height / 2 + ")");
+            var domain = [0,100];
 
-                    var gg = viz.gg()
-                        .domain(domain)
-                        .outerRadius(height/2)
-                        .innerRadius(30)
-                        .value(50)
-                        .duration(1000);
+            var gg = viz.gg()
+                .domain(domain)
+                .outerRadius(height/2)
+                .innerRadius(30)
+                .value(50)
+                .duration(1000);
 
-                    gg.defs(svg);
-                    g.call(gg);
+            gg.defs(svg);
+            g.call(gg);
 
-                    d3.select(self.frameElement).style("height", "700px");
-                    //setInterval( function(){gg.setNeedle(domain[0]+Math.random()*(domain[1]-domain[0]));},2000);
-                }
+            d3.select(self.frameElement).style("height", "700px");
+            //setInterval( function(){gg.setNeedle(domain[0]+Math.random()*(domain[1]-domain[0]));},2000);
+        }
 			  
 			 if(scope.panel.chart === 'd3pie') {
 				  
 				 var d3_data = [1, 1, 2, 3, 5, 8, 13, 21];
 				  
 				 var d3_pie = d3.layout.pie()
-							.padAngle(.03);
+							.padAngle(0.03);
 				var arc = d3.svg.arc()
 							.innerRadius(innerRadius)
 							.outerRadius(outerRadius);	
-				var svg = d3.select(el).append("svg")
+				svg = d3.select(el).append("svg")
 							.attr("width", parent_width)
 							.attr("height", height)
 							.attr("viewBox", "0 0 " + parent_width + " " + (height - margin.bottom))
@@ -944,7 +946,7 @@ var option_nodata = {
 				var ease = d3.ease("cubic-in-out"),
 							duration = 2500;
 			d3.timer(function(elapsed) {
-				var t = ease(1 - Math.abs((elapsed % duration) / duration - .5) * 2),
+				var t = ease(1 - Math.abs((elapsed % duration) / duration - 0.5) * 2),
 							arcs = d3_pie(d3_data);
 
 				straightPath.data(arcs).attr("d", arc.cornerRadius(0));
@@ -1073,9 +1075,6 @@ var option_nodata = {
                 });
               }
 
-            } catch(e) {
-              elem.text(e);
-            }
           });
         }
 

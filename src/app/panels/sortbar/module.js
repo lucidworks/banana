@@ -287,13 +287,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         }
 
         var mypromises = [];
-        var threshold_1 = '*';
-        var threshold_2 = '*';
-        var threshold_3 = '*';
-        var staticfield = $scope.panel.value_field;
         if ($scope.panel.mode === 'value' || $scope.panel.mode === 'counts') {
             var arr_id = [0];
-            _.each(arr_id, function (id) {
+            _.each(arr_id, function () {
                 var temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + '*' + '%20TO%20' + '*' + '%5D' + wt_json + sort_s + rows_limit + fq + facet + values_mode_query;
 
                 $scope.panel.queries.query += temp_q + "\n";
@@ -351,10 +347,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                         hits = 0;
                         $scope.hits = 0;
                     }
-
-                    // Solr facet counts response is in one big array.
-                    // So no need to get each segment like Elasticsearch does.
-                    var entry_time, entries, entry_value;
 
 
                     $scope.data[i] = results[index].response.docs;
@@ -444,7 +436,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
         // Function for rendering panel
         function render_panel() {
-          var plot, chartData;
+          var chartData;
           var colors = [];
 
           // IE doesn't work without this
@@ -514,8 +506,9 @@ var option_nodata = {
 };
 		
 		var idd = scope.$id;
-         
-            // Populate element
+      var echarts = require('echarts');
+
+          // Populate element
             try {
 				
 				 var labelcolor = false;
@@ -606,7 +599,7 @@ var option_nodata = {
                                   normal: {
                                       color: function(params) {
                                           var colorList = colors;
-                                          return colorList[params.dataIndex]
+                                          return colorList[params.dataIndex];
                                       },
                                       shadowColor: '#fff',
                                       barBorderRadius: 5
@@ -650,9 +643,7 @@ var option_nodata = {
             }
          
         }
-      
-        var $tooltip = $('<div>');
-        
+
       }
     };
   });
