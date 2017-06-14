@@ -263,7 +263,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
               self.dash_load(dash_defaults(result.data));
               return true;
           }, function () {
-              alertSrv.set('Error', "Could not load <i>dashboards/" + file + "</i>. Please make sure it exists", 'error');
+              alertSrv.set('Error', "Could not load <i>dashboards/" + "</i>. Please make sure it exists", 'error');
               return false;
           });
       };
