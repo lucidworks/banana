@@ -415,7 +415,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
   });
 
-   module.directive('stackingChart', function($scope, querySrv,dashboard,filterSrv) {
+   module.directive('stackingChart', function(querySrv,dashboard,filterSrv) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
