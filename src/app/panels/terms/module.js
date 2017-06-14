@@ -422,21 +422,21 @@ function (angular, app, _, $, kbn) {
 			
 			elem.html("");
 
-                    var el = elem[0];
+                   // var el = elem[0];
 
-                    var parent_width = elem.parent().width(),
-                        height = parseInt(scope.panel.height),
-                        padding = 50,
-						outerRadius = height / 2 - 30,
-						innerRadius = outerRadius / 3;
+                   // var parent_width = elem.parent().width();
+                    //var    height = parseInt(scope.panel.height);
+
+          //var 	outerRadius = height / 2 - 30;
+         // var 	innerRadius = outerRadius / 3;
 						
-					var margin = {
-                        top: 20,
-                        right: 20,
-                        bottom: 100,
-                        left: 50
-                    },
-                    width = parent_width - margin.left - margin.right;
+                    // var margin = {
+                    //     top: 20,
+                    //     right: 20,
+                    //     bottom: 100,
+                    //     left: 50
+                    // };
+                    //width = parent_width - margin.left - margin.right
 
                    
           var plot, chartData;
@@ -508,7 +508,7 @@ var option_nodata = {
 		
 		var idd = scope.$id;
     var echarts = require('echarts');
-    var d3 = require("d3");
+    //var d3 = require("d3");
 
     require(['jquery.flot.pie'], function(){
       // Populate element
@@ -895,65 +895,7 @@ var option_nodata = {
 				}
 			  }
 
-			  var svg;
-        if(scope.panel.chart === 'd3') {
-            svg=d3.select(el).append("svg").attr("width", width)
-                .attr("height", height);
-            var g=svg.append("g").attr("transform","translate(" + parent_width / 2 + "," + height / 2 + ")");
-            var domain = [0,100];
 
-            var gg = viz.gg()
-                .domain(domain)
-                .outerRadius(height/2)
-                .innerRadius(30)
-                .value(50)
-                .duration(1000);
-
-            gg.defs(svg);
-            g.call(gg);
-
-            d3.select(self.frameElement).style("height", "700px");
-            //setInterval( function(){gg.setNeedle(domain[0]+Math.random()*(domain[1]-domain[0]));},2000);
-        }
-			  
-			 if(scope.panel.chart === 'd3pie') {
-				  
-				 var d3_data = [1, 1, 2, 3, 5, 8, 13, 21];
-				  
-				 var d3_pie = d3.layout.pie()
-							.padAngle(0.03);
-				var arc = d3.svg.arc()
-							.innerRadius(innerRadius)
-							.outerRadius(outerRadius);	
-				svg = d3.select(el).append("svg")
-							.attr("width", parent_width)
-							.attr("height", height)
-							.attr("viewBox", "0 0 " + parent_width + " " + (height - margin.bottom))
-							.attr("preserveAspectRatio", "xMidYMid")
-							.append("g")
-							.attr("transform", "translate(" + parent_width / 2 + "," + height / 2 + ")");
-				var $tooltip = $('<div>');
-				var straightPath = svg.append("g")
-							.attr("class", ".paths--straight")
-							.selectAll("path")
-							.data(d3_data)
-							.enter().append("path");
-				var roundPath = svg.append("g")
-							.attr("class", ".paths--round")
-							.selectAll("path")
-							.data(d3_data)
-							.enter().append("path");
-				var ease = d3.ease("cubic-in-out"),
-							duration = 2500;
-			d3.timer(function(elapsed) {
-				var t = ease(1 - Math.abs((elapsed % duration) / duration - 0.5) * 2),
-							arcs = d3_pie(d3_data);
-
-				straightPath.data(arcs).attr("d", arc.cornerRadius(0));
-				roundPath.data(arcs).attr("d", arc.cornerRadius((outerRadius - innerRadius) / 2 * t));
-});
-							
-			  }
 			  
 			  
 			  if(scope.panel.chart === 'bar') {
