@@ -59,6 +59,7 @@ require.config({
     viz:                    '../vendor/viz.v1.0.0.min',
     Donut3D:                  '../vendor/d3/Donut3D',
 
+
     /*
     d3:                       '../vendor/d3',
       viz:                    '../vendor/viz.v1.0.0.min',
