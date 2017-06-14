@@ -132,5 +132,6 @@ require.config({
     solrjs:                 ['angular', '../vendor/solrjs/solr'],
     Donut3D:                ['d3'],
     'echarts-liquidfill':   ['echarts'],
+    'viz':                  ['d3'],
   }
 });

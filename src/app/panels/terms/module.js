@@ -17,9 +17,9 @@ define([
   'jquery',
   'kbn',
   'echarts',
-  'viz',
   'd3',
-],
+  'viz',
+  ],
 function (angular, app, _, $, kbn) {
   'use strict';
 
@@ -508,12 +508,11 @@ var option_nodata = {
 		
 		var idd = scope.$id;
     var echarts = require('echarts');
-    var d3 = require('d3');
-    var viz = require('viz');
+    var d3 = require("d3");
+
     require(['jquery.flot.pie'], function(){
       // Populate element
-      try {
-				
+
 				var labelcolor = false;
 					if (dashboard.current.style === 'dark'){
             labelcolor = true;
@@ -1076,9 +1075,6 @@ var option_nodata = {
                 });
               }
 
-            } catch(e) {
-              elem.text(e);
-            }
           });
         }
 
