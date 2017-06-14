@@ -60,7 +60,7 @@ module.exports = function (grunt) {
       options: {
         jshintrc: '.jshintrc',
         reporterOutput: '',
-        force: false,
+        force: true,
       }
     },
     htmlmin:{

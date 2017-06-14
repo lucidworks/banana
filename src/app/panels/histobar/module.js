@@ -691,7 +691,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                     to: moment.utc(selecttime[params.batch[0].endValue]).toDate(),
                     field: filterSrv.getTimeField()
                 });
-                dashboard.current.linkage_id = $scope.panel.linkage_id;
+                dashboard.current.linkage_id = scope.panel.linkage_id;
                 dashboard.current.enable_linkage = false;
                 dashboard.refresh();
             }
