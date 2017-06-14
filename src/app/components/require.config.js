@@ -58,7 +58,7 @@ require.config({
     d3:                       '../../node_modules/d3/build/d3',
     viz:                    '../vendor/viz.v1.0.0.min',
     Donut3D:                  '../vendor/d3/Donut3D',
-    jsPDF:                    '../vendor/pdf/jspdf',
+    jspdf:                    '../vendor/pdf/jspdf',
 
     /*
     d3:                       '../vendor/d3',
