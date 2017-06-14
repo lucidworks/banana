@@ -59,7 +59,7 @@ function (angular, app, _) {
     };
 
       $scope.display=function() {
-          if($scope.panel.display=='none'){
+          if($scope.panel.display === 'none'){
               $scope.panel.display='block';
               $scope.panel.icon="icon-caret-down";
 

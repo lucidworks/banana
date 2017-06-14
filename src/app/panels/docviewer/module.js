@@ -74,7 +74,7 @@ function (angular, app, kbn, _/*, $*/) {
     };
 
       $scope.display=function() {
-          if($scope.panel.display=='none'){
+          if($scope.panel.display === 'none'){
               $scope.panel.display='block';
               $scope.panel.icon="icon-caret-down";
 
@@ -98,7 +98,7 @@ function (angular, app, kbn, _/*, $*/) {
     };
 
     $scope.get_data = function() {
-        if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
         // Show the spinning wheel icon
         $scope.panelMeta.loading = true;
 

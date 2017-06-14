@@ -58,7 +58,7 @@ define([
         };
 
         $scope.get_data = function() {
-            if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+            if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
             // Show progress by displaying a spinning wheel icon on panel
             $scope.panelMeta.loading = true;
             delete $scope.panel.error;
@@ -123,7 +123,7 @@ define([
         };
 
         $scope.display=function() {
-            if($scope.panel.display=='none'){
+            if($scope.panel.display === 'none'){
                 $scope.panel.display='block';
                 $scope.panel.icon="icon-caret-down";
 

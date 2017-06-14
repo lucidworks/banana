@@ -16,7 +16,7 @@ define([
   'underscore',
   'jquery',
   'kbn',
-  'd3.v3',
+  'echarts',
   'viz'
 ],
 function (angular, app, _, $, kbn) {
@@ -109,7 +109,7 @@ function (angular, app, _, $, kbn) {
       }
     };
       $scope.display=function() {
-          if($scope.panel.display=='none'){
+          if($scope.panel.display === 'none'){
               $scope.panel.display='block';
               $scope.panel.icon="icon-caret-down";
 
@@ -200,7 +200,7 @@ function (angular, app, _, $, kbn) {
     };
 
     $scope.get_data = function() {
-        if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
         // Make sure we have everything for the request to complete
         if (dashboard.indices.length === 0) {
             return;
@@ -470,7 +470,7 @@ function (angular, app, _, $, kbn) {
 			  }
 		  }
 		var APdex =100;
-		if(AP_n!=0){
+		if(AP_n !== 0){
 		APdex = parseInt(100*(AP_1+AP_2)/AP_n);
 		//APdex = (AP_1+AP_2)/AP_n;
 		}
@@ -506,76 +506,22 @@ var option_nodata = {
 };
 		
 		var idd = scope.$id;
-          require(['jquery.flot.pie'], function(){
-            // Populate element
-            try {
+    var echarts = require('echarts');
+
+    require(['jquery.flot.pie'], function(){
+      // Populate element
+      try {
 				
 				var labelcolor = false;
 					if (dashboard.current.style === 'dark'){
-							labelcolor = true;
-						}
-              // Add plot to scope so we can build out own legend
-              if(scope.panel.chart === 'dashboard') {
-				  
-				  
-		/*		  var g1 = new JustGage({
-        id: idd,
-        value: health,
-        min: 0,
-        max: 500,
-        symbol: '%',
-        pointer: true,
-        pointerOptions: {
-          toplength: -15,
-          bottomlength: 10,
-          bottomwidth: 12,
-          color: '#8e8e93',
-          stroke: '#ffffff',
-          stroke_width: 3,
-          stroke_linecap: 'round'
-        },
-        gaugeWidthScale: 0.6,
-        counter: true
-        
-      });
-		*/		  
-				  
-			var myChart = echarts.init(document.getElementById(idd));
+            labelcolor = true;
+          }
+        // Add plot to scope so we can build out own legend
+        if(scope.panel.chart === 'dashboard') {
 
-        // 指定图表的配置项和数据
-    /*    var option = {
-    tooltip : {
-        formatter: "{a} <br/>{b} : {c}%"
-    },
-   
-    series: [
-        {
-            name: 'Health',
-            type: 'gauge',
-			radius:'100%',
-			startAngle:225,
-			endAngle:-45,
-			axisLine: {
-				 lineStyle: { 
-				   color:[[0.6, '#28B294'], [0.8, '#F6AB60'], [1, '#EB5768']]
-				 }
-				
-			},
-			title:{
-				
-				textStyle:{
-					color:'#d9d9d9',
-					fontWeight:'bold',
-					fontFamily:'Microsoft YaHei'
-				}
-			},
-            detail: {formatter:'{value}%'},
-            data: [{value:health , name: 'Health State'}]
-        }
-    ]
-};
-*/
-var option = {
+    var myChart = echarts.init(document.getElementById(idd));
+
+    var option = {
    
    
     toolbox: {
@@ -694,7 +640,7 @@ var option = {
     ]
 };
 
-var option_health_nodata = {
+    var option_health_nodata = {
    
    
     toolbox: {
@@ -813,7 +759,7 @@ var option_health_nodata = {
     ]
 };
 
-		if(chartData.length==0){
+		if(chartData.length === 0){
 				myChart.setOption(option_health_nodata);}else{
 					 myChart.setOption(option);
 				}
@@ -915,18 +861,18 @@ var option_health_nodata = {
 			itemStyle: {
 				normal: {
 					color: function(params) {              
-                                        var colorList = ['#1a75f9', '#1a93f9', '#1ab0f9', '#1acef9', '#42d3f0', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
-                                        return colorList[params.dataIndex]
-                                        },
+            var colorList = ['#1a75f9', '#1a93f9', '#1ab0f9', '#1acef9', '#42d3f0', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
+            return colorList[params.dataIndex];
+            },
 					shadowColor: '#fff',
 					barBorderRadius: 5
                 
             },
 			emphasis: {
 					color: function(params) {              
-                                        var colorList = ['#ff951f', '#ff951f', '#ff951f', '#ff951f', '#ff951f', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
-                                        return colorList[params.dataIndex]
-                                        },
+            var colorList = ['#ff951f', '#ff951f', '#ff951f', '#ff951f', '#ff951f', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
+            return colorList[params.dataIndex];
+            },
 					shadowColor: '#fff',
 					barBorderRadius: 5
                 
@@ -938,7 +884,7 @@ var option_health_nodata = {
 
 
         // 使用刚指定的配置项和数据显示图表。
-			  if(chartData.length==0){
+			  if(chartData.length === 0){
 				myChart1.setOption(option_nodata);}else{
 					myChart1.setOption(option1);
 					myChart1.on('click', function (params) {
@@ -1058,7 +1004,7 @@ var option_health_nodata = {
                   colors: colors
                 });
 				
-				if(chartData.length==0){
+				if(chartData.length === 0){
 				var myChart22222 = echarts.init(document.getElementById(idd));
 				myChart22222.setOption(option_nodata);
 					
@@ -1110,7 +1056,7 @@ var option_health_nodata = {
                   grid:   { hoverable: true, clickable: true },
                   colors: colors
                 });
-				if(chartData.length==0){
+				if(chartData.length === 0){
 				var myChart12222 = echarts.init(document.getElementById(idd));
 				myChart12222.setOption(option_nodata);
 					

@@ -136,7 +136,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
       $scope.display=function() {
-          if($scope.panel.display=='none'){
+          if($scope.panel.display === 'none'){
               $scope.panel.display='block';
               $scope.panel.icon="icon-caret-down";
 
@@ -191,7 +191,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
      *                            this call is made recursively for more segments
      */
     $scope.get_data = function(segment, query_id) {
-        if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
         if (_.isUndefined(segment)) {
             segment = 0;
         }
@@ -631,7 +631,7 @@ var option_nodata = {
                   };
                   //没有数据显示NO DATA
 
-                  if(scope.data.length==0){
+                  if(scope.data.length === 0){
                       myChart33.setOption(option_nodata);}else{
                       myChart33.setOption(option33);
                       myChart33.on('click', function (params) {

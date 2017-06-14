@@ -49,23 +49,19 @@ function (angular, _, config) {
       // And also check USE_FUSION flag, if true, use Fusion Collection API instead of Solr.
       var fieldApi = '';
       var request;
-      var result;
 
-      if (config.USE_FUSION) {
-        request = lucidworksSrv.getFields(dashboard.current.solr.core_name);
-      } else if (config.USE_ADMIN_LUKE) {
+
+      if (config.USE_ADMIN_LUKE) {
         fieldApi = '/admin/luke?numTerms=0&wt=json';
       } else {
         fieldApi = '/schema/fields';
       }
 
-      if (!config.USE_FUSION) {
-        request = $http({
-          // Get all fields in Solr core
-          url: dashboard.current.solr.server + dashboard.current.solr.core_name + fieldApi,
-          method: "GET"
-        })
-      }
+      request = $http({
+        url: dashboard.current.solr.server + dashboard.current.solr.core_name + fieldApi,
+        method: "GET"
+      });
+
 
       return request.then(
         function successCallback(response) {

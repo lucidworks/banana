@@ -64,7 +64,7 @@ define([
       };
 
         $scope.display=function() {
-            if($scope.panel.display=='none'){
+            if($scope.panel.display === 'none'){
                 $scope.panel.display='block';
                 $scope.panel.icon="icon-caret-down";
 
@@ -76,7 +76,7 @@ define([
         };
 
       $scope.get_data = function(segment) {
-          if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+          if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
           delete $scope.panel.error;
           $scope.panelMeta.loading = true;
 

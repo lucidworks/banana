@@ -133,7 +133,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
       $scope.display=function() {
-          if($scope.panel.display=='none'){
+          if($scope.panel.display === 'none'){
               $scope.panel.display='block';
               $scope.panel.icon="icon-caret-down";
 
@@ -188,7 +188,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
      *                            this call is made recursively for more segments
      */
     $scope.get_data = function(segment, query_id) {
-        if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
 
         if (_.isUndefined(segment)) {
             segment = 0;
@@ -315,18 +315,19 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 arr_id = arr_id.reverse();
             }
             _.each(arr_id, function (id) {
+                var temp_q;
                 if (id === 0) {
                     //temp_q = temp_q.replace(/responseElapsed%3A%5B0%20TO%2020000%5D/,"connectElapsed%3A%5B0%20TO%2020000%5D");
-                    var temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + 0 + '%20TO%20' + threshold_1 + '%5D' + wt_json + rows_limit + fq + facet + values_mode_query;
+                    temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + 0 + '%20TO%20' + threshold_1 + '%5D' + wt_json + rows_limit + fq + facet + values_mode_query;
                 }
                 else if (id === 1) {
                     //temp_q = temp_q.replace(/responseElapsed%3A%5B20000%20TO%2030000%5D/,"connectElapsed%3A%5B20000%20TO%2030000%5D");
-                    var temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + threshold_1_1 + '%20TO%20' + threshold_2 + '%5D' + wt_json + rows_limit + fq + facet + values_mode_query;
+                    temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + threshold_1_1 + '%20TO%20' + threshold_2 + '%5D' + wt_json + rows_limit + fq + facet + values_mode_query;
                 } else if (id === 2) {
                     //temp_q = temp_q.replace("responseElapsed%3A%5B30000%20TO%20*%5D","connectElapsed%3A%5B30000%20TO%20*%5D");
-                    var temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + threshold_2_1 + '%20TO%20' + threshold_3 + '%5D' + wt_json + rows_limit + fq + facet + values_mode_query;
+                    temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + threshold_2_1 + '%20TO%20' + threshold_3 + '%5D' + wt_json + rows_limit + fq + facet + values_mode_query;
                 } else {
-                    var temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + threshold_3_1 + '%20TO%20' + '*' + '%5D' + wt_json + rows_limit + fq + facet + values_mode_query;
+                    temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + threshold_3_1 + '%20TO%20' + '*' + '%5D' + wt_json + rows_limit + fq + facet + values_mode_query;
                 }
 
 
@@ -580,11 +581,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 				//series.color = '%';
 			  var mid = parseFloat((100*series.hits/num_all).toFixed(2));
 			  series.hits = mid;
-			  if(label_i == 2){
+			  if(label_i === 2){
 				  series.info.alias = "Warning% ";
-			  }else if(label_i == 3){
+			  }else if(label_i === 3){
 				  series.info.alias = "Normal% ";
-			  }else if(label_i == 1){
+			  }else if(label_i === 1){
 			  series.info.alias = "Risk% ";}
               series.label = series.info.alias;
 				
@@ -796,7 +797,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 			var lsTT="";
 			var isgroup = group;
 			var isvalue = value;
-			if(scope.panel.mode !='value' || lnLastValue !=0){
+			if(scope.panel.mode !== 'value' || lnLastValue !=0){
             lsItemTT = group + dashboard.numberWithCommas(value) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(item.datapoint[0]).format('MM/DD HH:mm:ss') : moment(item.datapoint[0]).format('MM/DD HH:mm:ss'));
 			 lsTT = lsItemTT;
 			 isr =1;
@@ -861,7 +862,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                     group = kbn.query_color_dot(s.color, 15) + ' ';
                   }
 					
-				if(scope.panel.mode !='value' || lnLastValue !=0){	
+				if(scope.panel.mode !== 'value' || lnLastValue !=0){
 					
                   lsItemTT = group + dashboard.numberWithCommas(value) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(p[0]).format('MM/DD HH:mm:ss') : moment(p[0]).format('MM/DD HH:mm:ss'));
                   lsTT = lsTT +"</br>"+ lsItemTT;

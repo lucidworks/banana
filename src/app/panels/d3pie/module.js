@@ -16,7 +16,8 @@ define([
   'underscore',
   'jquery',
   'kbn',
-        'd3.v3'
+  'd3',
+  'Donut3D'
 ],
 function (angular, app, _, $, kbn) {
   'use strict';
@@ -107,7 +108,7 @@ function (angular, app, _, $, kbn) {
       }
     };
       $scope.display=function() {
-          if($scope.panel.display=='none'){
+          if($scope.panel.display === 'none'){
               $scope.panel.display='block';
               $scope.panel.icon="icon-caret-down";
 
@@ -201,7 +202,7 @@ function (angular, app, _, $, kbn) {
     };
 
     $scope.get_data = function() {
-        if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
         // Make sure we have everything for the request to complete
         if (dashboard.indices.length === 0) {
             return;
@@ -446,7 +447,7 @@ function (angular, app, _, $, kbn) {
             colors = scope.panel.chartColors;
           }
 		 
-var option_nodata = {  
+    var option_nodata = {
     series: [{
        
         type: 'wordCloud',
@@ -478,9 +479,8 @@ var option_nodata = {
 		
 		
 		var idd = scope.$id;
-          require(['Donut3D'], function(){
+          var d3 = require("d3");
             // Populate element
-            try {
 				 var labelcolor = false;
 					if (dashboard.current.style === 'dark'){
 							labelcolor = true;
@@ -489,10 +489,11 @@ var option_nodata = {
               if(scope.panel.chart === 'd3pie') {
 
                   var salesData=scope.data;
-
                    svg=d3.select(el).append("svg").attr("width", parent_width)
                       .attr("height", height);
                   svg.append("g").attr("id","salesDonut");
+
+            /*
             if (scope.panel.donut){
 
                 Donut3D.draw("salesDonut", salesData.map(function(d){
@@ -502,25 +503,11 @@ var option_nodata = {
                 Donut3D.draw("salesDonut", salesData.map(function(d){
                     return {label:d.name, value:d.value, color:d.color};}), parent_width/2, height/2, parent_width/2-30, height/2-40, 30, 0);
             }
-
-                 //svg.append("g").attr("id","quotesDonut");
-
-
-                  //Donut3D.draw("quotesDonut", randomData(), 450, 150, 130, 100, 30, 0);
-
-
+            */
 
 
                   }
 
-			  
-              // Populate legend
-
-
-            } catch(e) {
-              elem.text(e);
-            }
-          });
         }
       
 

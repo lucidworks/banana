@@ -110,7 +110,7 @@ function (angular, app, _, $, kbn) {
       }
     };
       $scope.display=function() {
-          if($scope.panel.display=='none'){
+          if($scope.panel.display === 'none'){
               $scope.panel.display='block';
               $scope.panel.icon="icon-caret-down";
 
@@ -205,7 +205,7 @@ function (angular, app, _, $, kbn) {
     };
 
     $scope.get_data = function() {
-        if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
         // Make sure we have everything for the request to complete
         if (dashboard.indices.length === 0) {
             return;
@@ -496,7 +496,7 @@ function (angular, app, _, $, kbn) {
 			  }
 		  }
 		var APdex =100;
-		if(AP_n!=0){
+		if(AP_n !== 0){
 		APdex = parseInt(100*(AP_1+AP_2)/AP_n);
 		//APdex = (AP_1+AP_2)/AP_n;
 		}
@@ -703,7 +703,7 @@ function (angular, app, _, $, kbn) {
 };
 
 
-		if(scope.data.length==0){
+		if(scope.data.length === 0){
 				myChart1.setOption(option_nodata);}else{
 					myChart1.setOption(option1);
 					myChart1.on('click', function (params) {
@@ -792,7 +792,7 @@ function (angular, app, _, $, kbn) {
     }]
 };
 
-         if(scope.data.length==0){
+         if(scope.data.length === 0){
 				myChart2.setOption(option_nodata);}else{
 					myChart2.setOption(option2);
 					myChart2.on('click', function (params) {
@@ -894,7 +894,7 @@ function (angular, app, _, $, kbn) {
 };
 				 //没有数据显示NO DATA  
 				 
-				 if(scope.data.length==0){
+				 if(scope.data.length === 0){
 				myChart3.setOption(option_nodata);}else{
 					myChart3.setOption(option3);
 					myChart3.on('click', function (params) {
@@ -1013,7 +1013,7 @@ function (angular, app, _, $, kbn) {
                     };
                     //没有数据显示NO DATA
 
-                    if(scope.data.length==0){
+                    if(scope.data.length === 0){
                         myChart33.setOption(option_nodata);}else{
                         myChart33.setOption(option33);
                         myChart33.on('click', function (params) {
@@ -1125,7 +1125,7 @@ function (angular, app, _, $, kbn) {
 							}
 						]
 					};
-				if(scope.data.length==0){
+				if(scope.data.length === 0){
 				myChart4.setOption(option_nodata);}else{
 					myChart4.setOption(option4);
 				}
@@ -1221,7 +1221,7 @@ function (angular, app, _, $, kbn) {
         z: 10
     }]
 };
-				   if(scope.data.length==0){
+				   if(scope.data.length === 0){
 				myChart5.setOption(option_nodata);}else{
 					myChart5.setOption(option5);
 					myChart5.on('click', function (params) {
@@ -1317,7 +1317,7 @@ function (angular, app, _, $, kbn) {
 	
 	
 		
-	 if(scope.data.length==0){
+	 if(scope.data.length === 0){
 				myChart6.setOption(option_nodata);}else{
 					myChart6.setOption(option6);
 					myChart6.on('click', function (params) {
@@ -1428,7 +1428,7 @@ function (angular, app, _, $, kbn) {
 
 
                     // 使用刚指定的配置项和数据显示图表。
-                    if(scope.data.length==0){
+                    if(scope.data.length === 0){
                         myChart7.setOption(option_nodata);}else{
                         myChart7.setOption(option7);
                         myChart7.on('click', function (params) {
@@ -1516,7 +1516,7 @@ function (angular, app, _, $, kbn) {
 
 
                     // 使用刚指定的配置项和数据显示图表。
-                    if(scope.data.length==0){
+                    if(scope.data.length === 0){
                         myChart8.setOption(option_nodata);}else{
                         myChart8.setOption({
                            tooltip: {

@@ -106,7 +106,7 @@ function (angular, app, _, $, kbn) {
       }
     };
       $scope.display=function() {
-          if($scope.panel.display=='none'){
+          if($scope.panel.display === 'none'){
               $scope.panel.display='block';
               $scope.panel.icon="icon-caret-down";
 
@@ -200,7 +200,7 @@ function (angular, app, _, $, kbn) {
     };
 
     $scope.get_data = function() {
-        if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
         // Make sure we have everything for the request to complete
         if (dashboard.indices.length === 0) {
             return;
@@ -571,7 +571,7 @@ var option_nodata = {
                     }
                     //没有数据显示NO DATA
 
-                    if(scope.data.length==0){
+                    if(scope.data.length === 0){
                         myChart33.setOption(option_nodata);}else{
                         myChart33.setOption(option33);
                         myChart33.on('click', function (params) {
@@ -684,7 +684,7 @@ var option_nodata = {
                     }
 
 
-                    if(scope.data.length==0){
+                    if(scope.data.length === 0){
                         myChart2.setOption(option_nodata);}else{
                         myChart2.setOption(option2);
                         myChart2.on('click', function (params) {
@@ -749,7 +749,7 @@ var option_nodata = {
                             }
                         }]
                     }
-                    if(scope.data.length==0){
+                    if(scope.data.length === 0){
                         myChart1.setOption(option_nodata);}else{
                         myChart1.setOption(option1);
                         myChart1.on('click', function (params) {
@@ -794,7 +794,7 @@ var option_nodata = {
                        },
                        series: []
                    }
-                    if(scope.data.length==0){
+                    if(scope.data.length === 0){
                         myChart.setOption(option_nodata);}else{
                         myChart.setOption(option);
                         myChart.on('click', function (params) {

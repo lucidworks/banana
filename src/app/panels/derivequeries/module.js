@@ -60,7 +60,7 @@ function (angular, app, _) {
     };
 
     $scope.get_data = function() {
-        if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
         update_history($scope.panel.query);
 
         // Make sure we have everything for the request to complete

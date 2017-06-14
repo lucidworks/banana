@@ -146,7 +146,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
       $scope.display=function() {
-          if($scope.panel.display=='none'){
+          if($scope.panel.display === 'none'){
               $scope.panel.display='block';
               $scope.panel.icon="icon-caret-down";
 
@@ -188,7 +188,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
      *                            this call is made recursively for more segments
      */
     $scope.get_data = function(segment, query_id) {
-        if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
         if (_.isUndefined(segment)) {
             segment = 0;
         }
@@ -720,7 +720,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 			var lsTT="";
 			var isgroup = group;
 			var isvalue = value;
-			if(scope.panel.mode !='value' || lnLastValue !=0){
+			if(scope.panel.mode !== 'value' || lnLastValue !=0){
             lsItemTT = group + dashboard.numberWithCommas(value) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(item.datapoint[0]).format('MM/DD HH:mm:ss') : moment(item.datapoint[0]).format('MM/DD HH:mm:ss'));
 			 lsTT = lsItemTT;
 			 isr =1;
@@ -785,7 +785,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                     group = kbn.query_color_dot(s.color, 15) + ' ';
                   }
 					
-				if(scope.panel.mode !='value' || lnLastValue !=0){	
+				if(scope.panel.mode !== 'value' || lnLastValue !=0){
 					
                   lsItemTT = group + dashboard.numberWithCommas(value) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(p[0]).format('MM/DD HH:mm:ss') : moment(p[0]).format('MM/DD HH:mm:ss'));
                   lsTT = lsTT +"</br>"+ lsItemTT;

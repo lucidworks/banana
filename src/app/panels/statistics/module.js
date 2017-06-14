@@ -111,7 +111,7 @@ define([
             };
 
             $scope.display=function() {
-                if($scope.panel.display=='none'){
+                if($scope.panel.display === 'none'){
                     $scope.panel.display='block';
                     $scope.panel.icon="icon-caret-down";
 
@@ -221,9 +221,7 @@ define([
               results = request.doSearch();
               // Populate scope when we have results
               results.then(function successCallback(response) {
-                var sum = 0;
                 var k = 0;
-                var missing = 0;
                 $scope.panelMeta.loading = false;
                 $scope.hits = response.response.numFound;
                 $scope.data = [];
@@ -238,7 +236,7 @@ define([
                     var slice = {
                       term: temp_data[i],
                       count: temp_data[i+1],
-                    }
+                    };
                     $scope.data.push(slice);
                   }
                 }
@@ -258,7 +256,7 @@ define([
                     $scope.data.push(slice);
                   });
                 }
-              }, function errorCallback(response) {
+              }, function errorCallback() {
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
               });

@@ -55,8 +55,9 @@ require.config({
     elasticjs:                '../vendor/elasticjs/elastic-angular-client',
     solrjs:                   '../vendor/solrjs/solr-angular-client',
 
-    d3:                       '../../node_modules/build/d3',
+    d3:                       '../../node_modules/d3/build/d3',
     viz:                    '../vendor/viz.v1.0.0.min',
+    Donut3D:                  '../vendor/d3/Donut3D',
 
     /*
     d3:                       '../vendor/d3',
@@ -127,7 +128,7 @@ require.config({
 
     elasticjs:              ['angular', '../vendor/elasticjs/elastic'],
     solrjs:                 ['angular', '../vendor/solrjs/solr'],
-
+    Donut3D:                ['d3'],
     'echarts-liquidfill':   ['echarts'],
   }
 });

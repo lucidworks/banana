@@ -40,9 +40,6 @@ define([
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
-	var bmw_total;
-	var bmw_total_disk;
-	var bmw_total_memory;
   var module = angular.module('kibana.panels.histobar', []);
   app.useModule(module);
 
@@ -143,7 +140,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
       $scope.display=function() {
-          if($scope.panel.display=='none'){
+          if($scope.panel.display === 'none'){
               $scope.panel.display='block';
               $scope.panel.icon="icon-caret-down";
 
@@ -198,7 +195,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
      *                            this call is made recursively for more segments
      */
     $scope.get_data = function(segment, query_id) {
-        if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
 
         if (_.isUndefined(segment)) {
             segment = 0;
@@ -298,10 +295,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         }
 
         var mypromises = [];
-        var threshold_1 = '*';
-        var threshold_2 = '*';
-        var threshold_3 = '*';
-        var staticfield = $scope.panel.value_field;
         if ($scope.panel.mode === 'value' || $scope.panel.mode === 'counts') {
             var arr_id = [0];
             _.each(arr_id, function (id) {
@@ -438,7 +431,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
   });
 
-   module.directive('apihistobarChart', function(querySrv,dashboard,filterSrv) {
+   module.directive('apihistobarChart', function($scope, querySrv,dashboard,filterSrv) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
@@ -513,11 +506,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 }
                 for (var k in o) {
                     if (new RegExp("(" + k + ")").test(fmt)) {
-                        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
                     }
                 }
                 return fmt;
-            }
+            };
 
 		  for (var i =0;i<chartData[0].length;i++){
 			  sum_data++;
@@ -625,10 +618,11 @@ var option = {
                 }
             }
 
+            var res;
             if(scope.panel.another){
-              var res =  "API Name: "+params[0].data.name+'<br/>'+"API State: "+myWarn+'<br/>'+"API duration: "+warn+'<br/>'+"Time: "+params[0].name;
+               res =  "API Name: "+params[0].data.name+'<br/>'+"API State: "+myWarn+'<br/>'+"API duration: "+warn+'<br/>'+"Time: "+params[0].name;
             }else {
-                var res = "API Name: " + params[0].data.name + '<br/>' + "API State: " + myWarn+'<br/>'+"Time: "+params[0].name;
+               res = "API Name: " + params[0].data.name + '<br/>' + "API State: " + myWarn+'<br/>'+"Time: "+params[0].name;
             }
             return res;
         },

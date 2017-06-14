@@ -418,7 +418,7 @@ function (angular, app, _, $, kbn) {
 			  }
 		  }
 		var APdex =100;
-		if(AP_n!=0){
+		if(AP_n !== 0){
 		APdex = parseInt(100*(AP_1+AP_2)/AP_n);
 		//APdex = (AP_1+AP_2)/AP_n;
 		}

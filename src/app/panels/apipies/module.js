@@ -106,7 +106,7 @@ function (angular, app, _, $, kbn) {
       }
     };
       $scope.display=function() {
-          if($scope.panel.display=='none'){
+          if($scope.panel.display === 'none'){
               $scope.panel.display='block';
               $scope.panel.icon="icon-caret-down";
 
@@ -200,7 +200,7 @@ function (angular, app, _, $, kbn) {
     };
 
     $scope.get_data = function() {
-        if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
         // Make sure we have everything for the request to complete
         if (dashboard.indices.length === 0) {
             return;
@@ -493,7 +493,7 @@ var option_nodata = {
 			  }
 		  }
 		var APdex =100;
-		if(AP_n!=0){
+		if(AP_n !== 0){
 		APdex = parseInt(100*(AP_1+AP_2)/AP_n);
 		//APdex = (AP_1+AP_2)/AP_n;
 		}
@@ -682,7 +682,7 @@ var option_nodata = {
 				normal: {
 					color: function(params) {              
                                         var colorList = colors;
-                                        return colorList[params.dataIndex]
+                                        return colorList[params.dataIndex];
                                         },
 					shadowColor: '#fff',
 					barBorderRadius: 5
@@ -699,7 +699,7 @@ var option_nodata = {
 };
 
 
-		if(scope.data.length==0){
+		if(scope.data.length === 0){
 				myChart1.setOption(option_nodata);}else{
 					myChart1.setOption(option1);
 					myChart1.on('click', function (params) {
@@ -747,7 +747,7 @@ var option_nodata = {
 								},
 						labelLine: {
 									normal: {
-											smooth: .6
+											smooth: 0.6
 											}
 								},
 							
@@ -778,7 +778,7 @@ var option_nodata = {
 							normal: {
 							color: function(params) {              
                                         var colorList = colors;
-                                        return colorList[params.dataIndex]
+                                        return colorList[params.dataIndex];
                                         },
 							shadowColor: '#fff',
 							barBorderRadius: 5
@@ -788,7 +788,7 @@ var option_nodata = {
     }]
 };
 
-         if(scope.data.length==0){
+         if(scope.data.length === 0){
 				myChart2.setOption(option_nodata);}else{
 					myChart2.setOption(option2);
 					myChart2.on('click', function (params) {
@@ -878,7 +878,7 @@ var option_nodata = {
 							normal: {
 							color: function(params) {              
                                         var colorList = colors;
-                                        return colorList[params.dataIndex]
+                                        return colorList[params.dataIndex];
                                         },
 							shadowColor: '#fff',
 							barBorderRadius: 5
@@ -890,7 +890,7 @@ var option_nodata = {
 };
 				 //没有数据显示NO DATA  
 				 
-				 if(scope.data.length==0){
+				 if(scope.data.length === 0){
 				myChart3.setOption(option_nodata);}else{
 					myChart3.setOption(option3);
 					myChart3.on('click', function (params) {
@@ -983,7 +983,7 @@ var option_nodata = {
                                     normal: {
                                         color: function(params) {
                                             var colorList = colors;
-                                            return colorList[params.dataIndex]
+                                            return colorList[params.dataIndex];
                                         },
                                         shadowColor: '#fff',
                                         barBorderRadius: 5
@@ -1008,7 +1008,7 @@ var option_nodata = {
                     };
                     //没有数据显示NO DATA
 
-                    if(scope.data.length==0){
+                    if(scope.data.length === 0){
                         myChart33.setOption(option_nodata);}else{
                         myChart33.setOption(option33);
                         myChart33.on('click', function (params) {
@@ -1025,7 +1025,7 @@ var option_nodata = {
 				  
 				  for (var i = 0; i < scope.label.length; i++) {
 				  
-				  radarlabel[i] = {name:scope.label[i],max:scope.maxdata}
+				  radarlabel[i] = {name:scope.label[i],max:scope.maxdata};
 				  }
 				  
 				  
@@ -1120,7 +1120,7 @@ var option_nodata = {
 							}
 						]
 					};
-				if(scope.data.length==0){
+				if(scope.data.length === 0){
 				myChart4.setOption(option_nodata);}else{
 					myChart4.setOption(option4);
 				}
@@ -1215,7 +1215,7 @@ var option_nodata = {
         z: 10
     }]
 };
-				   if(scope.data.length==0){
+				   if(scope.data.length === 0){
 				myChart5.setOption(option_nodata);}else{
 					myChart5.setOption(option5);
 					myChart5.on('click', function (params) {
@@ -1293,7 +1293,7 @@ var option_nodata = {
 				normal: {
 					color: function(params) {              
                                         var colorList = ['#1a75f9', '#1a93f9', '#1ab0f9', '#1acef9', '#42d3f0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980','#bcf924','#f9ac24','#8224f9','#24e5f9','#f96524'];
-                                        return colorList[params.dataIndex]
+                                        return colorList[params.dataIndex];
                                         },
 					opacity: 0.8
                 
@@ -1311,7 +1311,7 @@ var option_nodata = {
 	
 	
 		
-	 if(scope.data.length==0){
+	 if(scope.data.length === 0){
 				myChart6.setOption(option_nodata);}else{
 					myChart6.setOption(option6);
 					myChart6.on('click', function (params) {
@@ -1400,7 +1400,7 @@ var option_nodata = {
                                     normal: {
                                         color: function(params) {
                                             var colorList = ['#1a75f9', '#1a93f9', '#1ab0f9', '#1acef9', '#42d3f0', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
-                                            return colorList[params.dataIndex]
+                                            return colorList[params.dataIndex];
                                         },
                                         shadowColor: '#fff',
                                         barBorderRadius: 5
@@ -1409,7 +1409,7 @@ var option_nodata = {
                                     emphasis: {
                                         color: function(params) {
                                             var colorList = ['#ff951f', '#ff951f', '#ff951f', '#ff951f', '#ff951f', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
-                                            return colorList[params.dataIndex]
+                                            return colorList[params.dataIndex];
                                         },
                                         shadowColor: '#fff',
                                         barBorderRadius: 5
@@ -1422,7 +1422,7 @@ var option_nodata = {
 
 
                     // 使用刚指定的配置项和数据显示图表。
-                    if(scope.data.length==0){
+                    if(scope.data.length === 0){
                         myChart7.setOption(option_nodata);}else{
                         myChart7.setOption(option7);
                         myChart7.on('click', function (params) {
@@ -1510,7 +1510,7 @@ var option_nodata = {
 
 
                     // 使用刚指定的配置项和数据显示图表。
-                    if(scope.data.length==0){
+                    if(scope.data.length === 0){
                         myChart8.setOption(option_nodata);}else{
                         myChart8.setOption({
                             tooltip: {

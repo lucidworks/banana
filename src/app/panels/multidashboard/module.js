@@ -172,7 +172,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
       $scope.display=function() {
-          if($scope.panel.display=='none'){
+          if($scope.panel.display === 'none'){
               $scope.panel.display='block';
               $scope.panel.icon="icon-caret-down";
 
@@ -227,7 +227,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
      *                            this call is made recursively for more segments
      */
     $scope.get_data = function(segment, query_id) {
-        if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
         if (_.isUndefined(segment)) {
             segment = 0;
         }
