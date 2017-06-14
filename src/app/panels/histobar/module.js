@@ -41,6 +41,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
   var module = angular.module('kibana.panels.histobar', []);
   app.useModule(module);
+  var echarts = require('echarts');
 
   module.controller('histobar', function($scope, $q, querySrv, dashboard, filterSrv) {
     var _d;
@@ -113,7 +114,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               query_as_alias: false
           }
       };
-
     _.defaults($scope.panel,_d);
 
     $scope.init = function() {
@@ -426,7 +426,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
-
+        var myChart;
         // Receive render events
         scope.$on('render',function(){
           render_panel();
@@ -458,18 +458,18 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           } else {
             colors = scope.panel.chartColors;
           }
-		  var selecttime = [];
-		 var rs_timestamp = [];
-		 var valuedata= [];
-		  var secondtime ;
-		  var maxdata= 0;
-		  var sum_data = 0;
-		  var sum_normal = 0;
-		  var sum_risk = 0;
-		  var sum_warning = 0;
+          var selecttime = [];
+          var rs_timestamp = [];
+          var valuedata= [];
+          var secondtime ;
+          var maxdata= 0;
+          var sum_data = 0;
+          var sum_normal = 0;
+          var sum_risk = 0;
+          var sum_warning = 0;
 
 
-            Date.prototype.pattern = function (fmt) {
+          Date.prototype.pattern = function (fmt) {
                 var o = {
                     "M+" : this.getMonth() + 1, //月份
                     "d+" : this.getDate(), //日
@@ -503,37 +503,37 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 return fmt;
             };
 
-		  for (var i =0;i<chartData[0].length;i++){
-			  sum_data++;
-			  selecttime[i] =Date.parse(chartData[0][i][scope.panel.value_sort]);
-			  secondtime = new Date(selecttime[i]);
-			  rs_timestamp[i] = secondtime.pattern("yyyy-MM-dd hh:mm:ss");
-			  valuedata[i] = chartData[0][i][scope.panel.value_field];
-			  if(maxdata<valuedata[i]){
-				   maxdata=chartData[0][i][scope.panel.value_field];
-			  }
-			  
-			 if(chartData[0][i][scope.panel.value_field]>scope.panel.threshold_second){
-				 sum_risk++;
-				//  valuedata[i] ={name:"Risk",value:chartData[0][i][scope.panel.value_field],itemStyle:{normal:{color:'#c55249'}}};
-			 }else if(chartData[0][i][scope.panel.value_field]<scope.panel.threshold_first){
-				 sum_normal++;
-			//	  valuedata[i] ={name:"Normal",value:chartData[0][i][scope.panel.value_field],itemStyle:{normal:{color:'#1a93f9'}}};
-			}else{
-				sum_warning++;
-				//  valuedata[i] ={name:"Warning",value:chartData[0][i][scope.panel.value_field],itemStyle:{normal:{color:'#f48a52'}}};
-			  }
-				   
-		  }
-		sum_risk= sum_risk*100/sum_data;
-		sum_normal=sum_normal*100/sum_data;
-		sum_warning=sum_warning*100/sum_data;
-		sum_risk = sum_risk.toFixed(2);
-	    sum_normal = sum_normal.toFixed(2); 
-		sum_warning = sum_warning.toFixed(2);
-		
+          for (var i =0;i<chartData[0].length;i++){
+              sum_data++;
+              selecttime[i] =Date.parse(chartData[0][i][scope.panel.value_sort]);
+              secondtime = new Date(selecttime[i]);
+              rs_timestamp[i] = secondtime.pattern("yyyy-MM-dd hh:mm:ss");
+              valuedata[i] = chartData[0][i][scope.panel.value_field];
+              if(maxdata<valuedata[i]){
+                 maxdata=chartData[0][i][scope.panel.value_field];
+              }
 
-		var idd = scope.$id;
+             if(chartData[0][i][scope.panel.value_field]>scope.panel.threshold_second){
+               sum_risk++;
+              //  valuedata[i] ={name:"Risk",value:chartData[0][i][scope.panel.value_field],itemStyle:{normal:{color:'#c55249'}}};
+             }else if(chartData[0][i][scope.panel.value_field]<scope.panel.threshold_first){
+               sum_normal++;
+            //	  valuedata[i] ={name:"Normal",value:chartData[0][i][scope.panel.value_field],itemStyle:{normal:{color:'#1a93f9'}}};
+            }else{
+              sum_warning++;
+              //  valuedata[i] ={name:"Warning",value:chartData[0][i][scope.panel.value_field],itemStyle:{normal:{color:'#f48a52'}}};
+              }
+
+            }
+          sum_risk= sum_risk*100/sum_data;
+          sum_normal=sum_normal*100/sum_data;
+          sum_warning=sum_warning*100/sum_data;
+          sum_risk = sum_risk.toFixed(2);
+            sum_normal = sum_normal.toFixed(2);
+          sum_warning = sum_warning.toFixed(2);
+
+
+          var idd = scope.$id;
          
             // Populate element
             try {
@@ -547,167 +547,158 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 					    isspan = true;
                 }
               // Add plot to scope so we can build out own legend
-              if(scope.panel.chart === 'histobar') {
-
-
-
-        var echarts = require('echarts');
-        var myChart = echarts.init(document.getElementById(idd));
-        
-        var option = {
-    
-	 grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
-    },
-    tooltip : {
-        trigger: 'axis'
-    },
-    legend: {
-        data:['aa']
-    },
-    toolbox: {
-        show : true,
-        top:'5%',
-        feature : {
-			 dataZoom: {
-                yAxisIndex: 'none'
-            },
-            dataView : {show: true, readOnly: false},
-            magicType : {show: true, type: ['line', 'bar']}
-
-
+      if(scope.panel.chart === 'histobar') {
+        if(myChart) {
+          myChart.dispose();
         }
-    },
-	visualMap: {
-            show:scope.panel.legend,
-            top: 'top',
-            padding:0,
-            textGap:1,
-            textStyle:{
-				color:labelcolor?'#DCDCDC':'#696969',
-                fontSize:scope.panel.fontSize
-			},
-            itemWidth:10,
-            itemHeight:8,
-            orient:isspan?'vertical':'horizontal',
-            pieces: [{
-                gt: 0,
-                lte: scope.panel.threshold_first,
-				label:'Normal(0~'+scope.panel.threshold_first+"  "+sum_normal+'%)',
-                color: '#1a93f9'
-            }, {
-                gt: scope.panel.threshold_first,
-                lte: scope.panel.threshold_second,
-				label:'Warning('+scope.panel.threshold_first+'~'+scope.panel.threshold_second+"  "+sum_warning+'%)',
-                color: '#f48a52'
-            }, {
-                gt: scope.panel.threshold_second,
-				label:'Risk(>'+scope.panel.threshold_second+"  "+sum_risk+'%)',
-                color: '#ec4653'
-            }],
-            outOfRange: {
-                color: '#999'
+        myChart = echarts.init(document.getElementById(idd));
+        var option = {
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+          tooltip : {
+            trigger: 'axis'
+        },
+          legend: {
+            data:['aa']
+        },
+          toolbox: {
+            show : true,
+            top:'5%',
+            feature : {
+           dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView : {show: true, readOnly: false},
+                magicType : {show: true, type: ['line', 'bar']}
+
+
             }
         },
-    calculable : true,
-    xAxis : [
-        {
-            type : 'category',
-			 axisLine: {onZero: true},
-			axisLabel:{
-				 textStyle:{
-					 color:labelcolor?'#DCDCDC':'#696969'
-				 }
-			 },
-            data : rs_timestamp
-        }
-    ],
-    yAxis : [
-        {
-            type : 'value',
-			nameTextStyle:{
-				color:labelcolor?'#DCDCDC':'#696969'
-			},
-			axisLine:{
-				lineStyle:{
-					color:'#46474C'
-				}
-			},
-			splitLine:{
-				lineStyle:{
-					color:['#46474C']
-				}
-			},
-			axisLabel:{
-				 textStyle:{
-					 color:labelcolor?'#DCDCDC':'#696969'
-				 }
-			 }
-        }
-    ],
-    series : [
-        {
-            name:scope.panel.value_field,
-            type:scope.panel.bars?'bar':'line',
-            data:valuedata,
-            smooth: true,
-            areaStyle: scope.panel.area?{normal: {opacity:0.6}}:'',
-            markPoint : {
-                data : [
-                    {type : 'max', name: scope.panel.isEN?'Max':'最大值'},
-                    {type : 'min', name: scope.panel.isEN?'Min':'最小值'}
-                ]
+          visualMap: {
+                show:scope.panel.legend,
+                top: 'top',
+                padding:0,
+                textGap:1,
+                textStyle:{
+            color:labelcolor?'#DCDCDC':'#696969',
+                    fontSize:scope.panel.fontSize
+          },
+                itemWidth:10,
+                itemHeight:8,
+                orient:isspan?'vertical':'horizontal',
+                pieces: [{
+                    gt: 0,
+                    lte: scope.panel.threshold_first,
+            label:'Normal(0~'+scope.panel.threshold_first+"  "+sum_normal+'%)',
+                    color: '#1a93f9'
+                }, {
+                    gt: scope.panel.threshold_first,
+                    lte: scope.panel.threshold_second,
+            label:'Warning('+scope.panel.threshold_first+'~'+scope.panel.threshold_second+"  "+sum_warning+'%)',
+                    color: '#f48a52'
+                }, {
+                    gt: scope.panel.threshold_second,
+            label:'Risk(>'+scope.panel.threshold_second+"  "+sum_risk+'%)',
+                    color: '#ec4653'
+                }],
+                outOfRange: {
+                    color: '#999'
+                }
             },
-            markLine : scope.panel.average?{
-                label:{
-                    normal:{
-                        show:true,
-                        position:'start'
-                    }
+          calculable : true,
+          xAxis : [
+            {
+                type : 'category',
+           axisLine: {onZero: true},
+          axisLabel:{
+             textStyle:{
+               color:labelcolor?'#DCDCDC':'#696969'
+             }
+           },
+                data : rs_timestamp
+            }
+        ],
+          yAxis : [
+            {
+                type : 'value',
+          nameTextStyle:{
+            color:labelcolor?'#DCDCDC':'#696969'
+          },
+          axisLine:{
+            lineStyle:{
+              color:'#46474C'
+            }
+          },
+          splitLine:{
+            lineStyle:{
+              color:['#46474C']
+            }
+          },
+          axisLabel:{
+             textStyle:{
+               color:labelcolor?'#DCDCDC':'#696969'
+             }
+           }
+            }
+        ],
+          series : [
+            {
+                name:scope.panel.value_field,
+                type:scope.panel.bars?'bar':'line',
+                data:valuedata,
+                smooth: true,
+                areaStyle: scope.panel.area?{normal: {opacity:0.6}}:'',
+                markPoint : {
+                    data : [
+                        {type : 'max', name: scope.panel.isEN?'Max':'最大值'},
+                        {type : 'min', name: scope.panel.isEN?'Min':'最小值'}
+                    ]
                 },
-                lineStyle:{
-                    normal:{
-                        color:scope.panel.field_color
-                    }
-                },
-                data : [
-                    {type : 'average', name:scope.panel.isEN?'Average':'平均值'}
-                ]
-            }:''
-        }
-    ]
-};
-
+                markLine : scope.panel.average?{
+                    label:{
+                        normal:{
+                            show:true,
+                            position:'start'
+                        }
+                    },
+                    lineStyle:{
+                        normal:{
+                            color:scope.panel.field_color
+                        }
+                    },
+                    data : [
+                        {type : 'average', name:scope.panel.isEN?'Average':'平均值'}
+                    ]
+                }:''
+            }
+        ]
+        };
 
         // 使用刚指定的配置项和数据显示图表。
-			  myChart.setOption(option);
-			  
-			  myChart.on('datazoom', function (params) {
 
-                  if (scope.panel.linkage) {
-                      filterSrv.set({
-                          type: 'time',
-                          // from  : moment.utc(ranges.xaxis.from),
-                          // to    : moment.utc(ranges.xaxis.to),
-                          from: moment.utc(selecttime[params.batch[0].startValue]).toDate(),
-                          to: moment.utc(selecttime[params.batch[0].endValue]).toDate(),
-                          field: filterSrv.getTimeField()
-                      });
-                      dashboard.current.linkage_id = $scope.panel.linkage_id;
-                      dashboard.current.enable_linkage = false;
-                      dashboard.refresh();
-                  }
+          myChart.setOption(option);
+			    myChart.on('datazoom', function (params) {
+            if (scope.panel.linkage) {
+                filterSrv.set({
+                    type: 'time',
+                    // from  : moment.utc(ranges.xaxis.from),
+                    // to    : moment.utc(ranges.xaxis.to),
+                    from: moment.utc(selecttime[params.batch[0].startValue]).toDate(),
+                    to: moment.utc(selecttime[params.batch[0].endValue]).toDate(),
+                    field: filterSrv.getTimeField()
+                });
+                dashboard.current.linkage_id = $scope.panel.linkage_id;
+                dashboard.current.enable_linkage = false;
+                dashboard.refresh();
+            }
 
 				});
 			  
 			  }
-
-              // Populate legend
-              
-
             } catch(e) {
               elem.text(e);
             }
