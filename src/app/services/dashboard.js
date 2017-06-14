@@ -6,7 +6,7 @@ define([
   'config',
   'moment',
   'modernizr',
-  'filesaver'
+  'filesaver',
 ],
 function (angular, $, kbn, _, config, moment, Modernizr) {
   'use strict';

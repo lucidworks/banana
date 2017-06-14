@@ -18,7 +18,7 @@
   * zoomlinks :: Show the zoom links?
   * bars :: Show bars in the chart
   * stack :: Stack multiple queries. This generally a crappy way to represent things.
-             You probably should just use a line chart without histobar
+             You probably should just use a line chart without stacking
   * points :: Should circles at the data points on the chart
   * lines :: Line chart? Sweet.
   * legend :: Show the legend?
@@ -40,12 +40,11 @@ define([
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
-  var module = angular.module('kibana.panels.histobar', []);
+  var module = angular.module('kibana.panels.stacking', []);
   app.useModule(module);
 
-  module.controller('apihistobar', function($scope, $q, querySrv, dashboard, filterSrv) {
-    var _d;
-      $scope.panelMeta = {
+  module.controller('stacking', function($scope, $q, querySrv, dashboard, filterSrv) {
+    $scope.panelMeta = {
 
       editorTabs : [
         {
@@ -58,64 +57,60 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
     // Set and populate defaults
-      _d = {
-          mode: 'value',
-          queries: {
-              mode: 'all',
-              ids: [],
-              query: '*:*',
-              custom: ''
-          },
-          max_rows: 100000,  // maximum number of rows returned from Solr (also use this for group.limit to simplify UI setting)
-          reverse: 0,
-          segment: 4,
-
-          threshold_first: 300,
-          threshold_second: 400,
-          threshold_third: 3000,
-          group_field: null,
-          auto_int: true,
-          linkage_id:'a',
-          defaulttimestamp:true,
-          display:'block',
-          icon:"icon-caret-down",
-          area:false,
-          total_first: '%',
-          fontsize: 12,
-          isEN:false,
-          another:false,
-          field_color: '#2ce41b',
-          resolution: 100,
-          value_sort: 'rs_timestamp',
-          interval: '5m',
-          intervals: ['auto', '1s', '1m', '5m', '10m', '30m', '1h', '3h', '12h', '1d', '1w', '1M', '1y'],
-          fill: 0,
-          linewidth: 3,
-          chart: 'histobar',
-          chartColors: ['#f48a52', '#f4d352', '#ccf452', '#8cf452', '#3cee2b', '#f467d8', '#1a93f9', '#2fd7ee'],
-          timezone: 'browser', // browser, utc or a standard timezone
-          spyable: true,
-          linkage: false,
-          value_category: 'api_s',
-          zoomlinks: true,
-          bars: true,
-          average: false,
-          label: true,
-          points: false,
-          lines: false,
-          lines_smooth: false, // Enable 'smooth line' mode by removing zero values from the plot.
-          legend: true,
-          'x-axis': true,
-          'y-axis': true,
-          percentage: false,
-          interactive: true,
-          options: false,
-          show_queries: true,
-          tooltip: {
-              value_type: 'cumulative',
-              query_as_alias: false
-          }
-      };
+    var _d = {
+      mode        : 'value',
+      queries     : {
+        mode        : 'all',
+        ids         : [],
+        query       : '*:*',
+        custom      : ''
+      },
+      max_rows    : 100000,  // maximum number of rows returned from Solr (also use this for group.limit to simplify UI setting)
+      reverse     :0,
+	  segment	  :4,
+	  threshold_first:1000,
+	  threshold_second:2000,
+	  threshold_third:3000,
+	  value_field : 'redirectElapsed cacheElapsed dnsElapsed tcpElapsed requestElapsed responseElapsed domElapsed loadEventElapsed',
+      group_field : null,
+      auto_int    : true,
+	  total_first :'%',
+	  fontsize:20,
+	  isEN:false,
+	  field_color:'#209bf8',
+      resolution  : 100,
+	  value_sort  :'rs_timestamp',
+      interval    : '5m',
+      intervals   : ['auto','1s','1m','5m','10m','30m','1h','3h','12h','1d','1w','1M','1y'],
+      fill        : 0,
+      linewidth   : 3,
+	  chart       :'stacking',
+	  chartColors :['#f48a52','#f4d352','#ccf452','#8cf452','#3cee2b','#f467d8','#1a93f9','#2fd7ee'],
+      timezone    : 'browser', // browser, utc or a standard timezone
+      spyable     : true,
+	  linkage     :false,
+      zoomlinks   : true,
+      bars        : true,
+        display:'block',
+        icon:"icon-caret-down",
+      stack       : true,
+        linkage_id:'a',
+	  label       : true,
+      points      : false,
+      lines       : false,
+      lines_smooth: false, // Enable 'smooth line' mode by removing zero values from the plot.
+      legend      : true,
+      'x-axis'    : true,
+      'y-axis'    : true,
+      percentage  : false,
+      interactive : true,
+      options     : true,
+      show_queries:true,
+      tooltip     : {
+        value_type: 'cumulative',
+        query_as_alias: false
+      }
+    };
 
     _.defaults($scope.panel,_d);
 
@@ -196,7 +191,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
      */
     $scope.get_data = function(segment, query_id) {
         if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
-
         if (_.isUndefined(segment)) {
             segment = 0;
         }
@@ -254,10 +248,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         if (filterSrv.getSolrFq()) {
             fq = '&' + filterSrv.getSolrFq();
         }
-        if (!$scope.panel.defaulttimestamp) {
-            fq = fq.replace(filterSrv.getTimeField(), $scope.panel.value_sort);
-        }
-        var time_field = $scope.panel.defaulttimestamp ? filterSrv.getTimeField() : $scope.panel.value_sort;
+        var time_field = filterSrv.getTimeField();
         var start_time = filterSrv.getStartTime();
         var end_time = filterSrv.getEndTime();
 
@@ -283,7 +274,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 $scope.panel.error = "In " + $scope.panel.mode + " mode a field must be specified";
                 return;
             }
-            values_mode_query = '&fl=' + time_field + ' ' + $scope.panel.value_field + ' ' + $scope.panel.value_category;
+            values_mode_query = '&fl=' + time_field + ' ' + $scope.panel.value_field;
 
             rows_limit = '&rows=' + $scope.panel.max_rows;
             facet = '';
@@ -297,7 +288,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         var mypromises = [];
         if ($scope.panel.mode === 'value' || $scope.panel.mode === 'counts') {
             var arr_id = [0];
-            _.each(arr_id, function (id) {
+            _.each(arr_id, function () {
                 var temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + '*' + '%20TO%20' + '*' + '%5D' + wt_json + sort_s + rows_limit + fq + facet + values_mode_query;
 
                 $scope.panel.queries.query += temp_q + "\n";
@@ -356,14 +347,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                         $scope.hits = 0;
                     }
 
-                    // Solr facet counts response is in one big array.
-                    // So no need to get each segment like Elasticsearch does.
-                    var entry_time, entries, entry_value;
-
-
                     $scope.data[i] = results[index].response.docs;
-
-
                     i++;
                 });
 
@@ -431,7 +415,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
   });
 
-   module.directive('apihistobarChart', function($scope, querySrv,dashboard,filterSrv) {
+   module.directive('stackingChart', function($scope, querySrv,dashboard,filterSrv) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
@@ -448,7 +432,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
         // Function for rendering panel
         function render_panel() {
-          var plot, chartData;
+          var chartData;
           var colors = [];
 
           // IE doesn't work without this
@@ -467,22 +451,35 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           } else {
             colors = scope.panel.chartColors;
           }
-		  var selecttime = [];
-		 var rs_timestamp = [];
-		 var valuedata= [];
+		 
+		
+		 
+		  var domElapsed = [];
+		  var rs_timestamp = [];
+		   var redirectElapsed = [];
+		  var cacheElapsed = [];
+		     var loadEventElapsed = [];
+		  
+		   var dnsElapsed = [];
+		  var tcpElapsed = [];
+		   var requestElapsed = [];
+		  var responseElapsed = [];
 		  var secondtime ;
-		  var maxdata= 0;
-		  var sum_data = 0;
-		  var sum_normal = 0;
-		  var sum_risk = 0;
-		  var sum_warning = 0;
+		  var selecttime = [];
 
-
+		  var sum_domElapsed = 0;
+		  var sum_redirectElapsed = 0;
+		  var sum_cacheElapsed = 0;
+		  var sum_loadEventElapsed = 0;
+		  var sum_dnsElapsed = 0;
+		  var sum_tcpElapsed = 0;
+		  var sum_requestElapsed = 0;
+		  var sum_responseElapsed = 0;
             Date.prototype.pattern = function (fmt) {
                 var o = {
                     "M+" : this.getMonth() + 1, //月份
                     "d+" : this.getDate(), //日
-                    "h+" : this.getHours(), //小时
+                    "h+" : this.getHours() % 12 === 0 ? 12 : this.getHours() % 12, //小时
                     "H+" : this.getHours(), //小时
                     "m+" : this.getMinutes(), //分
                     "s+" : this.getSeconds(), //秒
@@ -512,184 +509,97 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 return fmt;
             };
 
-		  for (var i =0;i<chartData[0].length;i++){
-			  sum_data++;
-			  selecttime[i] =Date.parse(chartData[0][i][scope.panel.value_sort]);
-			  secondtime = new Date(selecttime[i]);
+
+            for (var i =0;i<chartData[0].length;i++){
+			  selecttime[i] =Date.parse(chartData[0][i].rs_timestamp);
+			  secondtime = new Date(Date.parse(chartData[0][i].rs_timestamp));
 			  rs_timestamp[i] = secondtime.pattern("yyyy-MM-dd hh:mm:ss");
-			  valuedata[i] = {name:chartData[0][i][scope.panel.value_category],value:chartData[0][i][scope.panel.value_field]};
-			  if(maxdata<chartData[0][i][scope.panel.value_field]){
-				   maxdata=chartData[0][i][scope.panel.value_field];
-			  }
-			  
-			 if(chartData[0][i][scope.panel.value_field]>scope.panel.threshold_second){
-				 sum_risk++;
-				//  valuedata[i] ={name:"Risk",value:chartData[0][i][scope.panel.value_field],itemStyle:{normal:{color:'#c55249'}}};
-			 }else if(chartData[0][i][scope.panel.value_field]<scope.panel.threshold_first){
-				 sum_normal++;
-			//	  valuedata[i] ={name:"Normal",value:chartData[0][i][scope.panel.value_field],itemStyle:{normal:{color:'#1a93f9'}}};
-			}else{
-				sum_warning++;
-				//  valuedata[i] ={name:"Warning",value:chartData[0][i][scope.panel.value_field],itemStyle:{normal:{color:'#f48a52'}}};
-			  }
-				   
+			  redirectElapsed[i] = chartData[0][i].redirectElapsed;
+			  cacheElapsed[i] = chartData[0][i].cacheElapsed;
+			  loadEventElapsed[i] = chartData[0][i].loadEventElapsed;
+			  dnsElapsed[i] = chartData[0][i].dnsElapsed;
+			   tcpElapsed[i] = chartData[0][i].tcpElapsed;
+			   requestElapsed[i] = chartData[0][i].requestElapsed;
+			   responseElapsed[i] = chartData[0][i].responseElapsed;
+			   domElapsed[i] = chartData[0][i].domElapsed;
+			   sum_domElapsed+=chartData[0][i].domElapsed;
+			   sum_redirectElapsed+=chartData[0][i].redirectElapsed;
+			   sum_cacheElapsed+=chartData[0][i].cacheElapsed;
+			   sum_loadEventElapsed+=chartData[0][i].loadEventElapsed;
+			   sum_dnsElapsed+=chartData[0][i].dnsElapsed;
+			   sum_tcpElapsed+=chartData[0][i].tcpElapsed;
+			   sum_requestElapsed+=chartData[0][i].requestElapsed;
+			   sum_responseElapsed+=chartData[0][i].responseElapsed;
 		  }
-		sum_risk= sum_risk*100/sum_data;
-		sum_normal=sum_normal*100/sum_data;
-		sum_warning=sum_warning*100/sum_data;
-		sum_risk = sum_risk.toFixed(2);
-	    sum_normal = sum_normal.toFixed(2); 
-		sum_warning = sum_warning.toFixed(2); 
-		var f1 = 300;
-		var f2 = 400;
-		
-var option_nodata = {  
-    series: [{
-       
-        type: 'wordCloud',
-        //size: ['9%', '99%'],
-        sizeRange: [50, 50],
-        //textRotation: [0, 45, 90, -45],
-        rotationRange: [0, 0],
-        //shape: 'circle',
-        textPadding: 0,
-        autoSize: {
-            enable: true,
-            minSize: 6
-        },
-        textStyle: {
-            normal: {
-                color: '#1a93f9'
-            },
-            emphasis: {
-                shadowBlur: 10,
-                shadowColor: '#333'
-            }
-        },
-        data: [{
-            name: "NO DATA",
-            value: 1
-        }]
-    }]
-};
-		
+
 		var idd = scope.$id;
-          var echarts = require('echarts');
+    var echarts = require('echarts');
 
           // Populate element
             try {
 				
 				 var labelcolor = false;
-				 var isspan = false;
 					if (dashboard.current.style === 'dark'){
 							labelcolor = true;
 						}
-                if (scope.panel.span <5){
-					    isspan = true;
-                }
               // Add plot to scope so we can build out own legend
-              if(scope.panel.chart === 'histobar') {
+              if(scope.panel.chart === 'stacking') {
 
-			var myChart = echarts.init(document.getElementById(idd));
+
+
+        var myChart = echarts.init(document.getElementById(idd));
+
         
 var option = {
-    
-	 grid: {
+   
+   tooltip: {
+        trigger: 'axis',
+		confine:true,
+        axisPointer: {
+            animation: false
+        }
+    },
+	color:scope.panel.chartColors,
+    legend: {
+		textStyle:{
+			color:labelcolor?'#DCDCDC':'#696969'
+		},
+        data:scope.panel.isEN?['Redirect Time','Cache Time','DNS Time','Connection Time','Request Time','Response Time','Page Load Time','Event Load Time']:['HTTP重定向时间','缓存时间','DNS查询时间','建立连接时间','请求连接时间','服务器响应时间','页面加载时间','事务加载时间']
+    },
+     toolbox: {
+        feature: {
+            dataZoom: {
+                yAxisIndex: 'none'
+            },
+			dataView: {readOnly: false},
+            restore: {}
+        }
+    },
+	 
+    grid: {
         left: '3%',
         right: '4%',
         bottom: '3%',
         containLabel: true
     },
-    tooltip : {
-        trigger: 'axis',
-        formatter: function(params) {
-            var warn = params[0].data.value;
-            var myWarn = " ";
-            if(warn>scope.panel.threshold_second){
-                if(scope.panel.another){ myWarn = "Risk";}else{
-                myWarn = "Error";
-                }
-            }else if(warn<scope.panel.threshold_first){
-
-                myWarn = "Normal";
-            }else{
-                if(scope.panel.another){ myWarn = "Warning";}else {
-                    myWarn = "Timeout";
-                }
-            }
-
-            var res;
-            if(scope.panel.another){
-               res =  "API Name: "+params[0].data.name+'<br/>'+"API State: "+myWarn+'<br/>'+"API duration: "+warn+'<br/>'+"Time: "+params[0].name;
-            }else {
-               res = "API Name: " + params[0].data.name + '<br/>' + "API State: " + myWarn+'<br/>'+"Time: "+params[0].name;
-            }
-            return res;
-        },
-    },
-    legend: {
-        data:['aa']
-    },
-    toolbox: {
-        show : true,
-        top:'5%',
-        feature : {
-			 dataZoom: {
-                yAxisIndex: 'none'
-            },
-            dataView : {show: true, readOnly: false},
-            magicType : {show: true, type: ['line', 'bar']}
-
-
-        }
-    },
-	visualMap: {
-            show:scope.panel.legend,
-            top: 'top',
-            padding:0,
-            textGap:1,
-            textStyle:{
-				color:labelcolor?'#DCDCDC':'#696969',
-                fontSize:scope.panel.fontSize
-			},
-            itemWidth:10,
-            itemHeight:8,
-            orient:isspan?'vertical':'horizontal',
-            pieces: [{
-                gt: 0,
-                lte: scope.panel.threshold_first,
-				label:scope.panel.another?('Normal(0~'+scope.panel.threshold_first+"  "+sum_normal+'%)'):('Normal('+sum_normal+'%)'),
-                color: '#1a93f9'
-            }, {
-                gt: scope.panel.threshold_first,
-                lte: scope.panel.threshold_second,
-				label:scope.panel.another?('Warning('+scope.panel.threshold_first+'~'+scope.panel.threshold_second+"  "+sum_warning+'%)'):('TimeOut('+sum_warning+'%)'),
-                color: '#f48a52'
-            }, {
-                gt: scope.panel.threshold_second,
-				label:scope.panel.another?('Risk(>'+scope.panel.threshold_second+"  "+sum_risk+'%)'):('Error('+sum_risk+'%)'),
-                color: '#ec4653'
-            }],
-            outOfRange: {
-                color: '#999'
-            }
-        },
-    calculable : true,
     xAxis : [
         {
             type : 'category',
+            boundaryGap : false,
 			 axisLine: {onZero: true},
-			axisLabel:{
+			 axisLabel:{
 				 textStyle:{
 					 color:labelcolor?'#DCDCDC':'#696969'
 				 }
 			 },
-            data : rs_timestamp
+            data :rs_timestamp
         }
     ],
     yAxis : [
         {
             type : 'value',
+			name : scope.panel.isEN?'Time(ms)':'时间(ms)',
+			min :0,
 			nameTextStyle:{
 				color:labelcolor?'#DCDCDC':'#696969'
 			},
@@ -712,33 +622,76 @@ var option = {
     ],
     series : [
         {
-            name:scope.panel.value_field,
-            type:scope.panel.bars?'bar':'line',
-            data:valuedata,
-            smooth: true,
-            areaStyle: scope.panel.area?{normal: {opacity:0.6}}:'',
-            //markPoint : {
-                //data : [
-                    //{type : 'max', name: scope.panel.isEN?'Max':'最大值'},
-                    //{type : 'min', name: scope.panel.isEN?'Min':'最小值'}
-               // ]
-          //  },
-            markLine : scope.panel.average?{
-                label:{
-                    normal:{
-                        show:true,
-                        position:'start'
-                    }
-                },
-                lineStyle:{
-                    normal:{
-                        color:scope.panel.field_color
-                    }
-                },
-                data : [
-                    {type : 'average', name:scope.panel.isEN?'Average':'平均值'}
-                ]
-            }:''
+            name:scope.panel.isEN?'HTTP Redirect Time':'HTTP重定向时间',
+            type:'line',
+            stack: '总量',
+            areaStyle: {normal: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0,
+                    color: '#8ec6ad'
+                }, {
+                    offset: 1,
+                    color: '#ffe'
+                }])
+            }},
+			smooth:true,
+            data:redirectElapsed
+        },
+		{
+            name:scope.panel.isEN?'Cache Time':'缓存时间',
+            type:'line',
+            stack: '总量',
+            areaStyle: {normal: {opacity:0.6}},
+			smooth:true,
+            data:cacheElapsed
+        },
+		{
+            name:scope.panel.isEN?'DNS Time':'DNS查询时间',
+            type:'line',
+            stack: '总量',
+            areaStyle: {normal: {opacity:0.6}},
+			smooth:true,
+            data:dnsElapsed
+        },
+		{
+            name:scope.panel.isEN?'Connection Time':'建立连接时间',
+            type:'line',
+            stack: '总量',
+            areaStyle: {normal: {opacity:0.6}},
+			smooth:true,
+            data:tcpElapsed
+        },
+		{
+            name:scope.panel.isEN?'Request Time':'请求连接时间',
+            type:'line',
+            stack: '总量',
+            areaStyle: {normal: {opacity:0.6}},
+			smooth:true,
+            data:requestElapsed
+        },
+		{
+            name:scope.panel.isEN?'Response Time':'服务器响应时间',
+            type:'line',
+            stack: '总量',
+            areaStyle: {normal: {opacity:0.6}},
+			smooth:true,
+            data:responseElapsed
+        },
+		{
+            name:scope.panel.isEN?'Page Load Time':'页面加载时间',
+            type:'line',
+            stack: '总量',
+            areaStyle: {normal: {opacity:0.6}},
+			smooth:true,
+            data:domElapsed
+        },
+		{
+            name:scope.panel.isEN?'Event Load Time':'事务加载时间',
+            type:'line',
+            stack: '总量',
+            areaStyle: {normal: {opacity:0.6}},
+			smooth:true,
+            data:loadEventElapsed
         }
     ]
 };
@@ -746,26 +699,239 @@ var option = {
 
         // 使用刚指定的配置项和数据显示图表。
 			  myChart.setOption(option);
-			  
+			 
 			  myChart.on('datazoom', function (params) {
 
-                      if (scope.panel.linkage) {
-                          filterSrv.set({
-                              type: 'time',
-                              // from  : moment.utc(ranges.xaxis.from),
-                              // to    : moment.utc(ranges.xaxis.to),
-                              from: moment.utc(selecttime[params.batch[0].startValue]).toDate(),
-                              to: moment.utc(selecttime[params.batch[0].endValue]).toDate(),
-                              field: filterSrv.getTimeField()
-                          });
-                          dashboard.current.linkage_id = $scope.panel.linkage_id;
-                          dashboard.current.enable_linkage = false;
-                          dashboard.refresh();
-                      }
+                  if (scope.panel.linkage) {
+                      filterSrv.set({
+                          type: 'time',
+                          // from  : moment.utc(ranges.xaxis.from),
+                          // to    : moment.utc(ranges.xaxis.to),
+                          from: moment.utc(selecttime[params.batch[0].startValue]).toDate(),
+                          to: moment.utc(selecttime[params.batch[0].endValue]).toDate(),
+                          field: filterSrv.getTimeField()
+                      });
+                      dashboard.current.linkage_id = $scope.panel.linkage_id;
+                      dashboard.current.enable_linkage = false;
+                      dashboard.refresh();
+                  }
 
-				});
+					});
 			  
 			  }
+			  
+			   if(scope.panel.chart === 'mean') {
+				   
+			   sum_domElapsed/=chartData[0].length;
+			   sum_redirectElapsed/=chartData[0].length;
+			   sum_cacheElapsed/=chartData[0].length;
+			   sum_loadEventElapsed/=chartData[0].length;
+			   sum_dnsElapsed/=chartData[0].length;
+			   sum_tcpElapsed/=chartData[0].length;
+			   sum_requestElapsed/=chartData[0].length;
+			   sum_responseElapsed/=chartData[0].length;
+			   
+				   var myChart1 = echarts.init(document.getElementById(idd));
+				   
+					var option1 = {
+							tooltip : {
+								trigger: 'axis',
+								confine:true,
+								textStyle:{
+									fontSize:10
+								},
+								axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+									type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+								}
+							},
+							color:scope.panel.chartColors,
+							legend: {
+								left:'left',
+								textStyle:{
+                                    fontSize:10,
+									color:labelcolor?'#DCDCDC':'#696969'
+									},
+								data: scope.panel.isEN?['Average Redirect Time','Average Cache Time','Average DNS Time','Average Connection Time','Average Request Time','Average Response Time','Average Page Load Time','Average Event Load Time']:['HTTP重定向平均时间','平均缓存时间','平均DNS查询时间','平均建立连接时间','平均请求连接时间','平均服务器响应时间','平均页面加载时间','平均事务加载时间']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							xAxis:  {
+								type: 'value',
+								axisLine:{show:false},
+								axisTick:{show:false},
+								axisLabel:{show:false},
+								splitLine:{show:false}
+							},
+							yAxis: {
+								type: 'category',
+								 axisLine:{show:false},
+								axisTick:{show:false},
+								axisLabel:{show:false},
+								splitLine:{show:false},
+								data:[' ']
+								
+							},
+							series: [
+								{
+									name: scope.panel.isEN?'Average Redirect Time':'HTTP重定向平均时间',
+									type: 'bar',
+									stack: '总量',
+									barMaxWidth:50,
+									itemStyle:{
+												normal:{
+												  barBorderRadius:5,
+												  borderWidth:3}
+													},
+									label: {
+										normal: {
+											show: scope.panel.label,
+											position: 'top'
+										}
+									},
+									data: [sum_redirectElapsed.toFixed(1)]
+									//data: [20]
+								},
+								{
+									name: scope.panel.isEN?'Average Cache Time':'平均缓存时间',
+									type: 'bar',
+									stack: '总量',
+									  barMaxWidth:50,
+									  itemStyle:{
+												normal:{barBorderRadius:5,
+												  borderWidth:3}
+													},
+									label: {
+										normal: {
+											show: scope.panel.label,
+											position: 'bottom'
+										}
+									},
+									data: [sum_cacheElapsed.toFixed(1)]
+									//data: [20]
+								},
+								{
+									name: scope.panel.isEN?'Average DNS Time':'平均DNS查询时间',
+									type: 'bar',
+									stack: '总量',
+									  barMaxWidth:50,
+									  itemStyle:{
+												normal:{barBorderRadius:5,
+												  borderWidth:3}
+													},
+									label: {
+										normal: {
+											show: scope.panel.label,
+											position: 'top'
+										}
+									},
+									data: [sum_dnsElapsed.toFixed(1)]
+									//data: [20]
+								},
+								{
+									name: scope.panel.isEN?'Average Connection Time':'平均建立连接时间',
+									type: 'bar',
+									stack: '总量',
+									  barMaxWidth:50,
+									  itemStyle:{
+												normal:{barBorderRadius:5,
+												  borderWidth:3}
+													},
+									label: {
+										normal: {
+											show: scope.panel.label,
+											position: 'bottom'
+										}
+									},
+									data: [sum_tcpElapsed.toFixed(1)]
+									//data: [20]
+								},
+								{
+									name: scope.panel.isEN?'Average Request Time':'平均请求连接时间',
+									type: 'bar',
+									stack: '总量',
+									  barMaxWidth:50,
+									  itemStyle:{
+												normal:{barBorderRadius:5,
+												  borderWidth:3}
+													},
+									label: {
+										normal: {
+											show: scope.panel.label,
+											position: 'top'
+										}
+									},
+									data: [sum_requestElapsed.toFixed(1)]
+									//data: [20]
+								},
+								{
+									name: scope.panel.isEN?'Average Response Time':'平均服务器响应时间',
+									type: 'bar',
+									stack: '总量',
+									  barMaxWidth:50,
+									  itemStyle:{
+												normal:{barBorderRadius:5,
+												  borderWidth:3}
+													},
+									label: {
+										normal: {
+											show: scope.panel.label,
+											position: 'bottom'
+										}
+									},
+									data: [sum_responseElapsed.toFixed(1)]
+									//data: [20]
+								},
+								{
+									name: scope.panel.isEN?'Average Page Load Time':'平均页面加载时间',
+									type: 'bar',
+									stack: '总量',
+									barMaxWidth:50,
+									itemStyle:{
+												normal:{barBorderRadius:5,
+												  borderWidth:3}
+													},
+									label: {
+										normal: {
+											show: scope.panel.label,
+											position: 'top'
+										}
+									},
+									data: [sum_domElapsed.toFixed(1)]
+									//data: [20]
+								},
+								{
+									name: scope.panel.isEN?'Average Event Load Time':'平均事务加载时间',
+									type: 'bar',
+									stack: '总量',
+									  barMaxWidth:50,
+									  itemStyle:{
+										normal:{barBorderRadius:5,
+												  borderWidth:3}
+										},
+									label: {
+										normal: {
+											show: scope.panel.label,
+											position: 'bottom'
+										}
+									},
+									data:[sum_loadEventElapsed.toFixed(1)]
+									//data: [20]
+								}
+							]
+						};
+		
+					myChart1.setOption(option1);
+						   
+				   
+			   }
+			  
+			  
+			 
+             
 
               // Populate legend
               
@@ -776,8 +942,7 @@ var option = {
          
         }
       
-        var $tooltip = $('<div>');
-        
+
       }
     };
   });

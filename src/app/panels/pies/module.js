@@ -246,7 +246,7 @@ function (angular, app, _, $, kbn) {
 
             // Function for validating HTML color by assign it to a dummy <div id="colorTest">
             // and let the browser do the work of validation.
-            var isValidHTMLColor = function (color) {
+            /*var isValidHTMLColor = function (color) {
                 // clear attr first, before comparison
                 $('#colorTest').removeAttr('style');
                 var valid = $('#colorTest').css('color');
@@ -257,15 +257,17 @@ function (angular, app, _, $, kbn) {
                 } else {
                     return true;
                 }
-            };
+            };*/
 
             // Function for customizing chart color by using field values as colors.
+            /*
             var addSliceColor = function (slice, color) {
                 if ($scope.panel.useColorFromField && isValidHTMLColor(color)) {
                     slice.color = color;
                 }
                 return slice;
             };
+            */
 
             var sum = 0;
             var k = 0;
@@ -425,7 +427,6 @@ function (angular, app, _, $, kbn) {
 
         // Function for rendering panel
         function render_panel() {
-          var plot;
           var colors = [];
 
           // IE doesn't work without this
@@ -685,9 +686,9 @@ function (angular, app, _, $, kbn) {
             itemStyle: {
 				normal: {
 					color: function(params) {              
-                                        var colorList = colors;
-                                        return colorList[params.dataIndex]
-                                        },
+            var colorList = colors;
+            return colorList[params.dataIndex];
+            },
 					shadowColor: '#fff',
 					barBorderRadius: 5
                 
@@ -751,7 +752,7 @@ function (angular, app, _, $, kbn) {
 								},
 						labelLine: {
 									normal: {
-											smooth: .6
+											smooth: 0.6
 											}
 								},
 							
@@ -782,7 +783,7 @@ function (angular, app, _, $, kbn) {
 							normal: {
 							color: function(params) {              
                                         var colorList = colors;
-                                        return colorList[params.dataIndex]
+                                        return colorList[params.dataIndex];
                                         },
 							shadowColor: '#fff',
 							barBorderRadius: 5
@@ -882,7 +883,7 @@ function (angular, app, _, $, kbn) {
 							normal: {
 							color: function(params) {              
                                         var colorList = colors;
-                                        return colorList[params.dataIndex]
+                                        return colorList[params.dataIndex];
                                         },
 							shadowColor: '#fff',
 							barBorderRadius: 5
@@ -988,7 +989,7 @@ function (angular, app, _, $, kbn) {
                                     normal: {
                                         color: function(params) {
                                             var colorList = colors;
-                                            return colorList[params.dataIndex]
+                                            return colorList[params.dataIndex];
                                         },
                                         shadowColor: '#fff',
                                         barBorderRadius: 5
@@ -1028,9 +1029,9 @@ function (angular, app, _, $, kbn) {
 				  
 				  var radarlabel = [];
 				  
-				  for (var i = 0; i < scope.label.length; i++) {
+				  for (var j = 0; j < scope.label.length; j++) {
 				  
-				  radarlabel[i] = {name:scope.label[i],max:scope.maxdata}
+				    radarlabel[j] = {name:scope.label[j],max:scope.maxdata};
 				  }
 				  
 				  
@@ -1057,7 +1058,7 @@ function (angular, app, _, $, kbn) {
 						},
 						tooltip: {
 							trigger: 'axis',
-							 position: function (point, params, dom) {
+							 position: function (point) {
 									// 固定在顶部
 								return [point[0], '10%'];
 									}
@@ -1206,7 +1207,7 @@ function (angular, app, _, $, kbn) {
 				normal: {
 					color: function(params) {              
                                         var colorList = ['#1a75f9', '#1ab0f9', '#42d3f0', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980','#bcf924','#f9ac24','#8224f9','#24e5f9','#f96524'];
-                                        return colorList[params.dataIndex]
+                                        return colorList[params.dataIndex];
                                         },
 					shadowColor: '#fff',
 					barBorderRadius: 5,
@@ -1299,7 +1300,7 @@ function (angular, app, _, $, kbn) {
 				normal: {
 					color: function(params) {              
                                         var colorList = ['#1a75f9', '#1a93f9', '#1ab0f9', '#1acef9', '#42d3f0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980','#bcf924','#f9ac24','#8224f9','#24e5f9','#f96524'];
-                                        return colorList[params.dataIndex]
+                                        return colorList[params.dataIndex];
                                         },
 					opacity: 0.8
                 
@@ -1406,7 +1407,7 @@ function (angular, app, _, $, kbn) {
                                     normal: {
                                         color: function(params) {
                                             var colorList = ['#1a75f9', '#1a93f9', '#1ab0f9', '#1acef9', '#42d3f0', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
-                                            return colorList[params.dataIndex]
+                                            return colorList[params.dataIndex];
                                         },
                                         shadowColor: '#fff',
                                         barBorderRadius: 5
@@ -1415,7 +1416,7 @@ function (angular, app, _, $, kbn) {
                                     emphasis: {
                                         color: function(params) {
                                             var colorList = ['#ff951f', '#ff951f', '#ff951f', '#ff951f', '#ff951f', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
-                                            return colorList[params.dataIndex]
+                                            return colorList[params.dataIndex];
                                         },
                                         shadowColor: '#fff',
                                         barBorderRadius: 5
@@ -1446,10 +1447,10 @@ function (angular, app, _, $, kbn) {
                     var titles = [];
 
 
-                    for (var i = 0; i < scope.radardata.length; i++) {
+                    for (var k = 0; k < scope.radardata.length; k++) {
 
-                        var xla = scope.label[i].replace(" ","\n");
-                        var x =  (i+0.5) / scope.radardata.length * 100 + '%';
+                        var xla = scope.label[k].replace(" ","\n");
+                        var x =  (k+0.5) / scope.radardata.length * 100 + '%';
 
                         titles.push({
                             text: xla,
@@ -1462,7 +1463,7 @@ function (angular, app, _, $, kbn) {
                                 fontSize: 12,
                                 fontWeight: 'normal'
                             }
-                        })
+                        });
 
                         series.push({
                             animation: true,
@@ -1487,9 +1488,9 @@ function (angular, app, _, $, kbn) {
                             },
                             data: [{
                                 // -60 到 100 度
-                                name:scope.label[i],
-                                value: scope.radardata[i]  / scope.maxdata,
-                                rawValue: scope.radardata[i]
+                                name:scope.label[k],
+                                value: scope.radardata[k]  / scope.maxdata,
+                                rawValue: scope.radardata[k]
                             }],
                             itemStyle: {
                                 normal: {
@@ -1509,7 +1510,7 @@ function (angular, app, _, $, kbn) {
                                     }
                                 }
                             }
-                        })
+                        });
                     }
 
 
@@ -1541,8 +1542,6 @@ function (angular, app, _, $, kbn) {
             }
         }
       
-
-        var $tooltip = $('<div>');
 
       }
     };
