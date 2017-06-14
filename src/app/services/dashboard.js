@@ -7,6 +7,7 @@ define([
   'moment',
   'modernizr',
   'filesaver',
+  'html2canvas',
 ],
 function (angular, $, kbn, _, config, moment, Modernizr) {
   'use strict';
@@ -534,7 +535,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
           }else if(self.current.style === 'light'){
               background_color = '#fff';
           }
-          html2canvas(document.getElementById("bodyContent"), {
+              html2canvas(document.getElementById("bodyContent"), {
               background:background_color,
 
               // 渲染完成时调用，获得 canvas
@@ -542,7 +543,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
                   // 从 canvas 提取图片数据
                   var imgData = canvas.toDataURL('image/png');
-
                   var doc = new jsPDF("p", "mm", "a3");
                   //                               |
                   // |—————————————————————————————|

@@ -545,8 +545,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               // Add plot to scope so we can build out own legend
               if(scope.panel.chart === 'stacking') {
 
-
-
         var myChart = echarts.init(document.getElementById(idd));
 
         

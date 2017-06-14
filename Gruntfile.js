@@ -59,7 +59,8 @@ module.exports = function (grunt) {
       },
       options: {
         jshintrc: '.jshintrc',
-        reporterOutput: ''
+        reporterOutput: '',
+        force: false,
       }
     },
     htmlmin:{
