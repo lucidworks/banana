@@ -230,7 +230,8 @@ module.exports = function (grunt) {
         'jquery.flot.pie',
         'angular-sanitize',
         'angular-dragdrop',
-        'd3'
+        'd3',
+        'echarts',
       ]
     }
   ];
