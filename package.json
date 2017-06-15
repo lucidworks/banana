@@ -55,6 +55,7 @@
   },
   "dependencies": {
     "echarts": "^3.6.1",
+    "echarts-gl": "^1.0.0-alpha.6",
     "echarts-liquidfill": "^1.0.5",
     "echarts-wordcloud": "^1.0.3"
   }

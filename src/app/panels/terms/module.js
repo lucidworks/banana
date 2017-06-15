@@ -476,7 +476,7 @@ function (angular, app, _, $, kbn) {
 		//APdex = (AP_1+AP_2)/AP_n;
 		}
 		
-var option_nodata = {  
+    var option_nodata = {
     series: [{
        
         type: 'wordCloud',
@@ -509,7 +509,6 @@ var option_nodata = {
 		var idd = scope.$id;
     var echarts = require('echarts');
     //var d3 = require("d3");
-
     require(['jquery.flot.pie'], function(){
       // Populate element
 

@@ -16,6 +16,8 @@ define([
   'underscore',
   'jquery',
   'kbn',
+  'echarts',
+  'echarts-gl',
 ],
 function (angular, app, _, $, kbn) {
   'use strict';
@@ -451,7 +453,7 @@ var option_nodata = {
 		
 		
 		var idd = scope.$id;
-          var echarts = require('echarts');
+    var echarts = require('echarts');
 
           //require(['echartsgl'], function(){
             // Populate element

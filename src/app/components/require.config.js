@@ -49,8 +49,12 @@ require.config({
     'showdown':               '../vendor/showdown',
 
     echarts:                  '../../node_modules/echarts/dist/echarts',
+    'echarts-gl':     '../../node_modules/echarts-gl/dist/echarts-gl',
     'echarts-liquidfill':     '../../node_modules/echarts-liquidfill/dist/echarts-liquidfill',
     'echarts-wordcloud':     '../../node_modules/echarts-wordcloud/dist/echarts-wordcloud',
+    'echarts-bmap':           '../../node_modules/echarts/dist/extension/bmap',
+    'echarts-china':           '../../node_modules/echarts/map/js/china',
+
     modernizr:                '../vendor/modernizr-2.6.1',
     elasticjs:                '../vendor/elasticjs/elastic-angular-client',
     solrjs:                   '../vendor/solrjs/solr-angular-client',
