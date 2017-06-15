@@ -419,7 +419,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
-
+        var myChart;
         // Receive render events
         scope.$on('render',function(){
           render_panel();
@@ -454,101 +454,99 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 		 
 		
 		 
-		  var domElapsed = [];
-		  var rs_timestamp = [];
-		   var redirectElapsed = [];
-		  var cacheElapsed = [];
-		     var loadEventElapsed = [];
+		      var domElapsed = [];
+          var rs_timestamp = [];
+		      var redirectElapsed = [];
+		      var cacheElapsed = [];
+		      var loadEventElapsed = [];
 		  
-		   var dnsElapsed = [];
-		  var tcpElapsed = [];
-		   var requestElapsed = [];
-		  var responseElapsed = [];
-		  var secondtime ;
-		  var selecttime = [];
+		      var dnsElapsed = [];
+		      var tcpElapsed = [];
+		      var requestElapsed = [];
+          var responseElapsed = [];
+          var secondtime ;
+          var selecttime = [];
 
-		  var sum_domElapsed = 0;
-		  var sum_redirectElapsed = 0;
-		  var sum_cacheElapsed = 0;
-		  var sum_loadEventElapsed = 0;
-		  var sum_dnsElapsed = 0;
-		  var sum_tcpElapsed = 0;
-		  var sum_requestElapsed = 0;
-		  var sum_responseElapsed = 0;
-            Date.prototype.pattern = function (fmt) {
-                var o = {
-                    "M+" : this.getMonth() + 1, //月份
-                    "d+" : this.getDate(), //日
-                    "h+" : this.getHours() % 12 === 0 ? 12 : this.getHours() % 12, //小时
-                    "H+" : this.getHours(), //小时
-                    "m+" : this.getMinutes(), //分
-                    "s+" : this.getSeconds(), //秒
-                    "q+" : Math.floor((this.getMonth() + 3) / 3), //季度
-                    "S" : this.getMilliseconds() //毫秒
-                };
-                var week = {
-                    "0" : "/u65e5",
-                    "1" : "/u4e00",
-                    "2" : "/u4e8c",
-                    "3" : "/u4e09",
-                    "4" : "/u56db",
-                    "5" : "/u4e94",
-                    "6" : "/u516d"
-                };
-                if (/(y+)/.test(fmt)) {
-                    fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-                }
-                if (/(E+)/.test(fmt)) {
-                    fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "/u661f/u671f" : "/u5468") : "") + week[this.getDay() + ""]);
-                }
-                for (var k in o) {
-                    if (new RegExp("(" + k + ")").test(fmt)) {
-                        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-                    }
-                }
-                return fmt;
+          var sum_domElapsed = 0;
+          var sum_redirectElapsed = 0;
+          var sum_cacheElapsed = 0;
+          var sum_loadEventElapsed = 0;
+          var sum_dnsElapsed = 0;
+          var sum_tcpElapsed = 0;
+          var sum_requestElapsed = 0;
+          var sum_responseElapsed = 0;
+          Date.prototype.pattern = function (fmt) {
+            var o = {
+                "M+" : this.getMonth() + 1, //月份
+                "d+" : this.getDate(), //日
+                "h+" : this.getHours() % 12 === 0 ? 12 : this.getHours() % 12, //小时
+                "H+" : this.getHours(), //小时
+                "m+" : this.getMinutes(), //分
+                "s+" : this.getSeconds(), //秒
+                "q+" : Math.floor((this.getMonth() + 3) / 3), //季度
+                "S" : this.getMilliseconds() //毫秒
             };
+            var week = {
+                "0" : "/u65e5",
+                "1" : "/u4e00",
+                "2" : "/u4e8c",
+                "3" : "/u4e09",
+                "4" : "/u56db",
+                "5" : "/u4e94",
+                "6" : "/u516d"
+            };
+            if (/(y+)/.test(fmt)) {
+                fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            }
+            if (/(E+)/.test(fmt)) {
+                fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "/u661f/u671f" : "/u5468") : "") + week[this.getDay() + ""]);
+            }
+            for (var k in o) {
+                if (new RegExp("(" + k + ")").test(fmt)) {
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                }
+            }
+            return fmt;
+          };
 
 
-            for (var i =0;i<chartData[0].length;i++){
-			  selecttime[i] =Date.parse(chartData[0][i].rs_timestamp);
-			  secondtime = new Date(Date.parse(chartData[0][i].rs_timestamp));
-			  rs_timestamp[i] = secondtime.pattern("yyyy-MM-dd hh:mm:ss");
-			  redirectElapsed[i] = chartData[0][i].redirectElapsed;
-			  cacheElapsed[i] = chartData[0][i].cacheElapsed;
-			  loadEventElapsed[i] = chartData[0][i].loadEventElapsed;
-			  dnsElapsed[i] = chartData[0][i].dnsElapsed;
-			   tcpElapsed[i] = chartData[0][i].tcpElapsed;
-			   requestElapsed[i] = chartData[0][i].requestElapsed;
-			   responseElapsed[i] = chartData[0][i].responseElapsed;
-			   domElapsed[i] = chartData[0][i].domElapsed;
-			   sum_domElapsed+=chartData[0][i].domElapsed;
-			   sum_redirectElapsed+=chartData[0][i].redirectElapsed;
-			   sum_cacheElapsed+=chartData[0][i].cacheElapsed;
-			   sum_loadEventElapsed+=chartData[0][i].loadEventElapsed;
-			   sum_dnsElapsed+=chartData[0][i].dnsElapsed;
-			   sum_tcpElapsed+=chartData[0][i].tcpElapsed;
-			   sum_requestElapsed+=chartData[0][i].requestElapsed;
-			   sum_responseElapsed+=chartData[0][i].responseElapsed;
-		  }
+          for (var i =0;i<chartData[0].length;i++){
+            selecttime[i] =Date.parse(chartData[0][i].rs_timestamp);
+            secondtime = new Date(Date.parse(chartData[0][i].rs_timestamp));
+            rs_timestamp[i] = secondtime.pattern("yyyy-MM-dd hh:mm:ss");
+            redirectElapsed[i] = chartData[0][i].redirectElapsed;
+            cacheElapsed[i] = chartData[0][i].cacheElapsed;
+            loadEventElapsed[i] = chartData[0][i].loadEventElapsed;
+            dnsElapsed[i] = chartData[0][i].dnsElapsed;
+            tcpElapsed[i] = chartData[0][i].tcpElapsed;
+            requestElapsed[i] = chartData[0][i].requestElapsed;
+            responseElapsed[i] = chartData[0][i].responseElapsed;
+            domElapsed[i] = chartData[0][i].domElapsed;
+            sum_domElapsed+=chartData[0][i].domElapsed;
+            sum_redirectElapsed+=chartData[0][i].redirectElapsed;
+            sum_cacheElapsed+=chartData[0][i].cacheElapsed;
+            sum_loadEventElapsed+=chartData[0][i].loadEventElapsed;
+            sum_dnsElapsed+=chartData[0][i].dnsElapsed;
+            sum_tcpElapsed+=chartData[0][i].tcpElapsed;
+            sum_requestElapsed+=chartData[0][i].requestElapsed;
+            sum_responseElapsed+=chartData[0][i].responseElapsed;
+          }
 
-		var idd = scope.$id;
-    var echarts = require('echarts');
+          var idd = scope.$id;
+          var echarts = require('echarts');
+          if(myChart) {
+            myChart.dispose();
+          }
 
-          // Populate element
-            try {
-				
-				 var labelcolor = false;
-					if (dashboard.current.style === 'dark'){
-							labelcolor = true;
-						}
+				  var labelcolor = false;
+          if (dashboard.current.style === 'dark'){
+            labelcolor = true;
+          }
               // Add plot to scope so we can build out own legend
-              if(scope.panel.chart === 'stacking') {
+          if(scope.panel.chart === 'stacking') {
 
-        var myChart = echarts.init(document.getElementById(idd));
-
-        
-var option = {
+            myChart = echarts.init(document.getElementById(idd));
+            var option = {
    
    tooltip: {
         trigger: 'axis',
@@ -693,45 +691,40 @@ var option = {
         }
     ]
 };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+            myChart.on('datazoom', function (params) {
+                      if (scope.panel.linkage) {
+                          filterSrv.set({
+                              type: 'time',
+                              // from  : moment.utc(ranges.xaxis.from),
+                              // to    : moment.utc(ranges.xaxis.to),
+                              from: moment.utc(selecttime[params.batch[0].startValue]).toDate(),
+                              to: moment.utc(selecttime[params.batch[0].endValue]).toDate(),
+                              field: filterSrv.getTimeField()
+                          });
+                          dashboard.current.linkage_id = scope.panel.linkage_id;
+                          dashboard.current.enable_linkage = false;
+                          dashboard.refresh();
+                      }
 
-
-        // 使用刚指定的配置项和数据显示图表。
-			  myChart.setOption(option);
-			 
-			  myChart.on('datazoom', function (params) {
-
-                  if (scope.panel.linkage) {
-                      filterSrv.set({
-                          type: 'time',
-                          // from  : moment.utc(ranges.xaxis.from),
-                          // to    : moment.utc(ranges.xaxis.to),
-                          from: moment.utc(selecttime[params.batch[0].startValue]).toDate(),
-                          to: moment.utc(selecttime[params.batch[0].endValue]).toDate(),
-                          field: filterSrv.getTimeField()
-                      });
-                      dashboard.current.linkage_id = scope.panel.linkage_id;
-                      dashboard.current.enable_linkage = false;
-                      dashboard.refresh();
-                  }
-
-					});
+            });
+          }
 			  
-			  }
-			  
-			   if(scope.panel.chart === 'mean') {
+			    if(scope.panel.chart === 'mean') {
 				   
-			   sum_domElapsed/=chartData[0].length;
-			   sum_redirectElapsed/=chartData[0].length;
-			   sum_cacheElapsed/=chartData[0].length;
-			   sum_loadEventElapsed/=chartData[0].length;
-			   sum_dnsElapsed/=chartData[0].length;
-			   sum_tcpElapsed/=chartData[0].length;
-			   sum_requestElapsed/=chartData[0].length;
-			   sum_responseElapsed/=chartData[0].length;
+            sum_domElapsed/=chartData[0].length;
+            sum_redirectElapsed/=chartData[0].length;
+            sum_cacheElapsed/=chartData[0].length;
+            sum_loadEventElapsed/=chartData[0].length;
+            sum_dnsElapsed/=chartData[0].length;
+            sum_tcpElapsed/=chartData[0].length;
+            sum_requestElapsed/=chartData[0].length;
+            sum_responseElapsed/=chartData[0].length;
 			   
-				   var myChart1 = echarts.init(document.getElementById(idd));
+				    myChart = echarts.init(document.getElementById(idd));
 				   
-					var option1 = {
+					  var option1 = {
 							tooltip : {
 								trigger: 'axis',
 								confine:true,
@@ -922,24 +915,10 @@ var option = {
 							]
 						};
 		
-					myChart1.setOption(option1);
-						   
+					  myChart.setOption(option1);
 				   
-			   }
-			  
-			  
-			 
-             
-
-              // Populate legend
-              
-
-            } catch(e) {
-              elem.text(e);
-            }
-         
+			    }
         }
-      
 
       }
     };

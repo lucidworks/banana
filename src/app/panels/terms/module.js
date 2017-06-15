@@ -406,7 +406,7 @@ function (angular, app, _, $, kbn) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
-
+        var myChart;
         // Receive render events
         scope.$on('render',function(){
           render_panel();
@@ -420,25 +420,8 @@ function (angular, app, _, $, kbn) {
         // Function for rendering panel
         function render_panel() {
 			
-			elem.html("");
+			    elem.html("");
 
-                   // var el = elem[0];
-
-                   // var parent_width = elem.parent().width();
-                    //var    height = parseInt(scope.panel.height);
-
-          //var 	outerRadius = height / 2 - 30;
-         // var 	innerRadius = outerRadius / 3;
-						
-                    // var margin = {
-                    //     top: 20,
-                    //     right: 20,
-                    //     bottom: 100,
-                    //     left: 50
-                    // };
-                    //width = parent_width - margin.left - margin.right
-
-                   
           var plot, chartData;
           var colors = [];
 
@@ -459,24 +442,23 @@ function (angular, app, _, $, kbn) {
             colors = scope.panel.chartColors;
           }
 		 
-		  var AP_1 = 0.0;
-		  var AP_2 = 0.0;
-		  var AP_n = 0.0;
-		  for (var i = 0; i < chartData.length; i++) {
-			  AP_n = AP_n+chartData[i].data[0][1];
-			  if(parseInt(chartData[i].label)<=scope.panel.threshold_first ){
-			  AP_1+=chartData[i].data[0][1];
-			  }else if(parseInt(chartData[i].label)<scope.panel.threshold_second && parseInt(chartData[i].label)>scope.panel.threshold_first){
-			  AP_2+=chartData[i].data[0][1]*0.5;
-			  }
-		  }
-		var APdex =100;
-		if(AP_n !== 0){
-		APdex = parseInt(100*(AP_1+AP_2)/AP_n);
-		//APdex = (AP_1+AP_2)/AP_n;
-		}
+          var AP_1 = 0.0;
+          var AP_2 = 0.0;
+          var AP_n = 0.0;
+          for (var i = 0; i < chartData.length; i++) {
+            AP_n = AP_n+chartData[i].data[0][1];
+            if(parseInt(chartData[i].label)<=scope.panel.threshold_first ){
+            AP_1+=chartData[i].data[0][1];
+            }else if(parseInt(chartData[i].label)<scope.panel.threshold_second && parseInt(chartData[i].label)>scope.panel.threshold_first){
+              AP_2+=chartData[i].data[0][1]*0.5;
+			      }
+          }
+          var APdex =100;
+          if(AP_n !== 0){
+            APdex = parseInt(100*(AP_1+AP_2)/AP_n);
+          }
 		
-    var option_nodata = {
+          var option_nodata = {
     series: [{
        
         type: 'wordCloud',
@@ -506,11 +488,12 @@ function (angular, app, _, $, kbn) {
     }]
 };
 		
-		var idd = scope.$id;
-    var echarts = require('echarts');
-    //var d3 = require("d3");
-    require(['jquery.flot.pie'], function(){
-      // Populate element
+		      var idd = scope.$id;
+          var echarts = require('echarts');
+          if(myChart) {
+            myChart.dispose();
+          }
+          require(['jquery.flot.pie'], function(){
 
 				var labelcolor = false;
 					if (dashboard.current.style === 'dark'){
@@ -519,7 +502,7 @@ function (angular, app, _, $, kbn) {
         // Add plot to scope so we can build out own legend
         if(scope.panel.chart === 'dashboard') {
 
-          var myChart = echarts.init(document.getElementById(idd));
+          myChart = echarts.init(document.getElementById(idd));
 
           var option = {
 
@@ -639,7 +622,6 @@ function (angular, app, _, $, kbn) {
 
           ]
       };
-
           var option_health_nodata = {
 
 
@@ -764,9 +746,6 @@ function (angular, app, _, $, kbn) {
                  myChart.setOption(option);
               }
               // 使用刚指定的配置项和数据显示图表。
-
-
-			  
 			  }
 			  
         if(scope.panel.chart === 'ebar') {
@@ -780,232 +759,213 @@ function (angular, app, _, $, kbn) {
 					  arrlabel[i] = chartData[i].label;
 					  arrdata[i] = chartData[i].data[0][1];
 				  }
-				  
-		
-				  
-			var myChart1 = echarts.init(document.getElementById(idd));
 
-        
-			var option1 = {
-    color: ['#3398DB'],
-    tooltip : {
-        trigger: 'axis',
-        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-        }
-    },
-    grid: {
-        left: '8%',
-        right: '3%',
-        bottom: '3%',
-		top: '6%',
-        containLabel: true
-    },
-    xAxis : [
-        {
-            type : 'category',
-            data : arrlabel,
-			axisLine:{
-				show:false
-			},
-			axisLabel:{
-				show:false,
-				textStyle:{
-					color:'#cde5fe',
-					fontSize:16,
-					
-					
-				}
-				
-			},
-            axisTick: {
-                alignWithLabel: false
-            }
-        }
-    ],
-    yAxis : [
-        {
-            type : 'value',
-			splitLine: {
-			show :true,
-            lineStyle:{
-                type:'dotted',
-                color: '#0d394a'
-            }
+          myChart = echarts.init(document.getElementById(idd));
+          var option1 = {
+      color: ['#3398DB'],
+      tooltip : {
+          trigger: 'axis',
+          axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+              type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+          }
+      },
+      grid: {
+          left: '8%',
+          right: '3%',
+          bottom: '3%',
+      top: '6%',
+          containLabel: true
+      },
+      xAxis : [
+          {
+              type : 'category',
+              data : arrlabel,
+        axisLine:{
+          show:false
         },
-		axisLabel:{
-            textStyle:{
-                color:labelcolor?'#fff':'#696969',
-				fontSize:scope.panel.fontsize,
-				fontStyle: 'italic'
-            }
-            
+        axisLabel:{
+          show:false,
+          textStyle:{
+            color:'#cde5fe',
+            fontSize:16,
+
+
+          }
+
         },
-			nameTextStyle:{
-				
-				color:'#fff',
-				
-				
-			},
-			axisLine:{
-				show:false
-			}
+              axisTick: {
+                  alignWithLabel: false
+              }
+          }
+      ],
+      yAxis : [
+          {
+              type : 'value',
+        splitLine: {
+        show :true,
+              lineStyle:{
+                  type:'dotted',
+                  color: '#0d394a'
+              }
+          },
+      axisLabel:{
+              textStyle:{
+                  color:labelcolor?'#fff':'#696969',
+          fontSize:scope.panel.fontsize,
+          fontStyle: 'italic'
+              }
+
+          },
+        nameTextStyle:{
+
+          color:'#fff',
+
+
+        },
+        axisLine:{
+          show:false
         }
-    ],
-    series : [
-        {
-            name:'Visit Top 5',
-            type:'bar',
-            barWidth: '43%',
-            data:arrdata,
-			itemStyle: {
-				normal: {
-					color: function(params) {              
-            var colorList = ['#1a75f9', '#1a93f9', '#1ab0f9', '#1acef9', '#42d3f0', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
-            return colorList[params.dataIndex];
-            },
-					shadowColor: '#fff',
-					barBorderRadius: 5
-                
-            },
-			emphasis: {
-					color: function(params) {              
-            var colorList = ['#ff951f', '#ff951f', '#ff951f', '#ff951f', '#ff951f', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
-            return colorList[params.dataIndex];
-            },
-					shadowColor: '#fff',
-					barBorderRadius: 5
-                
+          }
+      ],
+      series : [
+          {
+              name:'Visit Top 5',
+              type:'bar',
+              barWidth: '43%',
+              data:arrdata,
+        itemStyle: {
+          normal: {
+            color: function(params) {
+              var colorList = ['#1a75f9', '#1a93f9', '#1ab0f9', '#1acef9', '#42d3f0', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
+              return colorList[params.dataIndex];
+              },
+            shadowColor: '#fff',
+            barBorderRadius: 5
+
+              },
+        emphasis: {
+            color: function(params) {
+              var colorList = ['#ff951f', '#ff951f', '#ff951f', '#ff951f', '#ff951f', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
+              return colorList[params.dataIndex];
+              },
+            shadowColor: '#fff',
+            barBorderRadius: 5
+
+              }
+          }
+          }
+      ]
+  };
+          // 使用刚指定的配置项和数据显示图表。
+          if(chartData.length === 0){
+            myChart.setOption(option_nodata);
+          }else{
+            myChart.setOption(option1);
+            myChart.on('click', function (params) {
+              // 控制台打印数据的名称
+              scope.build_search(params);
+            });
             }
-        }
-        }
-    ]
-};
-
-
-        // 使用刚指定的配置项和数据显示图表。
-			  if(chartData.length === 0){
-				myChart1.setOption(option_nodata);}else{
-					myChart1.setOption(option1);
-					myChart1.on('click', function (params) {
-						// 控制台打印数据的名称
-						scope.build_search(params);
-					});
-				}
 			  }
-
-
-			  
 			  
 			  if(scope.panel.chart === 'bar') {
-				  
-				  
-               var yAxisConfig = {
+          var yAxisConfig = {
                   show: true,
                   min: scope.yaxis_min,
                   color: "#c8c8c8"
                 };
-                if (scope.panel.logAxis) {
-                  _.defaults(yAxisConfig, {
-                    ticks: function (axis) {
-                      var res = [], v, i = 1,
-                        ticksNumber = 8,
-                        max = axis.max === 0 ? 0 : Math.log(axis.max),
-                        min = axis.min === 0 ? 0 : Math.log(axis.min),
-                        interval = (max - min) / ticksNumber;
-                      do {
-                        v = interval * i;
-                        res.push(Math.exp(v));
-                        ++i;
-                      } while (v < max);
-                      return res;
-                    },
-                    transform: function (v) {
-                      return v === 0 ? 0 : Math.log(v); },
-                    inverseTransform: function (v) {
-                      return v === 0 ? 0 : Math.exp(v); }
-                  });
+          if (scope.panel.logAxis) {
+            _.defaults(yAxisConfig, {
+              ticks: function (axis) {
+                var res = [], v, i = 1,
+                  ticksNumber = 8,
+                  max = axis.max === 0 ? 0 : Math.log(axis.max),
+                  min = axis.min === 0 ? 0 : Math.log(axis.min),
+                  interval = (max - min) / ticksNumber;
+                do {
+                  v = interval * i;
+                  res.push(Math.exp(v));
+                  ++i;
+                } while (v < max);
+                return res;
+              },
+              transform: function (v) {
+                return v === 0 ? 0 : Math.log(v); },
+              inverseTransform: function (v) {
+                return v === 0 ? 0 : Math.exp(v); }
+            });
+          }
+
+          plot = $.plot(elem, chartData, {
+            legend: { show: false },
+            series: {
+              lines:  { show: false },
+              bars:   { show: true,  fill: 1, barWidth: 0.8, horizontal: false },
+              shadowSize: 1
+            },
+            // yaxis: { show: true, min: 0, color: "#c8c8c8" },
+            yaxis: yAxisConfig,
+            xaxis: { show: true },
+            grid: {
+              borderWidth: 0,
+              borderColor: '#eee',
+              color: "#eee",
+              hoverable: true,
+              clickable: true
+            },
+            colors: colors
+          });
+				
+				  if(chartData.length === 0){
+				    myChart = echarts.init(document.getElementById(idd));
+				    myChart.setOption(option_nodata);
+					
+				  }
+				
+        }
+
+        if(scope.panel.chart === 'pie') {
+          var labelFormat = function(label, series){
+            return '<div ng-click="build_search(panel.field,\''+label+'\')'+
+              ' "style="font-size:8pt;text-align:center;padding:2px;color:white;">'+
+              label+'<br/>'+Math.round(series.percent)+'%</div>';
+          };
+          plot = $.plot(elem, chartData, {
+            legend: {
+              show: false
+              // position: position,
+              // backgroundColor: "transparent"
+            },
+            series: {
+              pie: {
+                innerRadius: scope.panel.donut ? 0.4 : 0,
+                tilt: scope.panel.tilt ? 0.45 : 1,
+                radius: 1,
+                show: true,
+                combine: {
+                  color: '#999',
+                  label: 'The Rest'
+                },
+                stroke: {
+                  width: 0
+                },
+                label: {
+                  show: scope.panel.labels,
+                  radius: 2/3,
+                  formatter: labelFormat,
+                  threshold: 0.1
                 }
-
-                plot = $.plot(elem, chartData, {
-                  legend: { show: false },
-                  series: {
-                    lines:  { show: false },
-                    bars:   { show: true,  fill: 1, barWidth: 0.8, horizontal: false },
-                    shadowSize: 1
-                  },
-                  // yaxis: { show: true, min: 0, color: "#c8c8c8" },
-                  yaxis: yAxisConfig,
-                  xaxis: { show: true },
-                  grid: {
-                    borderWidth: 0,
-                    borderColor: '#eee',
-                    color: "#eee",
-                    hoverable: true,
-                    clickable: true
-                  },
-                  colors: colors
-                });
-				
-				if(chartData.length === 0){
-				var myChart22222 = echarts.init(document.getElementById(idd));
-				myChart22222.setOption(option_nodata);
-					
-				}
-				
               }
-              if(scope.panel.chart === 'pie') {
-
-                var labelFormat = function(label, series){
-                  return '<div ng-click="build_search(panel.field,\''+label+'\')'+
-                    ' "style="font-size:8pt;text-align:center;padding:2px;color:white;">'+
-                    label+'<br/>'+Math.round(series.percent)+'%</div>';
-                };
-                // DEfulat style for labels that is implmented in jquery flot
-                // var position = "";
-                // if (scope.panel.counter_pos == "left")
-                //   position = "nw";
-                // else if (scope.panel.counter_pos == "right")
-                //   position = "ne";
-
-                plot = $.plot(elem, chartData, {
-                  legend: {
-                    show: false
-                    // position: position,
-                    // backgroundColor: "transparent"
-                  },
-                  series: {
-                    pie: {
-                      innerRadius: scope.panel.donut ? 0.4 : 0,
-                      tilt: scope.panel.tilt ? 0.45 : 1,
-                      radius: 1,
-                      show: true,
-                      combine: {
-                        color: '#999',
-                        label: 'The Rest'
-                      },
-                      stroke: {
-                        width: 0
-                      },
-                      label: {
-                        show: scope.panel.labels,
-                        radius: 2/3,
-                        formatter: labelFormat,
-                        threshold: 0.1
-                      }
-                    }
-                  },
-                  //grid: { hoverable: true, clickable: true },
-                  grid:   { hoverable: true, clickable: true },
-                  colors: colors
-                });
-				if(chartData.length === 0){
-				var myChart12222 = echarts.init(document.getElementById(idd));
-				myChart12222.setOption(option_nodata);
-					
-				}
-              }
-
+            },
+            //grid: { hoverable: true, clickable: true },
+            grid:   { hoverable: true, clickable: true },
+            colors: colors
+          });
+          if(chartData.length === 0){
+            myChart = echarts.init(document.getElementById(idd));
+            myChart.setOption(option_nodata);
+          }
+        }
               // Populate legend
               if(elem.is(":visible")){
                 setTimeout(function(){
