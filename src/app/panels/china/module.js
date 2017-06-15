@@ -16,7 +16,6 @@ define([
   'underscore',
   'jquery',
   'kbn',
-  'echarts',
   'echarts-china',
 ],
 function (angular, app, _, $, kbn) {
@@ -382,6 +381,7 @@ function (angular, app, _, $, kbn) {
   module.directive('chinaChart', function(querySrv,dashboard,filterSrv) {
     return {
       restrict: 'A',
+
       link: function(scope, elem) {
 
         // Receive render events
@@ -396,6 +396,7 @@ function (angular, app, _, $, kbn) {
 
         // Function for rendering panel
         function render_panel() {
+          var myChart;
           var  chartData;
           var renderBrushed =function(){};
           var colors = [];
@@ -449,8 +450,13 @@ function (angular, app, _, $, kbn) {
 		
 		
 		    var idd = scope.$id;
-        var echarts = require('echarts');
-        require(['jquery.flot.pie'], function(){
+        //var echarts = require('echarts');
+
+        require(['echarts'], function(ec){
+          var echarts = ec;
+          if(myChart) {
+            myChart.dispose();
+          }
             // Populate element
             try {
 				 var labelcolor = false;
@@ -557,7 +563,7 @@ function (angular, app, _, $, kbn) {
 
 	      if(scope.panel.chart === 'china_map'){
 		
-		var myChart7 = echarts.init(document.getElementById(idd));
+		 myChart = echarts.init(document.getElementById(idd));
 		
 
 
@@ -675,8 +681,8 @@ var option7 = {
 };
 		
 		 if(arrlabel.length===0){
-				myChart7.setOption(option_nodata);}else{
-					myChart7.setOption(option7);
+				myChart.setOption(option_nodata);}else{
+					myChart.setOption(option7);
 				}
 		
 		
@@ -686,7 +692,7 @@ var option7 = {
 		    if(scope.panel.chart === 'bmap'){
 	
 	
-	var myChart8 = echarts.init(document.getElementById(idd));
+	 myChart = echarts.init(document.getElementById(idd));
 	
 
 
@@ -1027,8 +1033,8 @@ var option8 = {
     ]
 };
 	 if(arrlabel.length===0){
-				myChart8.setOption(option_nodata);}else{
-					myChart8.setOption(option8);
+				myChart.setOption(option_nodata);}else{
+					myChart.setOption(option8);
 				}
 	
 		}		
@@ -1036,7 +1042,7 @@ var option8 = {
 
         if(scope.panel.chart === 'cmap'){
 
-            var myChart= echarts.init(document.getElementById(idd));
+             myChart= echarts.init(document.getElementById(idd));
 
 
             var data = arrdata;
@@ -1264,7 +1270,7 @@ var option8 = {
                 return a.value[2] - b.value[2];
               });
 
-              for (var i3 = 0; i < Math.min(selectedItems.length, maxBar); i3++) {
+              for (var i3 = 0; i3 < Math.min(selectedItems.length, maxBar); i3++) {
                 categoryData.push(selectedItems[i3].name);
                 barData.push(selectedItems[i3].value[2]);
               }
@@ -1311,9 +1317,7 @@ var option8 = {
 
                 if(scope.panel.chart === 'zmap'){
 
-                    var myChart11= echarts.init(document.getElementById(idd));
-
-
+                     myChart= echarts.init(document.getElementById(idd));
                     var data11 = arrdata;
                     convertData = function (data) {
                         var res = [];
@@ -1566,13 +1570,13 @@ var option8 = {
                     });
                   };
 
-                    myChart11.on('brushselected', renderBrushed);
+                    myChart.on('brushselected', renderBrushed);
 
-                    myChart11.setOption(option11);
+                    myChart.setOption(option11);
 
 
                     setTimeout(function () {
-                        myChart11.dispatchAction({
+                        myChart.dispatchAction({
                             type: 'brush',
                             areas: [
                                 {
