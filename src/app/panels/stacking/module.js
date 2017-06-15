@@ -415,7 +415,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
   });
 
-   module.directive('stackingChart', function($scope, querySrv,dashboard,filterSrv) {
+   module.directive('stackingChart', function(querySrv,dashboard,filterSrv) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
@@ -709,7 +709,7 @@ var option = {
                           to: moment.utc(selecttime[params.batch[0].endValue]).toDate(),
                           field: filterSrv.getTimeField()
                       });
-                      dashboard.current.linkage_id = $scope.panel.linkage_id;
+                      dashboard.current.linkage_id = scope.panel.linkage_id;
                       dashboard.current.enable_linkage = false;
                       dashboard.refresh();
                   }

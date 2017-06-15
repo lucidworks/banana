@@ -389,7 +389,7 @@ function (angular, app, _, $, kbn) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
-
+        var myChart;
         // Receive render events
         scope.$on('render',function(){
           render_panel();
@@ -448,8 +448,10 @@ function (angular, app, _, $, kbn) {
                       term  = "健康";
                       color_term = '#1e90ff';
                   }
-
-			var myChart = echarts.init(document.getElementById(idd));
+      if(myChart) {
+        myChart.dispose();
+      }
+      myChart = echarts.init(document.getElementById(idd));
 
 
                  var option = {
