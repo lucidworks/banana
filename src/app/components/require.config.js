@@ -55,11 +55,11 @@ require.config({
     elasticjs:                '../vendor/elasticjs/elastic-angular-client',
     solrjs:                   '../vendor/solrjs/solr-angular-client',
 
-    d3:                       '../../node_modules/d3/build/d3',
+    d3:                       '../../bower_components/d3/d3',
     viz:                    '../vendor/viz.v1.0.0.min',
     Donut3D:                  '../vendor/d3/Donut3D',
     html2canvas:              '../../bower_components/html2canvas/build/html2canvas',
-    jspdf:                    '../../bower_components/jspdf/dist/jspdf',
+    jspdf:                    '../../bower_components/jspdf/dist/jspdf.min',
 
     /*
     d3:                       '../vendor/d3',
