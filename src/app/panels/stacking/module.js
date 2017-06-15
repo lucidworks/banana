@@ -533,7 +533,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           }
 
           var idd = scope.$id;
-          var echarts = require('echarts');
+          require(['echarts'], function(ec){
+           var echarts = ec;
           if(myChart) {
             myChart.dispose();
           }
@@ -918,7 +919,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 					  myChart.setOption(option1);
 				   
 			    }
-        }
+          });
+          }
+
 
       }
     };
