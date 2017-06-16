@@ -90,14 +90,14 @@
   <!-- END Pie or Bar chart -->
 
   <!-- START Table -->
-  <table ng-style="panel.style" class="table tableSection table-striped table-condensed" ng-show="panel.chart == 'table'">
+  <table ng-style="panel.style" class="table tableSection table-striped table-condensed" ng-if="panel.chart == 'table'">
     <thead>
       <th>Term</th>
       <th>{{panel.mode | capitalize}}</th>
       <th>Action</th>
     </thead>
     <tbody ng-style="{height: row.height}">
-    <tr ng-repeat="term in data" ng-show="showMeta(term)">
+    <tr ng-repeat="term in data" ng-if="showMeta(term)">
       <td>{{term.label}}</td>
       <td>{{term.data[0][1].toFixed(panel.decimal_points)}}</td>
       <td>

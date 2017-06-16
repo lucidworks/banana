@@ -39,7 +39,7 @@
 	  <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="../bower_components/angular-material/angular-material.min.css">
 
-    <div ng-repeat='alert in dashAlerts.list' class="alert-{{alert.severity}} dashboard-notice" ng-show="$last" style="position:fixed">
+    <div ng-repeat='alert in dashAlerts.list' class="alert-{{alert.severity}} dashboard-notice" ng-if="$last" style="position:fixed">
       <button type="button" class="close" ng-click="dashAlerts.clear(alert)" style="padding-right:50px">&times;</button>
       <strong>{{alert.title}}</strong> <span ng-bind-html-unsafe='alert.text'></span> <div style="padding-right:10px" class='pull-right small'> {{$index + 1}} alert(s) </div>
     </div>
@@ -61,7 +61,7 @@
     <div ng-include="'app/partials/skin-config.html'" class="ng-scope" ></div>
     <div class="container-fluid main">
       <div class="row-fluid">
-          <span  style="position:absolute; left:50%; top:50%; margin:-25px 0 0 -25px ;" ng-show="dashboard.current.loading">
+          <span  style="position:absolute; left:50%; top:50%; margin:-25px 0 0 -25px ;" ng-show="dashboard.current.load">
             <i class="icon-spinner icon-spin icon-5x"></i>
           </span>
           <div ng-view ></div>

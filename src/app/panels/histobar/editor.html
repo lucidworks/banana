@@ -23,14 +23,14 @@
     <label class="small">FontSize</label>
     <select class="input-mini" ng-model="panel.fontsize" ng-options="f for f in [5,6,7,8,9,10,12,14,16,18,20,24,28,32,36,42,48,52,60,72]"></select></span>
   </div>
-	<div class="span3" ng-show="panel.mode != 'count'">
+	<div class="span3" ng-if="panel.mode != 'count'">
       <label class="small">Note</label><small> In <strong>{{panel.mode}}</strong> mode the configured field <strong>must</strong> be a numeric type.</small>
     </div>
-    <div class="span2" ng-show="panel.mode != 'count' || panel.mode != 'counts'">
+    <div class="span2" ng-if="panel.mode != 'count' || panel.mode != 'counts'">
       <label class="small">Max Rows <tip>Maximum number of rows to retrieve for the result set.</tip></label>
       <input ng-change="set_refresh(true)" placeholder="100000" type="number" class="input-small" ng-model="panel.max_rows">
     </div>
-	 <div class="span1" ng-show="panel.chart == 'histobar'">
+	 <div class="span1" ng-if="panel.chart == 'histobar'">
     <label class="small">linkage</label><input type="checkbox" ng-model="panel.linkage" ng-checked="panel.linkage">
   </div>
     <div class="span1" >
@@ -56,7 +56,7 @@
     </div>
 
 
-    <div class="span2" ng-show="panel.average">
+    <div class="span2" ng-if="panel.average">
       <label class="small">Color <tip>This color is used for second value.</tip></label>
       <input ng-change="set_refresh(true)" placeholder="Start typing" type="text" class="input-small" ng-model="panel.field_color">
     </div>
@@ -84,7 +84,7 @@
     <div class="span2">
       <label class="small">Auto-interval</label><input type="checkbox" ng-model="panel.auto_int" ng-checked="panel.auto_int" />
     </div>
-    <div class="span2" ng-show='panel.auto_int'>
+    <div class="span2" ng-if='panel.auto_int'>
       <label class="small">Resolution <tip>Shoot for this many data points, rounding to sane intervals</tip></label>
       <input type="number" class='input-mini' ng-model="panel.resolution" ng-change='set_refresh(true)'/>
     </div>

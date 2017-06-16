@@ -18,7 +18,7 @@
     <label class="small">Mode <tip data-placement="right">For min, mean, max, and sum modes. Field type has to be numeric.</tip></label>
     <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['count','min','mean','max','sum']"></select>
   </div>
-  <div class="span2" ng-show="panel.mode != 'count'">
+  <div class="span2" ng-if="panel.mode != 'count'">
     <label class="small">Stats Field <tip>This is the field that contains numerical values.</tip></label>
     <input type="text" class="input-small" bs-typeahead="fields.list" ng-model="panel.stats_field" ng-change="set_refresh(true)">
   </div>
@@ -28,7 +28,7 @@
   </div>
 </div>
 <div class="row-fluid">
-  <div class="span2" ng-show="panel.map == 'world'">
+  <div class="span2" ng-if="panel.map == 'world'">
     <h6>Country Names
     <tip> Coutry Names in the World Map would be detected, if checked</tip>
     </h6>

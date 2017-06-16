@@ -49,9 +49,9 @@
                 <div class="accordion-body collapse" id="facet_collapse_{{field | safeFragment}}">
                     <div class="accordion-inner">
                         <div ng-repeat="item in facet_data[field]">
-                            <div ng-show="facet_data[field][$index]['count']>0 && $index < panel.facet_limit">
+                            <div ng-if="facet_data[field][$index]['count']>0 && $index < panel.facet_limit">
                                 <a href="" ng-click="set_facet_filter(field,facet_data[field][$index]['value']);" class="tab">{{facet_data[field][$index]['value']}} ({{facet_data[field][$index]['count']}})</a>
-                                <a ng-show="filter_close(field)" ng-click="delete_filter('terms',field)" style="float:right;"><i class="icon-remove"></i></a>
+                                <a ng-if="filter_close(field)" ng-click="delete_filter('terms',field)" style="float:right;"><i class="icon-remove"></i></a>
                             </div>
                         </div>
                     </div>

@@ -11,7 +11,7 @@
   * lables :: Only 'pie' charts. Labels on the pie?
 */
 define([
-  'angular',
+  '../../bower_components/angular/angular',
   'app',
   'underscore',
   'jquery',

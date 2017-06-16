@@ -45,7 +45,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       switch:"App_Demo_Operate",
       panel_hints: true,
       hide_head: false,
-        loading:true,
+        load:true,
         enable_linkage:true,
       linkage_id:'a',
       rows: [],
@@ -147,13 +147,14 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         if (DEBUG) { console.debug('dashboard: kbnIndex.collections p = ',p); }
         if (p.length > 0) {
           self.current.solr.core_list = p;
-        } else {
-          // No collections returned from Solr
-          // Display alert only if USE_ADMIN_CORES flag in config.js is true.
-          if (config.USE_ADMIN_CORES) {
-            //alertSrv.set('No collections','There were no collections returned from Solr.','info',5000);
-          }
         }
+        // } else {
+        //   // No collections returned from Solr
+        //   // Display alert only if USE_ADMIN_CORES flag in config.js is true.
+        //   if (config.USE_ADMIN_CORES) {
+        //   //   //alertSrv.set('No collections','There were no collections returned from Solr.','info',5000);
+        //   // }
+        // }
       });
 
       if(self.current.index.interval !== 'none') {

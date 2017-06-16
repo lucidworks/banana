@@ -25,41 +25,41 @@ function (angular) {
               'onStop:\'panelMoveStop\''+
               '}"  ng-model="row.panels">{{panel.type}}</span>'+
           '</span>' +
-          '<span class="extra row-button" ng-show="panel.draggable == false">' +
+          '<span class="extra row-button" ng-if="panel.draggable == false">' +
             '<span class="row-text">{{panel.type}}</span>'+
           '</span>' +
 
-          '<span class="extra row-button" ng-show="panel.editable != false">' +
+          '<span class="extra row-button" ng-if="panel.editable != false">' +
             '<span confirm-click="row.panels = _.without(row.panels,panel)" '+
             'confirmation="Are you sure you want to remove this {{panel.type}} panel?" class="pointer">'+
             '<i class="icon-remove pointer" bs-tooltip="\'Remove\'"></i></span>'+
           '</span>' +
 
-          '<span class="row-button extra" ng-show="panel.editable != false">' +
+          '<span class="row-button extra" ng-if="panel.editable != false">' +
             '<span bs-modal="\'app/partials/paneleditor.html\'" class="pointer">'+
             '<i class="icon-wrench pointer" bs-tooltip="\'Configure\'"></i></span>'+
           '</span>' +
 
-        '<span class="row-button extra" ng-show="panel.editable != false">' +
+        '<span class="row-button extra" ng-if="panel.editable != false">' +
         '<i ng-click="display()" class="pointer" ng-class=panel.icon bs-tooltip="\'Display\'"></i>'+
         '</span>' +
 
-          '<span class="row-button extra" ng-show="panel.transpose_show">' +
+          '<span class="row-button extra" ng-if="panel.transpose_show">' +
           '<span class="rotate-icon pointer" bs-tooltip="\'Transpose Rows and Columns\'" ng-click="flip()"></span>' +
           '</span>' +
 
-          '<span ng-repeat="task in panelMeta.modals" class="row-button extra" ng-show="panel.spyable">' +
+          '<span ng-repeat="task in panelMeta.modals" class="row-button extra" ng-if="panel.spyable">' +
             '<span bs-modal="task.partial"class="pointer"><i ' +
               'bs-tooltip="task.description" ng-class="task.icon" class="pointer"></i></span>'+
           '</span>' +
 
-          '<span class="dropdown row-button extra" bs-tooltip="\'Export\'" data-placement="bottom" ng-show="panelMeta.exportfile">' +
+          '<span class="dropdown row-button extra" bs-tooltip="\'Export\'" data-placement="bottom" ng-if="panelMeta.exportfile">' +
             '<span class="pointer" class="dropdown-toggle" data-toggle="dropdown">' +
                 '<i class="icon-save" class="pointer"></i>' +
             '</span>' +
             '<ul class="dropdown-menu" style="padding:10px; left:-150px;">' +
           '<h5>Number of Rows</h5><form><input type="number" value="panel.exportSize" ng-model="panel.exportSize" placeholder="{{panel.size * panel.pages}}"/>' +
-          '<div ng-show="panel.type==\'table\'"><input type="checkbox" ng-model="panel.exportAll"/> All Fields <tip>If this option is checked, all fields in the Solr schema will be exported. Otherwise, only the fields that you have selected to appear in your Table view will be exported</tip></div></form>' +
+          '<div ng-if="panel.type==\'table\'"><input type="checkbox" ng-model="panel.exportAll"/> All Fields <tip>If this option is checked, all fields in the Solr schema will be exported. Otherwise, only the fields that you have selected to appear in your Table view will be exported</tip></div></form>' +
                 '<li>' +
                     '<h5>Export to File</h5>' +
                         '<ul class="unstyled">' +
@@ -76,13 +76,13 @@ function (angular) {
 //              'ng-class="dropdown.icon" class="pointer"></i></a></span>'+
 //          '</span>' +
 
-          '<span class="row-button extra" ng-show="panelMeta.loading == true">' +
+          '<span class="row-button extra" ng-if="panelMeta.loading == true">' +
             '<span>'+
               '<i class="icon-spinner smaller icon-spin icon-large"></i>' +
             '</span>'+
           '</span>' +
 
-          '<span class="row-button row-text panel-title" ng-show="panel.title">' +
+          '<span class="row-button row-text panel-title" ng-if="panel.title">' +
             '{{panel.title}}' +
           '</span>'+
 

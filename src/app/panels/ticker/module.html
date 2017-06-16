@@ -12,6 +12,6 @@
         <span bs-tooltip="'Then: '+query.hits.old+', Now: '+query.hits.new" ng-class="{'text-success': query.hits.new >= query.hits.old, 'text-error': query.hits.old > query.hits.new}" class='pointer strong'>
       <i class='large' ng-class="{'icon-caret-up': query.hits.new >= query.hits.old, 'icon-caret-down': query.hits.old > query.hits.new}"></i>{{query.percent}}%
     </span>
-        <span class="tiny light" ng-show="query.info.alias != ''">({{query.info.alias}})</span>
+        <span class="tiny light" ng-if="query.info.alias != ''">({{query.info.alias}})</span>
     </div>
 </div>
