@@ -72,9 +72,6 @@ define([
         .when('/dashboard/:kbnType/:kbnId/:params', {
           templateUrl: 'app/partials/dashboard.html'
         })
-        .when('/alarm', {
-          templateUrl: 'app/partials/alarm.html'
-        })
         .otherwise({
           redirectTo: 'dashboard'
         });
@@ -98,7 +95,7 @@ define([
       'kibana',
     ];
 
-    _.each('controllers directives factories services filters alarms'.split(' '),
+    _.each('controllers directives factories services filters'.split(' '),
       function (type) {
         var module_name = 'kibana.'+type;
         // create the module
@@ -120,7 +117,6 @@ define([
       'controllers/all',
       'directives/all',
       'filters/all',
-      'alarms/all'
     ], function () {
 
       // bootstrap the app
