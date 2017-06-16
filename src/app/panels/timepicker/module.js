@@ -113,7 +113,7 @@ function (angular, app, _, moment, kbn, $) {
           }
         }
       });
-        dashboard.current.loading = false;
+        dashboard.current.load = false;
     };
 
       $scope.display=function() {

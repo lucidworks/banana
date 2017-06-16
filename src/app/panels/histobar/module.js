@@ -41,7 +41,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
   var module = angular.module('kibana.panels.histobar', []);
   app.useModule(module);
-  var echarts = require('echarts');
 
   module.controller('histobar', function($scope, $q, querySrv, dashboard, filterSrv) {
     var _d;
@@ -534,25 +533,24 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
 
           var idd = scope.$id;
-         
-            // Populate element
-            try {
-				
-				 var labelcolor = false;
-				 var isspan = false;
-				 if (dashboard.current.style === 'dark'){
+          var echarts = require('echarts');
+          if(myChart) {
+            myChart.dispose();
+          }
+
+				  var labelcolor = false;
+				  var isspan = false;
+				  if (dashboard.current.style === 'dark'){
 							labelcolor = true;
-						}
-                if (scope.panel.span <5){
-					    isspan = true;
-                }
+          }
+          if (scope.panel.span <5){
+            isspan = true;
+          }
               // Add plot to scope so we can build out own legend
-      if(scope.panel.chart === 'histobar') {
-        if(myChart) {
-          myChart.dispose();
-        }
-        myChart = echarts.init(document.getElementById(idd));
-        var option = {
+          if(scope.panel.chart === 'histobar') {
+
+            myChart = echarts.init(document.getElementById(idd));
+            var option = {
           grid: {
             left: '3%',
             right: '4%',
@@ -677,32 +675,23 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             }
         ]
         };
-
-        // 使用刚指定的配置项和数据显示图表。
-
-          myChart.setOption(option);
-			    myChart.on('datazoom', function (params) {
-            if (scope.panel.linkage) {
-                filterSrv.set({
-                    type: 'time',
-                    // from  : moment.utc(ranges.xaxis.from),
-                    // to    : moment.utc(ranges.xaxis.to),
-                    from: moment.utc(selecttime[params.batch[0].startValue]).toDate(),
-                    to: moment.utc(selecttime[params.batch[0].endValue]).toDate(),
-                    field: filterSrv.getTimeField()
-                });
-                dashboard.current.linkage_id = scope.panel.linkage_id;
-                dashboard.current.enable_linkage = false;
-                dashboard.refresh();
-            }
-
-				});
-			  
-			  }
-            } catch(e) {
-              elem.text(e);
-            }
-         
+            myChart.setOption(option);
+            myChart.on('datazoom', function (params) {
+              if (scope.panel.linkage) {
+                  filterSrv.set({
+                      type: 'time',
+                      // from  : moment.utc(ranges.xaxis.from),
+                      // to    : moment.utc(ranges.xaxis.to),
+                      from: moment.utc(selecttime[params.batch[0].startValue]).toDate(),
+                      to: moment.utc(selecttime[params.batch[0].endValue]).toDate(),
+                      field: filterSrv.getTimeField()
+                  });
+                  dashboard.current.linkage_id = scope.panel.linkage_id;
+                  dashboard.current.enable_linkage = false;
+                  dashboard.refresh();
+              }
+				    });
+			    }
         }
 
       }
