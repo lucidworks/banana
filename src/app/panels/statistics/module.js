@@ -229,7 +229,6 @@ define([
                 // this callback will be called asynchronously
                 // when the response is available
                 $scope.yaxis_min = null;
-                console.log(response);
                 if ($scope.panel.mode === 'count') {
                   var temp_data = response.facet_counts.facet_fields[$scope.panel.field];
                   for(var i=0; i<temp_data.length; i=i+2){

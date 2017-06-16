@@ -12,13 +12,13 @@
       <tr>
         <th st-sort="term">Iterm</th>
         <th st-sort="count">Count</th>
-        <th ng-if="panel.mode === 'statistic'" st-sort="mean">Mean</th>
+        <th ng-show="panel.mode === 'statistic'" st-sort="mean">Mean</th>
+        <th ng-show="panel.mode === 'statistic'" st-sort="mean">Max</th>
+        <th ng-show="panel.mode === 'statistic'" st-sort="mean">Min</th>
+        <th ng-show="panel.mode === 'statistic'" st-sort="mean">Stddev</th>
       </tr>
       <tr>
         <th>
-          <input st-search="'firstName'" placeholder="search for firstname" class="input-sm form-control" type="search"/>
-        </th>
-        <th colspan="4">
           <input st-search placeholder="global search" class="input-sm form-control" type="search"/>
         </th>
       </tr>
@@ -27,7 +27,10 @@
       <tr ng-repeat="row in displayedCollection">
         <td>{{row.term}}</td>
         <td>{{row.count}}</td>
-        <td ng-if="panel.mode === 'statistic'">{{row.mean}}</td>
+        <td ng-show="panel.mode === 'statistic'">{{row.mean}}</td>
+        <td ng-show="panel.mode === 'statistic'">{{row.max}}</td>
+        <td ng-show="panel.mode === 'statistic'">{{row.min}}</td>
+        <td ng-show="panel.mode === 'statistic'">{{row.stddev}}</td>
       </tr>
       </tbody>
       <tfoot>
