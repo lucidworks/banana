@@ -1,0 +1,18 @@
+<div ng-controller="column" ng-init="init();">
+  <div ng-style="{'display':panel.display}">
+    <!-- Panels -->
+    <div ng-repeat="(name, panel) in panel.panels" ng-hide="panel.height == '0px' || panel.hide" class="row-fluid panel" ng-style="{'display':panel.display}" style="min-height:{{panel.height}}; position:relative">
+      <!-- Error Panel -->
+      <div class="row-fluid">
+        <div class="span12 alert alert-error panel-error" ng-hide="!panel.error">
+          <a class="close" ng-click="panel.error=false">&times;</a>
+          <i class="icon-exclamation-sign"></i> <strong>Oops!</strong> {{panel.error}}
+        </div>
+      </div>
+      <!-- Content Panel -->
+      <div class="row-fluid">
+        <kibana-panel type="panel.type"></kibana-panel>
+      </div>
+    </div>
+  </div>
+</div>

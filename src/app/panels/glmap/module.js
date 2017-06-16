@@ -15,8 +15,7 @@ define([
   'app',
   'underscore',
   'jquery',
-  'kbn',
-  'echarts-gl',
+  'kbn'
 ],
 function (angular, app, _, $, kbn) {
   'use strict';
@@ -391,7 +390,7 @@ function (angular, app, _, $, kbn) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
-
+        var myChart;
         // Receive render events
         scope.$on('render',function(){
           render_panel();
@@ -452,7 +451,12 @@ var option_nodata = {
 		
 		
 		var idd = scope.$id;
-    var echarts = require('echarts');
+          require(['echarts','echarts-gl'], function(ec,gl){
+            var echarts = ec;
+            if(myChart) {
+              myChart.dispose();
+            }
+    //var echarts = require('echarts');
 
           //require(['echartsgl'], function(){
             // Populate element
@@ -490,7 +494,7 @@ var option_nodata = {
                       [5,13,10],[5,14,5],[5,15,7],[5,16,11],[5,17,6],[5,18,0],[5,19,5],[5,20,3],[5,21,4],[5,22,2],[5,23,0],[6,0,1],[6,1,0],[6,2,0],[6,3,0],
                       [6,4,0],[6,5,0],[6,6,0],[6,7,0],[6,8,0],[6,9,0],[6,10,1],[6,11,0],[6,12,2],[6,13,1],[6,14,3],[6,15,4],[6,16,0],[6,17,0],[6,18,0],[6,19,0],
                       [6,20,1],[6,21,2],[6,22,2],[6,23,6]];
-                    var myChart33 = echarts.init(document.getElementById(idd));
+                     myChart = echarts.init(document.getElementById(idd));
                     var option33 = {
                         tooltip: {},
                         visualMap: {
@@ -574,9 +578,9 @@ var option_nodata = {
                     //没有数据显示NO DATA
 
                     if(scope.data.length === 0){
-                        myChart33.setOption(option_nodata);}else{
-                        myChart33.setOption(option33);
-                        myChart33.on('click', function (params) {
+                        myChart.setOption(option_nodata);}else{
+                        myChart.setOption(option33);
+                        myChart.on('click', function (params) {
                             // 点击联动
                             scope.build_search(params);
                         });
@@ -586,7 +590,7 @@ var option_nodata = {
 
                 if(scope.panel.chart === 'bar') {
 
-                    var myChart2 = echarts.init(document.getElementById(idd));
+                     myChart = echarts.init(document.getElementById(idd));
 
                     var hours1 = ['12a', '1a', '2a', '3a', '4a', '5a', '6a',
                         '7a', '8a', '9a','10a','11a',
@@ -692,9 +696,9 @@ var option_nodata = {
 
 
                     if(scope.data.length === 0){
-                        myChart2.setOption(option_nodata);}else{
-                        myChart2.setOption(option2);
-                        myChart2.on('click', function (params) {
+                        myChart.setOption(option_nodata);}else{
+                        myChart.setOption(option2);
+                        myChart.on('click', function (params) {
                             // 点击联动
                             scope.build_search(params);
                         });
@@ -703,7 +707,7 @@ var option_nodata = {
 
                 if(scope.panel.chart === 'flow') {
 
-                    var myChart1 = echarts.init(document.getElementById(idd));
+                     myChart = echarts.init(document.getElementById(idd));
                     var option1 = {
                         tooltip: {},
 
@@ -757,16 +761,16 @@ var option_nodata = {
                         }]
                     };
                     if(scope.data.length === 0){
-                        myChart1.setOption(option_nodata);}else{
-                        myChart1.setOption(option1);
-                        myChart1.on('click', function (params) {
+                        myChart.setOption(option_nodata);}else{
+                        myChart.setOption(option1);
+                        myChart.on('click', function (params) {
                             // 点击联动
                             scope.build_search(params);
                         });
                     }
                 }
                 if(scope.panel.chart === 'earth') {
-                    var myChart = echarts.init(document.getElementById(idd));
+                     myChart = echarts.init(document.getElementById(idd));
                    var option = {
                        backgroundColor: '#000',
                        globe: {
@@ -813,7 +817,7 @@ var option_nodata = {
 
 
                 if(scope.panel.chart === 'earth1') {
-                    var myChart11 = echarts.init(document.getElementById(idd));
+                     myChart = echarts.init(document.getElementById(idd));
                    // $.getJSON("vendor/echarts/data-1491887968120-rJODPy9ae.json", function (data) {
 
                         var data2 = scope.data.filter(function (dataItem) {
@@ -887,94 +891,94 @@ var option_nodata = {
                             }]
                         };
 
-                        myChart11.setOption(option11);
+                        myChart.setOption(option11);
                    // })
                 }
-                if(scope.panel.chart === 'world') {
-                    var myChart5 = echarts.init(document.getElementById(idd));
-                    $.getJSON("vendor/echarts/data-1491887968120-rJODPy9ae.json", function () {
-
-                        var data3 = scope.data.filter(function (dataItem) {
-                            return dataItem[2] > 0;
-                        }).map(function (dataItem) {
-                            return [dataItem[0], dataItem[1], Math.sqrt(dataItem[2])];
-                        });
-
-                        var option5 = {
-
-                            backgroundColor: '#cdcfd5',
-                            geo3D: {
-                                map: 'world',
-                                shading: 'lambert',
-
-                                lambertMaterial: {
-                                    baseTexture: 'vendor/echarts/data-1491896059428-B1QbPbq6e.jpg',
-                                    textureTiling: 20
-                                },
-
-                                postEffect: {
-                                    enable: true,
-                                    SSAO: {
-                                        enable: true,
-                                        radius: 3,
-                                        quality: 'high'
-                                    }
-                                },
-                                groundPlane: {
-                                    show: true
-                                },
-                                light: {
-                                    main: {
-                                        intensity: 1,
-                                        shadow: true,
-                                        shadowQuality: 'high',
-                                        alpha: 30
-                                    },
-                                    ambient: {
-                                        intensity: 0
-                                    },
-                                    ambientCubemap: {
-                                        texture: 'vendor/echarts/data-1491896094618-H1DmP-5px.hdr',
-                                        exposure: 2,
-                                        diffuseIntensity: 0.3
-                                    }
-                                },
-                                viewControl: {
-                                    distance: 50
-                                },
-
-                                boxHeight: 0.5
-                            },
-                            visualMap: {
-                                max: 40,
-                                calculable: true,
-                                realtime: false,
-                                inRange: {
-                                    color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
-                                },
-                                outOfRange: {
-                                    colorAlpha: 0
-                                }
-                            },
-                            series: [{
-                                type: 'bar3D',
-                                coordinateSystem: 'geo3D',
-                                shading: 'lambert',
-                                data: data3,
-                                barSize: 0.1,
-                                minHeight: 0.2,
-                                maxHeight: 10,
-                                silent: true,
-                                itemStyle: {
-                                    color: 'orange'
-                                    // opacity: 0.8
-                                }
-                            }]
-                        };
-
-                        myChart5.setOption(option5);
-                    });
-                }
+                // if(scope.panel.chart === 'world') {
+                //      myChart = echarts.init(document.getElementById(idd));
+                //     $.getJSON("vendor/echarts/data-1491887968120-rJODPy9ae.json", function () {
+                //
+                //         var data3 = scope.data.filter(function (dataItem) {
+                //             return dataItem[2] > 0;
+                //         }).map(function (dataItem) {
+                //             return [dataItem[0], dataItem[1], Math.sqrt(dataItem[2])];
+                //         });
+                //
+                //         var option5 = {
+                //
+                //             backgroundColor: '#cdcfd5',
+                //             geo3D: {
+                //                 map: 'world',
+                //                 shading: 'lambert',
+                //
+                //                 lambertMaterial: {
+                //                     baseTexture: 'vendor/echarts/data-1491896059428-B1QbPbq6e.jpg',
+                //                     textureTiling: 20
+                //                 },
+                //
+                //                 postEffect: {
+                //                     enable: true,
+                //                     SSAO: {
+                //                         enable: true,
+                //                         radius: 3,
+                //                         quality: 'high'
+                //                     }
+                //                 },
+                //                 groundPlane: {
+                //                     show: true
+                //                 },
+                //                 light: {
+                //                     main: {
+                //                         intensity: 1,
+                //                         shadow: true,
+                //                         shadowQuality: 'high',
+                //                         alpha: 30
+                //                     },
+                //                     ambient: {
+                //                         intensity: 0
+                //                     },
+                //                     ambientCubemap: {
+                //                         texture: 'vendor/echarts/data-1491896094618-H1DmP-5px.hdr',
+                //                         exposure: 2,
+                //                         diffuseIntensity: 0.3
+                //                     }
+                //                 },
+                //                 viewControl: {
+                //                     distance: 50
+                //                 },
+                //
+                //                 boxHeight: 0.5
+                //             },
+                //             visualMap: {
+                //                 max: 40,
+                //                 calculable: true,
+                //                 realtime: false,
+                //                 inRange: {
+                //                     color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+                //                 },
+                //                 outOfRange: {
+                //                     colorAlpha: 0
+                //                 }
+                //             },
+                //             series: [{
+                //                 type: 'bar3D',
+                //                 coordinateSystem: 'geo3D',
+                //                 shading: 'lambert',
+                //                 data: data3,
+                //                 barSize: 0.1,
+                //                 minHeight: 0.2,
+                //                 maxHeight: 10,
+                //                 silent: true,
+                //                 itemStyle: {
+                //                     color: 'orange'
+                //                     // opacity: 0.8
+                //                 }
+                //             }]
+                //         };
+                //
+                //         myChart.setOption(option5);
+                //     });
+                // }
 
 
 			  
@@ -984,7 +988,7 @@ var option_nodata = {
             } catch(e) {
               elem.text(e);
             }
-          //});
+          });
         }
       
 

@@ -16,7 +16,6 @@ define([
   'underscore',
   'jquery',
   'kbn',
-  'echarts',
   'echarts-liquidfill',
 ],
 function (angular, app, _, $, kbn) {
