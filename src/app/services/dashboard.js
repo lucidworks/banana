@@ -151,7 +151,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
           // No collections returned from Solr
           // Display alert only if USE_ADMIN_CORES flag in config.js is true.
           if (config.USE_ADMIN_CORES) {
-            alertSrv.set('No collections','There were no collections returned from Solr.','info',5000);
+            //alertSrv.set('No collections','There were no collections returned from Solr.','info',5000);
           }
         }
       });
@@ -198,7 +198,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
       if (DEBUG) { console.debug('dashboard: after refresh',self); }
     };
-
 
 
     var dash_defaults = function(dashboard) {
