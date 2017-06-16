@@ -17,7 +17,6 @@ define([
   'underscore',
   'jquery',
   'kbn',
-
   'jquery.flot',
   'jquery.flot.pie'
 ], function (angular, app, _, $, kbn) {
