@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="css/rotate.css">
 
     <!-- <link rel="stylesheet" href="css/kagi.css">-->
-	<link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+	  <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
     <!--<link rel="realsight-touch-icon" href="img/realsight-touch-icon.png">-->
     <!-- load the root require context -->
 
@@ -36,7 +36,8 @@
     <link rel="stylesheet" ng-href="css/bootstrap.{{dashboard.current.style||'dark'}}.min.css">
     <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
-	<link rel="stylesheet" href="css/style.css">
+	  <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../bower_components/angular-material/angular-material.min.css">
 
     <div ng-repeat='alert in dashAlerts.list' class="alert-{{alert.severity}} dashboard-notice" ng-show="$last" style="position:fixed">
       <button type="button" class="close" ng-click="dashAlerts.clear(alert)" style="padding-right:50px">&times;</button>
@@ -46,18 +47,14 @@
       <source  src="vendor/alarm/alarm.wav" type="audio/wav">
 
     </audio>
-    <div id="bodyContent"  >
+    <div id="bodyContent">
     <div class="navbar navbar-static-top" ng-hide = "dashboard.current.hide_head ">
       <div class="navbar-inner">
         <div class="container-fluid">
-		<img src="img/rsapm_logo.png" data-placement="left" style="float:left;margin-top:4px">
+		      <img src="img/rsapm_logo.png" data-placement="left" style="float:left;margin-top:4px">
           <span class="brand" style = "text-align:center;margin-top:4px">
-
-               &nbsp;&nbsp;&nbsp;&nbsp; {{dashboard.current.title}}
+         &nbsp;&nbsp;&nbsp;&nbsp; {{dashboard.current.title}}
           </span>
-
-
-
         </div>
       </div>
     </div>
