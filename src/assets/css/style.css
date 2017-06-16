@@ -11,7 +11,7 @@ body {
 strong { font-weight: 500; }
 
 a, a:hover, a:focus {
-	color: #de995e;
+	color: #fff;
 	text-decoration: none;
     -o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; -ms-transition: all .3s; transition: all .3s;
 }
@@ -110,7 +110,10 @@ img { max-width: 100%; }
 .form-top {
 	overflow: hidden;
 	padding: 0 25px 15px 25px;
-	background: #fff;
+	margin-top:30px;
+	background: rgba(255, 255, 255, 0.9);
+	width:400px;
+	height:95px;
 	-moz-border-radius: 4px 4px 0 0; -webkit-border-radius: 4px 4px 0 0; border-radius: 4px 4px 0 0;
 	text-align: left;
 }
@@ -128,14 +131,15 @@ img { max-width: 100%; }
 	width: 25%;
 	padding-top: 5px;
 	font-size: 66px;
-	color: #ddd;
+	color: #989495;
 	line-height: 100px;
 	text-align: right;
 }
 
 .form-bottom {
 	padding: 25px 25px 30px 25px;
-	background: #eee;
+	background: rgba(238, 238, 238, 0.8);
+	width:400px;
 	-moz-border-radius: 0 0 4px 4px; -webkit-border-radius: 0 0 4px 4px; border-radius: 0 0 4px 4px;
 	text-align: left;
 }
@@ -145,7 +149,7 @@ img { max-width: 100%; }
 }
 
 .form-bottom form button.btn {
-	width: 100%;
+	width: 50%;
 }
 
 .form-bottom form .input-error {

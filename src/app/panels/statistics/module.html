@@ -12,7 +12,7 @@
       <tr>
         <th st-sort="term">Iterm</th>
         <th st-sort="count">Count</th>
-        <th ng-show="panel.mode === 'statistic'" st-sort="mean">Mean</th>
+        <th ng-if="panel.mode === 'statistic'" st-sort="mean">Mean</th>
       </tr>
       <tr>
         <th>
@@ -27,7 +27,7 @@
       <tr ng-repeat="row in displayedCollection">
         <td>{{row.term}}</td>
         <td>{{row.count}}</td>
-        <td ng-show="panel.mode === 'statistic'">{{row.mean}}</td>
+        <td ng-if="panel.mode === 'statistic'">{{row.mean}}</td>
       </tr>
       </tbody>
       <tfoot>

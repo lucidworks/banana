@@ -21,11 +21,11 @@
             ng-options="f for f in ['descending','ascending']"
             ng-change="set_refresh(true)"></select>
   </div>
-  <div class="span2" ng-show="panel.chart == 'dashboard'">
+  <div class="span2" ng-if="panel.chart == 'dashboard'">
       <label class="small">First <tip>First threshold  for this value field.</tip></label>
       <input ng-change="set_refresh(true)" placeholder="1000" type="number" class="input-small" ng-model="panel.threshold_first">
     </div>
-	<div class="span2" ng-show="panel.chart == 'dashboard'">
+	<div class="span2" ng-if="panel.chart == 'dashboard'">
       <label class="small">Second <tip>Second threshold  for this value field.</tip></label>
       <input ng-change="set_refresh(true)" placeholder="2000" type="number" class="input-small" ng-model="panel.threshold_second">
     </div>
@@ -47,11 +47,11 @@
     <label class="small">Mode <tip data-placement="right">For min, mean, max, and sum modes. Field type has to be numeric.</tip></label>
     <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['statistic', 'count']"></select>
   </div>
-  <div class="span2" ng-show="panel.mode === 'statistic'">
+  <div class="span2" ng-if="panel.mode === 'statistic'">
     <label class="small">Stats Field <tip>This is the field that contains numerical values.</tip></label>
     <input type="text" class="input-small" bs-typeahead="fields.list" ng-model="panel.stats_field" ng-change="set_refresh(true)">
   </div>
-  <div class="span3" ng-show="panel.mode === 'statistic'">
+  <div class="span3" ng-if="panel.mode === 'statistic'">
     <label class="small">Display Precision <tip>The number of digits to display after the decimal point.</tip></label>
     <select class="input-mini" ng-model="panel.decimal_points" ng-options="f for f in [0,1,2,3]"></select>
   </div>

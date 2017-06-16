@@ -16,16 +16,15 @@ define([
   'underscore',
   'jquery',
   'kbn',
-  'echarts',
   'echarts-gl',
 ],
 function (angular, app, _, $, kbn) {
   'use strict';
 
-  var module = angular.module('kibana.panels.bar3d', []);
+  var module = angular.module('kibana.panels.glmap', []);
   app.useModule(module);
 
-  module.controller('bar3d', function($scope, $timeout, timer, querySrv, dashboard, filterSrv) {
+  module.controller('glmap', function($scope, $timeout, timer, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       exportfile: true,
       editorTabs : [
@@ -388,7 +387,7 @@ function (angular, app, _, $, kbn) {
 
   });
 
-  module.directive('bar3dChart', function(querySrv,dashboard,filterSrv) {
+  module.directive('glmapChart', function(querySrv,dashboard,filterSrv) {
     return {
       restrict: 'A',
       link: function(scope, elem) {

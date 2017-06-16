@@ -10,10 +10,11 @@ jQuery(document).ready(function() {
         Fullscreen background
     */
     $.backstretch([
-                    "assets/img/backgrounds/2.jpg"
-	              , "assets/img/backgrounds/3.jpg"
-	              , "assets/img/backgrounds/1.jpg"
-        //             , "assets/img/backgrounds/4.jpg"
+	 "assets/img/backgrounds/6.jpg"
+                  // , "assets/img/backgrounds/2.jpg"
+	            //  , "assets/img/backgrounds/3.jpg"
+	             // , "assets/img/backgrounds/1.jpg"
+                  
         // , "assets/img/backgrounds/5.png"
 	             ], {duration: 3000, fade: 750});
     
@@ -36,12 +37,15 @@ jQuery(document).ready(function() {
             $(this).find('input[type="password"]').addClass('input-error');
         }
         if(username ==realUsername&&password ==realPassword){
-            sessionStorage.setItem(username,password);
+            //sessionStorage.setItem(username,password);
+            var goalUrlName = sessionStorage.getItem("goalUrl");
             $.cookie("rmbUser", "true", { expires: 3 });
             $.cookie("rtd_username", username, { expires: 3 });
             $.cookie("rtd_password", password, { expires: 3 });
             $(this).find('input[type="password"]').removeClass('input-error');
-		}else{
+            var url =window.location.href;
+            document.login.action="./"+goalUrlName;
+        }else{
             e.preventDefault();
             $(this).find('input[type="text"]').addClass('input-error');
             $(this).find('input[type="password"]').addClass('input-error');
@@ -72,5 +76,8 @@ jQuery(document).ready(function() {
 function oFocus_2() {
     document.getElementById("remind_2").innerHTML = "";
     document.getElementById("change_margin_3").style.marginTop = 19 + "px";
+}
+function returnUrl() {
+    var url =window.location.href;
 }
 

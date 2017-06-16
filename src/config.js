@@ -88,6 +88,7 @@ function (Settings) {
         'd3Gauage',
         'd3Text',
         'gauge',
+	  'glmap',
 	  'sankey',
       'rca',
       'topology',

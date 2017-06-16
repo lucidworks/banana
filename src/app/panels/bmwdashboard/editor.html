@@ -9,7 +9,7 @@
     <label class="small">Style</label>
     <select class="input-small" ng-model="panel.chart" ng-options="f for f in ['bar','pie','table','dashboard','ebar','hits']"></select></span>
   </div>
-    <div class="span2" ng-show="panel.mode != 'count'|| panel.mode != 'counts'">
+    <div class="span2" ng-if="panel.mode != 'count'|| panel.mode != 'counts'">
       <label class="small">Response Field</label>
         <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead="fields.list" type="text" class="input-small" ng-model="panel.value_field">
     </div>
@@ -25,24 +25,24 @@
       <label class="small">Memory Field</label>
         <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead="fields.list" type="text" class="input-small" ng-model="panel.value_field3">
     </div>
-	<div class="span2" ng-show="panel.chart == 'dashboard'">
+	<div class="span2" ng-if="panel.chart == 'dashboard'">
     <label class="small">FontSize</label>
     <select class="input-mini" ng-model="panel.fontsize" ng-options="f for f in [7,8,9,10,12,14,16,18,20,24,28,32,36,42,48,52,60,72]"></select></span>
   </div>
-	<div class="span3" ng-show="panel.mode != 'count'">
+	<div class="span3" ng-if="panel.mode != 'count'">
       <label class="small">Note</label><small> In <strong>{{panel.mode}}</strong> mode the configured field <strong>must</strong> be a numeric type.</small>
     </div>
-    <div class="span2" ng-show="panel.mode != 'count' || panel.mode != 'counts'">
+    <div class="span2" ng-if="panel.mode != 'count' || panel.mode != 'counts'">
       <label class="small">Max Rows <tip>Maximum number of rows to retrieve for the result set.</tip></label>
       <input ng-change="set_refresh(true)" placeholder="100000" type="number" class="input-small" ng-model="panel.max_rows">
     </div>
-	<div class="span2" ng-show="0">
+	<div class="span2" ng-if="0">
       <label class="small">total_max</label>
       <input ng-change="set_refresh(true)" placeholder="Start typing" type="text" class="input-small" ng-model="panel.total_first">
     </div>
 	</div>
 	 <div class="row-fluid">
-	<div class="span2" ng-show="0">
+	<div class="span2" ng-if="0">
       <label class="small">Data segment</label>
       <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.segment" ng-options="f for f in [4]"></select>
     </div>
@@ -85,7 +85,7 @@
     </div>
   </div>
   <!-- Row for Group By field when Mode is values -->
-  <div class="row-fluid" ng-show="0">
+  <div class="row-fluid" ng-if="0">
     <div class="span2">
       <label class="small">Group By Field <tip>This field must be a single value field. Leave blank if you do not want to group the result.</tip></label>
       <input ng-change="set_refresh(true)" placeholder="Optional" bs-typeahead="fields.list" type="text" class="input-small" ng-model="panel.group_field">
@@ -102,7 +102,7 @@
     <div class="span1"> <label class="small">Lines</label><input type="checkbox" ng-model="panel.lines" ng-checked="panel.lines"></div>
     <div class="span1"> <label class="small">Points</label><input type="checkbox" ng-model="panel.points" ng-checked="panel.points"></div>
     <div class="span1"> <label class="small">Stack</label><input type="checkbox" ng-model="panel.stack" ng-checked="panel.stack"></div>
-    <div class="span1" ng-show="panel.stack">
+    <div class="span1" ng-if="panel.stack">
       <label style="white-space:nowrap" class="small">Percent <tip>Stack as a percentage of total</tip></label>
       <input type="checkbox"  ng-model="panel.percentage" ng-checked="panel.percentage">
     </div>
@@ -112,15 +112,15 @@
   </div>
 
   <div class="row-fluid" style="text-align:center;">
-    <div class="span2" ng-show="panel.lines" style="width:65px;">
+    <div class="span2" ng-if="panel.lines" style="width:65px;">
       <label class="small">Line Fill</label>
       <select class="input-mini" ng-model="panel.fill" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9,10]"></select>
     </div>
-    <div class="span2" ng-show="panel.lines" style="width:65px;">
+    <div class="span2" ng-if="panel.lines" style="width:65px;">
       <label class="small">Line Width</label>
       <select class="input-mini" ng-model="panel.linewidth" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9,10]"></select>
     </div>
-    <div class="span2" ng-show="panel.lines" style="width:60px;">
+    <div class="span2" ng-if="panel.lines" style="width:60px;">
       <label class="small">Smooth <tip>Smooth the lines by removing zero values.</tip></label>
       <input type="checkbox" ng-model="panel.lines_smooth" ng-checked="panel.lines_smooth">
     </div>
@@ -141,7 +141,7 @@
     <div class="span2">
       <label class="small">Auto-interval</label><input type="checkbox" ng-model="panel.auto_int" ng-checked="panel.auto_int" />
     </div>
-    <div class="span2" ng-show='panel.auto_int'>
+    <div class="span2" ng-if='panel.auto_int'>
       <label class="small">Resolution <tip>Shoot for this many data points, rounding to sane intervals</tip></label>
       <input type="number" class='input-mini' ng-model="panel.resolution" ng-change='set_refresh(true)'/>
     </div>
