@@ -28,7 +28,7 @@
 
 */
 define([
-  '../../../../bower_components/angular/angular',
+  'angular',
   'app',
   'jquery',
   'underscore',
@@ -41,7 +41,7 @@ define([
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
-  var module = angular.module('kibana.panels.histogram', []);
+  var module = angular.module('kibana.panels.apihistobar', []);
   app.useModule(module);
 
   module.controller('apihistobar', function($scope, $q, querySrv, dashboard, filterSrv) {
@@ -424,7 +424,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
   });
 
-   module.directive('apihistobarChart', function($scope, querySrv,dashboard,filterSrv) {
+   module.directive('apihistobarChart', function( querySrv,dashboard,filterSrv) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
