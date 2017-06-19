@@ -28,7 +28,7 @@
 
 */
 define([
-  '../../../../bower_components/angular/angular',
+  'angular',
   'app',
   'jquery',
   'underscore',
@@ -36,18 +36,18 @@ define([
   'moment',
   './timeSeries',
 
-  'jquery.flot',
-  'jquery.flot.pie',
-  'jquery.flot.selection',
-  'jquery.flot.time',
-  'jquery.flot.stack',
-  'jquery.flot.stackpercent',
-  'jquery.flot.axislabels'
+    'jquery.flot',
+    'jquery.flot.pie',
+    'jquery.flot.selection',
+    'jquery.flot.time',
+    'jquery.flot.stack',
+    'jquery.flot.stackpercent',
+    'jquery.flot.axislabels'
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
 
-  var module = angular.module('kibana.panels.histogram', []);
+  var module = angular.module('kibana.panels.apihistogram', []);
   app.useModule(module);
 
   module.controller('apihistogram', function($scope, $q, querySrv, dashboard, filterSrv) {
@@ -565,10 +565,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         function render_panel() {
           // IE doesn't work without this
           elem.css({height:scope.panel.height || scope.row.height});
-		
+
           // Populate from the query service
 		   var num_all = 0;
-		  
+
 		   _.each(scope.data, function(seri) {
 					num_all += seri.hits;
 					});
@@ -587,7 +587,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 			  }else if(label_i === 1){
 			  series.info.alias = "Error% ";}
               series.label = series.info.alias;
-				
+
             });
           } catch(e) {return;}
 
@@ -595,10 +595,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           var barwidth = kbn.interval_to_ms(scope.panel.interval);
 
           var stack = scope.panel.stack ? true : null;
-			
+
 			var xLabel = "";
 			var xunit =' ';
-			
+
 			if(scope.panel.value_field === 'cpu'){
 				xunit ='%';
 			}else if(scope.panel.value_field === 'UsedMemery'){
@@ -608,14 +608,14 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 			}
 		   if(scope.panel.mode === 'value'||scope.panel.mode === 'counts'){
 			   if (scope.panel.segment === 5){
-			   xLabel = "Threshold:"+' '+scope.panel.threshold_first+' and '+scope.panel.threshold_second+' and '+scope.panel.threshold_third; 
+			   xLabel = "Threshold:"+' '+scope.panel.threshold_first+' and '+scope.panel.threshold_second+' and '+scope.panel.threshold_third;
 			   }else if(scope.panel.segment === 3 ||scope.panel.segment === 4){
-				xLabel = "Warning:>="+' '+scope.panel.threshold_first+xunit+' and <'+scope.panel.threshold_second+xunit+';'+'Risk:>='+scope.panel.threshold_second+xunit; 
+				xLabel = "Warning:>="+' '+scope.panel.threshold_first+xunit+' and <'+scope.panel.threshold_second+xunit+';'+'Risk:>='+scope.panel.threshold_second+xunit;
 				if(scope.panel.reverse){
-					xLabel = "Warning:>"+' '+scope.panel.threshold_first+xunit+' and <='+scope.panel.threshold_second+xunit+';'+'Risk:<='+scope.panel.threshold_first+xunit; 
+					xLabel = "Warning:>"+' '+scope.panel.threshold_first+xunit+' and <='+scope.panel.threshold_second+xunit+';'+'Risk:<='+scope.panel.threshold_first+xunit;
 				   }
 			   }else if(scope.panel.segment === 2){
-				xLabel = "Threshold:"+scope.panel.threshold_first; 
+				xLabel = "Threshold:"+scope.panel.threshold_first;
 			   }
 		   }
           // Populate element
@@ -653,7 +653,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               yaxis: {
                 show: scope.panel['y-axis'],
 				min:0,
-				 
+
                 //min: null, // TODO - make this adjusted dynamicmally, and add it to configuration panel
                 //max: scope.panel.percentage && scope.panel.stack ? 100 : null,
                 axisLabel: scope.panel.mode,
@@ -662,7 +662,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 timezone: scope.panel.timezone,
                 show: 1,
                 mode: "time",
-				
+
                 //min: _.isUndefined(scope.range.from) ? null : scope.range.from.getTime(),
                 //max: _.isUndefined(scope.range.to) ? null : scope.range.to.getTime(),
                 timeformat: time_format(scope.panel.interval),
@@ -742,7 +742,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           var group, value;
 		  var allSeries = scope.plot.getData();
           if (item) {
-			  
+
             if (item.series.info.alias.substring(0,item.series.info.alias.length-2) || scope.panel.tooltip.query_as_alias) {
               group = '<small style="font-size:0.9em;">' +
                 '<i class="icon-circle" style="color:'+item.series.color+';"></i>' + ' ' +
@@ -768,7 +768,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           }
         });
 		*/
-		
+
 		  elem.bind("plothover", function (event, pos, item) {
           var group, value;
           if (item) {
@@ -789,9 +789,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             var lnLastValue = value;
 			var isr =0;
 			var isnormal = 3;
-			
+
             var lbPositiveValue = (lnLastValue>0);
-			
+
 			var lsItemTT="";
 			var lsTT="";
 			var isgroup = group;
@@ -803,12 +803,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 			}else{
 				isnormal--;
 			}
-			
+
             var hoverSeries = item.series;
             var x = item.datapoint[0];
                 // y = item.datapoint[1];
 
-           
+
             var allSeries = scope.plot.getData();
             var posSerie = -1;
             for (var i= allSeries.length - 1 ; i>=0; i--) {
@@ -860,9 +860,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                   } else {
                     group = kbn.query_color_dot(s.color, 15) + ' ';
                   }
-					
+
 				if(scope.panel.mode !== 'value' || lnLastValue !==0){
-					
+
                   lsItemTT = group + dashboard.numberWithCommas(value) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(p[0]).format('MM/DD HH:mm:ss') : moment(p[0]).format('MM/DD HH:mm:ss'));
                   lsTT = lsTT +"</br>"+ lsItemTT;
 				  isr=1;
@@ -874,7 +874,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               }
             }
 
-			
+
 			if(!isnormal){
 				lsItemTT = isgroup + dashboard.numberWithCommas(isvalue) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(item.datapoint[0]).format('MM/DD HH:mm:ss') : moment(item.datapoint[0]).format('MM/DD HH:mm:ss'));
 				lsTT = lsItemTT;

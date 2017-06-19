@@ -1,5 +1,5 @@
 define([
-  '../../../../bower_components/underscore/underscore',
+  'underscore',
   './interval'
 ],
 function (_, Interval) {
