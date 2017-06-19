@@ -42,7 +42,8 @@ define([
   'jquery.flot.time',
   'jquery.flot.stack',
   'jquery.flot.stackpercent',
-  'jquery.flot.axislabels'
+  'jquery.flot.axislabels',
+    'echarts-wordcloud'
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';

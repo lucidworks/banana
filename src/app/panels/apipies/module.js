@@ -15,7 +15,8 @@ define([
   'app',
   'underscore',
   'jquery',
-  'kbn'
+  'kbn',
+    'echarts-wordcloud'
 ],
 function (angular, app, _, $, kbn) {
   'use strict';
