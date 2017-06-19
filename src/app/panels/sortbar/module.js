@@ -423,7 +423,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
-
+        var myChart;
         // Receive render events
         scope.$on('render',function(){
           render_panel();
@@ -506,8 +506,11 @@ var option_nodata = {
 };
 		
 		var idd = scope.$id;
-      var echarts = require('echarts');
-
+          require(['echarts'], function(ec){
+            var echarts = ec;
+            if(myChart) {
+              myChart.dispose();
+            }
           // Populate element
             try {
 				
@@ -518,7 +521,7 @@ var option_nodata = {
               // Add plot to scope so we can build out own legend
               if(scope.panel.chart === 'sortbar') {
 
-                  var myChart33 = echarts.init(document.getElementById(idd));
+                   myChart = echarts.init(document.getElementById(idd));
                   var option33 = {
                       color: ['#3398DB'],
                       tooltip : {
@@ -625,9 +628,9 @@ var option_nodata = {
                   //没有数据显示NO DATA
 
                   if(scope.data.length === 0){
-                      myChart33.setOption(option_nodata);}else{
-                      myChart33.setOption(option33);
-                      myChart33.on('click', function (params) {
+                      myChart.setOption(option_nodata);}else{
+                      myChart.setOption(option33);
+                      myChart.on('click', function (params) {
                           // 点击联动
                           scope.build_search(params);
                       });
@@ -641,7 +644,7 @@ var option_nodata = {
             } catch(e) {
               elem.text(e);
             }
-         
+        });
         }
 
       }
