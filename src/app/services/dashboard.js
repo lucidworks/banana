@@ -11,12 +11,7 @@ define([
 ],
 function (angular, $, kbn, _, config, moment, Modernizr) {
   'use strict';
-    var realUsername = "";
-    var realPassword = "";
-    $.getJSON('assets/json/login.json', function(data){
-        realUsername =data.username;
-        realPassword = data.password;
-    });
+
   var DEBUG = false; // DEBUG mode
 
   var module = angular.module('kibana.services');
@@ -35,8 +30,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         row_controller:true,
         searchEnable:false,
         searchID:0,
-        realUsername:realUsername,
-        realPassword:realPassword,
         isSearch:false,
         mute:false,
       failover: false,
@@ -540,7 +533,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
               // 渲染完成时调用，获得 canvas
               onrendered: function(canvas) {
-                  var h =document.body.clientHeight;
+                  var h =document.body.scrollHeight;
                   // 从 canvas 提取图片数据
                   var imgData = canvas.toDataURL('image/png');
                   var doc = new jsPDF("p", "mm", "a3");

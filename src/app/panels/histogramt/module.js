@@ -137,7 +137,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
       $scope.display=function() {
-          if($scope.panel.display=='none'){
+          if($scope.panel.display==='none'){
               $scope.panel.display='block';
               $scope.panel.icon="icon-caret-down";
 
@@ -192,7 +192,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
      *                            this call is made recursively for more segments
      */
     $scope.get_data = function(segment, query_id) {
-        if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        if(($scope.panel.linkage_id===dashboard.current.linkage_id)||dashboard.current.enable_linkage){
         if (_.isUndefined(segment)) {
             segment = 0;
         }
@@ -291,7 +291,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         var threshold_1 = '*';
         var threshold_2 = '*';
         var threshold_3 = '*';
-        var staticfield = $scope.panel.value_field;
+
+          var temp_q="";
         if ($scope.panel.mode === 'value' || $scope.panel.mode === 'counts') {
             var arr_id = [0];
             if ($scope.panel.segment === 2) {
@@ -319,21 +320,21 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 if (id === 0) {
                     var threshold_a = threshold_1 - 1;
                     //temp_q = temp_q.replace(/responseElapsed%3A%5B0%20TO%2020000%5D/,"connectElapsed%3A%5B0%20TO%2020000%5D");
-                    var temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + 0 + '%20TO%20' + threshold_a + '%5D' + wt_json + rows_limit + fq + facet + values_mode_query;
+                     temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + 0 + '%20TO%20' + threshold_a + '%5D' + wt_json + rows_limit + fq + facet + values_mode_query;
                 }
                 else if (id === 1) {
                     var threshold_b = threshold_2 - 1;
                     //temp_q = temp_q.replace(/responseElapsed%3A%5B20000%20TO%2030000%5D/,"connectElapsed%3A%5B20000%20TO%2030000%5D");
-                    var temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + threshold_1 + '%20TO%20' + threshold_b + '%5D' + wt_json + rows_limit + fq + facet + values_mode_query;
+                     temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + threshold_1 + '%20TO%20' + threshold_b + '%5D' + wt_json + rows_limit + fq + facet + values_mode_query;
                 } else if (id === 2) {
                     //temp_q = temp_q.replace("responseElapsed%3A%5B30000%20TO%20*%5D","connectElapsed%3A%5B30000%20TO%20*%5D");
-                    var temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + threshold_2 + '%20TO%20' + threshold_3 + '%5D' + wt_json + rows_limit + fq + facet + values_mode_query;
+                     temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + threshold_2 + '%20TO%20' + threshold_3 + '%5D' + wt_json + rows_limit + fq + facet + values_mode_query;
                 } else if (id === 3) {
                     //var temp_q = 'q='+$scope.panel.value_field + '%3A%5B' +threshold_3+'%20TO%20'+'*'+'%5D'+wt_json + rows_limit + fq + facet + values_mode_query;
-                    var temp_q = 'q=' + $scope.panel.value_field1 + '%3A%5B' + '*' + '%20TO%20' + '*' + '%5D' + wt_json + rows_limit + fq + facet + '&fl=' + time_field + ' ' + $scope.panel.value_field1;
+                     temp_q = 'q=' + $scope.panel.value_field1 + '%3A%5B' + '*' + '%20TO%20' + '*' + '%5D' + wt_json + rows_limit + fq + facet + '&fl=' + time_field + ' ' + $scope.panel.value_field1;
 
                 } else {
-                    var temp_q = 'q=' + $scope.panel.value_field2 + '%3A%5B' + '*' + '%20TO%20' + '*' + '%5D' + wt_json + rows_limit + fq + facet + '&fl=' + time_field + ' ' + $scope.panel.value_field2;
+                     temp_q = 'q=' + $scope.panel.value_field2 + '%3A%5B' + '*' + '%20TO%20' + '*' + '%5D' + wt_json + rows_limit + fq + facet + '&fl=' + time_field + ' ' + $scope.panel.value_field2;
 
                 }
 
@@ -351,7 +352,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         } else {
 
             _.each($scope.panel.queries.ids, function (id) {
-                var temp_q = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet + values_mode_query;
+                 temp_q = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet + values_mode_query;
 
                 $scope.panel.queries.query += temp_q + "\n";
                 if ($scope.panel.queries.custom !== null) {
@@ -481,11 +482,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                             };
                         }
                     }
-                    if ($scope.panel.segment == 4) {
+                    if ($scope.panel.segment === 4) {
                         var entry_time1, entries1, entry_value1, entries2;
                         var hits1 = 0;
-                        var arry = new Array();
-                        var object = new Object();
+                        var arry = [];
+                        var object = {};
                         object.alias = $scope.panel.value_field1;
                         object.color = $scope.panel.field_color;
                         arry.push(object);
@@ -618,7 +619,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 		   var num_all = 0;
 		  
 		   _.each(scope.data, function(seri) {
-					if (seri.info.alias != scope.panel.value_field1 && seri.info.alias != "TotalMB" && seri.info.alias != "TotalGB"){
+					if (seri.info.alias !== scope.panel.value_field1 && seri.info.alias !== "TotalMB" && seri.info.alias !== "TotalGB"){
 					num_all += seri.hits;}
 					});
           try {
@@ -626,7 +627,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             _.each(scope.data, function(series) {
 				series.color = series.info.color;
 				label_i++;
-				if (series.info.alias == scope.panel.value_field1 || series.info.alias =="TotalMB" || series.info.alias =="TotalGB"){
+				if (series.info.alias === scope.panel.value_field1 || series.info.alias ==="TotalMB" || series.info.alias ==="TotalGB"){
 					if(scope.panel.value_field === 'UsedMemery'||scope.panel.value_field === 'UsedMemory'){
 						series.info.alias = "TotalMB";
 						series.hits =bmw_total_memory;
@@ -643,11 +644,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 				//series.color = '%';
 			  var mid = parseFloat((100*series.hits/num_all).toFixed(2));
 			  series.hits = mid;
-			  if(label_i == 2){
+			  if(label_i === 2){
 				  series.info.alias = "Warning% ";
-			  }else if(label_i == 3){
+			  }else if(label_i === 3){
 				  series.info.alias = "Normal% ";
-			  }else if(label_i == 1){
+			  }else if(label_i === 1){
 			  series.info.alias = "Risk% ";}
               series.label = series.info.alias;
 				}
@@ -807,7 +808,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             if (scope.panel.stack && scope.panel.tooltip.value_type === 'individual')  {
 				
               value = item.datapoint[1] - item.datapoint[2];
-			  if(item.series.color=='#2ce41b'){
+			  if(item.series.color==='#2ce41b'){
 				  value=item.datapoint[1];
 			  }
             } else {
@@ -821,7 +822,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 			var isr = 0;
 			var lsItemTT = "";
 			var lsTT ="";
-			if(lnLastValue!=0){
+			if(lnLastValue!==0){
 				if (item.series.info.alias.substring(0,item.series.info.alias.length-2) || scope.panel.tooltip.query_as_alias) {
 					group = '<small style="font-size:0.9em;">' +
 					'<i class="icon-circle" style="color:'+item.series.color+';"></i>' + ' ' +
@@ -886,7 +887,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
 
                   
-				if(lnLastValue != 0){
+				if(lnLastValue !== 0){
 						if (s.info.alias.substring(0,s.info.alias.length-2) || scope.panel.tooltip.query_as_alias) {
 							group = '<small style="font-size:0.9em;">' +
 							'<i class="icon-circle" style="color:'+s.color+';"></i>' + ' ' +
@@ -925,7 +926,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 to: moment.utc(ranges.xaxis.to).toDate(),
                 field: filterSrv.getTimeField()
             });
-            dashboard.current.linkage_id = $scope.panel.linkage_id;
+            dashboard.current.linkage_id = scope.panel.linkage_id;
             dashboard.current.enable_linkage = false;
             dashboard.refresh();
 
