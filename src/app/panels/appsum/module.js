@@ -245,18 +245,7 @@ function (angular, app, _, $, kbn) {
 
             // Function for validating HTML color by assign it to a dummy <div id="colorTest">
             // and let the browser do the work of validation.
-            var isValidHTMLColor = function (color) {
-                // clear attr first, before comparison
-                $('#colorTest').removeAttr('style');
-                var valid = $('#colorTest').css('color');
-                $('#colorTest').css('color', color);
 
-                if (valid === $('#colorTest').css('color')) {
-                    return false;
-                } else {
-                    return true;
-                }
-            };
 
             // Function for customizing chart color by using field values as colors.
 
@@ -434,36 +423,7 @@ function (angular, app, _, $, kbn) {
           } else {
             colors = scope.panel.chartColors;
           }
-		 
-var option_nodata = {  
-    series: [{
-       
-        type: 'wordCloud',
-        //size: ['9%', '99%'],
-        sizeRange: [50, 50],
-        //textRotation: [0, 45, 90, -45],
-        rotationRange: [0, 0],
-        //shape: 'circle',
-        textPadding: 0,
-        autoSize: {
-            enable: true,
-            minSize: 6
-        },
-        textStyle: {
-            normal: {
-                color: '#1a93f9'
-            },
-            emphasis: {
-                shadowBlur: 10,
-                shadowColor: '#333'
-            }
-        },
-        data: [{
-            name: "NO DATA",
-            value: 1
-        }]
-    }]
-};
+
 		
 
 		var idd = scope.$id;

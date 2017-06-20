@@ -534,10 +534,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
           var idd = scope.$id;
           require(['echarts'], function(ec){
-           var echarts = ec;
-          if(myChart) {
-            myChart.dispose();
-          }
+              var echarts = ec;
+              if(myChart) {
+                myChart.dispose();
+              }
 
 				  var labelcolor = false;
           if (dashboard.current.style === 'dark'){
