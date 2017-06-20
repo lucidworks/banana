@@ -107,6 +107,8 @@ function (Settings) {
         'histoline',
 		'search',
 		'piesdemo',
+		'appsum',
+      'histogra',
 		'histobardemo',
 		'd3',
       'd3pie',
