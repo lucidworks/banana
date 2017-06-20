@@ -44,12 +44,10 @@
       ],
       "list": {
         "0": {
-          "from": "NOW/HOUR-12HOUR",
-          "to": "NOW/HOUR%2B1HOUR",
+          "from": "2017-05-19T10:45:30.000Z",
+          "to": "2017-05-20T10:45:30.000Z",
           "field": "rs_timestamp",
           "type": "time",
-          "fromDateObj": "2017-05-11T13:45:48.834Z",
-          "toDateObj": "2017-05-12T01:45:48.835Z",
           "mandate": "must",
           "active": true,
           "alias": "",
@@ -71,12 +69,12 @@
       "panels": [
         {
           "error": "",
-          "span": 12,
+          "span": 8,
           "editable": true,
           "type": "timepicker",
           "loadingEditor": false,
           "status": "Stable",
-          "mode": "relative",
+          "mode": "absolute",
           "time_options": [
             "1h",
             "2h",
@@ -91,10 +89,7 @@
             "15d",
             "30d",
             "90d",
-            "180d",
-            "1y",
-            "3y",
-            "5y"
+            "180d"
           ],
           "timespan": "12h",
           "timefield": "rs_timestamp",
@@ -106,9 +101,31 @@
           },
           "filter_id": 0,
           "spyable": true,
-          "title": "time frame",
+          "title": "时间选择器",
           "display": "block",
-          "icon": "icon-caret-down"
+          "icon": "icon-caret-down",
+          "time": {
+            "from": "05/19/2017 18:45:30",
+            "to": "05/20/2017 18:45:30"
+          }
+        },
+        {
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "search",
+          "loadingEditor": false,
+          "query": "*:*",
+          "pinned": true,
+          "linkage_id": "a",
+          "display": "block",
+          "icon": "icon-caret-down",
+          "search": "*:*",
+          "history": [],
+          "spyable": true,
+          "remember": 10,
+          "title": "条件筛选",
+          "height": "100"
         }
       ]
     },
@@ -131,7 +148,7 @@
               1,
               2
             ],
-            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=duration_l&facet.limit=10000&facet.missing=true&f.duration_l.facet.sort=count",
+            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[2017-05-19T10:45:30.000Z%20TO%202017-05-20T10:45:30.000Z]&facet=true&facet.field=duration_l&facet.limit=10000&facet.missing=true&f.duration_l.facet.sort=count",
             "custom": ""
           },
           "mode": "count",
@@ -224,10 +241,11 @@
             "enable": false,
             "interval": 2
           },
-          "title": "API  - holistic health",
+          "title": "API  - 整体健康度",
           "display": "block",
           "icon": "icon-caret-down",
-          "height": "680"
+          "height": "680",
+          "linkage_id": "a"
         },
         {
           "span": 6,
@@ -242,7 +260,7 @@
               1,
               2
             ],
-            "query": "q=value_l%3A%5B4%20TO%20*%5D&wt=json&rows=0&fq=rs_timestamp:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.range=rs_timestamp&facet.range.start=NOW/HOUR-12HOUR&facet.range.end=NOW/HOUR%2B1HOUR&facet.range.gap=%2B5MINUTE\nq=value_l%3A%5B2%20TO%203%5D&wt=json&rows=0&fq=rs_timestamp:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.range=rs_timestamp&facet.range.start=NOW/HOUR-12HOUR&facet.range.end=NOW/HOUR%2B1HOUR&facet.range.gap=%2B5MINUTE\nq=value_l%3A%5B0%20TO%201%5D&wt=json&rows=0&fq=rs_timestamp:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.range=rs_timestamp&facet.range.start=NOW/HOUR-12HOUR&facet.range.end=NOW/HOUR%2B1HOUR&facet.range.gap=%2B5MINUTE\n",
+            "query": "q=value_l%3A%5B4%20TO%20*%5D&wt=json&rows=0&fq=rs_timestamp:[2017-05-19T10:45:30.000Z%20TO%202017-05-20T10:45:30.000Z]&facet=true&facet.range=rs_timestamp&facet.range.start=2017-05-19T10:45:30.000Z&facet.range.end=2017-05-20T10:45:30.000Z&facet.range.gap=%2B10MINUTE\nq=value_l%3A%5B2%20TO%203%5D&wt=json&rows=0&fq=rs_timestamp:[2017-05-19T10:45:30.000Z%20TO%202017-05-20T10:45:30.000Z]&facet=true&facet.range=rs_timestamp&facet.range.start=2017-05-19T10:45:30.000Z&facet.range.end=2017-05-20T10:45:30.000Z&facet.range.gap=%2B10MINUTE\nq=value_l%3A%5B0%20TO%201%5D&wt=json&rows=0&fq=rs_timestamp:[2017-05-19T10:45:30.000Z%20TO%202017-05-20T10:45:30.000Z]&facet=true&facet.range=rs_timestamp&facet.range.start=2017-05-19T10:45:30.000Z&facet.range.end=2017-05-20T10:45:30.000Z&facet.range.gap=%2B10MINUTE\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -255,7 +273,7 @@
           "group_field": null,
           "auto_int": true,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "10m",
           "intervals": [
             "auto",
             "1s",
@@ -295,8 +313,9 @@
             "query_as_alias": false
           },
           "height": "190",
-          "title": "API - statistical state",
-          "linkage_enable": true
+          "title": "API - 统计状态",
+          "linkage_enable": true,
+          "linkage_id": "a"
         },
         {
           "span": 6,
@@ -311,7 +330,7 @@
               1,
               2
             ],
-            "query": "q=value_l%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp value_l api_s\n",
+            "query": "q=value_l%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[2017-05-19T10:45:30.000Z%20TO%202017-05-20T10:45:30.000Z]&fl=rs_timestamp value_l api_s\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -332,7 +351,7 @@
           "field_color": "#2ce41b",
           "resolution": 100,
           "value_sort": "rs_timestamp",
-          "interval": "5m",
+          "interval": "10m",
           "intervals": [
             "auto",
             "1s",
@@ -386,8 +405,9 @@
           "height": "190",
           "value_category": "api_s",
           "another": false,
-          "title": "API - Detailed state distribution",
-          "linkage_enable": true
+          "title": "API - 详细的状态分布",
+          "linkage_enable": true,
+          "linkage_id": "a"
         },
         {
           "span": 6,
@@ -402,7 +422,7 @@
               1,
               2
             ],
-            "query": "q=duration_l%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp duration_l api_s\n",
+            "query": "q=duration_l%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[2017-05-19T10:45:30.000Z%20TO%202017-05-20T10:45:30.000Z]&fl=rs_timestamp duration_l api_s\n",
             "custom": "&fq = error_s:Normal"
           },
           "max_rows": 100000,
@@ -423,7 +443,7 @@
           "field_color": "#2ce41b",
           "resolution": 100,
           "value_sort": "rs_timestamp",
-          "interval": "5m",
+          "interval": "10m",
           "intervals": [
             "auto",
             "1s",
@@ -477,8 +497,9 @@
           "height": "190",
           "value_category": "api_s",
           "another": true,
-          "title": "API - response time(ms)",
-          "linkage_enable": true
+          "title": "API - 响应时间(ms)",
+          "linkage_enable": true,
+          "linkage_id": "a"
         }
       ]
     },
@@ -501,7 +522,7 @@
               1,
               2
             ],
-            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=api_s&facet.limit=10000&facet.missing=true&f.api_s.facet.sort=count",
+            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[2017-05-19T10:45:30.000Z%20TO%202017-05-20T10:45:30.000Z]&facet=true&facet.field=api_s&facet.limit=10000&facet.missing=true&f.api_s.facet.sort=count",
             "custom": ""
           },
           "mode": "count",
@@ -596,7 +617,8 @@
             "interval": 2
           },
           "height": "200",
-          "title": "API - list"
+          "title": "API - 列表",
+          "linkage_id": "a"
         },
         {
           "span": 4,
@@ -610,7 +632,7 @@
               1,
               2
             ],
-            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=error_s&facet.limit=10000&facet.missing=true&f.error_s.facet.sort=count",
+            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[2017-05-19T10:45:30.000Z%20TO%202017-05-20T10:45:30.000Z]&facet=true&facet.field=error_s&facet.limit=10000&facet.missing=true&f.error_s.facet.sort=count",
             "custom": ""
           },
           "mode": "count",
@@ -705,7 +727,8 @@
             "interval": 2
           },
           "height": "200",
-          "title": "API- status list"
+          "title": "API- 状态列表",
+          "linkage_id": "a"
         },
         {
           "span": 4,
@@ -719,7 +742,7 @@
               1,
               2
             ],
-            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=errorCode&facet.limit=10000&facet.missing=true&f.errorCode.facet.sort=count",
+            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[2017-05-19T10:45:30.000Z%20TO%202017-05-20T10:45:30.000Z]&facet=true&facet.field=errorCode&facet.limit=10000&facet.missing=true&f.errorCode.facet.sort=count",
             "custom": ""
           },
           "mode": "count",
@@ -814,7 +837,8 @@
             "interval": 2
           },
           "height": "200",
-          "title": "APi - staus code list"
+          "title": "APi - 返回码列表",
+          "linkage_id": "a"
         }
       ]
     },
@@ -838,7 +862,7 @@
               1,
               2
             ],
-            "query": "q=duration_l api_s%3A%5B*%20TO%20*%5D&wt=json&sort=duration_l%20desc&rows=10&fq=rs_timestamp:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp duration_l api_s\n",
+            "query": "q=duration_l api_s%3A%5B*%20TO%20*%5D&wt=json&sort=duration_l%20desc&rows=10&fq=rs_timestamp:[2017-05-19T10:45:30.000Z%20TO%202017-05-20T10:45:30.000Z]&fl=rs_timestamp duration_l api_s\n",
             "custom": ""
           },
           "max_rows": 10,
@@ -856,7 +880,7 @@
           "field_color": "#209bf8",
           "resolution": 100,
           "value_sort": "duration_l",
-          "interval": "5m",
+          "interval": "10m",
           "intervals": [
             "auto",
             "1s",
@@ -957,7 +981,8 @@
             "query_as_alias": false
           },
           "height": "400",
-          "title": "API - response time TOP10(ms)"
+          "title": "API - 响应时间 TOP10(ms)",
+          "linkage_id": "a"
         },
         {
           "span": 4,
@@ -971,7 +996,7 @@
               1,
               2
             ],
-            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=errorMessage&facet.limit=10000&facet.missing=true&f.errorMessage.facet.sort=count",
+            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[2017-05-19T10:45:30.000Z%20TO%202017-05-20T10:45:30.000Z]&facet=true&facet.field=errorMessage&facet.limit=10000&facet.missing=true&f.errorMessage.facet.sort=count",
             "custom": ""
           },
           "mode": "count",
@@ -1065,7 +1090,9 @@
           },
           "height": "400",
           "eLegend": true,
-          "title": "API - status Message"
+          "title": "API - 返回状态信息",
+          "solrFq": "fq=rs_timestamp:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]",
+          "linkage_id": "a"
         },
         {
           "span": 4,
@@ -1079,7 +1106,7 @@
               1,
               2
             ],
-            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=statusCode_l&facet.limit=10000&facet.missing=true&f.statusCode_l.facet.sort=count",
+            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[2017-05-19T10:45:30.000Z%20TO%202017-05-20T10:45:30.000Z]&facet=true&facet.field=statusCode_l&facet.limit=10000&facet.missing=true&f.statusCode_l.facet.sort=count",
             "custom": ""
           },
           "mode": "count",
@@ -1173,7 +1200,9 @@
           },
           "height": "400",
           "eLegend": true,
-          "title": "API - ERROR Message"
+          "title": "API - 错误信息",
+          "solrFq": "fq=rs_timestamp:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]",
+          "linkage_id": "a"
         }
       ]
     },
@@ -1197,8 +1226,8 @@
               1,
               2
             ],
-            "query": "q=*%3A* OR *%3A* OR *%3A*&fq=rs_timestamp:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=api_s&facet.field=error_s&facet.field=value_l&wt=json&rows=1500&hl=true&hl.fl=error_s",
-            "basic_query": "q=*%3A* OR *%3A* OR *%3A*&fq=rs_timestamp:[NOW/HOUR-12HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=api_s&facet.field=error_s&facet.field=value_l",
+            "query": "q=*%3A* OR *%3A* OR *%3A*&fq=rs_timestamp:[2017-05-19T10:45:30.000Z%20TO%202017-05-20T10:45:30.000Z]&facet=true&facet.field=api_s&facet.field=error_s&facet.field=value_l&wt=json&rows=1500&hl=true&hl.fl=error_s",
+            "basic_query": "q=*%3A* OR *%3A* OR *%3A*&fq=rs_timestamp:[2017-05-19T10:45:30.000Z%20TO%202017-05-20T10:45:30.000Z]&facet=true&facet.field=api_s&facet.field=error_s&facet.field=value_l",
             "custom": ""
           },
           "size": 3,
@@ -1231,13 +1260,14 @@
           "facet_limit": 100000,
           "foundResults": true,
           "show_queries": true,
-          "title": "API － Monitoring detail",
+          "title": "API －监控详细信息",
           "header_field": "api_s",
           "body_field": "error_s",
           "url_field": "value_l",
           "display": "block",
           "icon": "icon-caret-down",
-          "height": "150"
+          "height": "150",
+          "linkage_id": "a"
         }
       ]
     },
@@ -1331,5 +1361,15 @@
   "language": 1,
   "loading": false,
   "row_controller": false,
-  "en_cn": false
+  "en_cn": false,
+  "headHide": true,
+  "searchEnable": false,
+  "searchID": 0,
+  "isSearch": false,
+  "mute": false,
+  "alarm": false,
+  "switch": "App_Demo_Operate",
+  "load": false,
+  "enable_linkage": true,
+  "linkage_id": "a"
 }

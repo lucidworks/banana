@@ -91,10 +91,7 @@
             "15d",
             "30d",
             "90d",
-            "180d",
-            "1y",
-            "3y",
-            "5y"
+            "180d"
           ],
           "timespan": "24h",
           "timefield": "rs_timestamp",

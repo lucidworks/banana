@@ -52,7 +52,7 @@ function (angular, app, _, $, kbn) {
       size    : 10000,
       sortBy  : 'count',
       order   : 'descending',
-      fontsize   : 12,
+      fontsize : 20,
       donut   : false,
       tilt    : false,
       display:'block',
@@ -109,7 +109,7 @@ function (angular, app, _, $, kbn) {
       }
     };
       $scope.display=function() {
-          if($scope.panel.display=='none'){
+          if($scope.panel.display==='none'){
               $scope.panel.display='block';
               $scope.panel.icon="icon-caret-down";
 
@@ -204,7 +204,7 @@ function (angular, app, _, $, kbn) {
     };
 
     $scope.get_data = function() {
-        if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        if(($scope.panel.linkage_id===dashboard.current.linkage_id)||dashboard.current.enable_linkage){
         // Make sure we have everything for the request to complete
         if (dashboard.indices.length === 0) {
             return;
@@ -259,12 +259,7 @@ function (angular, app, _, $, kbn) {
             };
 
             // Function for customizing chart color by using field values as colors.
-            var addSliceColor = function (slice, color) {
-                if ($scope.panel.useColorFromField && isValidHTMLColor(color)) {
-                    slice.color = color;
-                }
-                return slice;
-            };
+
 
             var sum = 0;
             var k = 0;
@@ -424,7 +419,7 @@ function (angular, app, _, $, kbn) {
 
         // Function for rendering panel
         function render_panel() {
-          var plot;
+
           var colors = [];
 
           // IE doesn't work without this
@@ -485,664 +480,6 @@ var option_nodata = {
 						}
               // Add plot to scope so we can build out own legend
 
-
-			    
-			  
-			  if(scope.panel.chart === 'rosepie') {
-
-					var myChart2 = echarts.init(document.getElementById(idd));
-				  var option2 = {
-                      backgroundColor: '#1f2227',
-                      color: ['#3398DB','#339855'],
-                      // title: {
-                      //     left:'25%',
-                      //     textStyle:{
-                      //         color:'#fff',
-                      //         fontSize:36
-                      //     },
-                      //     text: '充值及购机业务办理趋势'
-                      // },
-                      tooltip: {
-                          trigger: 'axis'
-                      },
-                      legend: {
-                          data:['购机','充值'],
-                          right:'10%',
-                          textStyle:{
-                              color:'#fff',
-                              fontSize:12
-                          },
-
-                      },
-                      grid: {
-                          top: '12%',
-                          left: '3%',
-                          right: '7%',
-                          bottom: '3%',
-                          containLabel: true
-                      },
-
-                      xAxis: {
-                          type: 'category',
-                          boundaryGap: false,
-                          axisLabel:{
-                              textStyle:{
-                                  color:'#fff',
-                                  fontSize:16
-                              },
-                          },
-                          data: ['13年','14年','15年','16年','17年']
-                      },
-                      yAxis: {
-                          type: 'value',
-                          splitLine: {
-                              show :true,
-                              lineStyle:{
-                                  type:'dotted',
-                                  color: '#0d394a'
-                              }
-                          },
-                          axisLabel:{
-                              textStyle:{
-                                  color:'#fff',
-                                  fontSize:14
-                              },
-                          },
-                      },
-                      series: [
-                          {
-                              name:'购机',
-                              type:'line',
-
-                              data:[70, 82, 99,111, 124]
-                          },
-                          {
-                              name:'充值',
-                              type:'line',
-
-                              data:[60, 82, 102, 130, 140]
-                          }
-                      ]
-                  };
-
-         if(scope.data.length==0){
-				myChart2.setOption(option_nodata);}else{
-					myChart2.setOption(option2);
-					myChart2.on('click', function (params) {
-						// 点击联动
-						scope.build_search(params);
-					});
-				}
-              }
-			  
-			  if(scope.panel.chart === 'bar') {
-				  var myChart3 = echarts.init(document.getElementById(idd));
-				  var option3 = {
-                      backgroundColor: '#1f2227',
-                      // title: {
-                      //     left:'10%',
-                      //     textStyle:{
-                      //         color:'#fff',
-                      //         fontSize:38
-                      //     },
-                      //     text: 'APP应用业务办理量年度统计（单位：亿）'
-                      // },
-                      color: ['#1a75f9', '#1a93f9', '#1ab0f9', '#1acef9', '#42d3f0', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'],
-                      tooltip : {
-                          trigger: 'axis',
-                          axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-                              type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-                          }
-                      },
-                      grid: {
-                          top: '10%',
-                          left: '3%',
-                          right: '4%',
-                          bottom: '3%',
-                          containLabel: true
-                      },
-                      xAxis : [
-                          {
-                              type : 'category',
-                              axisLabel:{
-                                  textStyle:{
-                                      color:'#fff',
-                                      fontSize:16
-                                  },
-                              },
-                              data : ['13年', '14年', '15年', '16年', '17年预计'],
-                              axisTick: {
-                                  alignWithLabel: true
-                              }
-                          }
-                      ],
-                      yAxis : [
-                          {
-                              type : 'value',
-                              splitLine:{
-                                  show:false
-                              },
-                              axisLabel:{
-                                  textStyle:{
-                                      color:'#fff',
-                                      fontSize:14
-                                  },
-                              },
-                          }
-                      ],
-                      series : [
-                          {
-                              name:'访问量',
-                              type:'bar',
-                              barWidth: '60%',
-                              label:{
-                                  normal:{
-                                      show:true,
-                                      position:'top',
-                                      textStyle:{
-
-                                          fontSize:16
-                                      },
-
-                                  }
-                              },
-                              data:[0.5, 0.8, 1.2, 1.8, 2.5],
-                              itemStyle: {
-                                  normal: {
-                                      color: function(params) {
-                                          var colorList = ['#42d3f0', '#1acef9', '#1ab0f9', '#1a93f9', '#1a75f9', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
-                                          return colorList[params.dataIndex]
-                                      },
-                                      shadowColor: '#fff',
-                                      barBorderRadius: 5
-
-                                  },
-                                  emphasis: {
-                                      color: function(params) {
-                                          var colorList = ['#ff951f', '#ff951f', '#ff951f', '#ff951f', '#ff951f', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
-                                          return colorList[params.dataIndex]
-                                      },
-                                      shadowColor: '#fff',
-                                      barBorderRadius: 5
-
-                                  }
-                              }
-                          }
-                      ]
-                  };
-				 //没有数据显示NO DATA  
-				 
-				 if(scope.data.length==0){
-				myChart3.setOption(option_nodata);}else{
-					myChart3.setOption(option3);
-					myChart3.on('click', function (params) {
-						// 点击联动
-						scope.build_search(params);
-					});
-				}
-				  
-			  }
-
-        if(scope.panel.chart === 'horizontalBar') {
-
-                    var myChart33 = echarts.init(document.getElementById(idd));
-                    var option33 =
-                        option = {
-                            backgroundColor: "#1f2227",
-                            color: ['#ffd285', '#ff733f', '#ec4863'],
-
-                            title: [{
-                                text: '本周空气质量指数',
-                                left: '5%',
-                                top: '6%',
-                                textStyle: {
-                                    color: '#ffd285'
-                                }
-                            }, {
-                                text: '污染占比分析',
-                                left: '83%',
-                                top: '6%',
-                                textAlign: 'center',
-                                textStyle: {
-                                    color: '#ffd285'
-                                }
-                            }],
-                            tooltip: {
-                                trigger: 'axis'
-                            },
-                            legend: {
-                                x: 200,
-                                top: '6%',
-                                textStyle: {
-                                    color: '#ffd285',
-                                },
-                                data: ['上海', '濮阳', '北京']
-                            },
-                            grid: {
-                                left: '1%',
-                                right: '35%',
-                                top: '16%',
-                                bottom: '6%',
-                                containLabel: true
-                            },
-                            toolbox: {
-                                "show": false,
-                                feature: {
-                                    saveAsImage: {}
-                                }
-                            },
-                            xAxis: {
-                                type: 'category',
-                                "axisLine": {
-                                    lineStyle: {
-                                        color: '#c0576d'
-                                    }
-                                },
-                                "axisTick": {
-                                    "show": false
-                                },
-                                axisLabel: {
-                                    textStyle: {
-                                        color: '#ffd285'
-                                    }
-                                },
-                                boundaryGap: false,
-                                data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-                            },
-                            yAxis: {
-                                "axisLine": {
-                                    lineStyle: {
-                                        color: '#c0576d'
-                                    }
-                                },
-                                splitLine: {
-                                    show: true,
-                                    lineStyle: {
-                                        color: '#c0576d'
-                                    }
-                                },
-                                "axisTick": {
-                                    "show": false
-                                },
-                                axisLabel: {
-                                    textStyle: {
-                                        color: '#ffd285'
-                                    }
-                                },
-                                type: 'value'
-                            },
-                            series: [{
-                                name: '上海',
-                                smooth: true,
-                                type: 'line',
-                                symbolSize: 8,
-                                symbol: 'circle',
-                                data: [90, 50, 39, 50, 120, 82, 80]
-                            }, {
-                                name: '濮阳',
-                                smooth: true,
-                                type: 'line',
-                                symbolSize: 8,
-                                symbol: 'circle',
-                                data: [70, 162, 50, 87, 90, 147, 60]
-                            }, {
-                                name: '北京',
-                                smooth: true,
-                                type: 'line',
-                                symbolSize: 8,
-                                symbol: 'circle',
-                                data: [290, 335, 80, 132, 187, 330, 39]
-                            },
-                                {
-                                    type: 'pie',
-                                    center: ['83%', '33%'],
-                                    radius: ['25%', '30%'],
-                                    label: {
-                                        normal: {
-                                            position: 'center'
-                                        }
-                                    },
-                                    data: [{
-                                        value: 335,
-                                        name: '污染来源分析',
-                                        itemStyle: {
-                                            normal: {
-                                                color: '#ffd285'
-                                            }
-                                        },
-                                        label: {
-                                            normal: {
-                                                formatter: '{d} %',
-                                                textStyle: {
-                                                    color: '#ffd285',
-                                                    fontSize: 20
-
-                                                }
-                                            }
-                                        }
-                                    }, {
-                                        value: 310,
-                                        name: '占位',
-                                        tooltip: {
-                                            show: false
-                                        },
-                                        itemStyle: {
-                                            normal: {
-                                                color: '#b04459'
-                                            }
-                                        },
-                                        label: {
-                                            normal: {
-                                                textStyle: {
-                                                    color: '#ffd285',
-                                                },
-                                                formatter: '\n汽车尾气'
-                                            }
-                                        }
-                                    }]
-                                },
-
-
-                                {
-                                    type: 'pie',
-                                    center: ['83%', '72%'],
-                                    radius: ['25%', '30%'],
-                                    label: {
-                                        normal: {
-                                            position: 'center'
-                                        }
-                                    },
-                                    data: [{
-                                        value: 335,
-                                        name: '污染来源分析',
-                                        itemStyle: {
-                                            normal: {
-                                                color: '#ff733f'
-                                            }
-                                        },
-                                        label: {
-                                            normal: {
-                                                formatter: '{d} %',
-                                                textStyle: {
-                                                    color: '#ff733f',
-                                                    fontSize: 20
-
-                                                }
-                                            }
-                                        }
-                                    }, {
-                                        value: 210,
-                                        name: '占位',
-                                        tooltip: {
-                                            show: false
-                                        },
-                                        itemStyle: {
-                                            normal: {
-                                                color: '#b04459'
-
-
-                                            }
-                                        },
-                                        label: {
-                                            normal: {
-                                                textStyle: {
-                                                    color: '#ff733f',
-                                                },
-                                                formatter: '\n工业污染'
-                                            }
-                                        }
-                                    }]
-                                }]
-                        }
-                    //没有数据显示NO DATA
-
-                    if(scope.data.length==0){
-                        myChart33.setOption(option_nodata);}else{
-                        myChart33.setOption(option33);
-                        // myChart33.on('click', function (params) {
-                        //     // 点击联动
-                        //     scope.build_search(params);
-                        // });
-                    }
-
-                }
-			 
-			  if(scope.panel.chart === 'radar') {
-
-
-                  var myChart4 = echarts.init(document.getElementById(idd));
-					var option4 = {
-                        backgroundColor: "#1f2227",
-                        color: ['#ffd285', '#ff733f', '#ec4863'],
-
-                        title: [{
-                            left: '5%',
-                            top: '6%',
-                            textStyle: {
-                                color: '#ffd285'
-                            }
-                        }
-                        // , {
-                        //     text: '月用户活跃度（17年）',
-                        //     left: '70%',
-                        //     top: '3%',
-                        //     textAlign: 'center',
-                        //     textStyle: {
-                        //         color: '#ffd285'
-                        //     }
-                        // }
-                        ],
-                        tooltip: {
-                            trigger: 'axis'
-                        },
-                        legend: {
-                            x: 200,
-                            top: '6%',
-                            left:'8%',
-                            textStyle: {
-                                color: '#ffd285',
-                            },
-                            data: ['每月访问量']
-                        },
-                        grid: {
-                            left: '1%',
-                            right: '35%',
-                            top: '16%',
-                            bottom: '6%',
-                            containLabel: true
-                        },
-                        toolbox: {
-                            "show": false,
-                            feature: {
-                                saveAsImage: {}
-                            }
-                        },
-                        xAxis: {
-                            type: 'category',
-                            "axisLine": {
-                                lineStyle: {
-                                    color: '#fe8b53'
-                                }
-                            },
-                            "axisTick": {
-                                "show": false
-                            },
-                            axisLabel: {
-                                textStyle: {
-                                    color: '#ffd285'
-                                }
-                            },
-                            boundaryGap: false,
-                            data: ['1月', '2月', '3月', '4月','5月']
-                        },
-                        yAxis: {
-                            "axisLine": {
-                                lineStyle: {
-                                    color: '#fe8b53'
-                                }
-                            },
-                            splitLine: {
-                                show :true,
-                                lineStyle:{
-                                    type:'dotted',
-                                    color: '#0d394a'
-                                }
-                            },
-                            "axisTick": {
-                                "show": false
-                            },
-                            axisLabel: {
-                                textStyle: {
-                                    color: '#ffd285'
-                                }
-                            },
-                            type: 'value'
-                        },
-                        series: [{
-                            name: '每月访问量',
-                            smooth: true,
-                            type: 'line',
-                            symbolSize: 8,
-                            symbol: 'circle',
-                            data: [2200, 1900, 2051, 2150,2000]
-                        },
-                            {
-                                name: '',
-                                type: 'pie',
-                                center: ['83%', '18%'],
-                                clockWise: true,
-                                hoverAnimation: false,
-                                radius: [200, 200],
-                                label: {
-                                    normal: {
-                                        position: 'center'
-                                    }
-                                },
-                                data: [{
-                                    value: 0,
-                                    label: {
-                                        normal: {
-                                            formatter: '2000',
-                                            textStyle: {
-                                                color: '#fe8b53',
-                                                fontSize: 18,
-                                                fontWeight: 'bold'
-                                            }
-                                        }
-                                    }
-                                }, {
-                                    tooltip: {
-                                        show: false
-                                    },
-                                    label: {
-                                        normal: {
-                                            formatter: '\n5月访问量',
-                                            textStyle: {
-                                                color: '#fe8b53',
-                                                fontSize: 14
-                                            }
-                                        }
-                                    }
-                                }]
-                            },
-                            {
-                                name: '',
-                                type: 'pie',
-                                center: ['83%', '47%'],
-                                clockWise: true,
-                                hoverAnimation: false,
-                                radius: [200, 200],
-                                label: {
-                                    normal: {
-                                        position: 'center'
-                                    }
-                                },
-                                data: [{
-                                    value: 0,
-                                    label: {
-                                        normal: {
-                                            formatter: '2150',
-                                            textStyle: {
-                                                color: '#ffd285',
-                                                fontSize: 18,
-                                                fontWeight: 'bold'
-                                            }
-                                        }
-                                    }
-                                }, {
-                                    tooltip: {
-                                        show: false
-                                    },
-                                    label: {
-                                        normal: {
-                                            formatter: '\n4月访问量',
-                                            textStyle: {
-                                                color: '#ffd285',
-                                                fontSize: 14
-                                            }
-                                        }
-                                    }
-                                }]
-                            },
-
-
-                            {
-                                type: 'pie',
-                                center: ['83%', '82%'],
-                                radius: ['32%', '36%'],
-                                label: {
-                                    normal: {
-                                        position: 'center'
-                                    }
-                                },
-                                data: [{
-                                    value: 150,
-
-                                    itemStyle: {
-                                        normal: {
-                                            color: '#ff733f'
-                                        }
-                                    },
-                                    label: {
-                                        normal: {
-                                            formatter: '{d} %',
-                                            textStyle: {
-                                                color: '#ff733f',
-                                                fontSize: 14
-
-                                            }
-                                        }
-                                    }
-                                }, {
-                                    value: 2000,
-
-                                    tooltip: {
-                                        show: false
-                                    },
-                                    itemStyle: {
-                                        normal: {
-                                            color: '#ff733f'
-
-
-                                        }
-                                    },
-                                    label: {
-                                        normal: {
-                                            textStyle: {
-                                                color: '#ff733f',
-                                            },
-                                            formatter: '\n环比下降'
-                                        }
-                                    }
-                                }]
-                            }]
-                    };
-				if(scope.data.length==0){
-				myChart4.setOption(option_nodata);}else{
-					myChart4.setOption(option4);
-				}
-			  }
-
 		     if(scope.panel.chart === 'java'){
 	
 
@@ -1179,7 +516,7 @@ var option_nodata = {
                     formatter: "JAVA",
                     textStyle: {
                         color: '#178ad9',
-                        fontSize: 20
+                        fontSize: scope.panel.fontsize
                     }
                 }
             }
@@ -1202,7 +539,7 @@ var option_nodata = {
                             formatter: '',
                             textStyle: {
                                 color: '#1a93f9',
-                                fontSize: 20
+                                fontSize: scope.panel.fontsize
                             }
                         }
                     },
@@ -1220,7 +557,7 @@ var option_nodata = {
                             formatter: '应用总数:'+scope.data.length+'个',
                             textStyle: {
                                 color: '#1a93f9',
-                                fontSize: 20,
+                                fontSize: scope.panel.fontsize,
                                 fontWeight: 'bold'
                             }
                         }
@@ -1364,14 +701,13 @@ var option_nodata = {
             show: false
         }
     };
-				   if(scope.data.length==0){
-				myChart.setOption(option_nodata);}else{
+
 					myChart.setOption(option5);
 					myChart.on('click', function (params) {
 						// 点击联动
 						scope.build_search(params);
 					});
-				}
+
 				  
 			  }
 
@@ -1403,7 +739,7 @@ var option_nodata = {
                    formatter: "PHP",
                    textStyle: {
                      color: '#178ad9',
-                     fontSize: 20
+                     fontSize: scope.panel.fontsize
                    }
                  }
                }
@@ -1426,7 +762,7 @@ var option_nodata = {
                      formatter: '',
                      textStyle: {
                        color: '#1a93f9',
-                       fontSize: 20
+                       fontSize: scope.panel.fontsize
                      }
                    }
                  },
@@ -1444,158 +780,26 @@ var option_nodata = {
                      formatter: '应用总数:'+scope.data.length+'个',
                      textStyle: {
                        color: '#1a93f9',
-                       fontSize: 20,
+                       fontSize: scope.panel.fontsize,
                        fontWeight: 'bold'
                      }
                    }
                  }
                }]
              }
-               // ,
-               // {
-               //         name: '',
-               //         type: 'pie',
-               //         center: ['37%', '85%'],
-               //         clockWise: true,
-               //         hoverAnimation: false,
-               //         radius: [60, 60],
-               //         label: {
-               //             normal: {
-               //                 position: 'center'
-               //             }
-               //         },
-               //         data: [{
-               //             value: 10,
-               //             label: {
-               //                 normal: {
-               //                     formatter: '崩溃率',
-               //                     textStyle: {
-               //                         color: '#d9e0e7',
-               //                         fontSize: 13
-               //                     }
-               //                 }
-               //             },
-               //             itemStyle:{
-               //                 normal:{
-               //                     color:'#1a93f9',
-               //                 }
-               //             }
-               //         }, {
-               //             tooltip: {
-               //                 show: false
-               //             },
-               //             label: {
-               //                 normal: {
-               //                     formatter: '\n1%',
-               //                     textStyle: {
-               //                         color: '#1a93f9',
-               //                         fontSize: 22,
-               //                         fontWeight: 'bold'
-               //                     }
-               //                 }
-               //             }
-               //         }]
-               //     },{
-               //         name: '',
-               //         type: 'pie',
-               //         center: ['62%', '85%'],
-               //         clockWise: true,
-               //         hoverAnimation: false,
-               //         radius: [60, 60],
-               //         label: {
-               //             normal: {
-               //                 position: 'center'
-               //             }
-               //         },
-               //         data: [{
-               //             value: 100,
-               //             label: {
-               //                 normal: {
-               //                     formatter: 'HTTP错误率',
-               //                     textStyle: {
-               //                         color: '#d9e0e7',
-               //                         fontSize: 13
-               //                     }
-               //                 }
-               //             },
-               //             itemStyle:{
-               //                 normal:{
-               //                     color:'#1a93f9',
-               //                 }
-               //             }
-               //         }, {
-               //             tooltip: {
-               //                 show: false
-               //             },
-               //             label: {
-               //                 normal: {
-               //                     formatter: '\n8%',
-               //                     textStyle: {
-               //                         color: '#1a93f9',
-               //                         fontSize: 22,
-               //                         fontWeight: 'bold'
-               //                     }
-               //                 }
-               //             }
-               //         }]
-               //     },{
-               //         name: '',
-               //         type: 'pie',
-               //         center: ['88%', '85%'],
-               //         clockWise: true,
-               //         hoverAnimation: false,
-               //         radius: [60, 60],
-               //         label: {
-               //             normal: {
-               //                 position: 'center'
-               //             }
-               //         },
-               //         data: [{
-               //             value: 10,
-               //             label: {
-               //                 normal: {
-               //                     formatter: '网络错误率',
-               //                     textStyle: {
-               //                         color: '#d9e0e7',
-               //                         fontSize: 13
-               //
-               //                     }
-               //                 }
-               //             },
-               //             itemStyle:{
-               //                 normal:{
-               //                     color:'#1a93f9',
-               //                 }
-               //             }
-               //         }, {
-               //             tooltip: {
-               //                 show: false
-               //             },
-               //             label: {
-               //                 normal: {
-               //                     formatter: '\n12%',
-               //                     textStyle: {
-               //                         color: '#1a93f9',
-               //                         fontSize: 22,
-               //                         fontWeight: 'bold'
-               //                     }
-               //                 }
-               //             }
-               //         }]
-               //     }
+
              ],
              tooltip: {
                show: false
              }
            };
-           if(scope.data.length==0){
-             myChart.setOption(option_nodata);}else{
+
              myChart.setOption(option6);
              myChart.on('click', function (params) {
                // 点击联动
                scope.build_search(params);
              });
-           }
+
 
          }
 
@@ -1627,7 +831,7 @@ var option_nodata = {
                  formatter: ".NET",
                  textStyle: {
                    color: '#178ad9',
-                   fontSize: 20
+                   fontSize: scope.panel.fontsize
                  }
                }
              }
@@ -1650,7 +854,7 @@ var option_nodata = {
                    formatter: '',
                    textStyle: {
                      color: '#1a93f9',
-                     fontSize: 20
+                     fontSize: scope.panel.fontsize
                    }
                  }
                },
@@ -1668,258 +872,28 @@ var option_nodata = {
                    formatter: '应用总数:'+scope.data.length+'个',
                    textStyle: {
                      color: '#1a93f9',
-                     fontSize: 20,
+                     fontSize: scope.panel.fontsize,
                      fontWeight: 'bold'
                    }
                  }
                }
              }]
            }
-             // ,
-             // {
-             //         name: '',
-             //         type: 'pie',
-             //         center: ['37%', '85%'],
-             //         clockWise: true,
-             //         hoverAnimation: false,
-             //         radius: [60, 60],
-             //         label: {
-             //             normal: {
-             //                 position: 'center'
-             //             }
-             //         },
-             //         data: [{
-             //             value: 10,
-             //             label: {
-             //                 normal: {
-             //                     formatter: '崩溃率',
-             //                     textStyle: {
-             //                         color: '#d9e0e7',
-             //                         fontSize: 13
-             //                     }
-             //                 }
-             //             },
-             //             itemStyle:{
-             //                 normal:{
-             //                     color:'#1a93f9',
-             //                 }
-             //             }
-             //         }, {
-             //             tooltip: {
-             //                 show: false
-             //             },
-             //             label: {
-             //                 normal: {
-             //                     formatter: '\n1%',
-             //                     textStyle: {
-             //                         color: '#1a93f9',
-             //                         fontSize: 22,
-             //                         fontWeight: 'bold'
-             //                     }
-             //                 }
-             //             }
-             //         }]
-             //     },{
-             //         name: '',
-             //         type: 'pie',
-             //         center: ['62%', '85%'],
-             //         clockWise: true,
-             //         hoverAnimation: false,
-             //         radius: [60, 60],
-             //         label: {
-             //             normal: {
-             //                 position: 'center'
-             //             }
-             //         },
-             //         data: [{
-             //             value: 100,
-             //             label: {
-             //                 normal: {
-             //                     formatter: 'HTTP错误率',
-             //                     textStyle: {
-             //                         color: '#d9e0e7',
-             //                         fontSize: 13
-             //                     }
-             //                 }
-             //             },
-             //             itemStyle:{
-             //                 normal:{
-             //                     color:'#1a93f9',
-             //                 }
-             //             }
-             //         }, {
-             //             tooltip: {
-             //                 show: false
-             //             },
-             //             label: {
-             //                 normal: {
-             //                     formatter: '\n8%',
-             //                     textStyle: {
-             //                         color: '#1a93f9',
-             //                         fontSize: 22,
-             //                         fontWeight: 'bold'
-             //                     }
-             //                 }
-             //             }
-             //         }]
-             //     },{
-             //         name: '',
-             //         type: 'pie',
-             //         center: ['88%', '85%'],
-             //         clockWise: true,
-             //         hoverAnimation: false,
-             //         radius: [60, 60],
-             //         label: {
-             //             normal: {
-             //                 position: 'center'
-             //             }
-             //         },
-             //         data: [{
-             //             value: 10,
-             //             label: {
-             //                 normal: {
-             //                     formatter: '网络错误率',
-             //                     textStyle: {
-             //                         color: '#d9e0e7',
-             //                         fontSize: 13
-             //
-             //                     }
-             //                 }
-             //             },
-             //             itemStyle:{
-             //                 normal:{
-             //                     color:'#1a93f9',
-             //                 }
-             //             }
-             //         }, {
-             //             tooltip: {
-             //                 show: false
-             //             },
-             //             label: {
-             //                 normal: {
-             //                     formatter: '\n12%',
-             //                     textStyle: {
-             //                         color: '#1a93f9',
-             //                         fontSize: 22,
-             //                         fontWeight: 'bold'
-             //                     }
-             //                 }
-             //             }
-             //         }]
-             //     }
+
            ],
            tooltip: {
              show: false
            }
          };
-         if(scope.data.length==0){
-           myChart.setOption(option_nodata);}else{
+
            myChart.setOption(option7);
            myChart.on('click', function (params) {
              // 点击联动
              scope.build_search(params);
            });
-         }
+
 
        }
-
-                if(scope.panel.chart === 'liquidfill') {
-
-
-                    var myChart8 = echarts.init(document.getElementById(idd));
-                    var series = [];
-                    var titles = [];
-
-
-                    for (var i = 0; i < scope.radardata.length; i++) {
-
-                        var xla = scope.label[i].replace(" ","\n");
-                        var x =  (i+0.5) / scope.radardata.length * 100 + '%';
-
-                        titles.push({
-                            text: xla,
-                            textAlign: 'center',
-                            left: x,
-                            bottom: 10,
-                            padding: 0,
-                            textStyle: {
-                                color: labelcolor?'#fff':'#696969',
-                                fontSize: 12,
-                                fontWeight: 'normal'
-                            }
-                        })
-
-                        series.push({
-                            animation: true,
-                            waveAnimation: true,
-
-                            color: ['#178ad9'],
-                            center: [x, '50%'],
-                            radius: '65%',
-
-                            type: 'liquidFill',
-                            shape:'path://M229.844,151.547v-166.75c0-11.92-9.662-21.582-21.58-21.582s-21.581,9.662-21.581,21.582v166.75c-9.088,6.654-14.993,17.397-14.993,29.524c0,20.2,16.374,36.575,36.574,36.575c20.199,0,36.574-16.375,36.574-36.575C244.838,168.944,238.932,158.201,229.844,151.547z',
-                            //shape: 'path://M479.232622,0.563387605 C479.232622,0.563387605 581.318924,34.9465747 595.916359,117.247124 C610.513793,199.547674 712.946576,234.277341 712.946576,234.277341 L282.844461,664.379456 C251.594162,695.539776 210.032528,712.700992 165.814244,712.700992 C121.595959,712.700992 80.0620523,695.5408 48.7840267,664.379456 C-15.71599,600.034368 -15.71599,495.32832 48.8117536,430.984256 L479.232622,0.563387605 Z',
-                            outline: {
-                                show: false
-                            },
-                            amplitude: 3,
-                            waveLength: '20%',
-                            backgroundStyle: {
-                                color: 'none',
-                                borderColor: labelcolor?'#fff':'#696969',
-                                borderWidth: 1
-                            },
-                            data: [{
-                                // -60 到 100 度
-                                name:scope.label[i],
-                                value: scope.radardata[i]  / scope.maxdata,
-                                rawValue: scope.radardata[i]
-                            }],
-                            itemStyle: {
-                                normal: {
-                                    shadowBlur: 0
-                                }
-                            },
-                            label: {
-                                normal: {
-                                    position: 'insideBottom',
-                                    distance: 20,
-                                    formatter: function(item) {
-                                        return ' ' + item.data.rawValue  ;
-                                    },
-                                    textStyle: {
-                                        color: '#178ad9',
-                                        fontSize: 15
-                                    }
-                                }
-                            }
-                        })
-                    }
-
-
-
-
-                    // 使用刚指定的配置项和数据显示图表。
-                    if(scope.data.length==0){
-                        myChart8.setOption(option_nodata);}else{
-                        myChart8.setOption({
-                           tooltip: {
-                                show: true,
-                                confine:true,
-                                formatter: function(item) {
-                                    return item.data.name +" : " +item.data.rawValue ;
-                                }
-                           },
-                            title: titles,
-                            series: series
-                        });
-                        myChart8.on('click', function (params) {
-                            // 控制台打印数据的名称
-                            scope.build_search(params);
-                        });
-                    }
-                }
 
               // Populate legend
 
@@ -1931,7 +905,7 @@ var option_nodata = {
         }
       
 
-        var $tooltip = $('<div>');
+
       
 
       }
