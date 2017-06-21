@@ -22,7 +22,7 @@
 <div class="row-fluid">
   <div class="span2">
     <label class="small">Style</label>
-    <select class="input-small" ng-model="panel.chart" ng-options="f for f in ['gauge','gaugedemo']"></select></span>
+    <select class="input-small" ng-model="panel.chart" ng-options="f for f in ['avegauge','lastgauge','user']"></select></span>
   </div>
 
   <div class="span2" >
@@ -42,7 +42,7 @@
     <label class="small">User-defined title</label><input type="checkbox" ng-model="panel.title_defined" ng-checked="panel.title_defined">
   </div>
   <div class="span3" >
-    <label class="small">Click Enable</label><input type="checkbox" ng-model="panel.clickEnable" ng-checked="panel.clickEnable">
+    <label class="small">Mean Enable</label><input type="checkbox" ng-model="panel.meanEnable" ng-checked="panel.meanEnable">
   </div>
 
 </div>

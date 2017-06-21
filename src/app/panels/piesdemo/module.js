@@ -16,7 +16,7 @@ define([
   'underscore',
   'jquery',
   'kbn',
-
+    'echarts-liquidfill'
 
 ],
 function (angular, app, _, $, kbn) {
@@ -628,7 +628,7 @@ var option_nodata = {
             
         
 			var option1 = {
-                backgroundColor: '#1f2227',
+                backgroundColor: '#2f3e50',
                 // title: {
                 //     left:'10%',
                 //     textStyle:{
@@ -740,7 +740,7 @@ var option_nodata = {
 					  
 				myChart = echarts.init(document.getElementById(idd));
 				  var option2 = {
-                      backgroundColor: '#1f2227',
+                      backgroundColor: '#2f3e50',
                       color: ['#3398DB','#339855'],
                       // title: {
                       //     left:'25%',
@@ -826,7 +826,7 @@ var option_nodata = {
 			  if(scope.panel.chart === 'bar') {
 				  myChart = echarts.init(document.getElementById(idd));
 				  var option3 = {
-                      backgroundColor: '#1f2227',
+                      backgroundColor: '#2f3e50',
                       // title: {
                       //     left:'10%',
                       //     textStyle:{
@@ -936,7 +936,7 @@ var option_nodata = {
                      myChart = echarts.init(document.getElementById(idd));
                     var option33 =
                          {
-                            backgroundColor: "#1f2227",
+                            backgroundColor: "#2f3e50",
                             color: ['#ffd285', '#ff733f', '#ec4863'],
 
                             title: [{
@@ -1160,7 +1160,7 @@ var option_nodata = {
 
                    myChart = echarts.init(document.getElementById(idd));
 					var option4 = {
-                        backgroundColor: "#1f2227",
+                        backgroundColor: "#2f3e50",
                         color: ['#ffd285', '#ff733f', '#ec4863'],
 
                         title: [{
@@ -1627,7 +1627,7 @@ var option_nodata = {
 		
 	myChart = echarts.init(document.getElementById(idd));
 	var option6 = {
-        backgroundColor: "#1f2227",
+        backgroundColor: "#2f3e50",
         color: ['#ffd285', '#ff733f', '#ec4863'],
 
         title: [{
@@ -1873,7 +1873,7 @@ var option_nodata = {
 
 
                     var option7 = {
-                        backgroundColor: "#1f2227",
+                        backgroundColor: "#2f3e50",
                         color: ['#ffd285', '#ff733f', '#ec4863'],
 
                         title: [{

@@ -108,6 +108,8 @@ function (Settings) {
 		'search',
 		'piesdemo',
 		'appsum',
+      'avegauge',
+      'phpstacking',
       'histogra',
 		'histobardemo',
 		'd3',

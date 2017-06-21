@@ -52,6 +52,7 @@ function (angular, app, _, $, kbn) {
         display:'block',
         icon:"icon-caret-down",
       missing : false,
+      clickEnable:false,
       other   : false,
       size    : 10000,
       sortBy  : 'count',
@@ -424,7 +425,7 @@ function (angular, app, _, $, kbn) {
 							labelcolor = true;
 						}
               // Add plot to scope so we can build out own legend
-              if(scope.panel.chart === 'gauge') {
+        if(scope.panel.chart === 'gauge') {
 				  if(scope.apdex<80){
                       //var audio = new Audio("vendor/alarm/alarm.wav");
                       dashboard.current.alarm = true;
@@ -433,28 +434,28 @@ function (angular, app, _, $, kbn) {
 
                   }
 
-                  if(scope.apdex>=80&&dashboard.current.alarm){
+          if(scope.apdex>=80&&dashboard.current.alarm){
                       dashboard.current.alarm = false;
                       audio.pause();
                       audio.currentTime = 0;
                   }
-
+          if(myChart) {
+                  myChart.dispose();
+                }
 				  var term  = "告警";
-                  var color_term = "#F6AB60";
-                  if(scope.apdex<=20){
+          var color_term = "#F6AB60";
+          if(scope.apdex<=20){
                       term  = "风险";
                       color_term = '#EB5768';
                   }else if(scope.apdex>60){
                       term  = "健康";
                       color_term = '#1e90ff';
                   }
-      if(myChart) {
-        myChart.dispose();
-      }
-      myChart = echarts.init(document.getElementById(idd));
+
+          myChart = echarts.init(document.getElementById(idd));
 
 
-                 var option = {
+          var option = {
                       toolbox: {
                           show : false,
                           feature : {
@@ -580,7 +581,7 @@ function (angular, app, _, $, kbn) {
 
 
 
-var option_health_nodata = {
+      var option_health_nodata = {
    
    
     toolbox: {
@@ -699,13 +700,21 @@ var option_health_nodata = {
     ]
 };
 
-		if(scope.hits === 0){
-				myChart.setOption(option_health_nodata);}else{
-					 myChart.setOption(option);
-				}
+          if(scope.hits==0){
+            myChart.setOption(option_health_nodata);}else{
+            myChart.setOption(option);
+            if(scope.panel.clickEnable){
+              myChart.on('click', function (params) {
+                // 点击联动
+                dashboard.page_switch('App_Demo_Performance')
+
+              });
+            }
+          }
         // 使用刚指定的配置项和数据显示图表。
 			  
 			  }
+
 
               // Populate legend
 

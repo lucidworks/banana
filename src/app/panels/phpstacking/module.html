@@ -1,4 +1,4 @@
-<div ng-controller='histobardemo' ng-init="init()">
+<div ng-controller='phpstacking' ng-init="init()">
 
 <style>
     table.tableSection {
@@ -41,42 +41,7 @@
     </style>
   <div ng-style="{'display':panel.display}">
   <!-- START Pie or bar chart -->
-  <div >
-    <span ng-if='panel.options'>
-      <a class="link underline small" ng-if='panel.options' ng-click="options=!options">
-        <i ng-if="!options" class="icon-caret-right"></i><i ng-if="options" class="icon-caret-down"></i> View
-      </a>
-    </span>
-    <form class="form-inline bordered histogram-options" ng-if="options">
-    <span class="checkbox">
-      <label class="small">
-        <input type="checkbox" ng-model="panel.bars" ng-checked="panel.bars" ng-change="render()">
-        Bars
-      </label>
-    </span>
-      <span class="checkbox">
-      <label class="small">
-        <input type="checkbox" ng-model="panel.linkage" ng-checked="panel.linkage" ng-change="render()">
-        Linkage
-      </label>
-    </span>
-      <span class="checkbox">
-      <label class="small">
-        <input type="checkbox" ng-model="panel.area" ng-checked="panel.area" ng-change="render()">
-        Area
-      </label>
-    </span>
-      <span class="checkbox">
-      <label class="small">
-        <input type="checkbox" ng-model="panel.average" ng-checked="panel.average" ng-change="render()">
-        Average
-      </label>
-    </span>
-
-    </form>
-    <!--<span ng-if="panel.legend" class="small"><span ng-if="panel.value_field && panel.mode != 'count'">{{panel.value_field}}</span> {{panel.mode}} per <strong>{{panel.interval}}</strong> | (<strong>{{dashboard.numberWithCommas(hits)}}</strong> hits) | Time correction : {{panel.timezone}}</span>-->
-  </div>
-  <div  ng-if="panel.counter_pos == 'above' && (panel.chart == 'bar' || panel.chart == 'mean' || panel.chart == 'histobar' || panel.chart == 'ebar' )" id='{{$id}}-legend'>
+  <div ng-if="panel.counter_pos == 'above' && (panel.chart == 'bar' || panel.chart == 'mean' || panel.chart == 'stacking' || panel.chart == 'ebar' )" id='{{$id}}-legend'>
     <!-- vertical legend above -->
     <table class="small" ng-if="panel.arrangement == 'vertical'">
       <tr ng-repeat="term in legend">
@@ -91,11 +56,11 @@
     </div><br>
 
   </div>
-<div  ng-if="panel.chart == 'hits'"><div ng-style="panel.style" style="line-height:{{panel.style['font-size']}};text-align:center"> {{data.length - 2}} </div></div>
+<div ng-if="panel.chart == 'hits'"><div ng-style="panel.style" style="line-height:{{panel.style['font-size']}};text-align:center"> {{data.length - 2}} </div></div>
   <!-- keep legend from over lapping -->
   <div style="clear:both"></div>
 
-  <div  class="leftRightLegend " ng-style="{'max-height':row.height }" ng-if="(panel.counter_pos == 'right' || panel.counter_pos == 'left') && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend' ng-class="{'floatright':panel.counter_pos == 'right','floatleft':panel.counter_pos == 'left'}">
+  <div class="leftRightLegend " ng-style="{'max-height':row.height }" ng-if="(panel.counter_pos == 'right' || panel.counter_pos == 'left') && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend' ng-class="{'floatright':panel.counter_pos == 'right','floatleft':panel.counter_pos == 'left'}">
     <!-- vertical legend above -->
     <table class="small">
       <tr ng-repeat="term in legend">
@@ -105,9 +70,9 @@
     </table>
   </div>
 
-  <div  style="overflow:hidden"  histobardemo-chart params="{{panel}}" style="position:relative" class="pointer" ng-style="{'floatleft':panel.counter_pos == 'right'}" id='{{$id}}'></div>
+  <div style="overflow:hidden"  phpstacking-chart params="{{panel}}" style="position:relative" class="pointer" ng-style="{'floatleft':panel.counter_pos == 'right'}" id='{{$id}}'></div>
 
-  <div  ng-if="panel.counter_pos == 'below' && (panel.chart == 'bar' || panel.chart == 'pie' || panel.chart == 'dashboard' || panel.chart == 'ebar' )" id='{{$id}}-legend' ng-class="{below:panel.counter_pos == 'below'}">
+  <div ng-if="panel.counter_pos == 'below' && (panel.chart == 'bar' || panel.chart == 'pie' || panel.chart == 'dashboard' || panel.chart == 'ebar' )" id='{{$id}}-legend' ng-class="{below:panel.counter_pos == 'below'}">
     <!-- vertical legend below -->
     <table class="small" ng-if="panel.arrangement == 'vertical'">
       <tr ng-repeat="term in legend">
@@ -125,7 +90,25 @@
   <!-- END Pie or Bar chart -->
 
   <!-- START Table -->
-
+  <table ng-style="panel.style" class="table tableSection table-striped table-condensed" ng-if="panel.chart == 'table'">
+    <thead>
+      <th>Term</th>
+      <th>{{panel.mode | capitalize}}</th>
+      <th>Action</th>
+    </thead>
+    <tbody ng-style="{height: row.height}">
+    <tr ng-repeat="term in data" ng-if="showMeta(term)">
+      <td>{{term.label}}</td>
+      <td>{{term.data[0][1].toFixed(panel.decimal_points)}}</td>
+      <td>
+        <span ng-hide="term.meta == 'other'">
+          <i class='icon-search pointer' ng-click="build_search(term)"></i>
+          <i class='icon-ban-circle pointer' ng-click="build_search(term,true)"></i>
+        </span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
   <!-- END Table -->
   <!-- Dummy div for testing color name -->
   <div id="colorTest"></div>

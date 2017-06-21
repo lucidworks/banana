@@ -34,8 +34,8 @@
           "to": "NOW/HOUR%2B1HOUR",
           "field": "rs_timestamp_tdt",
           "type": "time",
-          "fromDateObj": "2017-05-26T08:32:33.968Z",
-          "toDateObj": "2017-05-27T08:32:33.968Z",
+          "fromDateObj": "2017-06-20T03:33:58.406Z",
+          "toDateObj": "2017-06-21T03:33:58.406Z",
           "mandate": "must",
           "active": true,
           "alias": "",
@@ -562,7 +562,7 @@
                 "enable": false,
                 "interval": 2
               },
-              "height": "250",
+              "height": "235",
               "title": "app应用 －用户点击TOP5",
               "span": 3
             },
@@ -570,7 +570,7 @@
               "loading": false,
               "sizeable": false,
               "span": 12,
-              "height": "250px",
+              "height": "240px",
               "editable": true,
               "type": "pies",
               "draggable": false,
@@ -1242,5 +1242,7 @@
   "switch": "App_Demo_Operate",
   "loading": false,
   "enable_linkage": false,
-  "linkage_id": "a"
+  "linkage_id": "a",
+  "headHide": true,
+  "load": false
 }

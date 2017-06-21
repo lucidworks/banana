@@ -34,8 +34,8 @@
           "to": "NOW/HOUR%2B1HOUR",
           "field": "rs_timestamp_tdt",
           "type": "time",
-          "fromDateObj": "2017-06-18T09:45:20.295Z",
-          "toDateObj": "2017-06-20T09:45:20.295Z",
+          "fromDateObj": "2017-06-19T03:15:05.029Z",
+          "toDateObj": "2017-06-21T03:15:05.030Z",
           "mandate": "must",
           "active": true,
           "alias": "",
@@ -586,7 +586,8 @@
           "display": "block",
           "icon": "icon-caret-down",
           "linkage_id": "a",
-          "height": "330"
+          "height": "330",
+          "clickEnable": true
         },
         {
           "span": 3,
@@ -791,7 +792,8 @@
           "display": "block",
           "isEN": false,
           "icon": "icon-caret-down",
-          "height": "580"
+          "height": "580",
+          "clickEnable": true
         },
         {
           "span": 3,

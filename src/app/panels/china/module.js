@@ -51,6 +51,7 @@ function (angular, app, _, $, kbn) {
       missing : false,
       other   : false,
       size    : 10000,
+      clickEnable:false,
       sortBy  : 'count',
       order   : 'descending',
         linkage_id:'a',
@@ -1342,7 +1343,7 @@ var option8 = {
 
 
                     var option11 = {
-                        backgroundColor: labelcolor?'#202328':'rgba(91, 192, 222, 0.0)',
+                        backgroundColor: labelcolor?'#2f3e50':'rgba(91, 192, 222, 0.0)',
                         animation: true,
                         animationDuration: 1000,
                         animationEasing: 'cubicInOut',
@@ -1571,6 +1572,13 @@ var option8 = {
                   };
 
                     myChart.on('brushselected', renderBrushed);
+                  if(scope.panel.clickEnable){
+                    myChart.on('click', function (params) {
+                      // 点击联动
+                      dashboard.page_switch('App_Demo_User')
+
+                    });
+                  }
 
                     myChart.setOption(option11);
 

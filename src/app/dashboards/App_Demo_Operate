@@ -34,8 +34,8 @@
           "to": "NOW/DAY%2B1DAY",
           "field": "rs_timestamp_tdt",
           "type": "time",
-          "fromDateObj": "2017-06-18T09:47:13.284Z",
-          "toDateObj": "2017-06-20T09:47:13.285Z",
+          "fromDateObj": "2017-06-19T03:30:34.118Z",
+          "toDateObj": "2017-06-21T03:30:34.118Z",
           "mandate": "must",
           "active": true,
           "alias": "",
@@ -76,8 +76,7 @@
             "60d",
             "90d",
             "180d",
-            "1y",
-            "3y"
+            "1y"
           ],
           "timespan": "2d",
           "timefield": "rs_timestamp_tdt",
@@ -198,7 +197,8 @@
             "enable": false,
             "interval": 2
           },
-          "title": "APP应用-在线用户数"
+          "title": "APP应用-在线用户数",
+          "height": "200"
         },
         {
           "error": false,
@@ -648,7 +648,7 @@
           "display": "block",
           "icon": "icon-caret-down",
           "linkage_id": "a",
-          "height": "280",
+          "height": "305",
           "clickEnable": true
         },
         {
@@ -854,7 +854,8 @@
           "display": "block",
           "isEN": false,
           "icon": "icon-caret-down",
-          "height": "500"
+          "height": "535",
+          "clickEnable": true
         },
         {
           "span": 3,

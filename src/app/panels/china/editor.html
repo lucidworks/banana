@@ -21,6 +21,9 @@
             ng-options="f for f in ['descending','ascending']"
             ng-change="set_refresh(true)"></select>
   </div>
+  <div class="span3" >
+    <label class="small">Click Enable</label><input type="checkbox" ng-model="panel.clickEnable" ng-checked="panel.clickEnable">
+  </div>
 
 </div>
 <div class="row-fluid">
@@ -29,6 +32,7 @@
     <select class="input-small" ng-model="panel.chart" ng-options="f for f in ['bmap','cmap','china_map','zmap']"></select></span>
   </div>
 </div>
+
 
 <div class="row-fluid">
   <div class="span2">
