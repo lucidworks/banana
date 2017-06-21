@@ -44,12 +44,12 @@
       ],
       "list": {
         "0": {
-          "from": "NOW/HOUR-2HOUR",
+          "from": "NOW/HOUR-3HOUR",
           "to": "NOW/HOUR%2B1HOUR",
           "field": "rs_timestamp",
           "type": "time",
-          "fromDateObj": "2017-06-20T06:30:04.810Z",
-          "toDateObj": "2017-06-20T08:30:04.812Z",
+          "fromDateObj": "2017-06-20T06:07:14.350Z",
+          "toDateObj": "2017-06-20T09:07:14.350Z",
           "mandate": "must",
           "active": true,
           "alias": "",
@@ -98,7 +98,7 @@
             "150d",
             "180d"
           ],
-          "timespan": "2h",
+          "timespan": "3h",
           "timefield": "rs_timestamp",
           "timeformat": "",
           "refresh": {
@@ -133,7 +133,7 @@
               1,
               2
             ],
-            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=res_id&facet.limit=10000&facet.missing=true&f.res_id.facet.sort=count&fq=res_type:JAVAEE_JAVAEE",
+            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=res_id&facet.limit=10000&facet.missing=true&f.res_id.facet.sort=count&fq=res_type:JAVAEE_JAVAEE",
             "custom": "&fq=res_type:JAVAEE_JAVAEE"
           },
           "mode": "count",
@@ -242,7 +242,7 @@
               1,
               2
             ],
-            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=res_id&facet.limit=10000&facet.missing=true&f.res_id.facet.sort=count&fq=res_type:PHP_PHP",
+            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=res_id&facet.limit=10000&facet.missing=true&f.res_id.facet.sort=count&fq=res_type:PHP_PHP",
             "custom": "&fq=res_type:PHP_PHP"
           },
           "mode": "count",
@@ -351,7 +351,7 @@
               1,
               2
             ],
-            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=res_id&facet.limit=10000&facet.missing=true&f.res_id.facet.sort=count&fq=res_type:DONET_DONET",
+            "query": "q=*%3A* OR *%3A* OR *%3A*&wt=json&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=res_id&facet.limit=10000&facet.missing=true&f.res_id.facet.sort=count&fq=res_type:DONET_DONET",
             "custom": "&fq=res_type:DONET_DONET"
           },
           "mode": "count",
@@ -470,10 +470,10 @@
               1,
               2
             ],
-            "query": "q=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=100000\n",
+            "query": "q=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=1000000000\n",
             "custom": "&fq=res_type:JAVAEE_JAVAEE"
           },
-          "max_rows": 100000,
+          "max_rows": 1000000000,
           "value_field": "Health",
           "group_field": "res_name",
           "sum_value": false,
@@ -537,10 +537,10 @@
               1,
               2
             ],
-            "query": "q=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=100000\n",
+            "query": "q=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=1000000000\n",
             "custom": "&fq=res_type:PHP_PHP"
           },
-          "max_rows": 100000,
+          "max_rows": 1000000000,
           "value_field": "Health",
           "group_field": "res_name",
           "sum_value": false,
@@ -604,10 +604,10 @@
               1,
               2
             ],
-            "query": "q=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=100000\n",
+            "query": "q=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health&group=true&group.field=res_name&group.limit=1000000000\n",
             "custom": "&fq=res_type:DONET_DONET"
           },
-          "max_rows": 100000,
+          "max_rows": 1000000000,
           "value_field": "Health",
           "group_field": "res_name",
           "sum_value": false,
@@ -680,10 +680,10 @@
               1,
               2
             ],
-            "query": "q=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=100000\n",
+            "query": "q=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=1000000000\n",
             "custom": "&fq=res_type:JAVAEE_JAVAEE"
           },
-          "max_rows": 100000,
+          "max_rows": 1000000000,
           "value_field": "Apdex",
           "group_field": "res_name",
           "sum_value": false,
@@ -747,10 +747,10 @@
               1,
               2
             ],
-            "query": "q=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=100000\n",
+            "query": "q=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=1000000000\n",
             "custom": "&fq=res_type:PHP_PHP"
           },
-          "max_rows": 100000,
+          "max_rows": 1000000000,
           "value_field": "Apdex",
           "group_field": "res_name",
           "sum_value": false,
@@ -814,10 +814,10 @@
               1,
               2
             ],
-            "query": "q=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=100000\n",
+            "query": "q=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex&group=true&group.field=res_name&group.limit=1000000000\n",
             "custom": "&fq=res_type:DONET_DONET"
           },
-          "max_rows": 100000,
+          "max_rows": 1000000000,
           "value_field": "Apdex",
           "group_field": "res_name",
           "sum_value": false,
@@ -890,10 +890,10 @@
               1,
               2
             ],
-            "query": "q=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=100000\n",
+            "query": "q=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=1000000000\n",
             "custom": "&fq=res_type:JAVAEE_JAVAEE"
           },
-          "max_rows": 100000,
+          "max_rows": 1000000000,
           "value_field": "Availability",
           "group_field": "res_name",
           "sum_value": false,
@@ -957,10 +957,10 @@
               1,
               2
             ],
-            "query": "q=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=100000\n",
+            "query": "q=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=1000000000\n",
             "custom": "&fq=res_type:PHP_PHP"
           },
-          "max_rows": 100000,
+          "max_rows": 1000000000,
           "value_field": "Availability",
           "group_field": "res_name",
           "sum_value": false,
@@ -1024,10 +1024,10 @@
               1,
               2
             ],
-            "query": "q=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=100000\n",
+            "query": "q=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability&group=true&group.field=res_name&group.limit=1000000000\n",
             "custom": "&fq=res_type:DONET_DONET"
           },
-          "max_rows": 100000,
+          "max_rows": 1000000000,
           "value_field": "Availability",
           "group_field": "res_name",
           "sum_value": false,
@@ -1100,10 +1100,10 @@
               1,
               2
             ],
-            "query": "q=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=100000\n",
+            "query": "q=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=1000000000\n",
             "custom": "&fq=res_type:JAVAEE_JAVAEE"
           },
-          "max_rows": 100000,
+          "max_rows": 1000000000,
           "value_field": "OnlineUserNum_total",
           "group_field": "res_name",
           "sum_value": false,
@@ -1167,10 +1167,10 @@
               1,
               2
             ],
-            "query": "q=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=100000\n",
+            "query": "q=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=1000000000\n",
             "custom": "&fq=res_type:PHP_PHP"
           },
-          "max_rows": 100000,
+          "max_rows": 1000000000,
           "value_field": "OnlineUserNum_total",
           "group_field": "res_name",
           "sum_value": false,
@@ -1234,10 +1234,10 @@
               1,
               2
             ],
-            "query": "q=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=100000\nq=*%3A*&wt=json&rows=100000&fq=rs_timestamp:[NOW/HOUR-2HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=100000\n",
+            "query": "q=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=1000000000\nq=*%3A*&wt=json&rows=1000000000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total&group=true&group.field=res_name&group.limit=1000000000\n",
             "custom": "&fq=res_type:DONET_DONET"
           },
-          "max_rows": 100000,
+          "max_rows": 1000000000,
           "value_field": "OnlineUserNum_total",
           "group_field": "res_name",
           "sum_value": false,
@@ -1334,7 +1334,7 @@
       ]
     }
   ],
-  "editable": true,
+  "editable": false,
   "index": {
     "interval": "none",
     "pattern": "[logstash-]YYYY.MM.DD",
@@ -1380,7 +1380,7 @@
   "isstyle": "dark",
   "hide_head": false,
   "language": 1,
-  "row_controller": true,
+  "row_controller": false,
   "searchEnable": false,
   "searchID": 0,
   "isSearch": false,
