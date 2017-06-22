@@ -48,8 +48,8 @@
           "to": "NOW/HOUR%2B1HOUR",
           "field": "rs_timestamp",
           "type": "time",
-          "fromDateObj": "2017-06-20T12:57:00.495Z",
-          "toDateObj": "2017-06-21T12:57:00.495Z",
+          "fromDateObj": "2017-06-21T06:29:37.291Z",
+          "toDateObj": "2017-06-22T06:29:37.292Z",
           "mandate": "must",
           "active": true,
           "alias": "",
@@ -149,7 +149,7 @@
               1,
               2
             ],
-            "query": "q=PHP_Health%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_Health\n",
+            "query": "q=PHP_Health%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_Health\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -247,7 +247,7 @@
               1,
               2
             ],
-            "query": "q=PHP_ThroughPut%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_ThroughPut\n",
+            "query": "q=PHP_ThroughPut%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_ThroughPut\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -336,7 +336,7 @@
               1,
               2
             ],
-            "query": "q=PHP_CPU_used%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_CPU_used\n",
+            "query": "q=PHP_CPU_used%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_CPU_used\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -426,7 +426,7 @@
               1,
               2
             ],
-            "query": "q=PHP_HeapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_HeapPercent\n",
+            "query": "q=PHP_HeapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_HeapPercent\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -524,7 +524,7 @@
               1,
               2
             ],
-            "query": "q=PHP_PhysicalPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_PhysicalPercent\n",
+            "query": "q=PHP_PhysicalPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_PhysicalPercent\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -613,7 +613,7 @@
               1,
               2
             ],
-            "query": "q=PHP_SwapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_SwapPercent\n",
+            "query": "q=PHP_SwapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_SwapPercent\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -735,7 +735,7 @@
       ]
     }
   ],
-  "editable": true,
+  "editable": false,
   "index": {
     "interval": "none",
     "pattern": "[logstash-]YYYY.MM.DD",

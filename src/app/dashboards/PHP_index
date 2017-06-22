@@ -48,8 +48,8 @@
           "to": "NOW/HOUR%2B1HOUR",
           "field": "rs_timestamp",
           "type": "time",
-          "fromDateObj": "2017-06-20T12:52:26.125Z",
-          "toDateObj": "2017-06-21T12:52:26.125Z",
+          "fromDateObj": "2017-06-21T05:36:18.070Z",
+          "toDateObj": "2017-06-22T05:36:18.070Z",
           "mandate": "must",
           "active": true,
           "alias": "",
@@ -149,7 +149,7 @@
               1,
               2
             ],
-            "query": "q=PHP_Availability%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_Availability\n",
+            "query": "q=PHP_Availability%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_Availability\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -248,7 +248,7 @@
               1,
               2
             ],
-            "query": "q=PHP_memory_realuse PHP_memory_bufferuse PHP_memory_cacheuse PHP_memory_idle%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_memory_realuse PHP_memory_bufferuse PHP_memory_cacheuse PHP_memory_idle\n",
+            "query": "q=PHP_memory_realuse PHP_memory_bufferuse PHP_memory_cacheuse PHP_memory_idle%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_memory_realuse PHP_memory_bufferuse PHP_memory_cacheuse PHP_memory_idle\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -343,7 +343,7 @@
               1,
               2
             ],
-            "query": "q=PHP_memory_realuse PHP_memory_bufferuse PHP_memory_cacheuse PHP_memory_idle PHP_User_cpu PHP_php_syscpu%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_memory_realuse PHP_memory_bufferuse PHP_memory_cacheuse PHP_memory_idle PHP_User_cpu PHP_php_syscpu\n",
+            "query": "q=PHP_memory_realuse PHP_memory_bufferuse PHP_memory_cacheuse PHP_memory_idle PHP_User_cpu PHP_php_syscpu%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_memory_realuse PHP_memory_bufferuse PHP_memory_cacheuse PHP_memory_idle PHP_User_cpu PHP_php_syscpu\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -438,7 +438,7 @@
               1,
               2
             ],
-            "query": "q=PHP_Health%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_Health\n",
+            "query": "q=PHP_Health%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_Health\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -527,7 +527,7 @@
               1,
               2
             ],
-            "query": "q=PHP_Apdex%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_Apdex\n",
+            "query": "q=PHP_Apdex%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_Apdex\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -625,7 +625,7 @@
               1,
               2
             ],
-            "query": "q=PHP_ThroughPut%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_ThroughPut\n",
+            "query": "q=PHP_ThroughPut%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_ThroughPut\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -714,7 +714,7 @@
               1,
               2
             ],
-            "query": "q=PHP_Http_global%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_Http_global\n",
+            "query": "q=PHP_Http_global%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_Http_global\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -813,7 +813,7 @@
               1,
               2
             ],
-            "query": "q=PHP_Http_2xx%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_Http_2xx\n",
+            "query": "q=PHP_Http_2xx%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_Http_2xx\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -903,7 +903,7 @@
               1,
               2
             ],
-            "query": "q=PHP_Http_3xx%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_Http_3xx\n",
+            "query": "q=PHP_Http_3xx%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_Http_3xx\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1001,7 +1001,7 @@
               1,
               2
             ],
-            "query": "q=PHP_Http_4xx%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_Http_4xx\n",
+            "query": "q=PHP_Http_4xx%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_Http_4xx\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1090,7 +1090,7 @@
               1,
               2
             ],
-            "query": "q=PHP_Http_5xx%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_Http_5xx\n",
+            "query": "q=PHP_Http_5xx%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_Http_5xx\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1188,7 +1188,7 @@
               1,
               2
             ],
-            "query": "q=PHP_Http_error%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_Http_error\n",
+            "query": "q=PHP_Http_error%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_Http_error\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1277,7 +1277,7 @@
               1,
               2
             ],
-            "query": "q=PHP_CPU_used%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_CPU_used\n",
+            "query": "q=PHP_CPU_used%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_CPU_used\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1376,7 +1376,7 @@
               1,
               2
             ],
-            "query": "q=PHP_Memory_used%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_Memory_used\n",
+            "query": "q=PHP_Memory_used%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_Memory_used\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1465,7 +1465,7 @@
               1,
               2
             ],
-            "query": "q=PHP_HeapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_HeapPercent\n",
+            "query": "q=PHP_HeapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_HeapPercent\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1563,7 +1563,7 @@
               1,
               2
             ],
-            "query": "q=PHP_SwapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_SwapPercent\n",
+            "query": "q=PHP_SwapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_SwapPercent\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1652,7 +1652,7 @@
               1,
               2
             ],
-            "query": "q=PHP_disk_percent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_disk_percent\n",
+            "query": "q=PHP_disk_percent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_disk_percent\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1750,7 +1750,7 @@
               1,
               2
             ],
-            "query": "q=PHP_load_avg%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_load_avg\n",
+            "query": "q=PHP_load_avg%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_load_avg\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1839,7 +1839,7 @@
               1,
               2
             ],
-            "query": "q=PHP_ART_http%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_ART_http\n",
+            "query": "q=PHP_ART_http%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_ART_http\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1937,7 +1937,7 @@
               1,
               2
             ],
-            "query": "q=PHP_Cpu_time_sum%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_Cpu_time_sum\n",
+            "query": "q=PHP_Cpu_time_sum%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_Cpu_time_sum\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -2026,7 +2026,7 @@
               1,
               2
             ],
-            "query": "q=PHP_disk_use%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_disk_use\n",
+            "query": "q=PHP_disk_use%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_disk_use\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -2124,7 +2124,7 @@
               1,
               2
             ],
-            "query": "q=PHP_SwapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_SwapPercent\n",
+            "query": "q=PHP_SwapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_SwapPercent\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -2213,7 +2213,7 @@
               1,
               2
             ],
-            "query": "q=PHP_PhysicalPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PHP_PhysicalPercent\n",
+            "query": "q=PHP_PhysicalPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc9eba1015cc9ff60a00002.0e47e96277ef71f02e469e33e4cd0d5a&fl=rs_timestamp PHP_PhysicalPercent\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -2341,7 +2341,7 @@
     "pattern": "[logstash-]YYYY.MM.DD",
     "default": "_all"
   },
-  "style": "dark",
+  "style": "light",
   "failover": false,
   "panel_hints": true,
   "loader": {
@@ -2378,7 +2378,7 @@
   "filterids": [
     0
   ],
-  "isstyle": "dark",
+  "isstyle": "light",
   "hide_head": false,
   "language": 1,
   "row_controller": false,

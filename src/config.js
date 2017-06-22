@@ -99,6 +99,7 @@ function (Settings) {
       'ticker',
       'bettermap',
       'query',
+	  'donetstacking',
 	  'china',
       'terms',
 	  'sortbar',

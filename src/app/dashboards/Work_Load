@@ -48,8 +48,8 @@
           "to": "NOW/HOUR%2B1HOUR",
           "field": "rs_timestamp",
           "type": "time",
-          "fromDateObj": "2017-06-20T06:59:40.839Z",
-          "toDateObj": "2017-06-21T06:59:40.840Z",
+          "fromDateObj": "2017-06-21T05:45:22.444Z",
+          "toDateObj": "2017-06-22T05:45:22.444Z",
           "mandate": "must",
           "active": true,
           "alias": "",
@@ -149,7 +149,7 @@
               1,
               2
             ],
-            "query": "q=Health%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health\n",
+            "query": "q=JAVAEE_Health%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_Health\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -222,7 +222,7 @@
             "query_as_alias": false
           },
           "title": "工作负荷",
-          "value_field": "Health",
+          "value_field": "JAVAEE_Health",
           "height": "230"
         }
       ]
@@ -247,7 +247,7 @@
               1,
               2
             ],
-            "query": "q=HttpRequest%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp HttpRequest\n",
+            "query": "q=HttpRequest%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp HttpRequest\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -336,7 +336,7 @@
               1,
               2
             ],
-            "query": "q=CPU_used%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp CPU_used\n",
+            "query": "q=JAVAEE_CPU_used%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_CPU_used\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -403,7 +403,7 @@
             "value_type": "cumulative",
             "query_as_alias": false
           },
-          "value_field": "CPU_used",
+          "value_field": "JAVAEE_CPU_used",
           "title": "CPU使用率（%）",
           "average": false,
           "defaulttimestamp": true,
@@ -426,7 +426,7 @@
               1,
               2
             ],
-            "query": "q=HeapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp HeapPercent\n",
+            "query": "q=JAVAEE_HeapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_HeapPercent\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -499,8 +499,195 @@
             "query_as_alias": false
           },
           "title": "JAVA堆内存使用率(%)",
-          "value_field": "HeapPercent",
+          "value_field": "JAVAEE_HeapPercent",
           "height": "190"
+        }
+      ]
+    },
+    {
+      "title": "",
+      "height": "0px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 6,
+          "editable": true,
+          "type": "histobar",
+          "loadingEditor": false,
+          "mode": "value",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0,
+              1,
+              2
+            ],
+            "query": "q=JAVAEE_PhysicalPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_PhysicalPercent\n",
+            "custom": ""
+          },
+          "max_rows": 100000,
+          "reverse": 0,
+          "segment": 4,
+          "threshold_first": 3000000000,
+          "threshold_second": 400000000,
+          "threshold_third": 3000,
+          "group_field": null,
+          "auto_int": true,
+          "linkage_id": "a",
+          "defaulttimestamp": true,
+          "display": "block",
+          "icon": "icon-caret-down",
+          "area": true,
+          "total_first": "%",
+          "fontsize": 12,
+          "isEN": false,
+          "field_color": "#2ce41b",
+          "resolution": 100,
+          "value_sort": "rs_timestamp",
+          "interval": "10m",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1M",
+            "1y"
+          ],
+          "fill": 0,
+          "linewidth": 3,
+          "chart": "histobar",
+          "chartColors": [
+            "#f48a52",
+            "#f4d352",
+            "#ccf452",
+            "#8cf452",
+            "#3cee2b",
+            "#f467d8",
+            "#1a93f9",
+            "#2fd7ee"
+          ],
+          "timezone": "browser",
+          "spyable": true,
+          "linkage": false,
+          "zoomlinks": true,
+          "bars": false,
+          "average": false,
+          "label": true,
+          "points": false,
+          "lines": false,
+          "lines_smooth": false,
+          "legend": false,
+          "x-axis": true,
+          "y-axis": true,
+          "percentage": false,
+          "interactive": true,
+          "options": false,
+          "show_queries": true,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": false
+          },
+          "title": "物理内存",
+          "height": "200",
+          "value_field": "JAVAEE_PhysicalPercent"
+        },
+        {
+          "span": 6,
+          "editable": true,
+          "type": "histobar",
+          "loadingEditor": false,
+          "mode": "value",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0,
+              1,
+              2
+            ],
+            "query": "q=JAVAEE_SwapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_SwapPercent\n",
+            "custom": ""
+          },
+          "max_rows": 100000,
+          "reverse": 0,
+          "segment": 4,
+          "threshold_first": 3000000,
+          "threshold_second": 40000000,
+          "threshold_third": 3000,
+          "group_field": null,
+          "auto_int": true,
+          "linkage_id": "a",
+          "defaulttimestamp": true,
+          "display": "block",
+          "icon": "icon-caret-down",
+          "area": true,
+          "total_first": "%",
+          "fontsize": 12,
+          "isEN": false,
+          "field_color": "#2ce41b",
+          "resolution": 100,
+          "value_sort": "rs_timestamp",
+          "interval": "10m",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1M",
+            "1y"
+          ],
+          "fill": 0,
+          "linewidth": 3,
+          "chart": "histobar",
+          "chartColors": [
+            "#f48a52",
+            "#f4d352",
+            "#ccf452",
+            "#8cf452",
+            "#3cee2b",
+            "#f467d8",
+            "#1a93f9",
+            "#2fd7ee"
+          ],
+          "timezone": "browser",
+          "spyable": true,
+          "linkage": false,
+          "zoomlinks": true,
+          "bars": false,
+          "average": false,
+          "label": true,
+          "points": false,
+          "lines": false,
+          "lines_smooth": false,
+          "legend": false,
+          "x-axis": true,
+          "y-axis": true,
+          "percentage": false,
+          "interactive": true,
+          "options": false,
+          "show_queries": true,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": false
+          },
+          "height": "200",
+          "title": "交换空间",
+          "value_field": "JAVAEE_SwapPercent"
         }
       ]
     },

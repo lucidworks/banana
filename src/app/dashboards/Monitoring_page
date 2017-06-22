@@ -48,8 +48,8 @@
           "to": "NOW/HOUR%2B1HOUR",
           "field": "rs_timestamp",
           "type": "time",
-          "fromDateObj": "2017-06-18T07:08:20.825Z",
-          "toDateObj": "2017-06-19T07:08:20.826Z",
+          "fromDateObj": "2017-06-21T05:39:46.559Z",
+          "toDateObj": "2017-06-22T05:39:46.560Z",
           "mandate": "must",
           "active": true,
           "alias": "",
@@ -149,7 +149,7 @@
               1,
               2
             ],
-            "query": "q=Availability%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Availability\n",
+            "query": "q=JAVAEE_Availability%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_Availability\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -217,7 +217,7 @@
             "query_as_alias": false
           },
           "title": "连通性",
-          "value_field": "Availability",
+          "value_field": "JAVAEE_Availability",
           "average": false,
           "defaulttimestamp": true,
           "display": "block",
@@ -248,7 +248,7 @@
               1,
               2
             ],
-            "query": "q=Health%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Health\n",
+            "query": "q=JAVAEE_Health%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_Health\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -321,7 +321,7 @@
             "query_as_alias": false
           },
           "title": "健康度",
-          "value_field": "Health",
+          "value_field": "JAVAEE_Health",
           "height": "230"
         },
         {
@@ -337,7 +337,7 @@
               1,
               2
             ],
-            "query": "q=OnlineUserNum_total%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp OnlineUserNum_total\n",
+            "query": "q=JAVAEE_OnlineUserNum_total%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_OnlineUserNum_total\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -410,7 +410,7 @@
             "query_as_alias": false
           },
           "title": "在线用户数",
-          "value_field": "OnlineUserNum_total",
+          "value_field": "JAVAEE_OnlineUserNum_total",
           "height": "230"
         }
       ]
@@ -435,7 +435,7 @@
               1,
               2
             ],
-            "query": "q=Apdex%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Apdex\n",
+            "query": "q=JAVAEE_Apdex%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_Apdex\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -508,7 +508,7 @@
             "query_as_alias": false
           },
           "height": "230",
-          "value_field": "Apdex",
+          "value_field": "JAVAEE_Apdex",
           "title": "APDEX"
         },
         {
@@ -524,7 +524,7 @@
               1,
               2
             ],
-            "query": "q=HttpRequest%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp HttpRequest\n",
+            "query": "q=HttpRequest%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp HttpRequest\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -622,7 +622,7 @@
               1,
               2
             ],
-            "query": "q=Http_global%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Http_global\n",
+            "query": "q=JAVAEE_Http_global%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_Http_global\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -690,7 +690,7 @@
             "query_as_alias": false
           },
           "title": "HTTP请求数（日累计量）",
-          "value_field": "Http_global",
+          "value_field": "JAVAEE_Http_global",
           "average": false,
           "defaulttimestamp": true,
           "display": "block",
@@ -712,7 +712,7 @@
               1,
               2
             ],
-            "query": "q=Http_2xx%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Http_2xx\n",
+            "query": "q=JAVAEE_Http_2xx%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_Http_2xx\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -779,7 +779,7 @@
             "value_type": "cumulative",
             "query_as_alias": false
           },
-          "value_field": "Http_2xx",
+          "value_field": "JAVAEE_Http_2xx",
           "title": "HTTP2xx（日累计量）",
           "average": false,
           "defaulttimestamp": true,
@@ -811,7 +811,7 @@
               1,
               2
             ],
-            "query": "q=Http_3xx%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Http_3xx\n",
+            "query": "q=JAVAEE_Http_3xx%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_Http_3xx\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -884,7 +884,7 @@
             "query_as_alias": false
           },
           "height": "230",
-          "value_field": "Http_3xx",
+          "value_field": "JAVAEE_Http_3xx",
           "title": "HTTP3xx（日累计量）"
         },
         {
@@ -900,7 +900,7 @@
               1,
               2
             ],
-            "query": "q=Http_4xx%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Http_4xx\n",
+            "query": "q=JAVAEE_Http_4xx%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_Http_4xx\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -973,7 +973,7 @@
             "query_as_alias": false
           },
           "height": "230",
-          "value_field": "Http_4xx",
+          "value_field": "JAVAEE_Http_4xx",
           "title": "HTTP4xx（日累计量）"
         }
       ]
@@ -998,7 +998,7 @@
               1,
               2
             ],
-            "query": "q=Http_5xx%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Http_5xx\n",
+            "query": "q=JAVAEE_Http_5xx%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_Http_5xx\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1072,7 +1072,7 @@
           },
           "height": "230",
           "title": "HTTP5xx（日累计量）",
-          "value_field": "Http_5xx"
+          "value_field": "JAVAEE_Http_5xx"
         },
         {
           "span": 6,
@@ -1087,7 +1087,7 @@
               1,
               2
             ],
-            "query": "q=Http_error%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Http_error\n",
+            "query": "q=JAVAEE_Http_error%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_Http_error\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1160,7 +1160,7 @@
             "query_as_alias": false
           },
           "height": "230",
-          "value_field": "Http_error",
+          "value_field": "JAVAEE_Http_error",
           "title": "HTTP错误（日累计量）"
         }
       ]
@@ -1185,7 +1185,7 @@
               1,
               2
             ],
-            "query": "q=CPU_used%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp CPU_used\n",
+            "query": "q=JAVAEE_CPU_used%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_CPU_used\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1252,7 +1252,7 @@
             "value_type": "cumulative",
             "query_as_alias": false
           },
-          "value_field": "CPU_used",
+          "value_field": "JAVAEE_CPU_used",
           "title": "CPU使用率（%）",
           "average": false,
           "defaulttimestamp": true,
@@ -1275,7 +1275,7 @@
               1,
               2
             ],
-            "query": "q=Memory_used%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Memory_used\n",
+            "query": "q=JAVAEE_Memory_used%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_Memory_used\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1348,7 +1348,7 @@
             "query_as_alias": false
           },
           "title": "内存使用量（mb）",
-          "value_field": "Memory_used",
+          "value_field": "JAVAEE_Memory_used",
           "height": "230"
         }
       ]
@@ -1373,7 +1373,7 @@
               1,
               2
             ],
-            "query": "q=HeapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp HeapPercent\n",
+            "query": "q=JAVAEE_HeapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_HeapPercent\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1446,7 +1446,7 @@
             "query_as_alias": false
           },
           "title": "JAVA堆内存使用率(%)",
-          "value_field": "HeapPercent",
+          "value_field": "JAVAEE_HeapPercent",
           "height": "230"
         },
         {
@@ -1462,7 +1462,7 @@
               1,
               2
             ],
-            "query": "q=PhysicalPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp PhysicalPercent\n",
+            "query": "q=JAVAEE_PhysicalPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_PhysicalPercent\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1536,7 +1536,7 @@
           },
           "title": "物理内存使用率(%)",
           "height": "230",
-          "value_field": "PhysicalPercent"
+          "value_field": "JAVAEE_PhysicalPercent"
         }
       ]
     },
@@ -1560,7 +1560,7 @@
               1,
               2
             ],
-            "query": "q=SwapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp SwapPercent\n",
+            "query": "q=JAVAEE_SwapPercent%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_SwapPercent\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1633,7 +1633,7 @@
             "query_as_alias": false
           },
           "height": "230",
-          "value_field": "SwapPercent",
+          "value_field": "JAVAEE_SwapPercent",
           "title": "交换空间使用率(%)"
         },
         {
@@ -1649,7 +1649,7 @@
               1,
               2
             ],
-            "query": "q=ART_sql%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp ART_sql\n",
+            "query": "q=JAVAEE_ART_sql%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_ART_sql\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1722,7 +1722,7 @@
             "query_as_alias": false
           },
           "title": "SQL语句执行平均响应时间(ms)",
-          "value_field": "ART_sql",
+          "value_field": "JAVAEE_ART_sql",
           "height": "230"
         }
       ]
@@ -1747,7 +1747,7 @@
               1,
               2
             ],
-            "query": "q=ART_http%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp ART_http\n",
+            "query": "q=JAVAEE_ART_http%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_ART_http\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1820,7 +1820,7 @@
             "query_as_alias": false
           },
           "height": "230",
-          "value_field": "ART_http",
+          "value_field": "JAVAEE_ART_http",
           "title": "HTTP平均响应时间(ms)"
         },
         {
@@ -1836,7 +1836,7 @@
               1,
               2
             ],
-            "query": "q=Cpu_time_sum%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Cpu_time_sum\n",
+            "query": "q=JAVAEE_Cpu_time_sum%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_Cpu_time_sum\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -1909,7 +1909,7 @@
             "query_as_alias": false
           },
           "title": "HTTP请求平均CPU使用时间(ms)",
-          "value_field": "Cpu_time_sum",
+          "value_field": "JAVAEE_Cpu_time_sum",
           "height": "230"
         }
       ]
@@ -1934,7 +1934,7 @@
               1,
               2
             ],
-            "query": "q=Durations_sum%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Durations_sum\n",
+            "query": "q=JAVAEE_Durations_sum%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_Durations_sum\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -2008,7 +2008,7 @@
           },
           "height": "230",
           "title": "网络延迟时间(ms)",
-          "value_field": "Durations_sum"
+          "value_field": "JAVAEE_Durations_sum"
         },
         {
           "span": 6,
@@ -2023,7 +2023,7 @@
               1,
               2
             ],
-            "query": "q=ActiveThreadsNum%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp ActiveThreadsNum\n",
+            "query": "q=JAVAEE_ActiveThreadsNum%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_ActiveThreadsNum\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -2096,7 +2096,7 @@
             "query_as_alias": false
           },
           "title": "活动线程数",
-          "value_field": "ActiveThreadsNum",
+          "value_field": "JAVAEE_ActiveThreadsNum",
           "height": "230"
         }
       ]
@@ -2151,7 +2151,7 @@
     "pattern": "[logstash-]YYYY.MM.DD",
     "default": "_all"
   },
-  "style": "dark",
+  "style": "light",
   "failover": false,
   "panel_hints": true,
   "loader": {
@@ -2188,7 +2188,7 @@
   "filterids": [
     0
   ],
-  "isstyle": "dark",
+  "isstyle": "light",
   "hide_head": false,
   "language": 1,
   "row_controller": false,

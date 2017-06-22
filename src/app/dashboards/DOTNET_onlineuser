@@ -48,8 +48,8 @@
           "to": "NOW/HOUR%2B1HOUR",
           "field": "rs_timestamp",
           "type": "time",
-          "fromDateObj": "2017-06-21T05:49:43.697Z",
-          "toDateObj": "2017-06-22T05:49:43.698Z",
+          "fromDateObj": "2017-06-21T08:39:35.083Z",
+          "toDateObj": "2017-06-22T08:39:35.083Z",
           "mandate": "must",
           "active": true,
           "alias": "",
@@ -149,14 +149,14 @@
               1,
               2
             ],
-            "query": "q=JAVAEE_OnlineUserNum_total%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_OnlineUserNum_total\n",
+            "query": "q=DOTNET_User_Connections%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp DOTNET_User_Connections\n",
             "custom": ""
           },
           "max_rows": 100000,
           "reverse": 0,
           "segment": 4,
-          "threshold_first": 300000,
-          "threshold_second": 400000,
+          "threshold_first": 30000000,
+          "threshold_second": 40000000,
           "threshold_third": 3000,
           "group_field": null,
           "auto_int": true,
@@ -221,14 +221,14 @@
             "value_type": "cumulative",
             "query_as_alias": false
           },
-          "title": "在线用户数",
-          "value_field": "JAVAEE_OnlineUserNum_total",
-          "height": "230"
+          "height": "230",
+          "value_field": "DOTNET_User_Connections",
+          "title": "在线用户"
         }
       ]
     },
     {
-      "title": "response time",
+      "title": "RESPONSE",
       "height": "0px",
       "editable": true,
       "collapse": false,
@@ -247,7 +247,96 @@
               1,
               2
             ],
-            "query": "q=JAVAEE_Http_global%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_Http_global\n",
+            "query": "q=DOTNET_Current_Anonymous_Users%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp DOTNET_Current_Anonymous_Users\n",
+            "custom": ""
+          },
+          "max_rows": 100000,
+          "reverse": 0,
+          "segment": 4,
+          "threshold_first": 3000000,
+          "threshold_second": 4000000,
+          "threshold_third": 3000,
+          "group_field": null,
+          "auto_int": true,
+          "linkage_id": "a",
+          "defaulttimestamp": true,
+          "display": "block",
+          "icon": "icon-caret-down",
+          "area": true,
+          "total_first": "%",
+          "fontsize": 12,
+          "isEN": false,
+          "field_color": "#2ce41b",
+          "resolution": 100,
+          "value_sort": "rs_timestamp",
+          "interval": "10m",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1M",
+            "1y"
+          ],
+          "fill": 0,
+          "linewidth": 3,
+          "chart": "histobar",
+          "chartColors": [
+            "#f48a52",
+            "#f4d352",
+            "#ccf452",
+            "#8cf452",
+            "#3cee2b",
+            "#f467d8",
+            "#1a93f9",
+            "#2fd7ee"
+          ],
+          "timezone": "browser",
+          "spyable": true,
+          "linkage": false,
+          "zoomlinks": true,
+          "bars": false,
+          "average": false,
+          "label": true,
+          "points": false,
+          "lines": false,
+          "lines_smooth": false,
+          "legend": false,
+          "x-axis": true,
+          "y-axis": true,
+          "percentage": false,
+          "interactive": true,
+          "options": false,
+          "show_queries": true,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": false
+          },
+          "title": "匿名用户",
+          "value_field": "DOTNET_Current_Anonymous_Users",
+          "height": "230"
+        },
+        {
+          "span": 6,
+          "editable": true,
+          "type": "histobar",
+          "loadingEditor": false,
+          "mode": "value",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0,
+              1,
+              2
+            ],
+            "query": "q=DOTNET_Anonymous_Users_sec%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp DOTNET_Anonymous_Users_sec\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -314,8 +403,8 @@
             "value_type": "cumulative",
             "query_as_alias": false
           },
-          "title": "HTTP请求数（日累计量）",
-          "value_field": "JAVAEE_Http_global",
+          "title": "每秒匿名用户",
+          "value_field": "DOTNET_Anonymous_Users_sec",
           "average": false,
           "defaulttimestamp": true,
           "display": "block",
@@ -323,7 +412,16 @@
           "height": "230",
           "linkage_id": "a",
           "isEN": false
-        },
+        }
+      ]
+    },
+    {
+      "title": "",
+      "height": "0px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
         {
           "span": 6,
           "editable": true,
@@ -337,14 +435,14 @@
               1,
               2
             ],
-            "query": "q=JAVAEE_Http_error%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fq=res_id:8a8a83a95cc8a3d4015cc8a985190003.19f750081da1104aa21ecb78d800a889&fl=rs_timestamp JAVAEE_Http_error\n",
+            "query": "q=DOTNET_User_Time%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp DOTNET_User_Time\n",
             "custom": ""
           },
           "max_rows": 100000,
           "reverse": 0,
           "segment": 4,
           "threshold_first": 300000,
-          "threshold_second": 400000,
+          "threshold_second": 4000000,
           "threshold_third": 3000,
           "group_field": null,
           "auto_int": true,
@@ -410,8 +508,98 @@
             "query_as_alias": false
           },
           "height": "230",
-          "value_field": "JAVAEE_Http_error",
-          "title": "HTTP错误（日累计量）"
+          "value_field": "DOTNET_User_Time",
+          "title": "用户登录时长"
+        },
+        {
+          "span": 6,
+          "editable": true,
+          "type": "histobar",
+          "loadingEditor": false,
+          "mode": "value",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0,
+              1,
+              2
+            ],
+            "query": "q=DOTNET_Sessions_Total%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp%20asc&rows=100000&fq=rs_timestamp:[NOW/HOUR-24HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp DOTNET_Sessions_Total\n",
+            "custom": ""
+          },
+          "max_rows": 100000,
+          "reverse": 0,
+          "segment": 4,
+          "threshold_first": 300000,
+          "threshold_second": 500100,
+          "threshold_third": 3000,
+          "group_field": null,
+          "auto_int": true,
+          "area": true,
+          "total_first": "%",
+          "fontsize": 12,
+          "field_color": "#2ce41b",
+          "resolution": 100,
+          "value_sort": "rs_timestamp",
+          "interval": "10m",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1M",
+            "1y"
+          ],
+          "fill": 0,
+          "linewidth": 3,
+          "chart": "histobar",
+          "chartColors": [
+            "#f48a52",
+            "#f4d352",
+            "#ccf452",
+            "#8cf452",
+            "#3cee2b",
+            "#f467d8",
+            "#1a93f9",
+            "#2fd7ee"
+          ],
+          "timezone": "browser",
+          "spyable": true,
+          "linkage": false,
+          "zoomlinks": true,
+          "bars": false,
+          "stack": true,
+          "label": true,
+          "points": false,
+          "lines": false,
+          "lines_smooth": false,
+          "legend": false,
+          "x-axis": true,
+          "y-axis": true,
+          "percentage": false,
+          "interactive": true,
+          "options": false,
+          "show_queries": true,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": false
+          },
+          "value_field": "DOTNET_Sessions_Total",
+          "title": "总session数",
+          "average": false,
+          "defaulttimestamp": true,
+          "display": "block",
+          "icon": "icon-caret-down",
+          "height": "230",
+          "linkage_id": "a",
+          "isEN": false
         }
       ]
     },
@@ -465,7 +653,7 @@
     "pattern": "[logstash-]YYYY.MM.DD",
     "default": "_all"
   },
-  "style": "dark",
+  "style": "light",
   "failover": false,
   "panel_hints": true,
   "loader": {
@@ -502,7 +690,7 @@
   "filterids": [
     0
   ],
-  "isstyle": "dark",
+  "isstyle": "light",
   "hide_head": false,
   "language": 1,
   "row_controller": false,

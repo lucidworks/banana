@@ -349,7 +349,7 @@ function (angular, app, _, $, kbn) {
     var echarts = require('echarts');
 
 
-            var audio = document.getElementById("bgMusic");
+
 
             // Populate element
             try {
@@ -384,7 +384,10 @@ function (angular, app, _, $, kbn) {
                   }else if(scope.meandata>40){
                       term  = "健康";
                       color_term = '#1e90ff';
-                  }
+                  }else  if(isNaN(scope.meandata)){
+                    term  = "没有数据";
+                     color_term = "#000";
+          }
 
           myChart = echarts.init(document.getElementById(idd));
 
@@ -516,125 +519,131 @@ function (angular, app, _, $, kbn) {
 
 
       var option_health_nodata = {
-   
-   
-    toolbox: {
-        show : false,
-        feature : {
+
+
+        toolbox: {
+          show : false,
+          feature : {
             mark : {show: false},
             restore : {show: false},
             saveAsImage : {show: false}
-        }
-    },
-	grid: {
-        left: '0%',
-        right: '0%',
-        bottom: '0%',
-		top: 90
-    },
-    series : [
-        {
+          }
+        },
+        grid: {
+          left: '0%',
+          right: '0%',
+          bottom: '0%',
+          top: 90
+        },
+        series : [
+          {
             name:'Health',
-			 
             type:'gauge',
             min:100,
             max:0,
             splitNumber:10,
             radius: '96%',
             axisLine: {            // 坐标轴线
-                lineStyle: {       // 属性lineStyle控制线条样式
-                    color: [[0.6, '#1e90ff'],[0.82, '#F6AB60'],[1, '#EB5768']],
-                    width: 5,
-                    shadowColor : '#ddfdfa', //默认透明
-                    shadowBlur: 40
-                }
+              lineStyle: {       // 属性lineStyle控制线条样式
+                color: [[0.6, '#1e90ff'],[0.82, '#F6AB60'],[1, '#EB5768']],
+                width: 5,
+                //默认透明
+                shadowBlur: 50,
+                type:'dotted',
+                shadowColor : '#ddfdfa',
+                opacity:labelcolor?1:0
+              }
             },
             axisLabel: {            // 坐标轴小标记
-                textStyle: {       // 属性lineStyle控制线条样式
-                    fontWeight: 'bolder',
-                    color: labelcolor?'#fff':'#696969',
-                    shadowColor : '#fff', //默认透明
-                    shadowBlur: 40,
-					fontStyle: 'italic',
-					fontSize:scope.panel.fontsize
-                }
+              textStyle: {       // 属性lineStyle控制线条样式
+                fontWeight: 'bolder',
+                color: labelcolor?'#fff':'#696969',
+                shadowColor : '#fff', //默认透明
+                shadowBlur: 40,
+                fontStyle: 'italic',
+                fontSize:scope.panel.fontsize
+              }
             },
             axisTick: {            // 坐标轴小标记
-                length :18,        // 属性length控制线长
-                lineStyle: {       // 属性lineStyle控制线条样式
-                    color: 'auto',
-                    shadowColor : '#fff', //默认透明
-                    shadowBlur: 40
-                }
+              length :15,        // 属性length控制线长
+              lineStyle: {       // 属性lineStyle控制线条样式
+                color: 'auto',
+                width:3,
+                type:'dotted',
+                shadowColor : labelcolor?'#fff':'#00008B',
+                shadowBlur: 50
+              }
             },
             splitLine: {           // 分隔线
-                length :28,         // 属性length控制线长
-                lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
-                    width:4,
-                    color: '#fff',
-                    shadowColor : '#fff', //默认透明
-                    shadowBlur: 40
-                }
+              length :25,         // 属性length控制线长
+              lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                width:2,
+                color:  labelcolor?'#fff':'auto',
+                type:'dotted',
+                shadowColor : labelcolor?'#fff':'#f55351', //默认透明
+                shadowBlur: 25
+              }
             },
             pointer: {           // 分隔线
-               length:'90%',
-				width:3
+              length:'90%',
+              width:2
             },
-			itemStyle:{
-				normal:{
-					color:'#fff',
-					shadowColor: '#f55351',
-					shadowBlur: 30,
-					borderWidth:2,
-					borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-						offset: 0, color: 'red' // 0% 处的颜色
-						}, {
-						offset: 0.7, color: '#f8750d' // 100% 处的颜色
-						},{
-					offset: 1, color: '#fff' // 100% 处的颜色
-					}], false)
-				},
-				emphasis:{
-					color:'#fff',
-					shadowColor: '#fff',
-					shadowBlur: 30,
-					borderWidth:2,
-					borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-						offset: 0, color: 'red' // 0% 处的颜色
-						}, {
-						offset: 0.7, color: '#50d1f1' // 100% 处的颜色
-						},{
-					offset: 1, color: '#fff' // 100% 处的颜色
-					}], false)
-					
-				}
-			},
+            itemStyle:{
+
+              normal:{
+                color:'#f55351',
+                shadowColor: '#f55351',
+                shadowBlur: 30,
+                borderWidth:2,
+                borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                  offset: 0, color: '#f55351' // 0% 处的颜色
+                }, {
+                  offset: 0.86, color: '#f8750d' // 100% 处的颜色
+                },{
+                  offset: 1, color: '#fff' // 100% 处的颜色
+                }], false)
+              },
+              emphasis:{
+                color:'#f55351',
+                shadowColor: '#f55351',
+                shadowBlur: 30,
+                borderWidth:2,
+                borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                  offset: 0, color: 'red' // 0% 处的颜色
+                }, {
+                  offset: 0.86, color: '#50d1f1' // 100% 处的颜色
+                },{
+                  offset: 1, color: '#fff' // 100% 处的颜色
+                }], false)
+
+              }
+            },
             title : {
-                textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                    fontWeight: 'bolder',
-                    fontSize: scope.panel.fontsize+15,
-                    fontStyle: 'italic',
-                    color: labelcolor?'#fff':'#696969',
-                    shadowColor : '#fff', //默认透明
-                    shadowBlur: 40
-                }
+              textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                fontWeight: 'bolder',
+                fontSize: scope.panel.fontsize+14,
+                fontStyle: 'italic',
+                color: labelcolor?'#fff':'#696969',
+                shadowColor : '#fff', //默认透明
+                shadowBlur: 40
+              }
             },
             detail : {
-				formatter:'{value}%',
-                      // x, y，单位px
-                textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                    fontWeight: 'bolder',
-                    color: labelcolor?'#fff':'#696969',
-					fontSize:scope.panel.fontsize+10
-                }
+              formatter:'',
+              // x, y，单位px
+              textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                fontWeight: 'bolder',
+                color:  color_term,
+                fontSize:scope.panel.fontsize+12
+              }
             },
-            data:[{value: 0, name: scope.panel.title_defined? scope.panel.title+'(no data)':'健康度(no data)'}]
+            data:[{value:0, name: 'No Data'}]
         }
      
     ]
 };
 
-          if(scope.data.length==0){
+          if(isNaN(scope.meandata)){
             myChart.setOption(option_health_nodata);}else{
             myChart.setOption(option);
 
@@ -656,6 +665,9 @@ function (angular, app, _, $, kbn) {
                 }else if(scope.apdex<60){
                   term  = "健康";
                   color_term = '#1e90ff';
+                }else  if(isNaN(scope.apdex)){
+                  term  = "没有数据";
+                  color_term = "#000";
                 }
 
                 myChart = echarts.init(document.getElementById(idd));
@@ -807,18 +819,20 @@ function (angular, app, _, $, kbn) {
                   series : [
                     {
                       name:'Health',
-
                       type:'gauge',
-                      min:100,
-                      max:0,
+                      min:0,
+                      max:100,
                       splitNumber:10,
                       radius: '96%',
                       axisLine: {            // 坐标轴线
                         lineStyle: {       // 属性lineStyle控制线条样式
                           color: [[0.6, '#1e90ff'],[0.82, '#F6AB60'],[1, '#EB5768']],
                           width: 5,
-                          shadowColor : '#ddfdfa', //默认透明
-                          shadowBlur: 40
+                          //默认透明
+                          shadowBlur: 50,
+                          type:'dotted',
+                          shadowColor : '#ddfdfa',
+                          opacity:labelcolor?1:0
                         }
                       },
                       axisLabel: {            // 坐标轴小标记
@@ -832,49 +846,53 @@ function (angular, app, _, $, kbn) {
                         }
                       },
                       axisTick: {            // 坐标轴小标记
-                        length :18,        // 属性length控制线长
+                        length :15,        // 属性length控制线长
                         lineStyle: {       // 属性lineStyle控制线条样式
                           color: 'auto',
-                          shadowColor : '#fff', //默认透明
-                          shadowBlur: 40
+                          width:3,
+                          type:'dotted',
+                          shadowColor : labelcolor?'#fff':'#00008B',
+                          shadowBlur: 50
                         }
                       },
                       splitLine: {           // 分隔线
-                        length :28,         // 属性length控制线长
+                        length :25,         // 属性length控制线长
                         lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
-                          width:4,
-                          color: '#fff',
-                          shadowColor : '#fff', //默认透明
-                          shadowBlur: 40
+                          width:2,
+                          color:  labelcolor?'#fff':'auto',
+                          type:'dotted',
+                          shadowColor : labelcolor?'#fff':'#f55351', //默认透明
+                          shadowBlur: 25
                         }
                       },
                       pointer: {           // 分隔线
                         length:'90%',
-                        width:3
+                        width:2
                       },
                       itemStyle:{
+
                         normal:{
-                          color:'#fff',
+                          color:'#f55351',
+                          shadowColor: '#f55351',
+                          shadowBlur: 30,
+                          borderWidth:2,
+                          borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                            offset: 0, color: '#f55351' // 0% 处的颜色
+                          }, {
+                            offset: 0.86, color: '#f8750d' // 100% 处的颜色
+                          },{
+                            offset: 1, color: '#fff' // 100% 处的颜色
+                          }], false)
+                        },
+                        emphasis:{
+                          color:'#f55351',
                           shadowColor: '#f55351',
                           shadowBlur: 30,
                           borderWidth:2,
                           borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                             offset: 0, color: 'red' // 0% 处的颜色
                           }, {
-                            offset: 0.7, color: '#f8750d' // 100% 处的颜色
-                          },{
-                            offset: 1, color: '#fff' // 100% 处的颜色
-                          }], false)
-                        },
-                        emphasis:{
-                          color:'#fff',
-                          shadowColor: '#fff',
-                          shadowBlur: 30,
-                          borderWidth:2,
-                          borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                            offset: 0, color: 'red' // 0% 处的颜色
-                          }, {
-                            offset: 0.7, color: '#50d1f1' // 100% 处的颜色
+                            offset: 0.86, color: '#50d1f1' // 100% 处的颜色
                           },{
                             offset: 1, color: '#fff' // 100% 处的颜色
                           }], false)
@@ -884,7 +902,7 @@ function (angular, app, _, $, kbn) {
                       title : {
                         textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
                           fontWeight: 'bolder',
-                          fontSize: scope.panel.fontsize+15,
+                          fontSize: scope.panel.fontsize+14,
                           fontStyle: 'italic',
                           color: labelcolor?'#fff':'#696969',
                           shadowColor : '#fff', //默认透明
@@ -892,21 +910,21 @@ function (angular, app, _, $, kbn) {
                         }
                       },
                       detail : {
-                        formatter:'{value}%',
+                        formatter:'',
                         // x, y，单位px
                         textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
                           fontWeight: 'bolder',
-                          color: labelcolor?'#fff':'#696969',
-                          fontSize:scope.panel.fontsize+10
+                          color:  color_term,
+                          fontSize:scope.panel.fontsize+12
                         }
                       },
-                      data:[{value: 0, name: scope.panel.title_defined? scope.panel.title+'(no data)':'健康度(no data)'}]
+                      data:[{value: 0, name: 'No data'}]
                     }
 
                   ]
                 };
 
-                if(scope.data.length===0){
+                if(isNaN(scope.apdex)){
                   myChart.setOption(option_health_nodata1);}else{
                   myChart.setOption(option1);
 
