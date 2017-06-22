@@ -80,7 +80,7 @@ function (angular, app, _, kbn, moment) {
         icon:"icon-caret-down",
 
       field_list: true,
-        linkage_id:'a',
+      linkage_enable:true,
       trimFactor: 300,
       normTimes : true,
       spyable : true,
@@ -110,9 +110,11 @@ function (angular, app, _, kbn, moment) {
       $scope.get_data();
     };
       $scope.display=function() {
-          if($scope.panel.display === 'none'){
+          if($scope.panel.display=='none'){
               $scope.panel.display='block';
               $scope.panel.icon="icon-caret-down";
+
+
           }else{
               $scope.panel.display='none';
               $scope.panel.icon="icon-caret-up";
@@ -194,7 +196,7 @@ function (angular, app, _, kbn, moment) {
     };
 
     $scope.build_search = function(field,value,negate) {
-
+        if($scope.panel.linkage_enable){
         var query;
         // This needs to be abstracted somewhere
         if (_.isArray(value)) {
@@ -212,10 +214,9 @@ function (angular, app, _, kbn, moment) {
         filterSrv.set({type: 'field', field: field, query: query, mandate: (negate ? 'mustNot' : 'must')});
 
         $scope.panel.offset = 0;
-        dashboard.current.linkage_id = $scope.panel.linkage_id;
         dashboard.current.enable_linkage =false;
         dashboard.refresh();
-
+    }
     };
 
     $scope.fieldExists = function(field,mandate) {
@@ -225,7 +226,7 @@ function (angular, app, _, kbn, moment) {
     };
 
     $scope.get_data = function(segment,query_id) {
-        if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        if($scope.panel.linkage_enable||dashboard.current.enable_linkage){
         $scope.panel.error = false;
         delete $scope.panel.error;
 

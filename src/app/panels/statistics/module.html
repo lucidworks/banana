@@ -12,17 +12,13 @@
       <tr>
         <th st-sort="term">Iterm</th>
         <th st-sort="count">Count</th>
-        <th ng-if="panel.mode === 'statistic'" st-sort="mean">Mean</th>
-        <th ng-if="panel.mode === 'statistic'" st-sort="mean">Max</th>
-        <th ng-if="panel.mode === 'statistic'" st-sort="mean">Min</th>
-        <th ng-if="panel.mode === 'statistic'" st-sort="mean">Stddev</th>
-
+        <th ng-if="panel.mode === 'statistic'" st-sort="mean" st-sort-default="reverse">Mean</th>
+        <th ng-if="panel.mode === 'statistic'" st-sort="max">Max</th>
+        <th ng-if="panel.mode === 'statistic'" st-sort="min">Min</th>
+        <th ng-if="panel.mode === 'statistic'" st-sort="stddev">Stddev</th>
       </tr>
       <tr>
-        <th>
-          <input st-search="'firstName'" placeholder="search for firstname" class="input-sm form-control" type="search"/>
-        </th>
-        <th colspan="4">
+        <th colspan="12">
           <input st-search placeholder="global search" class="input-sm form-control" type="search"/>
         </th>
       </tr>
@@ -31,12 +27,15 @@
       <tr ng-repeat="row in displayedCollection">
         <td>{{row.term}}</td>
         <td>{{row.count}}</td>
-        <td ng-if="panel.mode === 'statistic'">{{row.mean}}</td>
+        <td ng-if="panel.mode === 'statistic'">{{row.mean | number:2}}</td>
+        <td ng-if="panel.mode === 'statistic'">{{row.max}}</td>
+        <td ng-if="panel.mode === 'statistic'">{{row.min}}</td>
+        <td ng-if="panel.mode === 'statistic'">{{row.stddev | number:2}}</td>
       </tr>
       </tbody>
       <tfoot>
       <tr>
-        <td colspan="5">
+        <td colspan="10">
           <div st-pagination="" st-items-by-page="panel.itemsByPage" st-displayed-pages="panel.displayPage" class="pagination pull-right"></div>
         </td>
       </tr>
