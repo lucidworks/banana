@@ -100,6 +100,7 @@ function (Settings) {
       'bettermap',
       'query',
 	  'donetstacking',
+	  'threadhistobar',
 	  'china',
       'terms',
 	  'sortbar',
