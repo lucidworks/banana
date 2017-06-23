@@ -48,8 +48,8 @@
           "to": "NOW/HOUR%2B1HOUR",
           "field": "rs_timestamp",
           "type": "time",
-          "fromDateObj": "2017-06-22T07:10:55.230Z",
-          "toDateObj": "2017-06-22T10:10:55.231Z",
+          "fromDateObj": "2017-06-23T02:21:44.914Z",
+          "toDateObj": "2017-06-23T05:21:44.915Z",
           "mandate": "must",
           "active": true,
           "alias": "",
@@ -147,10 +147,10 @@
               1,
               2
             ],
-            "query": "q=Threads instance_name%3A%5B*%20TO%20*%5D&wt=json&sort=Threads%20desc&rows=10&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Threads instance_name\n",
+            "query": "q=Threads instance_name%3A%5B*%20TO%20*%5D&wt=json&sort=Threads%20desc&rows=10000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Threads instance_name\n",
             "custom": "&fq=instance_metric:usertime"
           },
-          "max_rows": 10,
+          "max_rows": 10000,
           "reverse": 0,
           "segment": 4,
           "threshold_first": 1000,
@@ -382,10 +382,10 @@
               1,
               2
             ],
-            "query": "q=Threads instance_name%3A%5B*%20TO%20*%5D&wt=json&sort=Threads%20desc&rows=10&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Threads instance_name\n",
+            "query": "q=Threads instance_name%3A%5B*%20TO%20*%5D&wt=json&sort=Threads%20desc&rows=10000&fq=rs_timestamp:[NOW/HOUR-3HOUR%20TO%20NOW/HOUR%2B1HOUR]&fl=rs_timestamp Threads instance_name\n",
             "custom": "&fq=instance_metric:cputime"
           },
-          "max_rows": 10,
+          "max_rows": 10000,
           "reverse": 0,
           "segment": 4,
           "threshold_first": 1000,

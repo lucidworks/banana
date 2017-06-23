@@ -458,16 +458,27 @@ define([
 
             var barData = [];
             var barDataLabel=[];
+            var repeat={};
             var barLabel = scope.panel.value_field.split(" ");
-
-
-
-
+            //repeat[0]=chartData[0][0][barLabel[1]] ;
+            // barData[0] = chartData[0][i0][scope.panel.value_sort];
+            // barDataLabel[0] = chartData[0][0][barLabel[1]];
+            // repeat[]
+              var i1=0;
             for (var i =0;i<chartData[0].length;i++){
+                if(i1===10){
+                  break;
+                }
+              if(!repeat[chartData[0][i][barLabel[1]]]){
+                repeat[chartData[0][i][barLabel[1]]]=1;
+                //repeat.push(chartData[0][i][barLabel[1]]);
+                barData[i1] = chartData[0][i][scope.panel.value_sort];
+                barDataLabel[i1] = chartData[0][i][barLabel[1]];
+                barDataLabel[i1] = barDataLabel[i1].replace(/[\r\n]/g,"");
 
-              barData[i] = chartData[0][i][scope.panel.value_sort];
-              barDataLabel[i] = chartData[0][i][barLabel[1]];
-              barDataLabel[i] = barDataLabel[i].replace(/[\r\n]/g,"");
+                i1++;
+              }
+
 
             }
             barData.reverse();

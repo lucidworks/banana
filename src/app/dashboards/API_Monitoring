@@ -245,7 +245,8 @@
           "display": "block",
           "icon": "icon-caret-down",
           "height": "680",
-          "linkage_id": "a"
+          "linkage_id": "a",
+          "clickEnable": false
         },
         {
           "span": 6,
@@ -862,10 +863,10 @@
               1,
               2
             ],
-            "query": "q=duration_l api_s%3A%5B*%20TO%20*%5D&wt=json&sort=duration_l%20desc&rows=10&fq=rs_timestamp:[2017-05-19T10:45:30.000Z%20TO%202017-05-20T10:45:30.000Z]&fl=rs_timestamp duration_l api_s\n",
+            "query": "q=duration_l api_s%3A%5B*%20TO%20*%5D&wt=json&sort=duration_l%20desc&rows=10000&fq=rs_timestamp:[2017-05-19T10:45:30.000Z%20TO%202017-05-20T10:45:30.000Z]&fl=rs_timestamp duration_l api_s\n",
             "custom": ""
           },
-          "max_rows": 10,
+          "max_rows": 10000,
           "reverse": 0,
           "segment": 4,
           "threshold_first": 1000,
