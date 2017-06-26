@@ -26,10 +26,7 @@ function (angular, app, _) {
     $scope.panelMeta = {
 
       status  : "Experimental",
-      description : "Creates a new set of queries using the Elasticsearch terms facet. For example,"+
-       " you might want to create 5 queries showing the most frequent HTTP response codes. Be "+
-       "careful not to select a high cardinality field, as Elasticsearch must load all unique values"+
-       " into memory."
+      description : ""
     };
 
     // Set and populate defaults

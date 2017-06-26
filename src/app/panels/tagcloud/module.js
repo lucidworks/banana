@@ -31,7 +31,7 @@ define([
           src: 'app/partials/querySelect.html'
         }],
         status: "Experimental",
-        description: "Display the tag cloud of the top N words from a specified field."
+        description : ""
       };
 
       // Set and populate defaults

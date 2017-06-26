@@ -25,7 +25,7 @@ function (angular, app, _, $, d3) {
         }
       ],
       status: 'Experimental',
-      description: 'Bar module for tutorial'
+      description : ""
     };
 
     // Define panel's default properties and values

@@ -32,7 +32,7 @@ define([
         {title:'Queries', src:'app/partials/querySelect.html'}
       ],
       status  : "Stable",
-      description : "The total hits for the current query including all the applied filters."
+      description : ""
     };
 
     // Set and populate defaults

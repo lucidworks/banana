@@ -51,25 +51,25 @@
   <div  class="row-fluid" ng-if="filterSrv.idsByType('time').length < 1">
     <div>
       <div class="span11">
-        <h4>No time filter present</h4>
+        <h4>{{'No time filter present'|translate}}</h4>
       </div>
     </div>
   </div>
   <div  class="row-fluid nomargin">
     <div class="span12 small" ng-if="filterSrv.idsByType('time').length > 0">
-      <a class="link" ng-click="set_mode('relative')" ng-class="{'strong': (panel.mode == 'relative')}">Relative</a> |
-      <a class="link" ng-click="set_mode('absolute')" ng-class="{'strong': (panel.mode == 'absolute')}">Absolute</a> |
-      <a class="link" ng-click="set_mode('since')"    ng-class="{'strong': (panel.mode == 'since')}">Since</a>
+      <a class="link" ng-click="set_mode('relative')" ng-class="{'strong': (panel.mode == 'relative')}">{{'Relative'|translate}}</a> |
+      <a class="link" ng-click="set_mode('absolute')" ng-class="{'strong': (panel.mode == 'absolute')}">{{'Absolute'|translate}}</a> |
+      <a class="link" ng-click="set_mode('since')"    ng-class="{'strong': (panel.mode == 'since')}">{{'Since'|translate}}</a>
 
       <span ng-hide="panel.mode == 'absolute' || panel.mode == 'none'"> |
-        <input type="checkbox" ng-model="panel.refresh.enable" ng-change='refresh();'> Auto-refresh
+        <input type="checkbox" ng-model="panel.refresh.enable" ng-change='refresh();'> {{'Auto-refresh'|translate}}
         <span ng-class="{'ng-cloak': !panel.refresh.enable}">
           every <a data-title="<small>Auto-refresh Settings</small>" data-placement="right" bs-popover="'app/panels/timepicker/refreshctrl.html'">{{panel.refresh.interval}}s</a>.
         </span>
       </span>
     </div>
     <div class="span12 small" ng-if="filterSrv.idsByType('time').length < 1">
-      <a class='btn btn-small' ng-click="time_apply()">Create a time filter</a>
+      <a class='btn btn-small' ng-click="time_apply()">{{'Create a time filter'|translate}}</a>
     </div>
   </div>
   </div>

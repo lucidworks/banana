@@ -33,7 +33,7 @@ function (angular, app, _, $, worldmap) {
       ],
 
       status  : "Stable",
-      description : "Displays a map of shaded regions using a field containing a 2 letter country code or US state code. Regions with more hits are shaded darker. It uses Solr faceting, so it is important that you set field values to the appropriate 2-letter codes at index time. Recent additions provide the ability to compute mean/max/min/sum of a numeric field by country or state."
+      description : ""
     };
 
     // Set and populate defaults

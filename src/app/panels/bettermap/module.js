@@ -38,7 +38,7 @@ function (angular, app, _, L, localRequire) {
         }
       ],
       status  : "Experimental",
-      description : "Displays geo points in clustered groups on a map. For better or worse, this panel does NOT use the geo-faceting capabilities of Solr. This means that it transfers more data and is generally heavier to compute, while showing less actual data. If you have a time filter, it will attempt to show to most recent points in your search, up to your defined limit. It is best used after filtering the results through other queries and filter queries, or when you want to inspect a recent sample of points."
+      description : ""
     };
 
     // Set and populate defaults

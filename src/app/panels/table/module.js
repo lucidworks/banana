@@ -50,7 +50,7 @@ function (angular, app, _, kbn, moment) {
       ],
       exportfile: true,
       status: "Stable",
-      description: "A paginated table of records matching your query (including any filters that may have been applied). Click on a row to expand it and review all of the fields associated with that document. Provides the capability to export your result set to CSV, XML or JSON for further processing using other systems."
+      description : ""
     };
 
     // Set and populate defaults

@@ -20,7 +20,7 @@ function (angular, app, _, require) {
   module.controller('text', function($scope) {
     $scope.panelMeta = {
       status  : "Stable",
-      description : "A static text panel that can use plain text, markdown, or (sanitized) HTML"
+      description : ""
     };
 
     // Set and populate defaults

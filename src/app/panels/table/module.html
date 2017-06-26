@@ -9,7 +9,7 @@
   <div ng-style="{'display':panel.display}" class="row-fluid">
     <div ng-class="{'span3':panel.field_list}" ng-if="panel.field_list">
       <div class="sidebar-nav">
-        <h5>Fields <i class=" icon-chevron-sign-left pointer " ng-click="panel.field_list = !panel.field_list" bs-tooltip="'Hide field list'" ng-if="panel.field_list"></i></h5>
+        <h5>{{'Fields'|translate}} <i class=" icon-chevron-sign-left pointer " ng-click="panel.field_list = !panel.field_list" bs-tooltip="'Hide field list'" ng-if="panel.field_list"></i></h5>
         <ul class="unstyled" style="{{panel.overflow}}:{{panel.height || row.height}};overflow-y:auto;overflow-x:hidden;">
           <li ng-style="panel.style" ng-repeat="field in fields.list" ng-if="_.isUndefined(panel.important_fields) || _.contains(panel.important_fields,field)">
             <i class="pointer" ng-class="{'icon-check': _.contains(panel.fields,field),'icon-check-empty': !_.contains(panel.fields,field)}" ng-click="toggle_field(field)"></i>
@@ -29,7 +29,7 @@
         </div>
         <div class="span8" style="text-align:center">
           <strong ng-if="hits > 0" ng-hide="hits == 0">{{panel.offset + 1}}</strong><strong ng-if="hits == 0" ng-hide="hits > 0">{{panel.offset}}</strong> to <strong>{{dashboard.numberWithCommas(panel.offset + data.slice(panel.offset,panel.offset+panel.size).length)}}</strong>
-          <small> of {{dashboard.numberWithCommas(data.length)}} available for paging</small>
+          <small> of {{dashboard.numberWithCommas(data.length)}} {{'available for paging'|translate}}</small>
         </div>
         <div class="span1" style="text-align:left">
           <i ng-click="panel.offset = (panel.offset + panel.size)" ng-if="data.length > panel.offset+panel.size" class='icon-arrow-right pointer'></i>
@@ -38,7 +38,7 @@
 
       <table class="table-hover table table-condensed" ng-style="panel.style">
         <thead ng-if="panel.header">
-          <th ng-if="panel.fields.length<1">message (select columns from the list to the left)</th>
+          <th ng-if="panel.fields.length<1">{{'message (select columns from the list to the left)'|translate}}</th>
           <th style="white-space:nowrap" ng-repeat="field in panel.fields">
             <i ng-if="!$first" class="pointer link icon-caret-left" ng-click="_.move(panel.fields,$index,$index-1)"></i>
             <span  class="pointer" ng-click="set_sort(field)" ng-if='panel.sortable'>
@@ -69,16 +69,16 @@
             <td colspan={{panel.fields.length}} ng-switch="event.kibana.view">
               <span>
                 View:
-                <a class="link" ng-class="{'strong':event.kibana.view == 'table'}" ng-click="event.kibana.view = 'table'">Table</a> /
+                <a class="link" ng-class="{'strong':event.kibana.view == 'table'}" ng-click="event.kibana.view = 'table'">{{'Table'|translate}}</a> /
                 <a class="link" ng-class="{'strong':event.kibana.view == 'json'}" ng-click="event.kibana.view = 'json'">JSON</a> /
-                <a class="link" ng-class="{'strong':event.kibana.view == 'raw'}" ng-click="event.kibana.view = 'raw'">Raw</a>
+                <a class="link" ng-class="{'strong':event.kibana.view == 'raw'}" ng-click="event.kibana.view = 'raw'">{{'Raw'|translate}}</a>
                 <i class="link pull-right icon-chevron-up" ng-click="toggle_details(event)"></i>
               </span>
               <table class='table table-bordered table-condensed' ng-switch-when="table">
                 <thead>
-                  <th>Field</th>
-                  <th>Action</th>
-                  <th>Value</th>
+                  <th>{{'Field'|translate}}</th>
+                  <th>{{'Action'|translate}}</th>
+                  <th>{{'Value'|translate}}</th>
                 </thead>
                 <tr ng-repeat="(key,value) in event.kibana._source" ng-class-odd="'odd'">
                   <td>{{key}}</td>

@@ -25,7 +25,7 @@ function (angular, app, kbn, _/*, $*/) {
         }
       ],
       status: 'Experimental',
-      description: 'Docviewer panel for displaying search results in a document viewer style.'
+      description : ""
     };
 
     // Define panel's default properties and values

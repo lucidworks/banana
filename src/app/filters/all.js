@@ -162,6 +162,8 @@ define(['angular', 'jquery', 'underscore','showdown'], function(angular, $, _,Sh
     };
   });
 
+
+
   module.filter('striphtml', function() {
     return function(text) {
       if (text) {

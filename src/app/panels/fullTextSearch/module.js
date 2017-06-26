@@ -44,7 +44,7 @@ define([
         }],
         exportfile: true,
         status: "Experimental",
-        description: "This panel provide full text search functionality for data"
+        description : ""
       };
 
       // Set and populate defaults

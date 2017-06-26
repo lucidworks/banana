@@ -7,7 +7,7 @@ function (angular, _) {
 
   var module = angular.module('kibana.controllers');
 
-  module.controller('dashLoader', function($scope, $http, timer, dashboard, alertSrv) {
+  module.controller('dashLoader', function($scope, $http, timer, dashboard, alertSrv,$translate) {
     $scope.loader = dashboard.current.loader;
 
     $scope.init = function() {
@@ -74,23 +74,23 @@ function (angular, _) {
           $scope.resetNewDefaults();
         }).
         error(function() {
-          alertSrv.set('Error','Unable to load default dashboard','error');
+          alertSrv.set($translate.instant('Error'),$translate.instant('Unable to load default dashboard'),'error');
         });
     };
 
     $scope.set_default = function() {
       if(dashboard.set_default()) {
-        alertSrv.set('Local Default Set',dashboard.current.title+' has been set as your local default','success',5000);
+        alertSrv.set($translate.instant('Local Default Set'),dashboard.current.title+$translate.instant('has been set as your local default'),'success',5000);
       } else {
-        alertSrv.set('Incompatible Browser','Sorry, your browser is too old for this feature','error',5000);
+        alertSrv.set($translate.instant('Incompatible Browser'),$translate.instant('Sorry, your browser is too old for this feature'),'error',5000);
       }
     };
 
     $scope.purge_default = function() {
       if(dashboard.purge_default()) {
-        alertSrv.set('Local Default Clear','Your local default dashboard has been cleared','success',5000);
+        alertSrv.set($translate.instant('Local Default Clear'),$translate.instant('Your local default dashboard has been cleared'),'success',5000);
       } else {
-        alertSrv.set('Incompatible Browser','Sorry, your browser is too old for this feature','error',5000);
+        alertSrv.set($translate.instant('Incompatible Browser'),$translate.instant('Sorry, your browser is too old for this feature'),'error',5000);
       }
     };
 
@@ -103,14 +103,14 @@ function (angular, _) {
         function(result) {
         // Solr
         if(result.responseHeader.status === 0) {
-          alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
-            ($scope.elasticsearch.title || dashboard.current.title) + '"','success',5000);
+          alertSrv.set($translate.instant('Dashboard Saved'),$translate.instant('This dashboard has been saved to Solr as') +
+            ($scope.elasticsearch.title || dashboard.current.title),'success',5000);
           if(type === 'temp') {
             $scope.share = dashboard.share_link(dashboard.current.title,'temp',result.response.docs[0].id);
           }
           $scope.elasticsearch.title = '';
         } else {
-          alertSrv.set('Save failed','Dashboard could not be saved to Solr','error',5000);
+          alertSrv.set($translate.instant('Save failed'),'Dashboard could not be saved to Solr','error',5000);
         }
       });
     };
@@ -120,16 +120,16 @@ function (angular, _) {
         function(result) {
           if(!_.isUndefined(result)) {
             if (result.responseHeader.status === 0) {
-              alertSrv.set('Dashboard Deleted',id+' has been deleted','success',5000);
+              alertSrv.set($translate.instant('Dashboard Deleted'),id+$translate.instant(' has been deleted'),'success',5000);
               // Find the deleted dashboard in the cached list and remove it
               // var toDelete = _.where($scope.elasticsearch.dashboards,{_id:id})[0];
               var toDelete = _.where($scope.elasticsearch.dashboards,{id:id})[0];
               $scope.elasticsearch.dashboards = _.without($scope.elasticsearch.dashboards,toDelete);
             } else {
-              alertSrv.set('Dashboard Not Found','Could not find '+id+' in Solr','warning',5000);
+              alertSrv.set($translate.instant('Dashboard Not Found'),$translate.instant('Could not find')+id+$translate.instant('in Solr'),'warning',5000);
             }
           } else {
-            alertSrv.set('Dashboard Not Deleted','An error occurred deleting the dashboard','error',5000);
+            alertSrv.set($translate.instant('Dashboard Not Deleted'),$translate.instant('An error occurred deleting the dashboard'),'error',5000);
           }
         }
       );

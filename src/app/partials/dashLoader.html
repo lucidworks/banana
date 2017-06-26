@@ -5,11 +5,11 @@
 <!-- New menu -->
 <li class="dropdown"  ng-show="showDropdown('new')" style="text-decoration:none;list-style-type:none">
   <a  data-toggle="dropdown" style='text-decoration:none;'>
-      &nbsp;<i class='icon-file'></i>&nbsp;&nbsp;&nbsp;&nbsp;New
+      &nbsp;<i class='icon-file'></i>&nbsp;&nbsp;&nbsp;&nbsp;{{'New'|translate}}
   </a>
   <ul class="dropdown-menu" style="padding:5px;top:-50px;left:-50px">
-    <li><a class="link" bs-modal="'app/partials/solrSettings.html'" ng-click="$scope.type='default-ts'"><i class="icon-time"></i> Time-series dashboard </a></li>
-    <li><a class="link" bs-modal="'app/partials/solrSettings.html'" ng-click="$scope.type='default-nts'"><i class="icon-th-large"></i> Non time-series dashboard </a></li>
+    <li><a class="link" bs-modal="'app/partials/solrSettings.html'" ng-click="$scope.type='default-ts'"><i class="icon-time"></i> {{'Time-series dashboard'|translate}}</a></li>
+    <li><a class="link" bs-modal="'app/partials/solrSettings.html'" ng-click="$scope.type='default-nts'"><i class="icon-th-large"></i> {{'Non time-series dashboard'|translate}} </a></li>
   </ul>
 </li>
 <!-- Load menu

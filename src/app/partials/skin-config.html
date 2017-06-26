@@ -8,13 +8,13 @@
             <div >
                 <a data-toggle="collapse" class="aaa" style='text-decoration:none;' data-parent="#accordion" href="#collapse0">
                     &nbsp;<i class="icon icon-tag"></i>
-                    &nbsp;&nbsp;Settings<i class="icon-angle-left1" style='float:right;'></i>
+                    &nbsp;&nbsp;{{'Settings'|translate}}<i class="icon-angle-left1" style='float:right;'></i>
                 </a>
                 <div id="collapse0" class=" collapse in">
                     <input type="text" class="input" ng-model='dashboard.current.title'/>
                     <div class="setings-item">
                     <span>
-                         Head hide
+                        {{'Head hide'|translate}}
                     </span>
 
                         <div class="switch">
@@ -29,7 +29,7 @@
                     </div>
                     <div class="setings-item">
                     <span>
-                        Editable
+                      {{'Row Editable'|translate}}
                     </span>
                         <div class="switch">
                             <div class="onoffswitch">
@@ -43,7 +43,7 @@
                     </div>
                     <div class="setings-item">
                     <span>
-                        Row controller
+                       {{'Row controller'|translate}}
                     </span>
 
                         <div class="switch">
@@ -58,7 +58,7 @@
                     </div>
                     <div class="setings-item">
                     <span>
-                        Mute
+                       {{'Mute'|translate}}
                     </span>
 
                         <div class="switch">
@@ -72,20 +72,24 @@
                         </div>
                     </div>
 
+                  <select class="language-switching" ng-controller="LanguageSwitchingCtrl" ng-model="cur_lang"        ng-change="switching(cur_lang)">
+                    <option value="en">English</option>
+                    <option value="cn">简体中文</option>
+                  </select>
                 </div>
             </div>
 
             <div >
                 <a data-toggle="collapse" class="aaa2" style='text-decoration:none;' data-parent="#accordion" href="#collapse1">
                     &nbsp;<i class="icon icon-picture"></i>
-                    &nbsp;&nbsp;Skins<i class="icon-angle-left2" style='float:right;'></i>
+                    &nbsp;&nbsp;{{'Skins'|translate}}<i class="icon-angle-left2" style='float:right;'></i>
                 </a>
                 <div id="collapse1" class=" collapse in">
                     <!-- <div  style='text-decoration:none;cursor:pointer' ng-click="dashboard.is_refresh() "><i class="icon icon-picture"></i>&nbsp;&nbsp;Skins</div>-->
                     <div class="setings-item default-skin" style="cursor:pointer" ng-click="dashboard.current.style='dark';dashboard.color_change()">
                     <span class="skin-name ">
                          <a class="s-skin-0" style='text-decoration:none;'>
-                             Default  <i class="icon-ok-sign" style='float:right;' ng-click="dashboard.is_refresh()"></i>
+                            {{'Default'|translate}}   <i class="icon-ok-sign" style='float:right;' ng-click="dashboard.is_refresh()"></i>
                          </a>
 
                     </span>
@@ -93,7 +97,7 @@
                     <div class="setings-item blue-skin"  style="cursor:pointer" ng-click="dashboard.current.style='blue';dashboard.color_change()">
                     <span class="skin-name " >
                         <a  class="s-skin-1" style='text-decoration:none;' >
-                            Blue light <i class="icon-ok-sign" style='float:right;' ng-click="dashboard.is_refresh()"></i>
+                            {{'Blue light'|translate}} <i class="icon-ok-sign" style='float:right;' ng-click="dashboard.is_refresh()"></i>
                         </a>
 
                     </span>
@@ -101,7 +105,7 @@
                     <div class="setings-item yellow-skin" style="cursor:pointer"  ng-click="dashboard.current.style='light';dashboard.color_change()">
                     <span class="skin-name ">
                         <a  class="s-skin-3" style='text-decoration:none;' >
-                             Light <i class="icon-ok-sign" style='float:right;' ng-click="dashboard.is_refresh()"></i>
+                             {{'Light'|translate}} <i class="icon-ok-sign" style='float:right;' ng-click="dashboard.is_refresh()"></i>
                         </a>
 
                     </span>
@@ -113,23 +117,23 @@
             <div >
                 <a data-toggle="collapse"  class="aaa3" style='text-decoration:none;' data-parent="#accordion" href="#collapseOne">
                     &nbsp;<i class="icon icon-th-large"></i>
-                    &nbsp;&nbsp;Solr settings<i class="icon-angle-left3" style='float:right;'></i>
+                    &nbsp;&nbsp;{{'Solr settings'|translate}}<i class="icon-angle-left3" style='float:right;'></i>
                 </a>
 
                 <div id="collapseOne" class="panel-collapse collapse ">
-                    <label name="registerDiv" class="small"><span >Solr Server</span></label>
+                    <label name="registerDiv" class="small"><span >{{'Solr Server'|translate}}</span></label>
                     <input type="text" class="input" ng-model="dashboard.current.solr.server">
-                    <label name="registerDiv" class="small"><span >Collection</span></label>
+                    <label name="registerDiv" class="small"><span >{{'Collection'|translate}}</span></label>
                     <input type="text" class="input-smaller" ng-model="dashboard.current.solr.core_name" bs-typeahead="dashboard.current.solr.core_list"></input>
-                    <button type="button" class="btn btn-success" ng-click="dashboard.refresh()">Confirm</button>
-                    <label name="registerDiv" class="small"><span >Global Query Parameters </span></label>
+                    <button type="button" class="btn btn-success" ng-click="dashboard.refresh()">{{'Confirm'|translate}}</button>
+                    <label name="registerDiv" class="small"><span >{{'Global Query Parameters'|translate}} </span></label>
                     <input type="text" class="input" placeholder="e.g. &defType=lucid&qt=lucid&df=message&..." ng-model="dashboard.current.solr.global_params">
                 </div>
             </div>
             <div >
                 <a data-toggle="collapse" class="aaa4" style='text-decoration:none;' data-parent="#accordion" href="#collapseSix">
                     &nbsp;<i class="icon icon-folder-open"></i>
-                    &nbsp;&nbsp;Collection select<i class="icon-angle-left4" style='float:right;'></i>
+                    &nbsp;&nbsp;{{'Collection select'|translate}}<i class="icon-angle-left4" style='float:right;'></i>
                 </a>
 
                 <div id="collapseSix" class=" collapse">
@@ -141,15 +145,15 @@
             <div >
                 <a data-toggle="collapse" class="aaa5" style='text-decoration:none;' data-parent="#accordion" href="#collapseTwo">
                     &nbsp;<i class="icon icon-flag"></i>
-                    &nbsp;&nbsp;Create row<i class="icon-angle-left5" style='float:right;'></i>
+                    &nbsp;&nbsp;{{'Create Row'|translate}}<i class="icon-angle-left5" style='float:right;'></i>
                 </a>
 
                 <div id="collapseTwo" class=" collapse">
-                    <label class="small">Row title</label>
+                    <label class="small">{{'Row title'|translate}}</label>
                     <input type="text" class="input" ng-model='row.title' placeholder="New row"></input>
-                    <label class="small">Height</label>
+                    <label class="small">{{'Height'|translate}}</label>
                     <input type="text" class="input-mini" ng-model='row.height'></input>
-                    <button ng-click="add_row(dashboard.current,row); reset_row();" class="btn btn-success" >Create Row</button>
+                    <button ng-click="add_row(dashboard.current,row); reset_row();" class="btn btn-success" >{{'Create Row'|translate}}</button>
 
                 </div>
             </div>
@@ -158,14 +162,14 @@
             <div >
                 <a data-toggle="collapse" class="aaa6" style='text-decoration:none;' data-parent="#accordion" href="#collapseThree">
                     &nbsp;<i class="icon icon-save"></i>
-                    &nbsp;&nbsp;Save<i class="icon-angle-left6" style='float:right;'></i>
+                    &nbsp;&nbsp;{{'Save'|translate}}<i class="icon-angle-left6" style='float:right;'></i>
                 </a>
 
                 <div id="collapseThree" class=" collapse">
-                    <li id="saveFile"  ng-click="dashboard.to_file() "><i class="icon-download"></i> <label  class="small"> Export to File</label></li>
-                    <li id="savePdf" ng-click="dashboard.save_pdf() "><i class="icon-download-alt"></i> <label  class="small"> Export to PDF</label></li>
-                    <li id="setDefault" ng-show="dashboard.current.loader.save_default" ng-click="dashboard.set_default()"><i class="icon-bookmark"></i>  <label class="small" >Set as Browser Default</label></li>
-                    <li id="clearDefault" ng-show="dashboard.current.loader.save_default" ng-click="dashboard.purge_default()"><i class="icon-ban-circle"></i> <label class="small">Clear Browser Default</label></li>
+                    <li id="saveFile"  ng-click="dashboard.to_file() "><i class="icon-download"></i> <label  class="small">{{'Export to File'|translate}} </label></li>
+                    <li id="savePdf" ng-click="dashboard.save_pdf() "><i class="icon-download-alt"></i> <label  class="small"> {{'Export to PDF'|translate}}</label></li>
+                    <li id="setDefault" ng-show="dashboard.current.loader.save_default" ng-click="dashboard.set_default()"><i class="icon-bookmark"></i>  <label class="small" >{{'Set as Browser Default'|translate}}</label></li>
+                    <li id="clearDefault" ng-show="dashboard.current.loader.save_default" ng-click="dashboard.purge_default()"><i class="icon-ban-circle"></i> <label class="small">{{'Clear Browser Default'|translate}}</label></li>
 
                 </div>
             </div>
@@ -178,7 +182,7 @@
             <div >
                 <a data-toggle="collapse" class="aaa8" style='text-decoration:none;' data-parent="#accordion" href="#collapseFive">
                     &nbsp;<i class="icon icon-folder-open"></i>
-                    &nbsp;&nbsp;Load<i class="icon-angle-left8" style='float:right;'></i>
+                    &nbsp;&nbsp;{{'Load'|translate}}<i class="icon-angle-left8" style='float:right;'></i>
                 </a>
 
                 <div id="collapseFive" class=" collapse">

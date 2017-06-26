@@ -17,12 +17,16 @@ define([
     'angular-route',
     'angular-material',
     'angular-smart-table',
+
+
     'extend-jquery',
+    'angular-translate',
+    'angular-translate-loader-static-files'
   ],
   function (angular, $, _, appLevelRequire) {
     "use strict";
 
-    var app = angular.module('kibana', ['ngRoute', 'ngSanitize']),
+    var app = angular.module('kibana', ['ngRoute', 'ngSanitize','pascalprecht.translate']),
       // we will keep a reference to each module defined before boot, so that we can
       // go back and allow it to define new features later. Once we boot, this will be false
       pre_boot_modules = [],
@@ -84,6 +88,16 @@ define([
       register_fns.service    = $provide.service;
       register_fns.filter     = $filterProvider.register;
     });
+
+    app.config(['$translateProvider',function($translateProvider){
+      var lang = window.localStorage.lang||'cn';
+
+      $translateProvider.useStaticFilesLoader({
+        prefix: './i18n/',
+        suffix: '.json'
+      });
+      $translateProvider.preferredLanguage(lang);
+    }]);
 
 
     var apps_deps = [

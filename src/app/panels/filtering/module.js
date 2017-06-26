@@ -19,7 +19,7 @@ function (angular, app, _) {
     $scope.panelMeta = {
 
       status: "Stable",
-      description: "A controllable list of all filters currently applied to the dashboard. You need one of these on your dashboard somewhere in order for all the panels to work properly while you are interacting with your data."
+      description : ""
     };
 
     // Set and populate defaults

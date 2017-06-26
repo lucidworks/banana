@@ -1,5 +1,5 @@
 <div class="modal-body">
-  <div class="pull-right editor-title">Dashboard settings</div>
+  <div class="pull-right editor-title">{{'Dashboard settings'|translate}}</div>
 
   <div ng-model="editor.index" bs-tabs>
     <div ng-repeat="tab in ['General','Rows','Controls','Solr']" data-title="{{tab}}">
@@ -9,22 +9,22 @@
   <div ng-show="editor.index == 0">
     <div class="row-fluid">
       <div class="span4">
-        <label class="small">Title</label><input type="text" class="input-large" ng-model='dashboard.current.title'/>
+        <label class="small">{{'Title'|translate}}</label><input type="text" class="input-large" ng-model='dashboard.current.title'/>
       </div>
       <div class="span1">
-        <label class="small"> Editable </label><input type="checkbox" ng-model="dashboard.current.editable" ng-checked="dashboard.current.editable" />
+        <label class="small">{{'Editable'|translate}}  </label><input type="checkbox" ng-model="dashboard.current.editable" ng-checked="dashboard.current.editable" />
       </div>
       <div class="span1">
-        <label class="small"> Hints <tip>Show 'Add panel' hints in empty spaces</tip></label><input type="checkbox" ng-model="dashboard.current.panel_hints" ng-checked="dashboard.current.panel_hints" />
+        <label class="small">{{'Hints'|translate}}</label><input type="checkbox" ng-model="dashboard.current.panel_hints" ng-checked="dashboard.current.panel_hints" />
       </div>
       <div class="span2">
-        <label class="small"> Row controller <tip>Show 'row controller'  in the left of row </tip></label><input type="checkbox" ng-model="dashboard.current.row_controller" ng-checked="dashboard.current.row_controller" />
+        <label class="small"> {{'Row controller'|translate}} </label><input type="checkbox" ng-model="dashboard.current.row_controller" ng-checked="dashboard.current.row_controller" />
       </div>
       <div class="span2">
-        <label class="small">Style</label><select class="input-small" ng-model="dashboard.current.style" ng-options="f for f in ['dark','light','blue','flatlight']" >  </select>
+        <label class="small">{{'Style'|translate}}</label><select class="input-small" ng-model="dashboard.current.style" ng-options="f for f in ['dark','light','blue','flatlight']" >  </select>
       </div>
       <div class="span2">
-        <label class="small">Version</label>RealSight v2.0.0
+        <label class="small">{{'Version'|translate}}</label>RealSight v2.0.0
       </div>
     </div>
   </div>
@@ -77,9 +77,9 @@
       <div class="span12">
         <table class="table table-condensed table-striped">
           <thead>
-            <th>Title</th>
-            <th>Delete</th>
-            <th>Move</th>
+            <th>{{'Title'|translate}}</th>
+            <th>{{'Delete'|translate}}</th>
+            <th>{{'Move'|translate}}</th>
           </thead>
           <tr ng-repeat="row in dashboard.current.rows">
             <td>{{row.title}}</td>
@@ -93,15 +93,15 @@
     <div class="row-fluid">
       <form>
         <div class="span5">
-          <label class="small">Title</label>
+          <label class="small">{{'Title'|translate}}</label>
           <input type="text" class="input-large" ng-model='row.title' placeholder="New row"></input>
         </div>
         <div class="span2">
-          <label class="small">Height</label>
+          <label class="small">{{'Height'|translate}}</label>
           <input type="text" class="input-mini" ng-model='row.height'></input>
         </div>
         <div class="span1">
-          <label class="small"> Editable </label>
+          <label class="small">{{'Editable'|translate}}</label>
           <input type="checkbox" ng-model="row.editable" ng-checked="row.editable" />
         </div>
       </form>
@@ -110,62 +110,56 @@
   <!-- Controls tab -->
   <div ng-show="editor.index == 2" ng-controller="dashLoader">
     <div class="row-fluid">
-      <div class="span3" style="font-weight:bold;">Show Collections Picker</div>
+      <div class="span3" style="font-weight:bold;">{{'Show Collections Picker'|translate}}</div>
       <input type="checkbox" ng-model="dashboard.current.loader.dropdown_collections" ng-checked="dashboard.current.loader.dropdown_collections">
     </div>
-    <h5>Allow saving to</h5>
+    <h5>{{'Allow saving to'|translate}}</h5>
     <div class="row-fluid">
       <div class="span2">
-        <label class="small">File</label><input type="checkbox" ng-model="dashboard.current.loader.save_local" ng-checked="dashboard.current.loader.save_local">
+        <label class="small">{{'File'|translate}}</label><input type="checkbox" ng-model="dashboard.current.loader.save_local" ng-checked="dashboard.current.loader.save_local">
       </div>
       <div class="span2">
-        <label class="small">Browser</label><input type="checkbox" ng-model="dashboard.current.loader.save_default" ng-checked="dashboard.current.loader.save_default">
-      </div>
-      <div class="span2">
-        <label class="small">Gist <tip>Requires your domain to be OAUTH registered with Github</tip></label><input type="checkbox" ng-model="dashboard.current.loader.save_gist" ng-checked="dashboard.current.loader.save_gist">
+        <label class="small">{{'Browser'|translate}}</label><input type="checkbox" ng-model="dashboard.current.loader.save_default" ng-checked="dashboard.current.loader.save_default">
       </div>
       <div class="span2">
         <label class="small">Solr</label><input type="checkbox" ng-model="dashboard.current.loader.save_elasticsearch" ng-checked="dashboard.current.loader.save_elasticsearch">
       </div>
     </div>
-    <h5>Allow loading from</h5>
+    <h5>{{'Allow loading from'|translate}}</h5>
     <div class="row-fluid">
       <div class="span2">
-        <label class="small">Local file</label><input type="checkbox" ng-model="dashboard.current.loader.load_local" ng-checked="dashboard.current.loader.load_local">
-      </div>
-      <div class="span2">
-        <label class="small">Gist</label><input type="checkbox" ng-model="dashboard.current.loader.load_gist" ng-checked="dashboard.current.loader.load_gist">
+        <label class="small">{{'Local file'|translate}}</label><input type="checkbox" ng-model="dashboard.current.loader.load_local" ng-checked="dashboard.current.loader.load_local">
       </div>
       <div class="span2">
         <label class="small">Solr</label><input type="checkbox" ng-model="dashboard.current.loader.load_elasticsearch" ng-checked="dashboard.current.loader.load_elasticsearch">
       </div>
       <div class="span3" ng-show="dashboard.current.loader.load_elasticsearch">
-        <label class="small">Solr list size <tip>The maximum number of dashboards to show in the loading list for Solr stored dashboards under Load menu.</tip></label><input class="input-mini" type="number" ng-model="dashboard.current.loader.load_elasticsearch_size">
+        <label class="small">{{'Solr list size'|translate}}</label><input class="input-mini" type="number" ng-model="dashboard.current.loader.load_elasticsearch_size">
       </div>
     </div>
   </div>
   <!-- Solr tab -->
   <div ng-show="editor.index == 3">
     <div class="row-fluid">
-      <h4>Solr Settings</h4>
+      <h4>{{'Solr Settings'|translate}}</h4>
     </div>
     <div class="row-fluid">
       <div class="span5">
-        <h6>Solr Server</h6>
+        <h6>{{'Solr Server'|translate}}</h6>
         <input type="text" class="input-xlarge" ng-model="dashboard.current.solr.server">
       </div>
       <div class="span4">
-        <h6>Collection</h6>
+        <h6>{{'Collection'|translate}}</h6>
         <input type="text" class="input-medium" ng-model="dashboard.current.solr.core_name" bs-typeahead="dashboard.current.solr.core_list"></input>
       </div>
       <div class="span2">
         <h6> &nbsp;&nbsp;&nbsp;</h6>
-      <button type="button" class="btn btn-success" ng-click="dashboard.refresh()">Confirm</button>
+      <button type="button" class="btn btn-success" ng-click="dashboard.refresh()">{{'Confirm'|translate}}</button>
       </div>
     </div>
     <div class="row-fluid">
       <div class="span9">
-        <h6>Global Query Parameters <tip>Specify query parameters to be appended to all queries of the dashboard panels.</tip></h6>
+        <h6>{{'Global Query Parameters'|translate}}</h6>
         <input type="text" class="input-xxlarge" placeholder="e.g. &defType=lucid&qt=lucid&df=message&..." ng-model="dashboard.current.solr.global_params">
       </div>
     </div>
@@ -173,6 +167,6 @@
 </div>
 
 <div class="modal-footer">
-  <button ng-click="add_row(dashboard.current,row); reset_row();" class="btn btn-success" ng-show="editor.index == 1">Create Row</button>
-  <button type="button" class="btn btn-danger" ng-click="editor.index=0;dismiss();reset_panel();dashboard.is_refresh()">Close</button>
+  <button ng-click="add_row(dashboard.current,row); reset_row();" class="btn btn-success" ng-show="editor.index == 1">{{'Create Row'|translate}}</button>
+  <button type="button" class="btn btn-danger" ng-click="editor.index=0;dismiss();reset_panel();dashboard.is_refresh()">{{'Close'|translate}}</button>
 </div>

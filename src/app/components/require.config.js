@@ -23,8 +23,8 @@ require.config({
     'angular-animate':        '../../bower_components/angular-animate/angular-animate',
     'angular-material':       '../../bower_components/angular-material/angular-material',
     'angular-smart-table':    '../../bower_components/angular-smart-table/dist/smart-table',
-    //'angular-translate.min':  '../vendor/angular/angular-translate.min',
-    //'angular-translate-loader-static-files':  '../vendor/angular/angular-translate-loader-static-files',
+    'angular-translate':  '../vendor/angular/angular-translate',
+    'angular-translate-loader-static-files':  '../vendor/angular/angular-translate-loader-static-files',
 
     timepicker:               '../vendor/angular/timepicker',
     datepicker:               '../vendor/angular/datepicker',
@@ -97,6 +97,7 @@ require.config({
       deps: ['jquery']
     },
 
+
     modernizr: {
       exports: 'Modernizr'
     },
@@ -128,6 +129,8 @@ require.config({
     'angular-route':        ['angular'],
     'angular-strap':        ['angular', 'bootstrap','timepicker', 'datepicker'],
     'angular-smart-table':             ['angular'],
+    'angular-translate' : ['angular'],
+    'angular-translate-loader-static-files':['angular','angular-translate'],
 
     timepicker:             ['jquery', 'bootstrap'],
     datepicker:             ['jquery', 'bootstrap'],

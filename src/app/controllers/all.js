@@ -2,5 +2,5 @@ define([
   './dash',
   './dashLoader',
   './row',
-    //'./language',
+    './language',
 ], function () {});

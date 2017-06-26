@@ -73,7 +73,7 @@
 
           <span bs-modal="'app/partials/roweditor.html'" ng-show="row.editable && !dashboard.panelDragging">
             <i ng-hide="rowSpan(row) == 0" class="pointer icon-plus-sign" ng-click="editor.index = 1" bs-tooltip="'Add a panel to this row'" data-placement="right"></i>
-            <span ng-click="editor.index = 1" style="margin-top: 8px; margin-left: 3px" ng-show="rowSpan(row) == 0" class="btn btn-mini">Add panel to empty row</btn>
+            <span ng-click="editor.index = 1" style="margin-top: 8px; margin-left: 3px" ng-show="rowSpan(row) == 0" class="btn btn-mini">{{'Add panel to empty row'|translate}}</btn>
           </span>
 </span>
         </div>
@@ -86,7 +86,7 @@
 
     <div class="span12" style="text-align:right;">
       <span style="margin-left: 0px;" class="pointer btn btn-mini" bs-modal="'app/partials/dasheditor.html'">
-        <span ng-click="editor.index = 1"><i class="icon-plus-sign"></i> ADD A ROW</span>
+        <span ng-click="editor.index = 1"><i class="icon-plus-sign"></i> {{'ADD A ROW'|translate}}</span>
       </span>
     </div>
   </div>

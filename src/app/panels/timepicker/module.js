@@ -30,8 +30,7 @@ function (angular, app, _, moment, kbn, $) {
     $scope.panelMeta = {
 
       status  : "Stable",
-      description : "A panel for controlling the time range filters. If you have time based data, "+
-        " or if you're using time stamped indices, you need one of these"
+      description : ""
     };
 
     // Set and populate defaults

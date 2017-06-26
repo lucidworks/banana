@@ -31,7 +31,7 @@ define([
         }],
         exportfile: false,
         status: "Experimental",
-        description: "This panel provide facet functionality for any field in the data"
+        description : ""
       };
 
       // Set and populate defaults

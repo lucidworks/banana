@@ -28,10 +28,7 @@ define([
           src: 'app/partials/querySelect.html'
         }],
         status: "Beta",
-        description: "A stock-ticker style representation of how queries are moving over time. " +
-          "For example, if the time is 1:10pm, your time picker was set to \"Last 10m\", and the \"Time " +
-          "Ago\" parameter was set to '1h', the panel would show how much the query results have changed" +
-          " since 12:00-12:10pm"
+        description : ""
       };
 
       // Set and populate defaults

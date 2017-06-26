@@ -97,6 +97,7 @@ function (Settings) {
 	  'stacking',
 	  'histogramback',
       'ticker',
+      'alarm',
       'bettermap',
       'query',
 	  'donetstacking',

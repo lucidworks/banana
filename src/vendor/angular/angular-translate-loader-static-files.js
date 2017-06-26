@@ -1,5 +1,5 @@
 /*!
- * angular-translate - v2.15.1 - 2017-03-04
+ * angular-translate - v2.15.2 - 2017-06-22
  * 
  * Copyright (c) 2017 The angular-translate team, Pascal Precht; Licensed MIT
  */
@@ -9,7 +9,7 @@
     define([], function () {
       return (factory());
     });
-  } else if (typeof exports === 'object') {
+  } else if (typeof module === 'object' && module.exports) {
     // Node. Does not work with strict CommonJS, but
     // only CommonJS-like environments that support module.exports,
     // like Node.

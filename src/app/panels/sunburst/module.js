@@ -23,7 +23,7 @@ define([
                 src: 'app/partials/querySelect.html'
             }],
             status: "Experimental",
-            description: "This panel generates a sunburst graphic based on solr Facet Pivots output. "
+          description : ""
         };
         // default values
         var _d = {

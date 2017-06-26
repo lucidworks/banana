@@ -29,7 +29,7 @@ define([
           src: 'app/partials/querySelect.html'
         }],
         status: "Experimental",
-        description: "Display the D3 Bar Chart with Tooltip."
+        description : ""
       };
 
       // Set and populate defaults

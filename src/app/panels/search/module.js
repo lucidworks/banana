@@ -22,7 +22,7 @@ define([
     $scope.panelMeta = {
 
       status  : "Stable",
-      description : "Provide a search bar for free-form queries. You almost certainly want one of these somewhere prominent on your dashboard."
+      description : ""
     };
 
     // Set and populate defaults
