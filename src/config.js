@@ -100,7 +100,6 @@ function (Settings) {
       'bettermap',
       'query',
 	  'china',
-      'chinademo',
       'terms',
 	  'sortbar',
 	  'multidashboard',
@@ -126,7 +125,13 @@ function (Settings) {
       'multiseries',
       'sunburst',
       'docviewer',
-        'statistics',
+      'statistics',
+      'ad',
+      'adTable',
+      'adStatistics',
+      'adDistribution',
+      'adIPStatistics',
+      'adFactor',
       'demo',
       'demo2'
     ]
