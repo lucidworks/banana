@@ -28,19 +28,20 @@
 
 */
 define([
-  '../../../../bower_components/angular/angular',
+  'angular',
   'app',
   'jquery',
   'underscore',
   'kbn',
   'moment',
-  './timeSeries'
+  './timeSeries',
+  'echarts-wordcloud'
 
   
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
-  var module = angular.module('kibana.panels.histobar', []);
+  var module = angular.module('kibana.panels.apihistobar', []);
   app.useModule(module);
 
   module.controller('apihistobar', function($scope, $q, querySrv, dashboard, filterSrv) {
@@ -423,11 +424,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
   });
 
-   module.directive('apihistobarChart', function($scope, querySrv,dashboard,filterSrv) {
+   module.directive('apihistobarChart', function( querySrv,dashboard,filterSrv) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
-
+        var myChart;
         // Receive render events
         scope.$on('render',function(){
           render_panel();
@@ -564,8 +565,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 // };
 		
 		var idd = scope.$id;
-          var echarts = require('echarts');
-
+          require(['echarts'], function(ec){
+            var echarts = ec;
+            if(myChart) {
+              myChart.dispose();
+            }
           // Populate element
             try {
 				
@@ -580,7 +584,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               // Add plot to scope so we can build out own legend
               if(scope.panel.chart === 'histobar') {
 
-			var myChart = echarts.init(document.getElementById(idd));
+			 myChart = echarts.init(document.getElementById(idd));
         
 var option = {
     
@@ -763,7 +767,7 @@ var option = {
             } catch(e) {
               elem.text(e);
             }
-         
+        });
         }
 
       }
