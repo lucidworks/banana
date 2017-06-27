@@ -41,7 +41,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
   var module = angular.module('kibana.panels.ad', []);
   app.useModule(module);
 
-  var DEBUG = true;
+  var DEBUG = false;
   console.log('DEBUG : ' + DEBUG);
   module.controller('ad', function($scope, $q, $http, $routeParams, querySrv, dashboard, filterSrv, alertSrv) {
     $scope.panelMeta = {

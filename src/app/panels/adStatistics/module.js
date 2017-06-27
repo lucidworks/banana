@@ -19,7 +19,7 @@ define([
     ],
     function (angular, app, _, $, kbn) {
         'use strict';
-        var DEBUG = true;
+        var DEBUG = false;
 
         var module = angular.module('kibana.panels.adStatistics', []);
         app.useModule(module);

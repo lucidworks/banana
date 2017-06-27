@@ -132,8 +132,7 @@ function (Settings) {
       'adDistribution',
       'adIPStatistics',
       'adFactor',
-      'demo',
-      'demo2'
+      'bn'
     ]
   });
 });
