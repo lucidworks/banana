@@ -50,12 +50,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
   var module = angular.module('kibana.panels.histogram', []);
   app.useModule(module);
 
-  module.controller('histogra', function($scope, $q, $timeout, timer, querySrv, dashboard, filterSrv) {
+  module.controller('histogra', function($scope,$translate, $q, $timeout, timer, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
 
       editorTabs : [
         {
-          title:'Queries',
+          title:$translate.instant('Queries'),
           src:'app/partials/querySelect.html'
         }
       ],

@@ -10,7 +10,7 @@ function (angular, config, _) {
   var module = angular.module('kibana.controllers');
 
   module.controller('DashCtrl', function(
-    $scope, $route, ejsResource, sjsResource, fields, dashboard, alertSrv, panelMove) {
+    $scope, $route, ejsResource,$translate, sjsResource, fields, dashboard, alertSrv, panelMove) {
     $scope.editor = {
       index: 0
     };
@@ -73,7 +73,7 @@ function (angular, config, _) {
     };
 
     $scope.setEditorTabs = function(panelMeta) {
-      $scope.editorTabs = ['General','Panel','Info'];
+      $scope.editorTabs = [$translate.instant('General'),$translate.instant('Panel'),$translate.instant('Info')];
       if(!_.isUndefined(panelMeta.editorTabs)) {
         $scope.editorTabs =  _.union($scope.editorTabs,_.pluck(panelMeta.editorTabs,'title'));
       }

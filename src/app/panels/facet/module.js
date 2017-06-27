@@ -21,12 +21,12 @@ define([
     var module = angular.module('kibana.panels.facet',[]);
     app.useModule(module);
 
-    module.controller('facet', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
+    module.controller('facet', function($rootScope,$translate, $scope, fields, querySrv, dashboard, filterSrv) {
 
       $scope.panelMeta = {
 
         editorTabs: [{
-          title: 'Queries',
+          title: $translate.instant('Queries'),
           src: 'app/partials/querySelect.html'
         }],
         exportfile: false,
@@ -58,7 +58,7 @@ define([
         maxnum_facets: 5,  // Max number of facet fields that can be specified.
                            // If we do too many facets on a really big data, we will run into Out Of Memory issue in JVM.
         foundResults: true,
-        header_title: "Facet Fields",
+        header_title: $translate.instant('Facet Fields'),
         toggle_element: null,
         show_queries: true
       };

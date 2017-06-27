@@ -24,12 +24,12 @@ function (angular, app, _, $, kbn) {
   var module = angular.module('kibana.panels.china', []);
   app.useModule(module);
 
-  module.controller('china', function($scope, $timeout, timer, querySrv, dashboard, filterSrv) {
+  module.controller('china', function($scope, $timeout,$translate,timer, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
 
       exportfile: true,
       editorTabs : [
-        {title:'Queries', src:'app/partials/querySelect.html'}
+        {title:$translate.instant('Queries'), src:'app/partials/querySelect.html'}
       ],
       status  : "Stable",
       description : ""

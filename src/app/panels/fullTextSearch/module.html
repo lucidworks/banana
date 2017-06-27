@@ -44,7 +44,7 @@
     <div class="row-fluid" ng-style="{'display': panel.display}">
         <div ng-class="{'span3':panel.field_list}" ng-if="panel.fields.length>0 && panel.field_list">
             <div class="sidebar-nav">
-                <h5>Limit Your Search <i class=" icon-chevron-sign-left pointer " ng-click="panel.field_list = !panel.field_list" bs-tooltip="'Hide field list'" ng-if="panel.field_list"></i>
+                <h5>{{'Limit Your Search'|translate}} <i class=" icon-chevron-sign-left pointer " ng-click="panel.field_list = !panel.field_list" bs-tooltip="'Hide field list'" ng-if="panel.field_list"></i>
                 </h5>
                 <div id="myAccordion" class="accordion">
                     <div class="accordion-group" ng-repeat="field in panel.fields">
@@ -68,7 +68,7 @@
 
             </div>
         </div>
-        <div ng-if="!panel.foundResults" style="text-align:center"> <strong>Empty Results</strong></div>
+        <div ng-if="!panel.foundResults" style="text-align:center"> <strong>{{'Empty Results'|translate}}</strong></div>
         <div style="{{panel.overflow}}:{{panel.height || row.height}};" ng-class="{'span9':panel.fields.length>0&&panel.field_list ,'span12':panel.fields.length==0}" class="table-doc-table" ng-if="panel.foundResults">
             <i class="pull-left icon-chevron-sign-right pointer" ng-click="panel.field_list = !panel.field_list" bs-tooltip="'Show field list'" ng-if="!panel.field_list"></i>
             <div class="row-fluid" ng-if="panel.paging">
@@ -79,7 +79,7 @@
                 <div class="span8" style="text-align:center">
                     <strong>{{panel.offset + 1 }}</strong> to
                     <strong>{{dashboard.numberWithCommas(panel.offset + data.slice(panel.offset,panel.offset+panel.size).length)}}</strong>
-                    <small>of {{dashboard.numberWithCommas(data.length)}} available for paging</small>
+                    <small>of {{dashboard.numberWithCommas(data.length)}} {{'available for paging'|translate}}</small>
                 </div>
                 <div class="span1" style="text-align:left">
                     <i ng-click="panel.offset = (panel.offset + panel.size)" ng-if="data.length > panel.offset+panel.size" class='icon-arrow-right pointer'></i>
@@ -107,17 +107,17 @@
                     <tr ng-if="event.kibana.details">
                         <td colspan={{panel.fields.length}} ng-switch="event.kibana.view">
                             <span>
-                                View:
-                                <a class="link" ng-class="{'strong':event.kibana.view == 'table'}" ng-click="event.kibana.view = 'table'">Table</a> /
+                                {{'View'|translate}}:
+                                <a class="link" ng-class="{'strong':event.kibana.view == 'table'}" ng-click="event.kibana.view = 'table'">{{'Table'|translate}}</a> /
                                 <a class="link" ng-class="{'strong':event.kibana.view == 'json'}" ng-click="event.kibana.view = 'json'">JSON</a> /
-                                <a class="link" ng-class="{'strong':event.kibana.view == 'raw'}" ng-click="event.kibana.view = 'raw'">Raw</a>
+                                <a class="link" ng-class="{'strong':event.kibana.view == 'raw'}" ng-click="event.kibana.view = 'raw'">{{'Raw'|translate}}</a>
                                 <i class="link pull-right icon-chevron-up" ng-click="toggle_details(event)"></i>
                             </span>
                             <table class='table table-bordered table-condensed' ng-switch-when="table">
                                 <thead>
-                                    <th>Field</th>
-                                    <th>Action</th>
-                                    <th>Value</th>
+                                    <th>{{'Field'|translate}}</th>
+                                    <th>{{'Action'|translate}}</th>
+                                    <th>{{'Value'|translate}}</th>
                                 </thead>
                                 <tr ng-repeat="(key,value) in event.kibana._source" ng-class-odd="'odd'">
                                     <td>{{facet_label(key)}}</td>
@@ -145,7 +145,7 @@
                 <div class="span4" style="text-align:center">
                     <strong>{{panel.offset+1}}</strong> to
                     <strong>{{dashboard.numberWithCommas(panel.offset + data.slice(panel.offset,panel.offset+panel.size).length)}}</strong>
-                    <small>of {{dashboard.numberWithCommas(data.length)}} available for paging</small>
+                    <small>of {{dashboard.numberWithCommas(data.length)}} {{'available for paging'|translate}}</small>
                 </div>
                 <div class="span1" style="text-align:left">
                     <i ng-click="panel.offset = (panel.offset + panel.size)" ng-if="data.length > panel.offset+panel.size" class='icon-arrow-right pointer'></i>

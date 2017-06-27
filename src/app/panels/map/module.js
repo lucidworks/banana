@@ -26,10 +26,10 @@ function (angular, app, _, $, worldmap) {
   var module = angular.module('kibana.panels.map', []);
   app.useModule(module);
 
-  module.controller('map', function($scope, $rootScope, querySrv, dashboard, filterSrv) {
+  module.controller('map', function($scope,$translate, $rootScope, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       editorTabs : [
-        {title:'Queries', src:'app/partials/querySelect.html'}
+        {title:$translate.instant('Queries'), src:'app/partials/querySelect.html'}
       ],
 
       status  : "Stable",

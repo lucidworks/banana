@@ -28,12 +28,12 @@ function (angular, app, _, L, localRequire) {
   var module = angular.module('kibana.panels.bettermap', []);
   app.useModule(module);
 
-  module.controller('bettermap', function($scope, querySrv, dashboard, filterSrv) {
+  module.controller('bettermap', function($scope,$translate, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
 
       editorTabs : [
         {
-          title: 'Queries',
+          title: $translate.instant('Queries'),
           src: 'app/partials/querySelect.html'
         }
       ],

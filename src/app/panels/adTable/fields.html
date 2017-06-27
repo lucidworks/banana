@@ -1,0 +1,19 @@
+<div class="row-fluid">
+  <div class="span4">
+    <h6>{{'Add Field'|translate}}</h6>
+    <form class="input-append">
+      <input bs-typeahead="fields.list" type="text" class="input-small" ng-model='importantfield'>
+      <button class="btn" ng-click="toggle_important_field(importantfield);importantfield=''"><i class="icon-plus"></i></button>
+    </form>
+  </div>
+  <div class="span8">
+    <h6>{{'Fields'|translate}} <small>{{'Click to remove'|translate}}</small></h6>
+    <span style="margin-left:3px" ng-click="toggle_important_field(field)" ng-repeat="field in $parent.panel.important_fields" class="label pointer remove">{{field}} </span>
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span5">
+    <h6>{{'Calculate Top Field Values From All Data '|translate}}</h6>
+    <input type="checkbox" ng-model="panel.calcTopFieldValuesFromAllData" ng-checked="panel.calcTopFieldValuesFromAllData" ng-change="set_refresh(true)">
+  </div>
+</div>

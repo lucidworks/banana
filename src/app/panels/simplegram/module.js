@@ -50,12 +50,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
   var module = angular.module('kibana.panels.simplegram', []);
   app.useModule(module);
 
-  module.controller('simplegram', function($scope, $q, querySrv, dashboard, filterSrv) {
+  module.controller('simplegram', function($scope,$translate, $q, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
 
       editorTabs : [
         {
-          title:'Queries',
+          title:$translate.instant('Queries'),
           src:'app/partials/querySelect.html'
         }
       ],

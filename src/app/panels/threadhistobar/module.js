@@ -44,13 +44,13 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
   var module = angular.module('kibana.panels.apihistobar', []);
   app.useModule(module);
 
-  module.controller('threadhistobar', function($scope, $q, querySrv, dashboard, filterSrv) {
+  module.controller('threadhistobar', function($scope,$translate, $q, querySrv, dashboard, filterSrv) {
     var _d;
       $scope.panelMeta = {
 
       editorTabs : [
         {
-          title:'Queries',
+          title:$translate.instant('Queries'),
           src:'app/partials/querySelect.html'
         }
       ],

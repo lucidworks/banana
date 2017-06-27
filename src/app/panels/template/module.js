@@ -15,12 +15,12 @@ function (angular, app, _, $, d3) {
   var module = angular.module('kibana.panels.bar', []);
   app.useModule(module);
 
-  module.controller('bar', function($scope, dashboard, querySrv, filterSrv) {
+  module.controller('bar', function($scope,$translate, dashboard, querySrv, filterSrv) {
     $scope.panelMeta = {
 
       editorTabs: [
         {
-          title: 'Queries',
+          title: $translate.instant('Queries'),
           src: 'app/partials/querySelect.html'
         }
       ],

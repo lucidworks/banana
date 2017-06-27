@@ -14,7 +14,7 @@ function (angular) {
         '<div class="row-fluid panel-extra"><div class="panel-extra-container">' +
 
           '<span class="extra row-button" ng-hide="panel.draggable == false">' +
-            '<span class="row-text pointer" bs-tooltip=' +'\''+$translate.instant('Drag here to move')+'\''+
+            '<span class="row-text pointer" bs-tooltip="\'{{\'Drag here to move\'|translate}}\'"'+
             ' data-drag=true data-jqyoui-options="{revert: \'invalid\',helper:\'clone\'}"'+
             ' jqyoui-draggable="'+
             '{'+
@@ -32,20 +32,20 @@ function (angular) {
           '<span class="extra row-button" ng-if="panel.editable != false">' +
             '<span confirm-click="row.panels = _.without(row.panels,panel)" '+
             'confirmation="Are you sure you want to remove this {{panel.type}} panel?" class="pointer">'+
-            '<i class="icon-remove pointer" bs-tooltip="\'Remove\'"></i></span>'+
+            '<i class="icon-remove pointer" bs-tooltip="\'{{\'Remove\'|translate}}\'"></i></span>'+
           '</span>' +
 
           '<span class="row-button extra" ng-if="panel.editable != false">' +
             '<span bs-modal="\'app/partials/paneleditor.html\'" class="pointer">'+
-            '<i class="icon-wrench pointer" bs-tooltip="\'Configure\'"></i></span>'+
+            '<i class="icon-wrench pointer" bs-tooltip="\'{{\'Configure\'|translate}}\'"></i></span>'+
           '</span>' +
 
         '<span class="row-button extra" ng-if="panel.editable != false">' +
-        '<i ng-click="display()" class="pointer" ng-class=panel.icon bs-tooltip="\'Display\'"></i>'+
+        '<i ng-click="display()" class="pointer" ng-class=panel.icon bs-tooltip="\'{{\'Display\'|translate}}\'"></i>'+
         '</span>' +
 
           '<span class="row-button extra" ng-if="panel.transpose_show">' +
-          '<span class="rotate-icon pointer" bs-tooltip="\'Transpose Rows and Columns\'" ng-click="flip()"></span>' +
+          '<span class="rotate-icon pointer" bs-tooltip="\'{{\'Transpose Rows and Columns\'|translate}}\'" ng-click="flip()"></span>' +
           '</span>' +
 
           '<span ng-repeat="task in panelMeta.modals" class="row-button extra" ng-if="panel.spyable">' +
@@ -53,7 +53,7 @@ function (angular) {
               'bs-tooltip="task.description" ng-class="task.icon" class="pointer"></i></span>'+
           '</span>' +
 
-          '<span class="dropdown row-button extra" bs-tooltip="\'Export\'" data-placement="bottom" ng-if="panelMeta.exportfile">' +
+          '<span class="dropdown row-button extra" bs-tooltip="\'{{\'Export\'|translate}}\'" data-placement="bottom" ng-if="panelMeta.exportfile">' +
             '<span class="pointer" class="dropdown-toggle" data-toggle="dropdown">' +
                 '<i class="icon-save" class="pointer"></i>' +
             '</span>' +

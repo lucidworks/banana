@@ -1,0 +1,942 @@
+﻿{
+  "title": "应用状态仪表盘",
+  "services": {
+    "query": {
+      "idQueue": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "list": {
+        "0": {
+          "query": "*:*",
+          "alias": "Risk% ",
+          "color": "#1F78C1",
+          "id": 0,
+          "pin": false,
+          "type": "lucene"
+        }
+      },
+      "ids": [
+        0
+      ]
+    },
+    "filter": {
+      "idQueue": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "list": {
+        "0": {
+          "from": "2014-03-01T06:55:00.000Z",
+          "to": "2017-06-13T07:55:00.000Z",
+          "field": "rs_timestamp_tdt",
+          "type": "time",
+          "mandate": "must",
+          "active": true,
+          "alias": "",
+          "id": 0
+        }
+      },
+      "ids": [
+        0
+      ]
+    }
+  },
+  "rows": [
+    {
+      "title": "Query and Time Window",
+      "height": "50px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": "",
+          "span": 5,
+          "editable": true,
+          "type": "timepicker",
+          "loadingEditor": false,
+          "status": "Stable",
+          "mode": "absolute",
+          "time_options": [
+            "5m",
+            "15m",
+            "1h",
+            "2h",
+            "3h",
+            "6h",
+            "12h",
+            "24h"
+          ],
+          "timespan": "1h",
+          "timefield": "rs_timestamp_tdt",
+          "timeformat": "",
+          "refresh": {
+            "enable": false,
+            "interval": 30,
+            "min": 3
+          },
+          "filter_id": 0,
+          "spyable": true,
+          "title": "时间选择器",
+          "display": "block",
+          "icon": "icon-caret-down",
+          "time": {
+            "from": "03/01/2014 14:55:00",
+            "to": "06/13/2017 15:55:00"
+          }
+        },
+        {
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "query",
+          "loadingEditor": false,
+          "query": "*:*",
+          "pinned": true,
+          "linkage_id": "overall",
+          "display": "block",
+          "icon": "icon-caret-down",
+          "history": [
+            "*:*",
+            "ip_s:10.4.55.160",
+            "ip_s:10.4.55.171",
+            "*:8",
+            "ip_s:10.4.55.160&port_8080",
+            "path_s:*/apm/components/aclome-app-common-monitor/*'",
+            "path_s:*/apm/components/aclome-app-common-monitor/*",
+            "path_s:*/apm/monitoring*",
+            "port_s:8080"
+          ],
+          "spyable": true,
+          "remember": 10,
+          "title": "查询"
+        },
+        {
+          "span": 3,
+          "editable": true,
+          "type": "hits",
+          "loadingEditor": false,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&fq=rs_timestamp_tdt:[2014-03-01T06:55:00.000Z%20TO%202017-06-13T07:55:00.000Z]&wt=json&rows=0\n",
+            "basic_query": "",
+            "custom": ""
+          },
+          "style": {
+            "font-size": "14pt"
+          },
+          "arrangement": "horizontal",
+          "chart": "total",
+          "counter_pos": "above",
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "spyable": true,
+          "title": "数据总量",
+          "show_queries": true,
+          "show_stats": false,
+          "stats_type": "mean",
+          "stats_field": "",
+          "stats_decimal_points": 0,
+          "linkage_enable": true,
+          "display": "block",
+          "icon": "icon-caret-down",
+          "linkage_id": "count"
+        }
+      ]
+    },
+    {
+      "title": "Hislog日志统计",
+      "height": "300px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 8,
+          "editable": true,
+          "type": "histobar",
+          "loadingEditor": false,
+          "mode": "value",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=time_consuming_f%3A%5B*%20TO%20*%5D&wt=json&sort=rs_timestamp_tdt%20asc&rows=100000&fq=rs_timestamp_tdt:[2014-03-01T06:55:00.000Z%20TO%202017-06-13T07:55:00.000Z]&fl=rs_timestamp_tdt time_consuming_f\n",
+            "custom": "&fq=tags:performance_analysis"
+          },
+          "max_rows": 100000,
+          "reverse": 0,
+          "segment": 4,
+          "threshold_first": 300,
+          "threshold_second": 400,
+          "threshold_third": 3000,
+          "group_field": null,
+          "auto_int": true,
+          "linkage_id": "operation",
+          "defaulttimestamp": true,
+          "display": "block",
+          "icon": "icon-caret-down",
+          "area": false,
+          "total_first": "%",
+          "fontsize": 12,
+          "isEN": false,
+          "field_color": "#2ce41b",
+          "resolution": 100,
+          "value_sort": "rs_timestamp_tdt",
+          "interval": "7d",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1M",
+            "1y"
+          ],
+          "fill": 0,
+          "linewidth": 3,
+          "chart": "histobar",
+          "chartColors": [
+            "#f48a52",
+            "#f4d352",
+            "#ccf452",
+            "#8cf452",
+            "#3cee2b",
+            "#f467d8",
+            "#1a93f9",
+            "#2fd7ee"
+          ],
+          "timezone": "browser",
+          "spyable": true,
+          "linkage": true,
+          "zoomlinks": true,
+          "bars": true,
+          "average": false,
+          "label": true,
+          "points": false,
+          "lines": false,
+          "lines_smooth": false,
+          "legend": true,
+          "x-axis": true,
+          "y-axis": true,
+          "percentage": false,
+          "interactive": true,
+          "options": false,
+          "show_queries": true,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": false
+          },
+          "title": "HisLog日志频率统计",
+          "value_field": "time_consuming_f"
+        },
+        {
+          "span": 4,
+          "editable": true,
+          "type": "facet",
+          "loadingEditor": false,
+          "status": "Stable",
+          "display": "block",
+          "icon": "icon-caret-down",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&fq=rs_timestamp_tdt:[2014-03-01T06:55:00.000Z%20TO%202017-06-13T07:55:00.000Z]&facet=true&facet.field=task_s&wt=json",
+            "basic_query": "q=*%3A*&fq=rs_timestamp_tdt:[2014-03-01T06:55:00.000Z%20TO%202017-06-13T07:55:00.000Z]&facet=true&facet.field=task_s",
+            "custom": "&fq=tag_s:性能分析"
+          },
+          "group": "default",
+          "style": {
+            "font-size": "9pt"
+          },
+          "overflow": "min-height",
+          "fields": [
+            "task_s"
+          ],
+          "spyable": true,
+          "linkage_id": "operation",
+          "facet_limit": 10,
+          "maxnum_facets": 5,
+          "foundResults": true,
+          "header_title": "Facet Fields",
+          "toggle_element": "task_s",
+          "show_queries": true,
+          "title": "任务类别",
+          "exportSize": null,
+          "offset": 0
+        }
+      ]
+    },
+    {
+      "title": "错误出现种类统计",
+      "height": "400px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 12,
+          "editable": true,
+          "type": "pies",
+          "loadingEditor": false,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&wt=json&fq=rs_timestamp_tdt:[2014-03-01T06:55:00.000Z%20TO%202017-06-13T07:55:00.000Z]&facet=true&facet.field=error_info_s&facet.limit=10&facet.missing=true&f.error_info_s.facet.sort=count",
+            "custom": ""
+          },
+          "mode": "count",
+          "field": "error_info_s",
+          "stats_field": "",
+          "decimal_points": 0,
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 10,
+          "sortBy": "count",
+          "order": "descending",
+          "fontsize": 12,
+          "donut": false,
+          "tilt": false,
+          "display": "block",
+          "icon": "icon-caret-down",
+          "labels": true,
+          "ylabels": true,
+          "logAxis": false,
+          "arrangement": "vertical",
+          "RoseType": "area",
+          "chart": "liquidfill",
+          "solrFq": "fq=rs_timestamp_tdt:[2017-03-01T06:55:00.000Z%20TO%202017-06-13T07:55:00.000Z]&fq=error_info_s:\"%20at%E6%80%A5%E8%AF%8A%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%B2%A1%E6%9C%89%E8%8E%B7%E5%8F%96%E5%88%B0%E7%97%85%E5%8C%BA%E4%BF%A1%E6%81%AF%EF%BC%8C%E8%AF%B7%E6%82%A8%E8%81%94%E7%B3%BB%E8%BD%AF%E4%BB%B6%E6%8F%90%E4%BE%9B%E5%95%86the_end%20System.Exception%3A%20at%E6%80%A5%E8%AF%8A%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%B2%A1%E6%9C%89%E8%8E%B7%E5%8F%96%E5%88%B0%E7%97%85%E5%8C%BA%E4%BF%A1%E6%81%AF%EF%BC%8C%E8%AF%B7%E6%82%A8%E8%81%94%E7%B3%BB%E8%BD%AF%E4%BB%B6%E6%8F%90%E4%BE%9B%E5%95%86\"",
+          "exportSize": 10000,
+          "linkage_id": "a",
+          "value_sort": "rs_timestamp",
+          "defaulttimestamp": true,
+          "lastColor": "",
+          "spyable": true,
+          "show_queries": true,
+          "chartColors": [
+            "#7EB26D",
+            "#EAB839",
+            "#6ED0E0",
+            "#EF843C",
+            "#E24D42",
+            "#1F78C1",
+            "#BA43A9",
+            "#705DA0",
+            "#508642",
+            "#CCA300",
+            "#447EBC",
+            "#C15C17",
+            "#890F02",
+            "#0A437C",
+            "#6D1F62",
+            "#584477",
+            "#B7DBAB",
+            "#F4D598",
+            "#70DBED",
+            "#F9BA8F",
+            "#F29191",
+            "#82B5D8",
+            "#E5A8E2",
+            "#AEA2E0",
+            "#629E51",
+            "#E5AC0E",
+            "#64B0C8",
+            "#E0752D",
+            "#BF1B00",
+            "#0A50A1",
+            "#962D82",
+            "#614D93",
+            "#9AC48A",
+            "#F2C96D",
+            "#65C5DB",
+            "#F9934E",
+            "#EA6460",
+            "#5195CE",
+            "#D683CE",
+            "#806EB7",
+            "#3F6833",
+            "#967302",
+            "#2F575E",
+            "#99440A",
+            "#58140C",
+            "#052B51",
+            "#511749",
+            "#3F2B5B",
+            "#E0F9D7",
+            "#FCEACA",
+            "#CFFAFF",
+            "#F9E2D2",
+            "#FCE2DE",
+            "#BADFF4",
+            "#F9D9F9",
+            "#DEDAF7"
+          ],
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          },
+          "title": "异常信息Top10"
+        }
+      ]
+    },
+    {
+      "title": "异常信息统计",
+      "height": "200px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 8,
+          "editable": true,
+          "type": "statistics",
+          "loadingEditor": false,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&wt=json&fq=rs_timestamp_tdt:[2014-03-01T06:55:00.000Z%20TO%202017-06-13T07:55:00.000Z]&stats=true&stats.facet=error_info_s&stats.field=rs_timestamp_tdt&facet.missing=true&f.error_info_s.facet.sort=count&fq=type_s:exception",
+            "custom": "&fq=type_s:exception"
+          },
+          "mode": "all",
+          "field": "error_info_s",
+          "stats_field": "rs_timestamp_tdt",
+          "decimal_points": 0,
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 10000,
+          "display": "block",
+          "icon": "icon-caret-down",
+          "sortBy": "count",
+          "threshold_first": 3000,
+          "threshold_second": 5000,
+          "order": "ascending",
+          "style": {
+            "font-size": "10pt"
+          },
+          "fontsize": 20,
+          "linkage_id": "exception",
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "logAxis": false,
+          "arrangement": "horizontal",
+          "chart": "bar",
+          "counter_pos": "above",
+          "exportSize": 10000,
+          "lastColor": "",
+          "spyable": true,
+          "show_queries": true,
+          "chartColors": [
+            "#7EB26D",
+            "#EAB839",
+            "#6ED0E0",
+            "#EF843C",
+            "#E24D42",
+            "#1F78C1",
+            "#BA43A9",
+            "#705DA0",
+            "#508642",
+            "#CCA300",
+            "#447EBC",
+            "#C15C17",
+            "#890F02",
+            "#0A437C",
+            "#6D1F62",
+            "#584477",
+            "#B7DBAB",
+            "#F4D598",
+            "#70DBED",
+            "#F9BA8F",
+            "#F29191",
+            "#82B5D8",
+            "#E5A8E2",
+            "#AEA2E0",
+            "#629E51",
+            "#E5AC0E",
+            "#64B0C8",
+            "#E0752D",
+            "#BF1B00",
+            "#0A50A1",
+            "#962D82",
+            "#614D93",
+            "#9AC48A",
+            "#F2C96D",
+            "#65C5DB",
+            "#F9934E",
+            "#EA6460",
+            "#5195CE",
+            "#D683CE",
+            "#806EB7",
+            "#3F6833",
+            "#967302",
+            "#2F575E",
+            "#99440A",
+            "#58140C",
+            "#052B51",
+            "#511749",
+            "#3F2B5B",
+            "#E0F9D7",
+            "#FCEACA",
+            "#CFFAFF",
+            "#F9E2D2",
+            "#FCE2DE",
+            "#BADFF4",
+            "#F9D9F9",
+            "#DEDAF7"
+          ],
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          },
+          "title": "异常信息表",
+          "height": "300px",
+          "str_max_length": 20
+        },
+        {
+          "span": 4,
+          "editable": true,
+          "type": "facet",
+          "loadingEditor": false,
+          "status": "Stable",
+          "display": "block",
+          "icon": "icon-caret-down",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&fq=rs_timestamp_tdt:[2014-03-01T06:55:00.000Z%20TO%202017-06-13T07:55:00.000Z]&facet=true&facet.field=error_info_s&wt=json",
+            "basic_query": "q=*%3A*&fq=rs_timestamp_tdt:[2014-03-01T06:55:00.000Z%20TO%202017-06-13T07:55:00.000Z]&facet=true&facet.field=error_info_s",
+            "custom": ""
+          },
+          "group": "default",
+          "style": {
+            "font-size": "9pt"
+          },
+          "overflow": "min-height",
+          "fields": [
+            "error_info_s"
+          ],
+          "spyable": true,
+          "linkage_id": "error_info",
+          "facet_limit": 10,
+          "maxnum_facets": 5,
+          "foundResults": true,
+          "header_title": "Facet Fields",
+          "toggle_element": "task_s",
+          "show_queries": true,
+          "title": "异常信息选择",
+          "height": "200px",
+          "exportSize": null,
+          "offset": 0
+        }
+      ]
+    },
+    {
+      "title": "异常出现频率",
+      "height": "150px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 12,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "count",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&wt=json&rows=0&fq=rs_timestamp_tdt:[2014-03-01T06:55:00.000Z%20TO%202017-06-13T07:55:00.000Z]&facet=true&facet.range=rs_timestamp_tdt&facet.range.start=2014-03-01T06:55:00.000Z&facet.range.end=2017-06-13T07:55:00.000Z&facet.range.gap=%2B7DAY\n",
+            "custom": "&fq=type_s:exception"
+          },
+          "max_rows": 100000,
+          "reverse": 0,
+          "segment": 3,
+          "threshold_first": 1000,
+          "threshold_second": 2000,
+          "threshold_third": 3000,
+          "value_field": "error_info_s",
+          "group_field": null,
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "7d",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1M",
+            "1y"
+          ],
+          "fill": 0,
+          "linewidth": 3,
+          "timezone": "browser",
+          "spyable": true,
+          "zoomlinks": true,
+          "bars": true,
+          "stack": true,
+          "linkage_id": "error_info",
+          "points": false,
+          "display": "block",
+          "icon": "icon-caret-down",
+          "lines": false,
+          "lines_smooth": false,
+          "legend": true,
+          "x-axis": true,
+          "y-axis": true,
+          "percentage": false,
+          "interactive": true,
+          "options": true,
+          "show_queries": true,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": false
+          },
+          "title": "异常出现频率"
+        }
+      ]
+    },
+    {
+      "title": "Sql执行统计",
+      "height": "150px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 8,
+          "editable": true,
+          "type": "statistics",
+          "loadingEditor": false,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&wt=json&fq=rs_timestamp_tdt:[2014-03-01T06:55:00.000Z%20TO%202017-06-13T07:55:00.000Z]&stats=true&stats.facet=sql_key_s&stats.field=sql_key_s&facet.missing=true&f.sql_key_s.facet.sort=count&fq=type_s:sql_key",
+            "custom": "&fq=type_s:sql_key"
+          },
+          "mode": "all",
+          "field": "sql_key_s",
+          "stats_field": "sql_key_s",
+          "decimal_points": 2,
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 10000,
+          "display": "block",
+          "icon": "icon-caret-down",
+          "sortBy": "count",
+          "threshold_first": 3000,
+          "threshold_second": 5000,
+          "order": "descending",
+          "style": {
+            "font-size": "10pt"
+          },
+          "fontsize": 20,
+          "linkage_id": "sql_table",
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "logAxis": false,
+          "arrangement": "horizontal",
+          "chart": "table",
+          "counter_pos": "above",
+          "exportSize": 10000,
+          "lastColor": "",
+          "spyable": true,
+          "show_queries": true,
+          "chartColors": [
+            "#7EB26D",
+            "#EAB839",
+            "#6ED0E0",
+            "#EF843C",
+            "#E24D42",
+            "#1F78C1",
+            "#BA43A9",
+            "#705DA0",
+            "#508642",
+            "#CCA300",
+            "#447EBC",
+            "#C15C17",
+            "#890F02",
+            "#0A437C",
+            "#6D1F62",
+            "#584477",
+            "#B7DBAB",
+            "#F4D598",
+            "#70DBED",
+            "#F9BA8F",
+            "#F29191",
+            "#82B5D8",
+            "#E5A8E2",
+            "#AEA2E0",
+            "#629E51",
+            "#E5AC0E",
+            "#64B0C8",
+            "#E0752D",
+            "#BF1B00",
+            "#0A50A1",
+            "#962D82",
+            "#614D93",
+            "#9AC48A",
+            "#F2C96D",
+            "#65C5DB",
+            "#F9934E",
+            "#EA6460",
+            "#5195CE",
+            "#D683CE",
+            "#806EB7",
+            "#3F6833",
+            "#967302",
+            "#2F575E",
+            "#99440A",
+            "#58140C",
+            "#052B51",
+            "#511749",
+            "#3F2B5B",
+            "#E0F9D7",
+            "#FCEACA",
+            "#CFFAFF",
+            "#F9E2D2",
+            "#FCE2DE",
+            "#BADFF4",
+            "#F9D9F9",
+            "#DEDAF7"
+          ],
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          },
+          "title": "sql语句统计",
+          "height": "300px",
+          "str_max_length": 20
+        },
+        {
+          "span": 4,
+          "editable": true,
+          "type": "facet",
+          "loadingEditor": false,
+          "status": "Stable",
+          "display": "block",
+          "icon": "icon-caret-down",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&fq=rs_timestamp_tdt:[2014-03-01T06:55:00.000Z%20TO%202017-06-13T07:55:00.000Z]&facet=true&facet.field=sql_key_s&wt=json",
+            "basic_query": "q=*%3A*&fq=rs_timestamp_tdt:[2014-03-01T06:55:00.000Z%20TO%202017-06-13T07:55:00.000Z]&facet=true&facet.field=sql_key_s",
+            "custom": ""
+          },
+          "group": "default",
+          "style": {
+            "font-size": "9pt"
+          },
+          "overflow": "min-height",
+          "fields": [
+            "sql_key_s"
+          ],
+          "spyable": true,
+          "linkage_id": "sql",
+          "facet_limit": 10,
+          "maxnum_facets": 5,
+          "foundResults": true,
+          "header_title": "Facet Fields",
+          "toggle_element": "task_s",
+          "show_queries": true,
+          "title": "sql语句过滤选择",
+          "exportSize": null,
+          "offset": 0
+        }
+      ]
+    },
+    {
+      "title": "sql执行频率",
+      "height": "150px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 12,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "count",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&wt=json&rows=0&fq=rs_timestamp_tdt:[2014-03-01T06:55:00.000Z%20TO%202017-06-13T07:55:00.000Z]&facet=true&facet.range=rs_timestamp_tdt&facet.range.start=2014-03-01T06:55:00.000Z&facet.range.end=2017-06-13T07:55:00.000Z&facet.range.gap=%2B14DAY\n",
+            "custom": ""
+          },
+          "max_rows": 100000,
+          "reverse": 0,
+          "segment": 3,
+          "threshold_first": 1000,
+          "threshold_second": 2000,
+          "threshold_third": 3000,
+          "value_field": "sql_key_s",
+          "group_field": null,
+          "auto_int": false,
+          "resolution": 100,
+          "interval": "2w",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1M",
+            "1y"
+          ],
+          "fill": 0,
+          "linewidth": 3,
+          "timezone": "browser",
+          "spyable": true,
+          "zoomlinks": true,
+          "bars": true,
+          "stack": true,
+          "linkage_id": "a",
+          "points": true,
+          "display": "block",
+          "icon": "icon-caret-down",
+          "lines": false,
+          "lines_smooth": false,
+          "legend": true,
+          "x-axis": true,
+          "y-axis": true,
+          "percentage": false,
+          "interactive": true,
+          "options": true,
+          "show_queries": true,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": false
+          },
+          "title": "sql频率统计"
+        }
+      ]
+    },
+    {
+      "title": "",
+      "height": "150px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "filtering",
+          "loadingEditor": false,
+          "display": "block",
+          "icon": "icon-caret-down",
+          "spyable": true
+        }
+      ]
+    }
+  ],
+  "editable": true,
+  "index": {
+    "interval": "none",
+    "pattern": "[logstash-]YYYY.MM.DD",
+    "default": "_all"
+  },
+  "style": "dark",
+  "failover": false,
+  "panel_hints": true,
+  "loader": {
+    "save_gist": false,
+    "save_elasticsearch": true,
+    "save_local": true,
+    "save_default": true,
+    "save_temp": true,
+    "save_temp_ttl_enable": true,
+    "save_temp_ttl": "30d",
+    "load_gist": true,
+    "load_elasticsearch": true,
+    "load_elasticsearch_size": 20,
+    "load_local": true,
+    "hide": false,
+    "dropdown_collections": false
+  },
+  "solr": {
+    "server": "http://121.42.185.24:8983/solr/",
+    "core_name": "hislog_shard1_replica1",
+    "core_list": [
+      "analysis_shard1_replica1",
+      "hislog_shard1_replica1",
+      "http_shard1_replica1",
+      "loganalysis_shard1_replica1",
+      "netanalysis_shard1_replica1",
+      "otheranalysis_shard1_replica1",
+      "rsapm_shard1_replica1"
+    ],
+    "global_params": ""
+  },
+  "language": 1,
+  "isstyle": "dark",
+  "en_cn": false,
+  "alarm": false,
+  "hide_head": false,
+  "loading": false,
+  "enable_linkage": true,
+  "filterids": [
+    0
+  ],
+  "row_controller": true,
+  "mute": false,
+  "linkage_id": "error_info",
+  "searchEnable": false,
+  "isSearch": false,
+  "searchID": 0,
+  "headHide": true,
+  "realUsername": "",
+  "realPassword": "",
+  "switch": "App_Demo_Operate"
+}

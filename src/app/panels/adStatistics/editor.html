@@ -1,0 +1,10 @@
+<div class="row-fluid">
+  <div class="span2">
+    <label class="small">{{'Stats Field'|translate}}</label>
+    <input type="text" class="input-small" bs-typeahead="fields.list" ng-model="panel.stats_field" ng-change="set_refresh(true)">
+  </div>
+  <div class="span2">
+    <label class="small">{{'Max Rows'|translate}}</label>
+    <input ng-change="set_refresh(true)" placeholder="100000" type="number" class="input-small" ng-model="panel.max_rows">
+  </div>
+</div>

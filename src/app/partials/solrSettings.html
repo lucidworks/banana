@@ -12,7 +12,7 @@
             <input type="text" class="input-medium" ng-model="new.core_name" placeholder="searchlogs">
         </div>
         <div class="row-fluid">
-          <div class="span12" ng-show="$scope.type == 'default-ts'">
+          <div class="span12" ng-if="$scope.type == 'default-ts'">
               <h6>{{'Time Field'|translate}}</h6>
               <input type="text" class="input-medium" ng-model="new.time_field" placeholder="timestamp">
           </div>

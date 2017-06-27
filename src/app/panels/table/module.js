@@ -31,7 +31,7 @@ function (angular, app, _, kbn, moment) {
 
   var module = angular.module('kibana.panels.table', []);
   app.useModule(module);
-  module.controller('table', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv, solrSrv) {
+  module.controller('table', function($rootScope,$translate, $scope, fields, querySrv, dashboard, filterSrv, solrSrv) {
     $scope.panelMeta = {
 
       editorTabs : [
@@ -44,7 +44,7 @@ function (angular, app, _, kbn, moment) {
           src: 'app/panels/table/pagination.html'
         },
         {
-          title:'Queries',
+          title:$translate.instant('Queries'),
           src: 'app/partials/querySelect.html'
         }
       ],

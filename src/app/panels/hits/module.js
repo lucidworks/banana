@@ -25,11 +25,11 @@ define([
   var module = angular.module('kibana.panels.hits', []);
   app.useModule(module);
 
-  module.controller('hits', function($scope, $q, querySrv, dashboard, filterSrv) {
+  module.controller('hits', function($scope, $q, $translate,querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
 
       editorTabs : [
-        {title:'Queries', src:'app/partials/querySelect.html'}
+        {title:$translate.instant('Queries'), src:'app/partials/querySelect.html'}
       ],
       status  : "Stable",
       description : ""

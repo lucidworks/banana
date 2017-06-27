@@ -15,12 +15,12 @@ function (angular, app, kbn, _/*, $*/) {
   var module = angular.module('kibana.panels.docviewer', []);
   app.useModule(module);
 
-  module.controller('docviewer', function($scope, dashboard, fields, querySrv, filterSrv, $http) {
+  module.controller('docviewer', function($scope, $translate,dashboard, fields, querySrv, filterSrv, $http) {
     $scope.panelMeta = {
 
       editorTabs: [
         {
-          title: 'Queries',
+          title: $translate.instant('Queries'),
           src: 'app/partials/querySelect.html'
         }
       ],

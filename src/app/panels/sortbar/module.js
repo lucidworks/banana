@@ -44,12 +44,12 @@ define([
     var module = angular.module('kibana.panels.sortbar', []);
     app.useModule(module);
 
-    module.controller('sortbar', function($scope, $q, querySrv, dashboard, filterSrv) {
+    module.controller('sortbar', function($scope, $translate,$q, querySrv, dashboard, filterSrv) {
       $scope.panelMeta = {
 
         editorTabs : [
           {
-            title:'Queries',
+            title:$translate.instant('Queries'),
             src:'app/partials/querySelect.html'
           }
         ],

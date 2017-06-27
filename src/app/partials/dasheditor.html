@@ -2,11 +2,11 @@
   <div class="pull-right editor-title">{{'Dashboard settings'|translate}}</div>
 
   <div ng-model="editor.index" bs-tabs>
-    <div ng-repeat="tab in ['General','Rows','Controls','Solr']" data-title="{{tab}}">
+    <div ng-repeat="tab in ['General','Rows','Controls','Solr']" data-title="{{tab|translate}}">
     </div>
   </div>
   <!-- General tab -->
-  <div ng-show="editor.index == 0">
+  <div ng-if="editor.index == 0">
     <div class="row-fluid">
       <div class="span4">
         <label class="small">{{'Title'|translate}}</label><input type="text" class="input-large" ng-model='dashboard.current.title'/>
@@ -30,10 +30,10 @@
   </div>
   <!-- Index tab -->
   <!--
-  <div ng-show="editor.index == 1">
+  <div ng-if="editor.index == 1">
     <div class="row-fluid">
       <h4>Index Settings</h4>
-      <div ng-show="dashboard.current.index.interval != 'none'" class="row-fluid">
+      <div ng-if="dashboard.current.index.interval != 'none'" class="row-fluid">
          <div class="span12">
           <p class="small">
             Time stamped indices use your selected time range to create a list of
@@ -56,23 +56,23 @@
       <div class="span2">
         <h6>Timestamping</h6><select class="input-small" ng-model="dashboard.current.index.interval" ng-options="f for f in ['none','hour','day','week','month','year']"></select>
       </div>
-      <div class="span4" ng-show="dashboard.current.index.interval != 'none'">
+      <div class="span4" ng-if="dashboard.current.index.interval != 'none'">
         <h6>Index pattern <small>Absolutes in []</small></h6>
         <input type="text" class="input-medium" ng-model="dashboard.current.index.pattern">
       </div>
-      <div class="span2" ng-show="dashboard.current.index.interval != 'none'">
+      <div class="span2" ng-if="dashboard.current.index.interval != 'none'">
         <h6>Failover <i class="icon-question-sign" bs-tooltip="'If no indices match the pattern, failover to default index *NOT RECOMMENDED*'"></i></h6>
         <input type="checkbox" ng-model="dashboard.current.failover" ng-checked="dashboard.current.failover" />
       </div>
-      <div class="span4" ng-show="dashboard.current.failover || dashboard.current.index.interval == 'none'">
-        <h6>Default Index <small ng-show="dashboard.current.index.interval != 'none'">If index not found</small></h6>
+      <div class="span4" ng-if="dashboard.current.failover || dashboard.current.index.interval == 'none'">
+        <h6>Default Index <small ng-if="dashboard.current.index.interval != 'none'">If index not found</small></h6>
         <input type="text" class="input-medium" ng-model="dashboard.current.index.default">
       </div>
     </div>
   </div>
   -->
   <!-- Rows tab -->
-  <div ng-show="editor.index == 1">
+  <div ng-if="editor.index == 1">
     <div class="row-fluid">
       <div class="span12">
         <table class="table table-condensed table-striped">
@@ -108,7 +108,7 @@
     </div>
   </div>
   <!-- Controls tab -->
-  <div ng-show="editor.index == 2" ng-controller="dashLoader">
+  <div ng-if="editor.index == 2" ng-controller="dashLoader">
     <div class="row-fluid">
       <div class="span3" style="font-weight:bold;">{{'Show Collections Picker'|translate}}</div>
       <input type="checkbox" ng-model="dashboard.current.loader.dropdown_collections" ng-checked="dashboard.current.loader.dropdown_collections">
@@ -133,13 +133,13 @@
       <div class="span2">
         <label class="small">Solr</label><input type="checkbox" ng-model="dashboard.current.loader.load_elasticsearch" ng-checked="dashboard.current.loader.load_elasticsearch">
       </div>
-      <div class="span3" ng-show="dashboard.current.loader.load_elasticsearch">
+      <div class="span3" ng-if="dashboard.current.loader.load_elasticsearch">
         <label class="small">{{'Solr list size'|translate}}</label><input class="input-mini" type="number" ng-model="dashboard.current.loader.load_elasticsearch_size">
       </div>
     </div>
   </div>
   <!-- Solr tab -->
-  <div ng-show="editor.index == 3">
+  <div ng-if="editor.index == 3">
     <div class="row-fluid">
       <h4>{{'Solr Settings'|translate}}</h4>
     </div>
@@ -167,6 +167,6 @@
 </div>
 
 <div class="modal-footer">
-  <button ng-click="add_row(dashboard.current,row); reset_row();" class="btn btn-success" ng-show="editor.index == 1">{{'Create Row'|translate}}</button>
+  <button ng-click="add_row(dashboard.current,row); reset_row();" class="btn btn-success" ng-if="editor.index == 1">{{'Create Row'|translate}}</button>
   <button type="button" class="btn btn-danger" ng-click="editor.index=0;dismiss();reset_panel();dashboard.is_refresh()">{{'Close'|translate}}</button>
 </div>

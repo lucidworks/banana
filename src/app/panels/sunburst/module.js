@@ -15,11 +15,11 @@ define([
     var module = angular.module('kibana.panels.sunburst', []);
     app.useModule(module);
 
-    module.controller('sunburst', function ($scope, dashboard, querySrv, filterSrv) {
+    module.controller('sunburst', function ($scope, $translate,dashboard, querySrv, filterSrv) {
         $scope.panelMeta = {
 
             editorTabs: [{
-                title: 'Queries',
+                title: $translate.instant('Queries'),
                 src: 'app/partials/querySelect.html'
             }],
             status: "Experimental",

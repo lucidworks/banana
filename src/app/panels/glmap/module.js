@@ -23,11 +23,11 @@ function (angular, app, _, $, kbn) {
   var module = angular.module('kibana.panels.glmap', []);
   app.useModule(module);
 
-  module.controller('glmap', function($scope, $timeout, timer, querySrv, dashboard, filterSrv) {
+  module.controller('glmap', function($scope, $timeout, $translate,timer, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       exportfile: true,
       editorTabs : [
-        {title:'Queries', src:'app/partials/querySelect.html'}
+        {title:$translate.instant('Queries'), src:'app/partials/querySelect.html'}
       ],
       status  : "Stable",
       description : ""

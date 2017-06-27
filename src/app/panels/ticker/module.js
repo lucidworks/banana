@@ -19,12 +19,12 @@ define([
     var module = angular.module('kibana.panels.ticker', []);
     app.useModule(module);
 
-    module.controller('ticker', function($scope,$q, kbnIndex, querySrv, dashboard, filterSrv) {
+    module.controller('ticker', function($scope,$q,$translate, kbnIndex, querySrv, dashboard, filterSrv) {
 
       $scope.panelMeta = {
 
         editorTabs: [{
-          title: 'Queries',
+          title: $translate.instant('Queries'),
           src: 'app/partials/querySelect.html'
         }],
         status: "Beta",

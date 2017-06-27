@@ -32,14 +32,14 @@ define([
     var module = angular.module('kibana.panels.fullTextSearch', []);
     app.useModule(module);
     //app.useModule('ui.bootstrap')
-    module.controller('fullTextSearch', function($rootScope, $scope, fields, querySrv, dashboard, filterSrv) {
+    module.controller('fullTextSearch', function($rootScope,$translate, $scope, fields, querySrv, dashboard, filterSrv) {
       $scope.panelMeta = {
 
         editorTabs: [{
-          title: 'Paging',
+          title: $translate.instant('Paging'),
           src: 'app/panels/table/pagination.html'
         }, {
-          title: 'Queries',
+          title: $translate.instant('Queries'),
           src: 'app/partials/querySelect.html'
         }],
         exportfile: true,

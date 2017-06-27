@@ -24,11 +24,11 @@ function (angular, app, _, $, kbn) {
   var module = angular.module('kibana.panels.pies', []);
   app.useModule(module);
 
-  module.controller('appsum', function($scope, $timeout, timer, querySrv, dashboard, filterSrv) {
+  module.controller('appsum', function($scope, $timeout, $translate,timer, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       exportfile: true,
       editorTabs : [
-        {title:'Queries', src:'app/partials/querySelect.html'}
+        {title:$translate.instant('Queries'), src:'app/partials/querySelect.html'}
       ],
       status  : "Stable",
       description : ""

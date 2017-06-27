@@ -25,11 +25,11 @@ function (angular, app, _, $, kbn) {
   var module = angular.module('kibana.panels.pies', []);
   app.useModule(module);
 
-  module.controller('pies', function($scope, $timeout, timer, querySrv, dashboard, filterSrv) {
+  module.controller('pies', function($scope, $timeout, $translate,timer, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       exportfile: true,
       editorTabs : [
-        {title:'Queries', src:'app/partials/querySelect.html'}
+        {title:$translate.instant('Queries'), src:'app/partials/querySelect.html'}
       ],
       status  : "Stable",
       description : ""
@@ -1442,7 +1442,7 @@ function (angular, app, _, $, kbn) {
 
                 var xla = scope.label[k].replace(" ","\n");
                 var x =  (k+0.5) / scope.radardata.length * 100 + '%';
-
+              if(scope.panel.eLegend){
                 titles.push({
                     text: xla,
                     textAlign: 'center',
@@ -1455,7 +1455,7 @@ function (angular, app, _, $, kbn) {
                         fontWeight: 'normal'
                     }
                 });
-
+              }
                 series.push({
                     animation: true,
                     waveAnimation: true,
