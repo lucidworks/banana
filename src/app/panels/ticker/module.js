@@ -22,7 +22,12 @@ define([
     module.controller('ticker', function($scope,$q, kbnIndex, querySrv, dashboard, filterSrv) {
 
       $scope.panelMeta = {
-
+        modals: [{
+          description: "Inspect",
+          icon: "icon-info-sign",
+          partial: "app/partials/inspector.html",
+          show: $scope.panel.spyable
+        }],
         editorTabs: [{
           title: 'Queries',
           src: 'app/partials/querySelect.html'
@@ -44,9 +49,6 @@ define([
           "font-size": '14pt'
         },
         ago: '1d',
-          linkage_id:'a',
-          display:'block',
-        icon:"icon-caret-down",
         arrangement: 'vertical',
         spyable: true,
         show_queries: true,
@@ -63,174 +65,161 @@ define([
         $scope.get_data();
       };
 
-        $scope.display=function() {
-            if($scope.panel.display === 'none'){
-                $scope.panel.display='block';
-                $scope.panel.icon="icon-caret-down";
+      $scope.get_data = function(segment) {
+        delete $scope.panel.error;
+        $scope.panelMeta.loading = true;
 
+        // Make sure we have everything for the request to complete
+        if (dashboard.indices.length === 0) {
+          return;
+        } else {
+          $scope.index = segment > 0 ? $scope.index : dashboard.indices;
+        }
 
-            }else{
-                $scope.panel.display='none';
-                $scope.panel.icon="icon-caret-up";
-            }
+        $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
+        $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
+
+        // Determine a time field
+        var timeField = _.uniq(_.pluck(filterSrv.getByType('time'), 'field'));
+        if (timeField.length > 1) {
+          $scope.panel.error = "Time field must be consistent amongst time filters";
+          return;
+        } else if (timeField.length === 0) {
+          $scope.panel.error = "A time filter must exist for this panel to function";
+          return;
+        } else {
+          timeField = timeField[0];
+        }
+
+        $scope.time = filterSrv.timeRange('min');
+        $scope.old_time = {
+          from: new Date($scope.time.from.getTime() - kbn.interval_to_ms($scope.panel.ago)),
+          to: new Date($scope.time.to.getTime() - kbn.interval_to_ms($scope.panel.ago))
         };
 
-      $scope.get_data = function(segment) {
-          if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
-          delete $scope.panel.error;
-          $scope.panelMeta.loading = true;
+        var request = $scope.sjs.Request().indices(dashboard.indices);
+        var _ids_without_time = _.difference(filterSrv.ids, filterSrv.idsByType('time'));
 
-          // Make sure we have everything for the request to complete
-          if (dashboard.indices.length === 0) {
-              return;
+        // Build the question part of the query
+        _.each($scope.panel.queries.ids, function(id) {
+          var q = $scope.sjs.FilteredQuery(
+            querySrv.getEjsObj(id),
+            filterSrv.getBoolFilter(_ids_without_time).must(
+              $scope.sjs.RangeFilter(timeField)
+              .from($scope.time.from)
+              .to($scope.time.to)
+            ));
+
+          request = request
+            .facet($scope.sjs.QueryFacet(id)
+              .query(q)
+          ).size(0);
+        });
+
+
+        // And again for the old time period
+        _.each($scope.panel.queries.ids, function(id) {
+          var q = $scope.sjs.FilteredQuery(
+            querySrv.getEjsObj(id),
+            filterSrv.getBoolFilter(_ids_without_time).must(
+              $scope.sjs.RangeFilter(timeField)
+              .from($scope.old_time.from)
+              .to($scope.old_time.to)
+            ));
+          request = request
+            .facet($scope.sjs.QueryFacet("old_" + id)
+              .query(q)
+          ).size(0);
+        });
+        // Populate the inspector panel
+        $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
+
+        // Build SOLR query
+        var fq = '';
+        if (filterSrv.getSolrFq(true)) {
+          fq = '&' + filterSrv.getSolrFq(true);
+        }
+        var time_field = filterSrv.getTimeField();
+        var wt_json = '&wt=json';
+        var rows_limit = '&rows=0'; // for trends, we do not need the actual response doc, so set rows=0
+
+        // current time
+        // make the gap equal to the difference between the start and end date
+        // this will help in reducing response size
+        var facet_first_gap = '%2B' + diffDays($scope.time.from, $scope.time.to) + 'DAY';
+        var facet_first_range = '&facet=true' +
+          '&facet.range=' + time_field +
+          '&facet.range.start=' + $scope.time.from.toISOString() +
+          '&facet.range.end=' + $scope.time.to.toISOString() +
+          '&facet.range.gap=' + facet_first_gap +
+          '&facet.range.hardend=true' +
+          '&facet.range.other=between';
+
+        // time ago
+        var facet_second_gap = '%2B' + diffDays($scope.old_time.from, $scope.old_time.to) + 'DAY';
+        var facet_second_range = '&facet=true' +
+          '&facet.range=' + time_field +
+          '&facet.range.start=' + $scope.old_time.from.toISOString() +
+          '&facet.range.end=' + $scope.old_time.to.toISOString() +
+          '&facet.range.gap=' + facet_second_gap +
+          '&facet.range.hardend=true' +
+          '&facet.range.other=between';
+
+        var mypromises = [];
+        $scope.panel.queries.query = "";
+        _.each($scope.panel.queries.ids, function(id) {
+          var first_request = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet_first_range;
+          var second_request = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet_second_range;
+          var request_new;
+          if ($scope.panel.queries.custom != null) {
+            request_new = request.setQuery(first_request + $scope.panel.queries.custom);
           } else {
-              $scope.index = segment > 0 ? $scope.index : dashboard.indices;
+            request_new = request.setQuery(first_request);
           }
-
-          $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
-          $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
-
-          // Determine a time field
-          var timeField = _.uniq(_.pluck(filterSrv.getByType('time'), 'field'));
-          if (timeField.length > 1) {
-              $scope.panel.error = "Time field must be consistent amongst time filters";
-              return;
-          } else if (timeField.length === 0) {
-              $scope.panel.error = "A time filter must exist for this panel to function";
-              return;
+          $scope.panel.queries.query += first_request + "\n\n" ;
+          mypromises.push(request_new.doSearch());
+          var request_old;
+          if ($scope.panel.queries.custom != null) {
+            request_old = request.setQuery(second_request + $scope.panel.queries.custom);
           } else {
-              timeField = timeField[0];
+            request_old = request.setQuery(second_request);
           }
+          $scope.panel.queries.query += second_request + "\n";
+          mypromises.push(request_old.doSearch());
+          $scope.panel.queries.query += "-----------\n" ;
+        });
 
-          $scope.time = filterSrv.timeRange('min');
-          $scope.old_time = {
-              from: new Date($scope.time.from.getTime() - kbn.interval_to_ms($scope.panel.ago)),
-              to: new Date($scope.time.to.getTime() - kbn.interval_to_ms($scope.panel.ago))
-          };
+        // var first_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_first_range;
+        // var second_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_second_range;
+        // $scope.panel.queries.query = first_request + "\n\n" + second_request;
 
-          var request = $scope.sjs.Request().indices(dashboard.indices);
-          var _ids_without_time = _.difference(filterSrv.ids, filterSrv.idsByType('time'));
+        // request = request.setQuery(first_request);
+        // var results_new = request.doSearch();
 
-          // Build the question part of the query
-          _.each($scope.panel.queries.ids, function (id) {
-              var q = $scope.sjs.FilteredQuery(
-                  querySrv.getEjsObj(id),
-                  filterSrv.getBoolFilter(_ids_without_time).must(
-                      $scope.sjs.RangeFilter(timeField)
-                          .from($scope.time.from)
-                          .to($scope.time.to)
-                  ));
+        // results_new.then(function(results_new) {
+        //   // Second Query
+        //   request = request.setQuery(second_request);
+        //   var results_old = request.doSearch();
 
-              request = request
-                  .facet($scope.sjs.QueryFacet(id)
-                      .query(q)
-                  ).size(0);
-          });
-
-
-          // And again for the old time period
-          _.each($scope.panel.queries.ids, function (id) {
-              var q = $scope.sjs.FilteredQuery(
-                  querySrv.getEjsObj(id),
-                  filterSrv.getBoolFilter(_ids_without_time).must(
-                      $scope.sjs.RangeFilter(timeField)
-                          .from($scope.old_time.from)
-                          .to($scope.old_time.to)
-                  ));
-              request = request
-                  .facet($scope.sjs.QueryFacet("old_" + id)
-                      .query(q)
-                  ).size(0);
-          });
-          // Populate the inspector panel
-          $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
-
-          // Build SOLR query
-          var fq = '';
-          if (filterSrv.getSolrFq(true)) {
-              fq = '&' + filterSrv.getSolrFq(true);
-          }
-          var time_field = filterSrv.getTimeField();
-          var wt_json = '&wt=json';
-          var rows_limit = '&rows=0'; // for trends, we do not need the actual response doc, so set rows=0
-
-          // current time
-          // make the gap equal to the difference between the start and end date
-          // this will help in reducing response size
-          var facet_first_gap = '%2B' + diffDays($scope.time.from, $scope.time.to) + 'DAY';
-          var facet_first_range = '&facet=true' +
-              '&facet.range=' + time_field +
-              '&facet.range.start=' + $scope.time.from.toISOString() +
-              '&facet.range.end=' + $scope.time.to.toISOString() +
-              '&facet.range.gap=' + facet_first_gap +
-              '&facet.range.hardend=true' +
-              '&facet.range.other=between';
-
-          // time ago
-          var facet_second_gap = '%2B' + diffDays($scope.old_time.from, $scope.old_time.to) + 'DAY';
-          var facet_second_range = '&facet=true' +
-              '&facet.range=' + time_field +
-              '&facet.range.start=' + $scope.old_time.from.toISOString() +
-              '&facet.range.end=' + $scope.old_time.to.toISOString() +
-              '&facet.range.gap=' + facet_second_gap +
-              '&facet.range.hardend=true' +
-              '&facet.range.other=between';
-
-          var mypromises = [];
-          $scope.panel.queries.query = "";
-          _.each($scope.panel.queries.ids, function (id) {
-              var first_request = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet_first_range;
-              var second_request = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet_second_range;
-              var request_new;
-              if ($scope.panel.queries.custom != null) {
-                  request_new = request.setQuery(first_request + $scope.panel.queries.custom);
-              } else {
-                  request_new = request.setQuery(first_request);
+        //   results_old.then(function(results_old) {
+        //     processSolrResults(results_new, results_old);
+        //     $scope.$emit('render');
+        //   });
+        // });
+        $scope.data = [];
+        if (dashboard.current.services.query.ids.length >= 1) {
+          $q.all(mypromises).then(function(results) {
+            _.each($scope.panel.queries.ids, function(id, index) {
+              // Check for error and abort if found
+              if (!(_.isUndefined(results[index].error))) {
+                $scope.panel.error = $scope.parse_error(results[index].error.msg);
+                return;
               }
-              $scope.panel.queries.query += first_request + "\n\n";
-              mypromises.push(request_new.doSearch());
-              var request_old;
-              if ($scope.panel.queries.custom != null) {
-                  request_old = request.setQuery(second_request + $scope.panel.queries.custom);
-              } else {
-                  request_old = request.setQuery(second_request);
-              }
-              $scope.panel.queries.query += second_request + "\n";
-              mypromises.push(request_old.doSearch());
-              $scope.panel.queries.query += "-----------\n";
+              processSolrResults(results[index * 2], results[index * 2 + 1], id,index);
+            });
           });
+        }
 
-          // var first_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_first_range;
-          // var second_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_second_range;
-          // $scope.panel.queries.query = first_request + "\n\n" + second_request;
-
-          // request = request.setQuery(first_request);
-          // var results_new = request.doSearch();
-
-          // results_new.then(function(results_new) {
-          //   // Second Query
-          //   request = request.setQuery(second_request);
-          //   var results_old = request.doSearch();
-
-          //   results_old.then(function(results_old) {
-          //     processSolrResults(results_new, results_old);
-          //     $scope.$emit('render');
-          //   });
-          // });
-          $scope.data = [];
-          if (dashboard.current.services.query.ids.length >= 1) {
-              $q.all(mypromises).then(function (results) {
-                  _.each($scope.panel.queries.ids, function (id, index) {
-                      // Check for error and abort if found
-                      if (!(_.isUndefined(results[index].error))) {
-                          $scope.panel.error = $scope.parse_error(results[index].error.msg);
-                          return;
-                      }
-                      processSolrResults(results[index * 2], results[index * 2 + 1], id, index);
-                  });
-              });
-          }
-      }
       };
 
 

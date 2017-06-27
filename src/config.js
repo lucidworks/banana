@@ -100,6 +100,7 @@ function (Settings) {
       'bettermap',
       'query',
 	  'china',
+      'chinademo',
       'terms',
 	  'sortbar',
 	  'multidashboard',
@@ -125,7 +126,9 @@ function (Settings) {
       'multiseries',
       'sunburst',
       'docviewer',
-        'statistics'
+        'statistics',
+      'demo',
+      'demo2'
     ]
   });
 });
