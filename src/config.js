@@ -125,7 +125,13 @@ function (Settings) {
       'multiseries',
       'sunburst',
       'docviewer',
-        'statistics'
+      'statistics',
+      'ad',
+      'adTable',
+      'adStatistics',
+      'adDistribution',
+      'adIPStatistics',
+      'adFactor'
     ]
   });
 });
