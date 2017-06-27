@@ -43,7 +43,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
   var DEBUG = true;
   console.log('DEBUG : ' + DEBUG);
-  module.controller('ad', function($scope, $q, $http, querySrv, dashboard, filterSrv, alertSrv) {
+  module.controller('ad', function($scope, $q, $http, $routeParams, querySrv, dashboard, filterSrv, alertSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -118,7 +118,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
     $scope.init = function() {
       // Hide view options by default
-      if (DEBUG) console.log('init');
+      if (DEBUG) { console.log('init'); }
       $scope.options = false;
       $scope.$on('refresh',function(){
         $scope.get_data();
@@ -196,7 +196,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
      *                            this call is made recursively for more segments
      */
     $scope.get_data = function(segment, query_id) {
-      if (DEBUG) console.log('get data start.');
+      if (DEBUG) { console.log('get data start.'); }
       if (_.isUndefined(segment)) {
         segment = 0;
       }
@@ -221,7 +221,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       var request = $scope.sjs.Request().indices(dashboard.indices[segment]);
       // $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
-      if (DEBUG) console.log($scope.panel.fields);
+      if (DEBUG) { console.log($scope.panel.fields); }
 
       $scope.panel.queries.query = "";
       // Build the query
@@ -271,6 +271,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       var mypromises = [];
       var arr_id = [];
       var index = 0;
+      if (DEBUG) console.log($scope.panel.fields);
+      if (_.isUndefined($routeParams.adValue)) {
+      } else {
+        $scope.toggle_field($routeParams.adValue);
+      }
       _.each($scope.panel.fields, function(metric) {
         var temp_fq = fq + '&fq=ad_name_s:'+metric;
         var temp_q = 'q=*:*' + wt_json + rows_limit + temp_fq + facet + fl + sort_field;
@@ -337,7 +342,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
-
+        var myChart;
         // Receive render events
         scope.$on('render',function(){
           render_panel();
@@ -366,174 +371,176 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
           var heatmap_id = scope.$id;
           require(['echarts'], function(ec){
+            var echarts = ec;
+            if(myChart){
+              myChart.dispose();
+            }
+            var mertic = scope.panel.metric_field;
+            var labelcolor = false;
+            if (dashboard.current.style === 'dark'){
+                labelcolor = true;
+            }
+            var cut_number = scope.panel.cut_number + 1;
+             myChart = echarts.init(document.getElementById(heatmap_id));
+            var start_time = Date.parse(new Date(scope.get_time_range()['from']));
+            var end_time = Date.parse(new Date(scope.get_time_range()['to']));
+            var step = (end_time-start_time)/cut_number+1;
+            var metrics = scope.panel.fields;
+            var dates = [];
+            var timestamps = [];
+            if (DEBUG) {console.log(scope.get_time_range());}
+            if (DEBUG) {console.log(start_time);}
 
-            var echarts = require('echarts');
-          if(myChart) {
-            myChart.dispose();
-          }
-          var mertic = scope.panel.metric_field;
-          var labelcolor = false;
-          if (dashboard.current.style === 'dark'){
-              labelcolor = true;
-          }
-          var cut_number = scope.panel.cut_number + 1;
-          var myChart = echarts.init(document.getElementById(heatmap_id));
-          var start_time = Date.parse(new Date(scope.get_time_range()['from']));
-          var end_time = Date.parse(new Date(scope.get_time_range()['to']));
-          var step = (end_time-start_time)/cut_number+1;
-          var metrics = scope.panel.fields;
-          var dates = [];
-          var timestamps = [];
-          if (DEBUG) console.log(scope.get_time_range());
-          if (DEBUG) console.log(start_time);
+            for (var timestamp = start_time; timestamp <= end_time; timestamp += step) {
+                timestamps.push(timestamp);
+                dates.push(
+                    echarts.format.formatTime('yyyy/MM/dd hh:mm:ss', timestamp)
+                );
+            }
+            var arrays = [];
+            if (DEBUG) { console.log(metrics); }
+            for (var i = 0; i < dates.length; i++) {
+                var array = [];
+                for (var j = 0; j < metrics.length; j++) {
+                    array.push([]);
+                }
+                arrays.push(array);
+            }
+            var metric_index = 0;
+            if (DEBUG) {console.log(chartData); }
+            chartData.map(function (metric_anomaly) {
+                metric_anomaly.map(function (anomaly) {
+                    var date_index = Math.floor((anomaly['start_timestamp_l'] - start_time) / step);
+                    if (date_index >= 0 && date_index < dates.length) {
+                        var anomaly_date = echarts.format.formatTime('yyyy/MM/dd hh:mm:ss', anomaly['start_timestamp_l']);
+                        var metric_value = anomaly.value_f;
+                        var anomaly_value = anomaly.anomaly_f;
+                        var from_timestamp = timestamps[date_index];
+                        var to_timestamp = timestamps[date_index]+step;
+                        var solr_reader_url = anomaly.solr_reader_url_s;
+                        var solr_writer_url = anomaly.solr_writer_url_s;
+                        var stats_facet = anomaly.stats_facet_s;
+                        var facet_name = anomaly.facet_name_s;
+                        arrays[date_index][metric_index].push({
+                            date_index: date_index,
+                            anomaly_date: dates[date_index],
+                            anomaly_value: anomaly_value,
+                            metric_value: metric_value,
+                            from_timestamp: from_timestamp,
+                            to_timestamp: to_timestamp,
+                            solr_reader_url : solr_reader_url,
+                            solr_writer_url :　solr_writer_url,
+                            stats_facet : stats_facet,
+                            facet_name : facet_name
+                        });
+                    }
+                });
+                metric_index += 1;
+            });
+            var data = [];
+            var max_num = 0;
+            for (var date_index = 0; date_index < dates.length; date_index++) {
+                for (var metric_index = 0; metric_index < metrics.length; metric_index++) {
+                    if (arrays[date_index][metric_index].length > 0) {
+                        data.push([date_index,metric_index,arrays[date_index][metric_index].length]);
+                    }
+                    if (arrays[date_index][metric_index].length > max_num) {
+                        max_num = arrays[date_index][metric_index].length;
+                    }
+                }
+            }
+            if (DEBUG) { console.log(arrays); }
+            if (DEBUG) { console.log(max_num); }
+            var option = {
+                tooltip: {
+                    show: false
+                },
+                animation: false,
+                grid: {
+                    height: '50%',
+                    y: '10%'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: dates,
+                    splitArea: {
+                        show: true
+                    },
+                    axisLine:{
+                        lineStyle:{
+                            color:'#aaaaaa',
+                            width:1
+                        }
+                    }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: metrics,
+                    splitArea: {
+                        show: true
+                    },
+                    axisLine:{
+                        lineStyle:{
+                            color:'#aaaaaa',
+                            width:1
+                        }
+                    }
+                },
+                visualMap: {
+                    min: 0,
+                    max: max_num,
+                    calculable: true,
+                    orient: 'horizontal',
+                    left: 'center',
+                    bottom: '15%',
+                    show: false
+                },
+                series: [{
+                    name: 'anomaly',
+                    type: 'heatmap',
+                    data: data,
+                    label: {
+                        normal: {
+                            show: true
+                        }
+                    }
+                }]
+            };
 
-          for (var timestamp = start_time; timestamp <= end_time; timestamp += step) {
-              timestamps.push(timestamp);
-              dates.push(
-                  echarts.format.formatTime('yyyy/MM/dd hh:mm:ss', timestamp)
-              );
-          }
-          var metric_index = 0;
-          var arrays = [];
-          if (DEBUG) console.log(metrics);
-          for (var i = 0; i < dates.length; i++) {
-              var array = [];
-              for (var j = 0; j < metrics.length; j++) {
-                  array.push([]);
-              }
-              arrays.push(array);
-          }
-          
-          chartData.map(function (metric_anomaly) {
-              metric_anomaly.map(function (anomaly) {
-                  var date_index = Math.floor((anomaly['start_timestamp_l'] - start_time) / step);
-                  if (date_index >= 0) {
-                      var anomaly_date = echarts.format.formatTime('yyyy/MM/dd hh:mm:ss', anomaly['start_timestamp_l']);
-                      var metric_value = anomaly.value_f;
-                      var anomaly_value = anomaly.anomaly_f;
-                      var from_timestamp = timestamps[date_index];
-                      var to_timestamp = timestamps[date_index]+step;
-                      var solr_reader_url = anomaly.solr_reader_url_s;
-                      var solr_writer_url = anomaly.solr_writer_url_s;
-                      var stats_facet = anomaly.stats_facet_s;
-                      var facet_name = anomaly.facet_name_s;
-                      arrays[date_index][metric_index].push({
-                          date_index: date_index,
-                          anomaly_date: dates[date_index],
-                          anomaly_value: anomaly_value,
-                          metric_value: metric_value,
-                          from_timestamp: from_timestamp,
-                          to_timestamp: to_timestamp,
-                          solr_reader_url : solr_reader_url,
-                          solr_writer_url :　solr_writer_url,
-                          stats_facet : stats_facet,
-                          facet_name : facet_name
-                      });
-                  }
-              });
-              metric_index += 1;
-          });
-          var data = [];
-          var max_num = 0;
-          for (var date_index = 0; date_index < dates.length; date_index++) {
-              for (var metric_index = 0; metric_index < metrics.length; metric_index++) {
-                  if (arrays[date_index][metric_index].length > 0) {
-                      data.push([date_index,metric_index,arrays[date_index][metric_index].length]);
-                  }
-                  if (arrays[date_index][metric_index].length > max_num) {
-                      max_num = arrays[date_index][metric_index].length;
-                  }
-              }
-          }
-          if (DEBUG) console.log(max_num);
-          var option = {
-              tooltip: {
-                  show: false
-              },
-              animation: false,
-              grid: {
-                  height: '50%',
-                  y: '10%'
-              },
-              xAxis: {
-                  type: 'category',
-                  data: dates,
-                  splitArea: {
-                      show: true
-                  },
-                  axisLine:{  
-                      lineStyle:{
-                          color:'#aaaaaa',  
-                          width:1
-                      }
-                  }
-              },
-              yAxis: {
-                  type: 'category',
-                  data: metrics,
-                  splitArea: {
-                      show: true
-                  },
-                  axisLine:{  
-                      lineStyle:{
-                          color:'#aaaaaa',  
-                          width:1
-                      }
-                  }
-              },
-              visualMap: {
-                  min: 0,
-                  max: max_num,
-                  calculable: true,
-                  orient: 'horizontal',
-                  left: 'center',
-                  bottom: '15%',
-                  show: false
-              },
-              series: [{
-                  name: 'anomaly',
-                  type: 'heatmap',
-                  data: data,
-                  label: {
-                      normal: {
-                          show: true
-                      }
-                  }
-              }]
-          };
+            myChart.setOption(option);
 
-          myChart.setOption(option);
-
-          myChart.on('click', function (params) {
-              if (DEBUG) console.log(params);
-              var anomaly_th = scope.panel.anomaly_th;
-              var x = params.data[0];
-              var y = params.data[1];
-              var from_timestamp = arrays[x][y][0].from_timestamp;
-              var to_timestamp = arrays[x][y][0].to_timestamp;
-              var fq = 'fq=start_timestamp_l:[' + Math.floor(from_timestamp) + '%20TO%20' + Math.floor(to_timestamp)+']';
-              fq = fq + '&fq=ad_name_s:' + metrics[params.data[1]];
-              var anomaly_fq = fq + '&fq=anomaly_f:[' + anomaly_th + '%20TO%20*]'; 
-              if (DEBUG) console.log(fq);
-              _.defaults(dashboard.current,{anomaly_fq:''});
-              _.defaults(dashboard.current,{anomaly_name:''});
-              _.defaults(dashboard.current,{anomaly_solr_reader_url:''});
-              _.defaults(dashboard.current,{anomaly_stats_facet:''});
-              _.defaults(dashboard.current,{anomaly_facet_name:''});
-              _.defaults(dashboard.current,{fq:''});
-              dashboard.current.anomaly_fq = anomaly_fq;
-              dashboard.current.fq = fq;
-              dashboard.current.anomaly_name = metrics[params.data[1]];
-              dashboard.current.anomaly_solr_reader_url = arrays[x][y][0].anomaly_solr_reader_url;
-              dashboard.current.anomaly_stats_facet = arrays[x][y][0].anomaly_stats_facet;
-              dashboard.current.anomaly_facet_name = arrays[x][y][0].anomaly_facet_name;
-              /* filterSrv.set({
-                  type  : 'time',
-                  from  : moment.utc(Number(from_timestamp)).toDate(),
-                  to    : moment.utc(Number(to_timestamp)).toDate(),
-                  field : filterSrv.getTimeField()
-              }); */
-              dashboard.refresh();
+            myChart.on('click', function (params) {
+                if (DEBUG) { console.log(params); }
+                if (DEBUG) { console.log(arrays); }
+                var anomaly_th = scope.panel.anomaly_th;
+                var x = params.data[0];
+                var y = params.data[1];
+                var from_timestamp = arrays[x][y][0].from_timestamp;
+                var to_timestamp = arrays[x][y][0].to_timestamp;
+                if (DEBUG) { console.log(from_timestamp + " " + to_timestamp);}
+                var fq = 'fq=start_timestamp_l:[' + Math.floor(from_timestamp) + '%20TO%20' + Math.floor(to_timestamp)+']';
+                fq = fq + '&fq=ad_name_s:' + metrics[params.data[1]];
+                var anomaly_fq = fq + '&fq=anomaly_f:[' + anomaly_th + '%20TO%20*]';
+                if (DEBUG) { console.log(fq); }
+                _.defaults(dashboard.current,{anomaly_fq:''});
+                _.defaults(dashboard.current,{anomaly_name:''});
+                _.defaults(dashboard.current,{anomaly_solr_reader_url:''});
+                _.defaults(dashboard.current,{anomaly_stats_facet:''});
+                _.defaults(dashboard.current,{anomaly_facet_name:''});
+                _.defaults(dashboard.current,{fq:''});
+                dashboard.current.anomaly_fq = anomaly_fq;
+                dashboard.current.fq = fq;
+                dashboard.current.anomaly_name = metrics[params.data[1]];
+                dashboard.current.anomaly_solr_reader_url = arrays[x][y][0].anomaly_solr_reader_url;
+                dashboard.current.anomaly_stats_facet = arrays[x][y][0].anomaly_stats_facet;
+                dashboard.current.anomaly_facet_name = arrays[x][y][0].anomaly_facet_name;
+                /* filterSrv.set({
+                    type  : 'time',
+                    from  : moment.utc(Number(from_timestamp)).toDate(),
+                    to    : moment.utc(Number(to_timestamp)).toDate(),
+                    field : filterSrv.getTimeField()
+                }); */
+                dashboard.refresh();
           });
         });
         }

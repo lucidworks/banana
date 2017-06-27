@@ -1,0 +1,62 @@
+<div ng-controller='adStatistics' ng-init="init()">
+  <style type="text/css">
+    table td {
+      word-break: break-all;
+
+    }
+  </style>
+  <div ng-style="{'display':panel.display}">
+
+    <!-- START Table -->
+    <input type="text" ng-model="query" ng-change="search()" class="input-large search-query" placeholder="Search">
+    <table ng-table="data" class="table table-striped">
+    <thead>
+      <th class="name">检测<big>名称</big>&nbsp;</th>
+      <th class="term">指标/事务<big>名称</big>&nbsp;<a ng-click="sort_by('term')"><i class="icon-sort"></i></a></th>
+      <th class="count">抛出<big>异常数量</big>&nbsp;<a ng-click="sort_by('count')"><i class="icon-sort"></i></a></th>
+      <th class="find"> 查看<big>相关</big>事务/指标</th>
+      <!--
+      <th class="stddev">Std&nbsp;<a ng-click="sort_by('stddev')"><i class="icon-sort"></i></a></th>
+      -->
+    </thead>
+    <tfoot>
+    <td colspan="6">
+      <div class="pagination pull-right">
+        <ul>
+          <li ng-class="{disabled: currentPage == 0}">
+            <a href ng-click="prevPage()">« Prev</a>
+          </li>
+          <li ng-repeat="n in range(pagedItems.length)"
+              ng-class="{active: n == currentPage}"
+              ng-click="setPage()">
+            <a href ng-bind="n + 1">1</a>
+          </li>
+          <li ng-class="{disabled: currentPage == pagedItems.length - 1}">
+            <a href ng-click="nextPage()">Next »</a>
+          </li>
+        </ul>
+      </div>
+    </td>
+    </tfoot>
+    <tbody>
+    <tr ng-repeat="term in pagedItems[currentPage]">
+      <td>{{term.name}}</td>
+      <td>{{term.term}}</td>
+      <td>{{term.count}}</td>
+      <!--
+      <td>{{term.min}}</td>
+      <td>{{term.stddev.toFixed(panel.decimal_points)}}</td>
+      -->
+      <td>
+        <i class='icon-search pointer' ng-click="build_search(term)"></i>
+      </td>
+      
+    </tr>
+    </tbody>
+    </table>
+
+    <!-- END Table -->
+    <!-- Dummy div for testing color name -->
+  </div>
+
+</div>
