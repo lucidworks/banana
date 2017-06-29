@@ -11,10 +11,10 @@
     <input type="text" ng-model="query" ng-change="search()" class="input-large search-query" placeholder="Search">
     <table ng-table="data" class="table table-striped">
     <thead>
-      <th class="name">检测<big>名称</big>&nbsp;</th>
-      <th class="term">指标/事务<big>名称</big>&nbsp;<a ng-click="sort_by('term')"><i class="icon-sort"></i></a></th>
-      <th class="count">抛出<big>异常数量</big>&nbsp;<a ng-click="sort_by('count')"><i class="icon-sort"></i></a></th>
-      <th class="find"> 查看<big>相关</big>事务/指标</th>
+      <!-- <th class="name">检测<big>名称</big>&nbsp;</th> -->
+      <th class="term">指标/事务<big>名</big>&nbsp;<a ng-click="sort_by('term')"><i class="icon-sort"></i></a></th>
+      <th class="count">异常<big>数量</big>&nbsp;<a ng-click="sort_by('count')"><i class="icon-sort"></i></a></th>
+      <!-- <th class="find"> 查看<big>相关</big>事务/指标</th> -->
       <!--
       <th class="stddev">Std&nbsp;<a ng-click="sort_by('stddev')"><i class="icon-sort"></i></a></th>
       -->
@@ -40,7 +40,7 @@
     </tfoot>
     <tbody>
     <tr ng-repeat="term in pagedItems[currentPage]">
-      <td>{{term.name}}</td>
+      <!-- <td>{{term.name}}</td> -->
       <td>{{term.term}}</td>
       <td>{{term.count}}</td>
       <!--
@@ -50,7 +50,7 @@
       <td>
         <i class='icon-search pointer' ng-click="build_search(term)"></i>
       </td>
-      
+
     </tr>
     </tbody>
     </table>

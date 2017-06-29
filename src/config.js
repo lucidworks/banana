@@ -132,6 +132,8 @@ function (Settings) {
       'adDistribution',
       'adIPStatistics',
       'adFactor',
+      'adMetrics',
+      'adLineChart',
       'bn'
     ]
   });

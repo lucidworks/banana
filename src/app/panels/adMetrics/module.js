@@ -1,6 +1,6 @@
 /*
 
-  ## Anomaly Detection
+  ## Anomaly Detection Metrics
 
   ### Parameters
   * auto_int :: Auto calculate data point interval?
@@ -34,16 +34,16 @@ define([
   'underscore',
   'kbn',
   'moment',
-  './timeSeries'
+    './timeSeries'
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
-  var module = angular.module('kibana.panels.ad', []);
+  var module = angular.module('kibana.panels.adMetrics', []);
   app.useModule(module);
 
   var DEBUG = false;
-  console.log('AD DEBUG : ' + DEBUG);
-  module.controller('ad', function($scope, $q, $http, $routeParams, querySrv, dashboard, filterSrv, alertSrv) {
+  console.log('adMetrics DEBUG : ' + DEBUG);
+  module.controller('adMetrics', function($scope, $q, $http, $routeParams, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -64,53 +64,57 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
     // Set and populate defaults
-    var _d = {
-      mode        : 'value',
-      queries     : {
-        mode        : 'all',
-        ids         : [],
-        query       : '*:*',
-        custom      : ''
+    var _d;
+    _d = {
+      mode: 'value',
+      queries: {
+        mode: 'all',
+        ids: [],
+        query: '*:*',
+        custom: ''
       },
-      max_rows    : 1000,  // maximum number of rows returned from Solr (also use this for group.limit to simplify UI setting)
-      cut_number  : 100,
-      anomaly_th  : 0.70,
-      reverse     : 0,
-      group_field : null,
-      auto_int    : true,
-	  total_first : '%',
-	  fontsize    : 20,
-	  field_color : '#209bf8',
-      resolution  : 100,
-	  value_sort  : 'rs_timestamp',
-      interval    : '5m',
-      intervals   : ['auto','1s','1m','5m','10m','30m','1h','3h','12h','1d','1w','1M','1y'],
-      fill        : 0,
-      linewidth   : 3,
-	  chart       : 'stacking',
-      chartColors : ['#209bf8', '#f4d352','#ccf452','#8cf452','#3cee2b','#f467d8','#2fd7ee'],
-      timezone    : 'browser', // browser, utc or a standard timezone
-      spyable     : true,
-      zoomlinks   : true,
-      bars        : true,
-      stack       : true,
-	  label       : true,
-      points      : false,
-      lines       : false,
+      max_rows: 1000,  // maximum number of rows returned from Solr (also use this for group.limit to simplify UI setting)
+      cut_number: 100,
+      anomaly_th: 0.70,
+      reverse: 0,
+      group_field: null,
+      auto_int: true,
+      total_first: '%',
+      fontsize: 20,
+      field_color: '#209bf8',
+      resolution: 100,
+      value_sort: 'rs_timestamp',
+      interval: '5m',
+      intervals: ['auto', '1s', '1m', '5m', '10m', '30m', '1h', '3h', '12h', '1d', '1w', '1M', '1y'],
+      fill: 0,
+      linewidth: 3,
+      chart: 'stacking',
+      chartColors: ['#209bf8', '#f4d352', '#ccf452', '#8cf452', '#3cee2b', '#f467d8', '#2fd7ee'],
+      timezone: 'browser', // browser, utc or a standard timezone
+      spyable: true,
+      zoomlinks: true,
+      bars: true,
+      stack: true,
+      label: true,
+      points: false,
+      lines: false,
       lines_smooth: false, // Enable 'smooth line' mode by removing zero values from the plot.
-      legend      : true,
-      'x-axis'    : true,
-      'y-axis'    : true,
-      percentage  : false,
-      interactive : true,
-      options     : true,
+      legend: true,
+      'x-axis': true,
+      'y-axis': true,
+      percentage: false,
+      interactive: true,
+      options: true,
       show_queries: true,
-      tooltip     : {
+      tooltip: {
         value_type: 'cumulative',
         query_as_alias: false
       },
-      jobid : '',
-      job_status: 'Ready'
+      jobid: '',
+      job_status: 'Ready',
+      metric_field: 'facet_name_s',
+      ad_name: 'ad_name',
+      fields:[]
     };
 
     _.defaults($scope.panel,_d);
@@ -172,6 +176,15 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         return $scope.panel.interval;
     };
 
+    $scope.toggle_field = function(field) {
+      if (_.indexOf($scope.panel.fields, field) > -1) {
+        $scope.panel.fields = _.without($scope.panel.fields, field);
+      } else {
+        $scope.panel.fields.push(field);
+      }
+      $scope.$emit('render');
+    };
+
     /**
      * Fetch the data for a chunk of a queries results. Multiple segments occur when several indicies
      * need to be consulted (like timestamped logstash indicies)
@@ -187,7 +200,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
      * @param {number} query_id  The id of the query, generated on the first run and passed back when
      *                            this call is made recursively for more segments
      */
-    $scope.get_data = function(segment, query_id) {
+    $scope.get_data = function(segment) {
       if (DEBUG) { console.log('get data start.'); }
       if (_.isUndefined(segment)) {
         segment = 0;
@@ -213,19 +226,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
       var request = $scope.sjs.Request().indices(dashboard.indices[segment]);
       // $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
-      if (DEBUG) { console.log($scope.panel.fields); }
-
-      $scope.panel.queries.query = "";
-      // Build the query
-      _.each($scope.panel.queries.ids, function(id) {
-        var query = $scope.sjs.FilteredQuery(
-          querySrv.getEjsObj(id),
-          filterSrv.getBoolFilter(filterSrv.ids)
-        );
-
-        var facet = $scope.sjs.DateHistogramFacet(id);
-        
-      });
 
       if(_.isNull($scope.panel.value_field)) {
         $scope.panel.error = "In " + $scope.panel.mode + " mode a field must be specified";
@@ -239,7 +239,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         fq = '&' + filterSrv.getSolrFq();
       }
 
-      var time_field = filterSrv.getTimeField();
+
       var start_time = filterSrv.getStartTime();
       var end_time = filterSrv.getEndTime();
 
@@ -251,8 +251,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           end_time = 'NOW';
       }
 
+
       var wt_json = '&wt=json';
-      var metric_field = $scope.panel.metric_field;
       var anomaly_th = $scope.panel.anomaly_th;
       var sort_field = '&sort='+'start_timestamp_l'+'%20asc';
       var rows_limit = '&rows='+$scope.panel.max_rows;
@@ -263,8 +263,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       var mypromises = [];
       var arr_id = [];
       var index = 0;
-      if (_.isUndefined($routeParams.adValue)) {
-      } else {
+      if (!_.isUndefined($routeParams.adValue)) {
         $scope.panel.ad_name = $routeParams.adValue;
       }
 
@@ -272,7 +271,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       dashboard.current.anomaly_name = $scope.panel.ad_name;
       var temp_fq = fq + '&fq=ad_name_s:'+$scope.panel.ad_name;
       var temp_q = 'q=*:*' + wt_json + rows_limit + temp_fq + facet + fl + sort_field;
-      if (DEBUG) console.log(temp_q);
       $scope.panel.queries.query += temp_q + "\n";
       if ($scope.panel.queries.custom !== null) {
         request = request.setQuery(temp_q + $scope.panel.queries.custom);
@@ -301,7 +299,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             // Check for error and abort if found
             if (!(_.isUndefined(results[index].error))) {
               $scope.panel.error = $scope.parse_error(results[index].error.msg);
-             return;
+              return;
             }
             // we need to initialize the data variable on the first run,
             // and when we are working on the first segment of the data.
@@ -318,7 +316,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               hits = 0;
               $scope.hits = 0;
             }
-            var entry_time, entries, entry_value;
             $scope.data[i] = results[index].response.docs;
             i++;
           });
@@ -330,7 +327,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
   });
 
-  module.directive('adChart', function(querySrv,dashboard,filterSrv) {
+  module.directive('metricsChart', function(querySrv,dashboard,filterSrv) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
@@ -361,86 +358,113 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           chartData = scope.panel.other ? chartData :
           _.without(chartData,_.findWhere(chartData,{meta:'other'}));
 
-          var heatmap_id = scope.$id;
+          var metrics_id = scope.$id;
           require(['echarts'], function(ec){
             var echarts = ec;
             if(myChart){
               myChart.dispose();
             }
-            var mertic = scope.panel.metric_field;
             var labelcolor = false;
             if (dashboard.current.style === 'dark'){
                 labelcolor = true;
             }
             var cut_number = scope.panel.cut_number + 1;
-            myChart = echarts.init(document.getElementById(heatmap_id));
+            myChart = echarts.init(document.getElementById(metrics_id));
             var start_time = Date.parse(new Date(scope.get_time_range()['from']));
             var end_time = Date.parse(new Date(scope.get_time_range()['to']));
             var step = (end_time-start_time)/cut_number+1;
             var ad_name = scope.panel.ad_name;
+            var metric_field = scope.panel.metric_field;
+            var fields = scope.panel.fields;
             var dates = [];
             var timestamps = [];
             if (DEBUG) {console.log(scope.get_time_range());}
             if (DEBUG) {console.log(start_time);}
 
-            var data = [];
+            var data = []; var index = 0; var metric2index = {}; var index2metric = {}; var metric_names = [];
             for (var timestamp = start_time; timestamp <= end_time; timestamp += step) {
               timestamps.push(timestamp);
               dates.push(
                 echarts.format.formatTime('yyyy/MM/dd hh:mm:ss', timestamp)
               );
-              data.push([]);
+              data.push({});
             }
             if (DEBUG) { console.log(ad_name); }
             if (DEBUG) {console.log(chartData); }
+            if (DEBUG) {console.log(fields); }
             chartData.map(function (anomalys) {
               anomalys.map(function (anomaly) {
                 var date_index = Math.floor((anomaly['start_timestamp_l'] - start_time) / step);
-                if (date_index >= 0 && date_index < dates.length) {
-                  var anomaly_date = echarts.format.formatTime('yyyy/MM/dd hh:mm:ss', anomaly['start_timestamp_l']);
-                  var metric_value = anomaly.value_f;
-                  var anomaly_value = anomaly.anomaly_f;
-                  var from_timestamp = timestamps[date_index];
-                  var to_timestamp = timestamps[date_index]+step;
-                  var solr_reader_url = anomaly.solr_reader_url_s;
-                  var solr_writer_url = anomaly.solr_writer_url_s;
-                  var stats_facet = anomaly.stats_facet_s;
-                  var facet_name = anomaly.facet_name_s;
-                  data[date_index].push({
-                    date_index: date_index,
-                    anomaly_date: dates[date_index],
-                    anomaly_value: anomaly_value,
-                    metric_value: metric_value,
-                    from_timestamp: from_timestamp,
-                    to_timestamp: to_timestamp,
-                    solr_reader_url : solr_reader_url,
-                    solr_writer_url :　solr_writer_url,
-                    stats_facet : stats_facet,
-                    facet_name : facet_name
-                  });
+                if (date_index >= 0) {
+                  if (date_index < dates.length) {
+                    var metric_field = scope.panel.metric_field;
+                    var metric_value = anomaly.value_f;
+                    var anomaly_value = anomaly.anomaly_f;
+                    var from_timestamp = timestamps[date_index];
+                    var to_timestamp = timestamps[date_index] + step;
+                    var solr_reader_url = anomaly.solr_reader_url_s;
+                    var solr_writer_url = anomaly.solr_writer_url_s;
+                    var stats_facet = anomaly.stats_facet_s;
+                    var facet_name = anomaly.facet_name_s;
+                    var metric = anomaly[metric_field];
+
+                    if (fields.length > 0) {
+                      var flag = -1;
+                      for (var key in fields) {
+                        var field = fields[key];
+                        if (field === metric) { flag = 1; }
+                      }
+                      if (flag === -1) {return;}
+                    }
+                    if (data[date_index][metric] === undefined) {
+                      data[date_index][metric] = [];
+                    }
+                    if (metric2index[metric] === undefined) {
+                      metric2index[metric] = index;
+                      index2metric[index] = metric;
+                      metric_names.push(metric);
+                      index += 1;
+                    }
+                    data[date_index][metric].push({
+                      date_index: date_index,
+                      anomaly_date: dates[date_index],
+                      anomaly_value: anomaly_value,
+                      metric_value: metric_value,
+                      from_timestamp: from_timestamp,
+                      to_timestamp: to_timestamp,
+                      solr_reader_url: solr_reader_url,
+                      solr_writer_url: solr_writer_url,
+                      stats_facet: stats_facet,
+                      facet_name: facet_name
+                    });
+                  }
                 }
               });
             });
             var show_data = [];
             var max_num = 0;
             for (var date_index = 0; date_index < dates.length; date_index++) {
-              if (data[date_index].length > 0) {
-                show_data.push([date_index,0,data[date_index].length]);
-              }
-              if (data[date_index].length > max_num) {
-                max_num = data[date_index].length;
+              for (var metric in data[date_index]) {
+                if (data[date_index][metric].length > 0) {
+                  show_data.push([date_index, metric2index[metric], data[date_index][metric].length]);
+                }
+                if (data[date_index][metric].length > max_num) {
+                  max_num = data[date_index][metric].length;
+                }
               }
             }
             if (DEBUG) { console.log(data); }
             if (DEBUG) { console.log(max_num); }
+            if (DEBUG) { console.log(metric2index); }
             var option = {
                 tooltip: {
                     show: false
                 },
                 animation: false,
                 grid: {
-                    height: '50%',
-                    y: '10%'
+                    height: '90%',
+                    y: '5%',
+                    x: '10%'
                 },
                 xAxis: {
                     type: 'category',
@@ -457,7 +481,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 },
                 yAxis: {
                     type: 'category',
-                    data: [ad_name],
+                    data: metric_names,
                     splitArea: {
                         show: true
                     },
@@ -471,10 +495,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 visualMap: {
                     min: 0,
                     max: max_num,
-                    calculable: true,
-                    orient: 'horizontal',
-                    left: 'center',
-                    bottom: '15%',
                     show: false
                 },
                 series: [{
@@ -496,11 +516,16 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 if (DEBUG) { console.log(data); }
                 var anomaly_th = scope.panel.anomaly_th;
                 var x = params.data[0];
-                var from_timestamp = data[x][0].from_timestamp;
-                var to_timestamp = data[x][0].to_timestamp;
-                if (DEBUG) { console.log(from_timestamp + " " + to_timestamp);}
+                var y = index2metric[params.data[1]];
+                if (data[x][y][0] === undefined){
+                  return ;
+                }
+                var from_timestamp = data[x][y][0].from_timestamp;
+                var to_timestamp = data[x][y][0].to_timestamp;
+                var facet_name = data[x][y][0].facet_name;
+                if (DEBUG) { console.log(from_timestamp + " " + to_timestamp + ' ' + facet_name);}
                 var fq = 'fq=start_timestamp_l:[' + Math.floor(from_timestamp) + '%20TO%20' + Math.floor(to_timestamp)+']';
-                fq = fq + '&fq=ad_name_s:' + ad_name;
+                fq = fq + '&fq=ad_name_s:' + ad_name + '&fq='+metric_field+':'+facet_name;
                 var anomaly_fq = fq + '&fq=anomaly_f:[' + anomaly_th + '%20TO%20*]';
                 if (DEBUG) { console.log(fq); }
                 _.defaults(dashboard.current,{anomaly_fq:''});
@@ -512,9 +537,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 dashboard.current.anomaly_fq = anomaly_fq;
                 dashboard.current.fq = fq;
                 dashboard.current.anomaly_name = ad_name;
-                dashboard.current.anomaly_solr_reader_url = data[x][0].anomaly_solr_reader_url;
-                dashboard.current.anomaly_stats_facet = data[x][0].anomaly_stats_facet;
-                dashboard.current.anomaly_facet_name = data[x][0].anomaly_facet_name;
+                dashboard.current.anomaly_solr_reader_url = data[x][y][0].anomaly_solr_reader_url;
+                dashboard.current.anomaly_stats_facet = data[x][y][0].anomaly_stats_facet;
+                dashboard.current.anomaly_facet_name = data[x][y][0].anomaly_facet_name;
                 /* filterSrv.set({
                     type  : 'time',
                     from  : moment.utc(Number(from_timestamp)).toDate(),

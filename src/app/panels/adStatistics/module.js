@@ -1,5 +1,5 @@
 /*
- ## Terms
+ ## Anomaly Detection Statistics
 
  ### Parameters
  * style :: A hash of css styles
@@ -15,11 +15,12 @@ define([
         'app',
         'underscore',
         'jquery',
-        'kbn',
+        'kbn'
     ],
     function (angular, app, _, $, kbn) {
         'use strict';
         var DEBUG = false;
+        console.log('adStatistics DEBUG : ' + DEBUG);
 
         var module = angular.module('kibana.panels.adStatistics', []);
         app.useModule(module);
@@ -72,10 +73,10 @@ define([
                 show_queries:true,
                 error : '',
                 chartColors : querySrv.colors,
-                refresh: {
+              refresh: {
                     enable: false,
                     interval: 2
-                }
+                },
             };
             _.defaults($scope.panel,_d);
 
@@ -121,9 +122,21 @@ define([
                 }
             };
             $scope.build_search = function(term) {
-                _.defaults(dashboard.current,{main_bn_node_name:''});
-                dashboard.current.main_bn_node_name = term.term;
-                dashboard.refresh();
+              dashboard.current.main_bn_node_name = term.term;
+              if (dashboard.current.fq) {
+                dashboard.current.line_chart_fq = dashboard.current.fq + '&fq=' + $scope.panel.stats_field + ':' + term.term;
+              } else {
+                dashboard.current.line_chart_fq = 'fq=' + $scope.panel.stats_field + ':' + term.term;
+              }
+              if (dashboard.current.anomaly_fq) {
+                dashboard.current.line_chart_anomaly_fq = dashboard.current.anomaly_fq + '&fq=' + $scope.panel.stats_field + ':' + term.term;
+              } else {
+                dashboard.current.line_chart_anomaly_fq = 'fq=' + $scope.panel.stats_field + ':' + term.term;
+              }
+              dashboard.current.line_chart_name = term.term;
+              if (DEBUG) console.log(dashboard.current.line_chart_fq);
+              if (DEBUG) console.log(dashboard.current.line_chart_anomaly_fq);
+              dashboard.refresh();
             };
             /**
              *
@@ -222,7 +235,7 @@ define([
                     $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
 
                     var query = this.build_query('json', false);
-
+                    if (DEBUG) {console.log(query);}
                     // Set the panel's query
                     $scope.panel.queries.query = query;
 
@@ -254,28 +267,19 @@ define([
                             }
                         };
 
-                        // Function for customizing chart color by using field values as colors.
-                        var addSliceColor = function (slice, color) {
-                            if ($scope.panel.useColorFromField && isValidHTMLColor(color)) {
-                                slice.color = color;
-                            }
-                            return slice;
-                        };
-
                         var sum = 0;
                         var k = 0;
                         $scope.panelMeta.loading = false;
                         $scope.hits = results.response.numFound;
                         $scope.data = [];
-
                         {
                             // In stats mode, set y-axis min to null so jquery.flot will set the scale automatically.
                             $scope.yaxis_min = null;
-                            _.each(results.stats.stats_fields.value_f.facets.stats_field_s, function (stats_obj, stats_field) {
+                            if (DEBUG) { console.log(results.stats); }
+                            _.each(results.stats.stats_fields.value_f.facets[$scope.panel.stats_field], function (stats_obj, stats_field) {
                                 k = k + 1;
                                 //var slice = {label: facet_field, data: [[k, stats_obj['mean'], stats_obj['count'], stats_obj['max'], stats_obj['min'], stats_obj['stddev'], facet_field]], actions: true};
                                 var term = stats_field;
-                                if (term.length > 50) { term = term.substring(0,40) + ' ...'; }
                                 var slice = {term: term, index: k, name: dashboard.current.anomaly_name, count: stats_obj['count'], max: stats_obj['max'], min: stats_obj['min'], stddev: stats_obj['stddev'], actions: true};
                                 $scope.data.push(slice);
                             });

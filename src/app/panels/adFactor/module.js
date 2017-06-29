@@ -38,12 +38,12 @@ define([
 ],
 function (angular, app, $, _, kbn, moment, timeSeries) {
   'use strict';
-  var module = angular.module('kibana.panels.adFactor', []);
+  var module = angular.module('kibana.panels.adLineChart', []);
   app.useModule(module);
 
   var DEBUG = false;
   console.log('DEBUG : ' + DEBUG);
-  module.controller('adFactor', function($scope, $q, $http, querySrv, dashboard, filterSrv, alertSrv) {
+  module.controller('adLineChart', function($scope, $q, $http, querySrv, dashboard, filterSrv, alertSrv) {
     $scope.panelMeta = {
       modals : [
         {
@@ -292,7 +292,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
   });
 
-  module.directive('factorChart', function(querySrv,dashboard,filterSrv) {
+  module.directive('lineChart', function(querySrv,dashboard,filterSrv) {
     return {
       restrict: 'A',
       link: function(scope, elem) {
