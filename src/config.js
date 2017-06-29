@@ -132,7 +132,9 @@ function (Settings) {
       'adDistribution',
       'adIPStatistics',
       'adFactor',
-      'bn',
+      'adMetrics',
+      'adLineChart',
+      'bn'
     ]
   });
 });
