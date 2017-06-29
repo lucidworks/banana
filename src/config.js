@@ -132,7 +132,7 @@ function (Settings) {
       'adDistribution',
       'adIPStatistics',
       'adFactor',
-      'bn'
+      'bn',
     ]
   });
 });
