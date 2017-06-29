@@ -5,7 +5,6 @@ define([
     'angular',
     'jquery',
     'underscore',
-
     'require',
     'cookies',
     'elasticjs',
