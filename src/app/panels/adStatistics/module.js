@@ -120,6 +120,7 @@ define([
                     $scope.panel.display='none';
                     $scope.panel.icon="icon-caret-up";
                 }
+
             };
             $scope.build_search = function(term) {
               dashboard.current.main_bn_node_name = term.term;
