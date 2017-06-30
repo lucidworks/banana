@@ -1,0 +1,13 @@
+<div ng-controller='adLineChart' ng-init="init()">
+  <div ng-style="{'display':panel.display}">
+    <style>
+      .table-doc-table {
+        margin-left: 0px !important;
+        overflow-y: auto;
+        overflow-x: scroll;
+      }
+    </style>
+    <!-- START Pie or bar chart -->
+  </div>
+  <div style="overflow:hidden"  line-chart params="{{panel}}" style="position:relative" class="pointer" ng-style="{'floatleft':panel.counter_pos == 'right'}" id='{{$id}}'></div>
+</div>

@@ -1,0 +1,48 @@
+<div ng-controller='adMetrics' ng-init="init()">
+
+<style>
+    table.tableSection {
+        display: table;
+        width: 100%;
+    }
+    table.tableSection thead, table.tableSection tbody {
+        float: left;
+        width: 100%;
+    }
+    table.tableSection tbody {
+        overflow: auto;
+        /*height: 150px;*/
+    }
+    table.tableSection tr {
+        width: 100%;
+        display: table;
+        text-align: left;
+    }
+    table.tableSection th, table.tableSection td {
+        width: 33%;
+    }
+    .floatleft{
+      float:left;
+    }
+    .floatright{
+      float:right;
+    }
+
+    .below{
+      display: inline-block !important;
+    }
+
+    .leftRightLegend {
+      margin-left: 10px;
+      margin-right: 10px; 
+      overflow:overlay; 
+      padding-right:10px 
+    }
+    </style>
+
+    
+    <!-- START Pie or bar chart -->
+    <!-- keep legend from over lapping -->
+
+    <div style="overflow:hidden"  metrics-chart params="{{panel}}" style="position:relative" class="pointer" ng-style="{'floatleft':panel.counter_pos == 'right'}" id='{{$id}}'></div>
+</div>

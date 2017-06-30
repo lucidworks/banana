@@ -17,14 +17,7 @@ function (angular, app, kbn, _/*, $*/) {
 
   module.controller('docviewer', function($scope, dashboard, fields, querySrv, filterSrv, $http) {
     $scope.panelMeta = {
-      modals: [
-        {
-          description: 'Inspect',
-          icon: 'icon-info-sign',
-          partial: 'app/partials/inspector.html',
-          show: $scope.panel.spyable
-        }
-      ],
+
       editorTabs: [
         {
           title: 'Queries',
@@ -46,8 +39,11 @@ function (angular, app, kbn, _/*, $*/) {
         custom: ''
       },
       titleField: '',
+        display:'block',
+        icon:"icon-caret-down",
       contentField: '',
       uniqueKey: 'id',
+        linkage_id:'a',
       max_rows: 20,
       fragsize: 0,
       simplePre: '<mark>',
@@ -77,6 +73,18 @@ function (angular, app, kbn, _/*, $*/) {
       $scope.refresh = state;
     };
 
+      $scope.display=function() {
+          if($scope.panel.display==='none'){
+              $scope.panel.display='block';
+              $scope.panel.icon="icon-caret-down";
+
+
+          }else{
+              $scope.panel.display='none';
+              $scope.panel.icon="icon-caret-up";
+          }
+      };
+
     $scope.close_edit = function() {
       if ($scope.refresh) {
         $scope.get_data();
@@ -90,71 +98,73 @@ function (angular, app, kbn, _/*, $*/) {
     };
 
     $scope.get_data = function() {
-      // Show the spinning wheel icon
-      $scope.panelMeta.loading = true;
+        if(($scope.panel.linkage_id===dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        // Show the spinning wheel icon
+        $scope.panelMeta.loading = true;
 
-      // Set Solr server
-      $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
-      var request = $scope.sjs.Request();
+        // Set Solr server
+        $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
+        var request = $scope.sjs.Request();
 
-      // Construct Solr query
-      var fq = '';
-      if (filterSrv.getSolrFq()) {
-          fq = '&' + filterSrv.getSolrFq();
-      }
-      var wt = '&wt=json';
-      var fl = '&fl=' + $scope.panel.titleField + ' ' + $scope.panel.contentField + ' ' + $scope.panel.uniqueKey;
-      var rows_limit = '&rows=' + $scope.panel.max_rows;
-      var hl = '&hl=true&hl.fl=' + $scope.panel.titleField + ' ' + $scope.panel.contentField;
-      hl += '&hl.fragsize=' + $scope.panel.fragsize;
-      hl += '&hl.simple.pre=' + $scope.panel.simplePre + '&hl.simple.post=' + $scope.panel.simplePost;
-
-      $scope.panel.queries.query = querySrv.getQuery(0) + fq + fl + wt + rows_limit + hl;
-
-      // Set the additional custom query
-      if ($scope.panel.queries.custom != null) {
-          request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
-      } else {
-          request = request.setQuery($scope.panel.queries.query);
-      }
-
-      // Execute the search and get results
-      var results = request.doSearch();
-
-      // Populate scope when we have results
-      results.then(function(results) {
-        // If there's no result, do nothing.
-        if (results.response.docs.length === 0) {
-          $scope.data = [];
-          $scope.docIndex = -1; // this will be addbed by one and shown on the panel as zero.
-          $scope.panel.docTitle = '';
-          $scope.panel.docContent = '';
-
-          return false;
+        // Construct Solr query
+        var fq = '';
+        if (filterSrv.getSolrFq()) {
+            fq = '&' + filterSrv.getSolrFq();
         }
+        var wt = '&wt=json';
+        var fl = '&fl=' + $scope.panel.titleField + ' ' + $scope.panel.contentField + ' ' + $scope.panel.uniqueKey;
+        var rows_limit = '&rows=' + $scope.panel.max_rows;
+        var hl = '&hl=true&hl.fl=' + $scope.panel.titleField + ' ' + $scope.panel.contentField;
+        hl += '&hl.fragsize=' + $scope.panel.fragsize;
+        hl += '&hl.simple.pre=' + $scope.panel.simplePre + '&hl.simple.post=' + $scope.panel.simplePost;
 
-        $scope.data = results.response.docs;
-        $scope.highlighting = results.highlighting;
-        $scope.docIndex = 0;
-        var uniquekey = $scope.data[$scope.docIndex][$scope.panel.uniqueKey];
+        $scope.panel.queries.query = querySrv.getQuery(0) + fq + fl + wt + rows_limit + hl;
 
-        if ($scope.highlighting[uniquekey][$scope.panel.titleField]) {
-          $scope.panel.docTitle = $scope.highlighting[uniquekey][$scope.panel.titleField];
+        // Set the additional custom query
+        if ($scope.panel.queries.custom != null) {
+            request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
         } else {
-          $scope.panel.docTitle = $scope.data[$scope.docIndex][$scope.panel.titleField];
+            request = request.setQuery($scope.panel.queries.query);
         }
 
-        if ($scope.highlighting[uniquekey][$scope.panel.contentField]) {
-          $scope.panel.docContent = $scope.highlighting[uniquekey][$scope.panel.contentField];
-        } else {
-          $scope.panel.docContent = $scope.data[$scope.docIndex][$scope.panel.contentField];
-        }
+        // Execute the search and get results
+        var results = request.doSearch();
 
-        $scope.render();
-      });
+        // Populate scope when we have results
+        results.then(function (results) {
+            // If there's no result, do nothing.
+            if (results.response.docs.length === 0) {
+                $scope.data = [];
+                $scope.docIndex = -1; // this will be addbed by one and shown on the panel as zero.
+                $scope.panel.docTitle = '';
+                $scope.panel.docContent = '';
 
-      // Hide the spinning wheel icon
-      $scope.panelMeta.loading = false;
+                return false;
+            }
+
+            $scope.data = results.response.docs;
+            $scope.highlighting = results.highlighting;
+            $scope.docIndex = 0;
+            var uniquekey = $scope.data[$scope.docIndex][$scope.panel.uniqueKey];
+
+            if ($scope.highlighting[uniquekey][$scope.panel.titleField]) {
+                $scope.panel.docTitle = $scope.highlighting[uniquekey][$scope.panel.titleField];
+            } else {
+                $scope.panel.docTitle = $scope.data[$scope.docIndex][$scope.panel.titleField];
+            }
+
+            if ($scope.highlighting[uniquekey][$scope.panel.contentField]) {
+                $scope.panel.docContent = $scope.highlighting[uniquekey][$scope.panel.contentField];
+            } else {
+                $scope.panel.docContent = $scope.data[$scope.docIndex][$scope.panel.contentField];
+            }
+
+            $scope.render();
+        });
+
+        // Hide the spinning wheel icon
+        $scope.panelMeta.loading = false;
+    }
     };
 
     $scope.nextDoc = function() {

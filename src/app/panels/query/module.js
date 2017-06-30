@@ -20,12 +20,7 @@ define([
 
   module.controller('query', function($scope, querySrv, $rootScope) {
     $scope.panelMeta = {
-      modals: [{
-        description: "Inspect",
-        icon: "icon-info-sign",
-        partial: "app/partials/inspector.html",
-        show: true
-      }],
+
       status  : "Stable",
       description : "Provide a search bar for free-form queries. You almost certainly want one of these somewhere prominent on your dashboard."
     };
@@ -34,6 +29,8 @@ define([
     var _d = {
       query   : "*:*",
       pinned  : true,
+        display:'block',
+        icon:"icon-caret-down",
       history : [],
       spyable : true,
       remember: 10, // max: 100, angular strap can't take a variable for items param
@@ -45,11 +42,6 @@ define([
     $scope.init = function() {
     };
 
-    $scope.reset = function() {
-      $scope.querySrv.list[Object.keys($scope.querySrv.list).length - 1].query = _d.query;
-      $rootScope.$broadcast('refresh');
-    };
-
     $scope.refresh = function() {
       update_history(_.pluck($scope.querySrv.list,'query'));
       $rootScope.$broadcast('refresh');
@@ -58,7 +50,17 @@ define([
     $scope.render = function() {
       $rootScope.$broadcast('render');
     };
+      $scope.display=function() {
+          if($scope.panel.display === 'none'){
+              $scope.panel.display='block';
+              $scope.panel.icon="icon-caret-down";
 
+
+          }else{
+              $scope.panel.display='none';
+              $scope.panel.icon="icon-caret-up";
+          }
+      };
     $scope.toggle_pin = function(id) {
       querySrv.list[id].pin = querySrv.list[id].pin ? false : true;
     };

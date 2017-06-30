@@ -1,0 +1,133 @@
+<div ng-controller='histobar' ng-init="init()">
+
+<style>
+    table.tableSection {
+        display: table;
+        width: 100%;
+    }
+    table.tableSection thead, table.tableSection tbody {
+        float: left;
+        width: 100%;
+    }
+    table.tableSection tbody {
+        overflow: auto;
+        /*height: 150px;*/
+    }
+    table.tableSection tr {
+        width: 100%;
+        display: table;
+        text-align: left;
+    }
+    table.tableSection th, table.tableSection td {
+        width: 33%;
+    }
+    .floatleft{
+      float:left;
+    }
+    .floatright{
+      float:right;
+    }
+
+    .below{
+      display: inline-block !important;
+    }
+
+    .leftRightLegend {
+      margin-left: 10px;
+      margin-right: 10px; 
+      overflow:overlay; 
+      padding-right:10px 
+    }
+    </style>
+  <div ng-style="{'display':panel.display}">
+  <!-- START Pie or bar chart -->
+  <div >
+    <span ng-if='panel.options'>
+      <a class="link underline small" ng-if='panel.options' ng-click="options=!options">
+        <i ng-if="!options" class="icon-caret-right"></i><i ng-if="options" class="icon-caret-down"></i> View
+      </a>
+    </span>
+    <form class="form-inline bordered histogram-options" ng-if="options">
+    <span class="checkbox">
+      <label class="small">
+        <input type="checkbox" ng-model="panel.bars" ng-checked="panel.bars" ng-change="render()">
+        Bars
+      </label>
+    </span>
+      <span class="checkbox">
+      <label class="small">
+        <input type="checkbox" ng-model="panel.linkage" ng-checked="panel.linkage" ng-change="render()">
+        Linkage
+      </label>
+    </span>
+      <span class="checkbox">
+      <label class="small">
+        <input type="checkbox" ng-model="panel.area" ng-checked="panel.area" ng-change="render()">
+        Area
+      </label>
+    </span>
+      <span class="checkbox">
+      <label class="small">
+        <input type="checkbox" ng-model="panel.average" ng-checked="panel.average" ng-change="render()">
+        Average
+      </label>
+    </span>
+
+    </form>
+    <!--<span ng-show="panel.legend" class="small"><span ng-show="panel.value_field && panel.mode != 'count'">{{panel.value_field}}</span> {{panel.mode}} per <strong>{{panel.interval}}</strong> | (<strong>{{dashboard.numberWithCommas(hits)}}</strong> hits) | Time correction : {{panel.timezone}}</span>-->
+  </div>
+  <div  ng-if="panel.counter_pos == 'above' && (panel.chart == 'bar' || panel.chart == 'mean' || panel.chart == 'histobar' || panel.chart == 'ebar' )" id='{{$id}}-legend'>
+    <!-- vertical legend above -->
+    <table class="small" ng-if="panel.arrangement == 'vertical'">
+      <tr ng-repeat="term in legend">
+        <td><i class="icon-circle" ng-style="{color:term.color}"></i></td> <td style="padding-right:10px;padding-left:10px;">{{term.label}}</td>
+        <td>{{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}</td>
+      </tr>
+    </table>
+
+    <!-- horizontal legend above -->
+    <div class="small" ng-if="panel.arrangement == 'horizontal'" ng-repeat="term in legend" style="float:left;padding-left: 10px;">
+      <span><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}) </span>
+    </div><br>
+
+  </div>
+<div  ng-if="panel.chart == 'hits'"><div ng-style="panel.style" style="line-height:{{panel.style['font-size']}};text-align:center"> {{data.length - 2}} </div></div>
+  <!-- keep legend from over lapping -->
+  <div style="clear:both"></div>
+
+  <div  class="leftRightLegend " ng-style="{'max-height':row.height }" ng-if="(panel.counter_pos == 'right' || panel.counter_pos == 'left') && (panel.chart == 'bar' || panel.chart == 'pie')" id='{{$id}}-legend' ng-class="{'floatright':panel.counter_pos == 'right','floatleft':panel.counter_pos == 'left'}">
+    <!-- vertical legend above -->
+    <table class="small">
+      <tr ng-repeat="term in legend">
+        <td><i class="icon-circle" ng-style="{color:term.color}"></i></td> <td style="padding-right:10px;padding-left:10px;">{{term.label}}</td>
+        <td>{{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div  style="overflow:hidden"  histobar-chart params="{{panel}}" style="position:relative" class="pointer" ng-style="{'floatleft':panel.counter_pos == 'right'}" id='{{$id}}'></div>
+
+  <div  ng-if="panel.counter_pos == 'below' && (panel.chart == 'bar' || panel.chart == 'pie' || panel.chart == 'dashboard' || panel.chart == 'ebar' )" id='{{$id}}-legend' ng-class="{below:panel.counter_pos == 'below'}">
+    <!-- vertical legend below -->
+    <table class="small" ng-if="panel.arrangement == 'vertical'">
+      <tr ng-repeat="term in legend">
+        <td><i class="icon-circle" ng-style="{color:term.color}"></i></i></td> <td style="padding-right:10px;padding-left:10px;">{{term.label}}</td>
+        <td>{{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}</td>
+      </tr>
+    </table>
+
+    <!-- horizontal legend below -->
+    <div class="small" ng-if="panel.arrangement == 'horizontal'" ng-repeat="term in legend" style="float:left;padding-left: 10px;">
+      <span><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}) </span>
+    </div><br>
+
+  </div>
+  <!-- END Pie or Bar chart -->
+
+  <!-- START Table -->
+
+  <!-- END Table -->
+  <!-- Dummy div for testing color name -->
+  <div id="colorTest"></div>
+</div>
+</div>

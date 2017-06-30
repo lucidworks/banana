@@ -31,10 +31,9 @@ function (Settings) {
      * your banana web application.
      * @type {String}
      */
-    // Specify Solr server and core to store the data.
-    solr: "/solr/",
-    solr_core: "logs",
-    timefield: "timestamp_tdt",
+   solr: "/solr/",
+    solr_core: "apm3",
+    timefield: 'rs_timestamp',
 
     /**
      * The default Solr index to use for storing objects internal to Banana, such as 
@@ -49,31 +48,6 @@ function (Settings) {
      * @type {String}
      */
     banana_index: "banana-int",
-    banana_queryPipeline: "system_banana-default",
-    banana_indexPipeline: "system_banana-default",
-
-    /**
-     * Lucidworks Fusion settings
-     *
-     * USE_FUSION = true, mean that Banana will talk to Lucidworks Fusion APIs, instead of Solr.
-     * This mainly affect the APIs used to get the list of collections and schemas (fields).
-     */
-    // USE_FUSION: true,
-    USE_FUSION: false,
-    apollo: "/api/apollo",
-    apollo_queryPipeline: "/api/apollo/query-pipelines/",
-    apollo_indexPipeline: "/api/apollo/index-pipelines/",
-    
-    // Constants  
-    SYSTEM_BANANA_QUERY_PIPELINE: "/api/apollo/query-pipelines/default/collections/system_banana",
-    SYSTEM_BANANA_INDEX_PIPELINE: "/api/apollo/index-pipelines/_system/collections/system_banana",
-    SYSTEM_BANANA_BLOB_API: "/api/apollo/blobs",
-    SYSTEM_BANANA_BLOB_ID_SUBTYPE_PARAM: "resourceType=banana",  // for use when saving dashboards, to create metadata field resourceType=banana
-    SYSTEM_BANANA_BLOB_ID_SUBTYPE_QUERY: "resourceType=banana",  // for use when searching dashboards in Blob Store
-    
-    FUSION_API_STATIC_FIELDS: "/schema/fields",
-    FUSION_API_DYNAMIC_FIELDS: "/schema/dynamicfields",
-    FUSION_API_COLLECTIONS: "/api/apollo/collections",
 
     /**
      * The default settings will use /admin/luke API to retrieve all fields from Solr including
@@ -102,17 +76,46 @@ function (Settings) {
     panel_names: [
       'bar',
       'histogram',
+	  'histogramt',
       'map',
+	  'bmwdashboard',
       'table',
       'filtering',
       'timepicker',
       'text',
+	  'pies',
       'hits',
+        'd3Gauage',
+        'd3Text',
+        'gauge',
+	  'glmap',
+	  'sankey',
+      'rca',
+      'topology',
+	  'multihistogram',
       'column',
+	  'stacking',
+	  'histogramback',
       'ticker',
       'bettermap',
       'query',
+	  'china',
       'terms',
+	  'sortbar',
+	  'multidashboard',
+	  'histobar',
+        'histoline',
+		'search',
+		'piesdemo',
+		'histobardemo',
+		'd3',
+      'd3pie',
+      'd3bullet',
+      'bar3d',
+      'apihistogram',
+      'simplegram',
+      'apihistobar',
+      'apipies',
       'rangeFacet',
       'heatmap',
       'scatterplot',
@@ -121,7 +124,18 @@ function (Settings) {
       'tagcloud',
       'multiseries',
       'sunburst',
-      'docviewer'
+      'docviewer',
+      'statistics',
+      'ad',
+      'adTable',
+      'adStatistics',
+      'adDistribution',
+      'adIPStatistics',
+      'adFactor',
+      'adMetrics',
+      'adLineChart',
+      'bn',
+      'rc'
     ]
   });
 });

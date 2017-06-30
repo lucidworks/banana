@@ -5,7 +5,7 @@
     http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   version="2.5">
 
-  <display-name>Banana Web Application</display-name>
+  <display-name>RealSight APM Realtime Dashboard</display-name>
 
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>

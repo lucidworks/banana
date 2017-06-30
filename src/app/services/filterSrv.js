@@ -74,6 +74,9 @@ define([
           return false;
         } else {
           var _id = nextId();
+          if(dashboard.current.searchEnable){
+            dashboard.current.searchID = _id;}
+            dashboard.current.searchEnable  = false;
           var _filter = {
             alias: '',
             id: _id

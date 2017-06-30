@@ -58,8 +58,9 @@ module.exports = function (grunt) {
         }
       },
       options: {
-        jshintrc: '.jshintrc',
-        reporterOutput: ''
+        jshintrc:'.jshintrc',
+        reporterOutput: '',
+        force: true,
       }
     },
     htmlmin:{
@@ -229,7 +230,8 @@ module.exports = function (grunt) {
         'jquery.flot.pie',
         'angular-sanitize',
         'angular-dragdrop',
-        'd3'
+        'd3',
+        'echarts',
       ]
     }
   ];
@@ -266,7 +268,7 @@ module.exports = function (grunt) {
     'requirejs:build',
     'clean:temp',
     'build:write_revision',
-    'uglify:dest'
+    'uglify:dest',
   ]);
 
   // run a string replacement on the require config, using the latest revision number as the cache buster

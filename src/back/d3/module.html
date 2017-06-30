@@ -1,0 +1,84 @@
+<div ng-controller='d3' ng-init="init()">
+
+<style>
+    table.tableSection {
+        display: table;
+        width: 100%;
+    }
+    table.tableSection thead, table.tableSection tbody {
+        float: left;
+        width: 100%;
+    }
+    table.tableSection tbody {
+        overflow: auto;
+        /*height: 150px;*/
+    }
+    table.tableSection tr {
+        width: 100%;
+        display: table;
+        text-align: left;
+    }
+    table.tableSection th, table.tableSection td {
+        width: 33%;
+    }
+    .floatleft{
+      float:left;
+    }
+    .floatright{
+      float:right;
+    }
+
+    .below{
+      display: inline-block !important;
+    }
+
+    .leftRightLegend {
+      margin-left: 10px;
+      margin-right: 10px; 
+      overflow:overlay; 
+      padding-right:10px 
+    }
+
+    .label{
+      font-size:22.5px;
+      fill:#ffffff;
+      text-anchor:middle;
+      alignment-baseline:middle;
+    }
+    .face{
+      stroke:#c8c8c8;
+      stroke-width:2;
+    }
+    .minorTicks{
+      stroke-width:2;
+      stroke:white;
+    }
+    .majorTicks{
+      stroke:white;
+      stroke-width:3;
+    }
+
+</style>
+  <div ng-style="{'display':panel.display}">
+  <!-- START Pie or bar chart -->
+
+
+    <!-- <div ng-show="panel.chart == 'd3'"><div class="pointer" ng-style="panel.style" style="line-height:1;text-align:center"><svg style="line-height:1"></svg> </div></div>-->
+    <!-- <div ng-show="panel.chart == 'hit'"><div class="pointer" ng-style="panel.style" style="line-height:1;text-align:center"><iframe width=100% height=100% name=aa frameborder=0 src=http://www.baidu.com></iframe></div></div>-->
+    <!-- keep legend from over lapping -->
+  <div style="clear:both"></div>
+
+
+
+  <div style="overflow:hidden"  d3-chart params="{{panel}}" style="position:relative" class="pointer" ng-style="{'floatleft':panel.counter_pos == 'right'}" id='{{$id}}'></div>
+
+
+  <!-- END Pie or Bar chart -->
+
+  <!-- START Table -->
+
+  <!-- END Table -->
+  <!-- Dummy div for testing color name -->
+  <div id="colorTest"></div>
+</div>
+</div>

@@ -39,13 +39,12 @@ function (angular, _) {
         dropRow =  data.droppableScope.$parent.$parent.row.panels,
         dragIndex = data.dragSettings.index,
         dropIndex =  data.dropSettings.index;
-
-
-      // Remove panel from source row
-      dragRow.splice(dragIndex,1);
-
+      
       // Add to destination row
       if(!_.isUndefined(dropRow)) {
+		dragRow.splice(dragIndex,1);
+		dragRow.splice(dragIndex,0,data.dropItem);
+		dropRow.splice(dropIndex,1);
         dropRow.splice(dropIndex,0,data.dragItem);
       }
 
