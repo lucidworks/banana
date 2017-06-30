@@ -280,22 +280,22 @@ define([
 
         var mypromises = [];
         //var temp_q = 'q=' + metric_field + ':' + metric + wt_json + rows_limit + fq + facet + fl + sort_field;
-        var query_list = [];
+        var querys = [];
 
         var temp_q = 'q=' + 'result_s:bn' +  wt_json ;
         var temp_q2 =  $scope.build_anomaly_query('json', false);
-        query_list.push(temp_q);
-        query_list.push(temp_q2);
+        querys.push(temp_q);
+        querys.push(temp_q2);
         if(DEBUG) console.log(temp_q2);
 
-        for (var i = 0; i < query_list.length; i++) {
+        for (var i = 0; i < querys.length; i++) {
 
-          $scope.panel.queries.query += query_list[i] + "\n";
+          $scope.panel.queries.query += querys[i] + "\n";
 
           if ($scope.panel.queries.custom !== null) {
-            request = request.setQuery(query_list[i] + $scope.panel.queries.custom);
+            request = request.setQuery(querys[i] + $scope.panel.queries.custom);
           } else {
-            request = request.setQuery(query_list[i]);
+            request = request.setQuery(querys[i]);
           }
           mypromises.push(request.doSearch());
         }
@@ -313,7 +313,7 @@ define([
             // TODO: We probably DON'T NEED THIS unless we have to support multiple queries in query module.
             // if ($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
             var time_series, hits;
-            for (var i = 0; i < query_list.length; i++) {
+            for (var i = 0; i < querys.length; i++) {
               if (!(_.isUndefined(results[i].error))) {
                 $scope.panel.error = $scope.parse_error(results[i].error.msg);
                 return;
@@ -364,26 +364,27 @@ define([
             if (DEBUG) console.log(chartData[1][0]);
             var ad_list = [];
             for (var i = 0; i < chartData[1].length; i++) {
-              ad_list.push(chartData[1][i].stats_field_s);
+              ad_list.push(chartData[1][i].facet_name_s);
+              // alert(ad_list[i]);
             }
 
-            ad_list = [];
+            // ad_list.push("JAVAEE_Apdex");
+            // ad_list.push("JAVAEE_Http_4xx");
+            // ad_list.push("JAVAEE_Durations_sum");
 
-            ad_list.push("JAVAEE_Apdex");
-            ad_list.push("JAVAEE_Http_4xx");
-            ad_list.push("JAVAEE_Durations_sum");
-
+            // alert(ad_list);
 
             if (DEBUG) console.log(ad_list);
             //alert(nodeList[0].key);
             if (DEBUG) console.log(chartData[0][0]);
-            var query_list = chartData[0][0].query_list_s.split(",");
+            var query_list = chartData[0][0].query_list_s.split("^");
+
             if(DEBUG) console.log(query_list);
             for (var i = 0; i < nodeList.length; i++) {
               if (checkIn(query_list[parseInt(nodeList[i].key.substr(1))], ad_list)) {
-                nodeList[i]["color"] = "red";
+                nodeList[i]["color"] = "#D24726";
               } else {
-                nodeList[i]["color"] = "CornflowerBlue";
+                nodeList[i]["color"] = "lightgreen";
               }
             }
 
@@ -517,7 +518,7 @@ define([
                 $(go.Node, "Auto",  // the whole node panel define the node's outer shape, which will surround the TextBlock
                   { deletable: false, toolTip: tooltiptemplate },
                   $(go.Shape, "Circle",
-                    { fill: "CornflowerBlue", stroke: "black", spot1: new go.Spot(0, 0, 5, 5), spot2: new go.Spot(1, 1, -5, -5) },
+                    { fill: "lightgreen", stroke: "black", spot1: new go.Spot(0, 0, 5, 5), spot2: new go.Spot(1, 1, -5, -5) },  //"CornflowerBlue"
                     new go.Binding("fill", "color")
                   ),
                   $(go.TextBlock,
@@ -534,9 +535,9 @@ define([
                         //alert(window.selected_var);
                         var x = window.selected_var;
                         if (checkIn(query_list[parseInt(x.substr(1))],ad_list))
-                          shape.fill = "red";
+                          shape.fill = "#D24726";
                         else
-                          shape.fill = "CornflowerBlue";
+                          shape.fill = "lightgreen";
                       }
                       //shape.fill = part.isSelected ? "yellow" : "CornflowerBlue";
                     }
