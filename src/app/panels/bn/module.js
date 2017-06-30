@@ -382,9 +382,9 @@ define([
             if(DEBUG) console.log(query_list);
             for (var i = 0; i < nodeList.length; i++) {
               if (checkIn(query_list[parseInt(nodeList[i].key.substr(1))], ad_list)) {
-                nodeList[i]["color"] = "#D24726";
+                nodeList[i]["color"] = "red";
               } else {
-                nodeList[i]["color"] = "lightgreen";
+                nodeList[i]["color"] = "green";
               }
             }
 
@@ -518,7 +518,7 @@ define([
                 $(go.Node, "Auto",  // the whole node panel define the node's outer shape, which will surround the TextBlock
                   { deletable: false, toolTip: tooltiptemplate },
                   $(go.Shape, "Circle",
-                    { fill: "lightgreen", stroke: "black", spot1: new go.Spot(0, 0, 5, 5), spot2: new go.Spot(1, 1, -5, -5) },  //"CornflowerBlue"
+                    { fill: "green", stroke: "black", spot1: new go.Spot(0, 0, 5, 5), spot2: new go.Spot(1, 1, -5, -5) },  //"CornflowerBlue"
                     new go.Binding("fill", "color")
                   ),
                   $(go.TextBlock,
@@ -535,9 +535,9 @@ define([
                         //alert(window.selected_var);
                         var x = window.selected_var;
                         if (checkIn(query_list[parseInt(x.substr(1))],ad_list))
-                          shape.fill = "#D24726";
+                          shape.fill = "red";
                         else
-                          shape.fill = "lightgreen";
+                          shape.fill = "green";
                       }
                       //shape.fill = part.isSelected ? "yellow" : "CornflowerBlue";
                     }
@@ -575,6 +575,8 @@ define([
 
             function showMessage(s) {
               //alert("klick: "+s+".");
+              dashboard.current.bn_main_node = s;
+              dashboard.refresh();
             }
             drawGraph(nodeList, linkList, graph_id);
           }

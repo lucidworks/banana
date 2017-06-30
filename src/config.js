@@ -134,7 +134,8 @@ function (Settings) {
       'adFactor',
       'adMetrics',
       'adLineChart',
-      'bn'
+      'bn',
+      'rc'
     ]
   });
 });
