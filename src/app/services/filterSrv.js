@@ -9,7 +9,7 @@ define([
 
   var module = angular.module('kibana.services');
 
-  module.service('filterSrv', function(dashboard, ejsResource, sjsResource) {
+  module.service('filterSrv', function(dashboard,$routeParams, ejsResource, sjsResource) {
     // Create an object to hold our service state on the dashboard
     dashboard.current.services.filter = dashboard.current.services.filter || {};
 
@@ -74,6 +74,9 @@ define([
           return false;
         } else {
           var _id = nextId();
+          if(dashboard.current.searchEnable){
+            dashboard.current.searchID = _id;}
+            dashboard.current.searchEnable  = false;
           var _filter = {
             alias: '',
             id: _id
@@ -172,7 +175,10 @@ define([
       var start_time, end_time, time_field;
       var filter_fq = '';
       var filter_either = [];
+      if(!(_.isUndefined($routeParams.queryType)) && !(_.isUndefined($routeParams.queryId))) {
 
+        filter_fq = filter_fq+'&fq='+$routeParams.queryType+ ':' +$routeParams.queryId;
+      }
       // Loop through the list to find the time field, usually it should be in self.list[0]
       _.each(self.list, function(v, k) {
 

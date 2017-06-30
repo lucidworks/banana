@@ -1,0 +1,396 @@
+
+<div class="theme-config">
+    <div class="theme-config-box">
+        <div class="spin-icon">
+            <i class="icon icon-cogs "></i>
+        </div>
+        <div class="skin-setttings" id="setting">
+            <div >
+                <a data-toggle="collapse" class="aaa" style='text-decoration:none;' data-parent="#accordion" href="#collapse0">
+                    &nbsp;<i class="icon icon-tag"></i>
+                    &nbsp;&nbsp;{{'Settings'|translate}}<i class="icon-angle-left1" style='float:right;'></i>
+                </a>
+                <div id="collapse0" class=" collapse in">
+                    <input type="text" class="input" ng-model='dashboard.current.title'/>
+                    <div class="setings-item">
+                    <span>
+                        {{'Head hide'|translate}}
+                    </span>
+
+                        <div class="switch">
+                            <div class="onoffswitch">
+                                <input type="checkbox"  class="onoffswitch-checkbox" ng-checked="dashboard.current.hide_head">
+                                <label class="onoffswitch-label" >
+                                    <span class="onoffswitch-inner" ng-click="dashboard.current.hide_head=!dashboard.current.hide_head"></span>
+                                    <span class="onoffswitch-switch" ng-click="dashboard.current.hide_head=!dashboard.current.hide_head"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setings-item">
+                    <span>
+                      {{'Row Editable'|translate}}
+                    </span>
+                        <div class="switch">
+                            <div class="onoffswitch">
+                                <input type="checkbox"  class="onoffswitch-checkbox" ng-checked="dashboard.current.editable">
+                                <label class="onoffswitch-label" >
+                                    <span class="onoffswitch-inner" ng-click="dashboard.current.editable=!dashboard.current.editable"></span>
+                                    <span class="onoffswitch-switch" ng-click="dashboard.current.editable=!dashboard.current.editable"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setings-item">
+                    <span>
+                       {{'Row controller'|translate}}
+                    </span>
+
+                        <div class="switch">
+                            <div class="onoffswitch">
+                                <input type="checkbox" class="onoffswitch-checkbox" ng-checked="dashboard.current.row_controller">
+                                <label class="onoffswitch-label" >
+                                    <span class="onoffswitch-inner" ng-click="dashboard.current.row_controller=!dashboard.current.row_controller"></span>
+                                    <span class="onoffswitch-switch" ng-click="dashboard.current.row_controller=!dashboard.current.row_controller"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setings-item">
+                    <span>
+                       {{'Mute'|translate}}
+                    </span>
+
+                        <div class="switch">
+                            <div class="onoffswitch">
+                                <input type="checkbox" class="onoffswitch-checkbox" ng-checked="dashboard.current.mute">
+                                <label class="onoffswitch-label" >
+                                    <span id="a1" class="onoffswitch-inner" ng-click="dashboard.current.mute=!dashboard.current.mute"></span>
+                                    <span id="a2" class="onoffswitch-switch" ng-click="dashboard.current.mute=!dashboard.current.mute"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                  <select class="language-switching" ng-controller="LanguageSwitchingCtrl" ng-model="cur_lang"        ng-change="switching(cur_lang)">
+                    <option value="en">English</option>
+                    <option value="cn">简体中文</option>
+                  </select>
+                </div>
+            </div>
+
+            <div >
+                <a data-toggle="collapse" class="aaa2" style='text-decoration:none;' data-parent="#accordion" href="#collapse1">
+                    &nbsp;<i class="icon icon-picture"></i>
+                    &nbsp;&nbsp;{{'Skins'|translate}}<i class="icon-angle-left2" style='float:right;'></i>
+                </a>
+                <div id="collapse1" class=" collapse in">
+                    <!-- <div  style='text-decoration:none;cursor:pointer' ng-click="dashboard.is_refresh() "><i class="icon icon-picture"></i>&nbsp;&nbsp;Skins</div>-->
+                    <div class="setings-item default-skin" style="cursor:pointer" ng-click="dashboard.current.style='dark';dashboard.color_change()">
+                    <span class="skin-name ">
+                         <a class="s-skin-0" style='text-decoration:none;'>
+                            {{'Default'|translate}}   <i class="icon-ok-sign" style='float:right;' ng-click="dashboard.is_refresh()"></i>
+                         </a>
+
+                    </span>
+                    </div>
+                    <div class="setings-item blue-skin"  style="cursor:pointer" ng-click="dashboard.current.style='blue';dashboard.color_change()">
+                    <span class="skin-name " >
+                        <a  class="s-skin-1" style='text-decoration:none;' >
+                            {{'Blue light'|translate}} <i class="icon-ok-sign" style='float:right;' ng-click="dashboard.is_refresh()"></i>
+                        </a>
+
+                    </span>
+                    </div>
+                    <div class="setings-item yellow-skin" style="cursor:pointer"  ng-click="dashboard.current.style='light';dashboard.color_change()">
+                    <span class="skin-name ">
+                        <a  class="s-skin-3" style='text-decoration:none;' >
+                             {{'Light'|translate}} <i class="icon-ok-sign" style='float:right;' ng-click="dashboard.is_refresh()"></i>
+                        </a>
+
+                    </span>
+                    </div>
+
+                </div>
+            </div>
+
+            <div >
+                <a data-toggle="collapse"  class="aaa3" style='text-decoration:none;' data-parent="#accordion" href="#collapseOne">
+                    &nbsp;<i class="icon icon-th-large"></i>
+                    &nbsp;&nbsp;{{'Solr settings'|translate}}<i class="icon-angle-left3" style='float:right;'></i>
+                </a>
+
+                <div id="collapseOne" class="panel-collapse collapse ">
+                    <label name="registerDiv" class="small"><span >{{'Solr Server'|translate}}</span></label>
+                    <input type="text" class="input" ng-model="dashboard.current.solr.server">
+                    <label name="registerDiv" class="small"><span >{{'Collection'|translate}}</span></label>
+                    <input type="text" class="input-smaller" ng-model="dashboard.current.solr.core_name" bs-typeahead="dashboard.current.solr.core_list"></input>
+                    <button type="button" class="btn btn-success" ng-click="dashboard.refresh()">{{'Confirm'|translate}}</button>
+                    <label name="registerDiv" class="small"><span >{{'Global Query Parameters'|translate}} </span></label>
+                    <input type="text" class="input" placeholder="e.g. &defType=lucid&qt=lucid&df=message&..." ng-model="dashboard.current.solr.global_params">
+                </div>
+            </div>
+            <div >
+                <a data-toggle="collapse" class="aaa4" style='text-decoration:none;' data-parent="#accordion" href="#collapseSix">
+                    &nbsp;<i class="icon icon-folder-open"></i>
+                    &nbsp;&nbsp;{{'Collection select'|translate}}<i class="icon-angle-left4" style='float:right;'></i>
+                </a>
+
+                <div id="collapseSix" class=" collapse">
+
+                    <select class="span2" ng-model="dashboard.current.solr.core_name" ng-change="dashboard.refresh()" ng-options="c as c for c in dashboard.current.solr.core_list"></select>
+
+                </div>
+            </div>
+            <div >
+                <a data-toggle="collapse" class="aaa5" style='text-decoration:none;' data-parent="#accordion" href="#collapseTwo">
+                    &nbsp;<i class="icon icon-flag"></i>
+                    &nbsp;&nbsp;{{'Create Row'|translate}}<i class="icon-angle-left5" style='float:right;'></i>
+                </a>
+
+                <div id="collapseTwo" class=" collapse">
+                    <label class="small">{{'Row title'|translate}}</label>
+                    <input type="text" class="input" ng-model='row.title' placeholder="New row"></input>
+                    <label class="small">{{'Height'|translate}}</label>
+                    <input type="text" class="input-mini" ng-model='row.height'></input>
+                    <button ng-click="add_row(dashboard.current,row); reset_row();" class="btn btn-success" >{{'Create Row'|translate}}</button>
+
+                </div>
+            </div>
+
+
+            <div >
+                <a data-toggle="collapse" class="aaa6" style='text-decoration:none;' data-parent="#accordion" href="#collapseThree">
+                    &nbsp;<i class="icon icon-save"></i>
+                    &nbsp;&nbsp;{{'Save'|translate}}<i class="icon-angle-left6" style='float:right;'></i>
+                </a>
+
+                <div id="collapseThree" class=" collapse">
+                    <li id="saveFile"  ng-click="dashboard.to_file() "><i class="icon-download"></i> <label  class="small">{{'Export to File'|translate}} </label></li>
+                    <li id="savePdf" ng-click="dashboard.save_pdf() "><i class="icon-download-alt"></i> <label  class="small"> {{'Export to PDF'|translate}}</label></li>
+                    <li id="setDefault" ng-show="dashboard.current.loader.save_default" ng-click="dashboard.set_default()"><i class="icon-bookmark"></i>  <label class="small" >{{'Set as Browser Default'|translate}}</label></li>
+                    <li id="clearDefault" ng-show="dashboard.current.loader.save_default" ng-click="dashboard.purge_default()"><i class="icon-ban-circle"></i> <label class="small">{{'Clear Browser Default'|translate}}</label></li>
+
+                </div>
+            </div>
+            <div >
+                <a ng-controller='dashLoader' ng-init="init()" ng-include="'app/partials/dashLoader.html'"></a>
+
+
+
+            </div>
+            <div >
+                <a data-toggle="collapse" class="aaa8" style='text-decoration:none;' data-parent="#accordion" href="#collapseFive">
+                    &nbsp;<i class="icon icon-folder-open"></i>
+                    &nbsp;&nbsp;{{'Load'|translate}}<i class="icon-angle-left8" style='float:right;'></i>
+                </a>
+
+                <div id="collapseFive" class=" collapse">
+
+                    <input type="file" id="dashupload" dash-upload />
+
+                </div>
+            </div>
+            <!-- <a data-placement="bottom" bs-popover="'app/panels/timepicker/refreshctrl.html'">Time-series dashboard</a>-->
+
+            <!--<div class="setings-item light-skin" style="cursor:pointer" ng-click="dashboard.current.style='flatlight'">
+                    <span class="skin-name ">
+                        <a  class="s-skin-3" style='text-decoration:none;'>
+                             Flat light
+                        </a>
+                    </span>
+            </div>-->
+        </div>
+    </div>
+</div>
+<script>
+
+    var audio = document.getElementById("bgMusic");
+    //audio.muted = dashboard.current.mute;
+    //if(dashboard.current.alarm){audio.play();}
+/*
+    if (navigator.browserLanguage !="undefined" && navigator.browserLanguage != null) {
+
+        if (navigator.systemLanguage == "zh-CN") {
+
+
+            document.write("<script src='vendor/resource/analysis_zh_CN.js'><\/script>");
+
+        }else{
+            document.write("<script src='vendor/resource/analysis_en_US.js'><\/script>");
+        }
+    }
+
+    //firefox、chrome,360
+
+    else {
+
+        if (navigator.language == "zh-CN") {
+
+
+            document.write("<script src='vendor/resource/analysis_zh_CN.js'><\/script>");
+
+        }else{
+
+            document.write("<script src='vendor/resource/analysis_en_US.js'><\/script>");
+
+        }
+
+    }
+*/
+    function changecolor()
+    {
+        document.getElementById("setting").style.background="red"; //更改为红色
+    }
+    // Config box
+    <!-- IMPORTANT -->
+    // Angular directive handel this so there is no need to include this to project
+    <!-- IMPORTANT -->
+
+    // Enable/disable fixed top navbar
+
+
+    // Enable/disable fixed sidebar
+    /* $('#fixedsidebar').click(function () {
+     if ($('#fixedsidebar').is(':checked')) {
+     $("body").addClass('fixed-sidebar');
+     $('.sidebar-collapse').slimScroll({
+     height: '100%',
+     railOpacity: 0.9
+     });
+     } else {
+     $('.sidebar-collapse').slimscroll({destroy: true});
+     $('.sidebar-collapse').attr('style', '');
+     $("body").removeClass('fixed-sidebar');
+     }
+     });
+     */
+    // Enable/disable collapse menu
+    $('#collapsemenu').click(function () {
+        if ($('#collapsemenu').is(':checked')) {
+            $("body").addClass('mini-navbar');
+            SmoothlyMenu();
+        } else {
+            $("body").removeClass('mini-navbar');
+            SmoothlyMenu();
+        }
+    });
+
+    // Enable/disable boxed layout
+    /*
+     $('#boxedlayout').click(function () {
+     if ($('#boxedlayout').is(':checked')) {
+     $("body").addClass('boxed-layout');
+     $('#fixednavbar').prop('checked', false);
+     $(".navbar-fixed-top").removeClass('navbar-fixed-top').addClass('navbar-static-top');
+     $("body").removeClass('fixed-nav');
+     $(".footer").removeClass('fixed');
+     $('#fixedfooter').prop('checked', false);
+     } else {
+     $("body").removeClass('boxed-layout');
+     }
+     });
+     */
+    // Enable/disable fixed footer
+    /*
+     $('#fixedfooter').click(function () {
+     if ($('#fixedfooter').is(':checked')) {
+     $('#boxedlayout').prop('checked', false);
+     $("body").removeClass('boxed-layout');
+     $(".footer").addClass('fixed');
+     } else {
+     $(".footer").removeClass('fixed');
+     }
+     });
+     */
+    // SKIN Select
+
+
+    $('.spin-icon').click(function () {
+        $(".theme-config-box").toggleClass("show");
+    });
+
+    var key_number=0;
+    $(document).keydown(function(event){
+
+        if(event.keyCode == '113' ){
+
+            $('#savePdf').click();
+        }
+        if(event.keyCode == '16' && key_number =='70'){
+
+            $('#saveFile').click();
+        }
+        if(event.keyCode == '16' && key_number =='83'){
+
+            $('#setDefault').click();
+        }
+        if(event.keyCode == '16' && key_number =='90'){
+
+            $('#clearDefault').click();
+        }
+        key_number =event.keyCode;
+
+    });
+
+
+
+
+    // Inspinia ultra skin
+
+
+    // Helper function - only for demo purpose
+    function SmoothlyMenu() {
+        if (!$('body').hasClass('mini-navbar') || $('body').hasClass('body-small')) {
+            // Hide menu in order to smoothly turn on when maximize menu
+            $('#side-menu').hide();
+            // For smoothly turn on menu
+            setTimeout(
+                function () {
+                    $('#side-menu').fadeIn(500);
+                }, 100);
+        } else if ($('body').hasClass('fixed-sidebar')){
+            $('#side-menu').hide();
+            setTimeout(
+                function () {
+                    $('#side-menu').fadeIn(500);
+                }, 300);
+        } else {
+            // Remove all inline style from jquery fadeIn function to reset menu state
+            $('#side-menu').removeAttr('style');
+        }
+    }
+    $('#a1').on('click',function(){
+
+        audio.muted=!audio.muted;
+    })
+    $('#a2').on('click',function(){
+
+        audio.muted=!audio.muted;
+    })
+    $('.aaa').on('click',function(){
+        $('.icon-angle-left1').toggleClass('active');
+
+    })
+    $('.aaa2').on('click',function(){
+        $('.icon-angle-left2').toggleClass('active');
+    })
+    $('.aaa3').on('click',function(){
+        $('.icon-angle-left3').toggleClass('active');
+    })
+    $('.aaa4').on('click',function(){
+        $('.icon-angle-left4').toggleClass('active');
+    })
+    $('.aaa5').on('click',function(){
+        $('.icon-angle-left5').toggleClass('active');
+    })
+    $('.aaa6').on('click',function(){
+        $('.icon-angle-left6').toggleClass('active');
+    })
+    $('.aaa7').on('click',function(){
+        $('.icon-angle-left7').toggleClass('active');
+    })
+    $('.aaa8').on('click',function(){
+        $('.icon-angle-left8').toggleClass('active');
+    })
+</script>

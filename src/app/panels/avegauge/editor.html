@@ -1,0 +1,72 @@
+<div class="row-fluid">
+  <div class="span2">
+    <label class="small">{{'Field'|translate}}</label>
+    <input type="text" class="input-small" bs-typeahead="fields.list" ng-model="panel.field" ng-change="set_refresh(true)">
+  </div>
+  <div class="span2">
+    <label class="small">{{'Length'|translate}}</label>
+    <input class="input-small" type="number" ng-model="panel.size" ng-change="set_refresh(true)">
+  </div>
+
+
+  <div class="span2" >
+      <label class="small">{{'First threshold'|translate}}</label>
+      <input ng-change="set_refresh(true)" placeholder="1000" type="number" class="input-small" ng-model="panel.threshold_first">
+    </div>
+	<div class="span2">
+      <label class="small">{{'Second threshold'|translate}}</label>
+      <input ng-change="set_refresh(true)" placeholder="2000" type="number" class="input-small" ng-model="panel.threshold_second">
+    </div>
+
+</div>
+<div class="row-fluid">
+  <div class="span2">
+    <label class="small">{{'Style'|translate}}</label>
+    <select class="input-small" ng-model="panel.chart" ng-options="f for f in ['avegauge','lastgauge','user']"></select></span>
+  </div>
+
+  <div class="span2" >
+    <label class="small">{{'Font Size'|translate}}</label>
+    <select class="input-mini" ng-model="panel.fontsize" ng-options="f for f in [5,6,7,8,9,10,12,14,16,18,20,24,28,32,36,42,48,52,60,72]"></select></span>
+  </div>
+  <div class="span2"  >
+    <label class="small">{{'Legend'|translate}}</label>
+    <select class="input-small" ng-model="panel.counter_pos" ng-options="f for f in ['above','below','left','right','none']"></select></span>
+  </div>
+  <div class="span3" ng-if="panel.chart != 'table' && panel.counter_pos != 'none'">
+    <label class="small" >{{'Legend Format'|translate}}</label>
+    <select class="input-small" ng-model="panel.arrangement" ng-options="f for f in ['horizontal','vertical']"></select></span>
+  </div>
+
+  <div class="span3" >
+    <label class="small">{{'User-defined title'|translate}}</label><input type="checkbox" ng-model="panel.title_defined" ng-checked="panel.title_defined">
+  </div>
+  <div class="span3" >
+    <label class="small">{{'Mean Enable'|translate}}</label><input type="checkbox" ng-model="panel.meanEnable" ng-checked="panel.meanEnable">
+  </div>
+
+</div>
+<div class="row-fluid">
+  <div class="span2">
+    <label class="small">{{'Mode'|translate}}</label>
+    <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['count']"></select>
+  </div>
+ </div>
+
+<div class="row-fluid">
+  <h5>{{'Real-time (Auto-refresh)'|translate}}</h5>
+  <div class="span1">
+    <label class="small">{{'Enable'|translate}}</label><input type="checkbox" ng-model="panel.refresh.enable" ng-checked="panel.refresh.enable">
+  </div>
+  <div class="span2">
+    <label class="small">{{'Interval (seconds)'|translate}} </label>
+    <input type="number" min="2" class="input-mini" ng-model="panel.refresh.interval">
+  </div>
+</div>
+<div class="row-fluid">
+  <h5>{{'Linkage Effective'|translate}} </h5>
+  <div class="span1">
+    <label class="small">{{'LinkageID'|translate}}</label><input type="text" class="input-small" ng-model="panel.linkage_id" ng-change="set_refresh(true)">
+  </div>
+
+</div>

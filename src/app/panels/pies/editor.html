@@ -1,0 +1,121 @@
+<div class="row-fluid">
+  <div class="span2">
+    <label class="small">{{'Field'|translate}}</label>
+    <input type="text" class="input-small" bs-typeahead="fields.list" ng-model="panel.field" ng-change="set_refresh(true)">
+  </div>
+  <div class="span2">
+    <label class="small">{{'Length'|translate}}</label>
+    <input class="input-small" type="number" ng-model="panel.size" ng-change="set_refresh(true)">
+  </div>
+  <div class="span2">
+    <label class="small">{{'Sort by'|translate}}</label>
+    <select ng-change="set_refresh(true)" class="input-small"
+            ng-model="panel.sortBy"
+            ng-options="f for f in ['count','index']"></select>
+  </div>
+  <div class="span3">
+    <label class="small">{{'Order'|translate}}</label>
+    <!-- <select class="input-medium" ng-model="panel.order" ng-options="f for f in ['count','term','reverse_count','reverse_term']" ng-change="set_refresh(true)"></select></span> -->
+    <select class="input-medium"
+            ng-model="panel.order"
+            ng-options="f for f in ['descending','ascending']"
+            ng-change="set_refresh(true)"></select>
+  </div>
+  <div class="span2" ng-if="!panel.defaulttimestamp">
+    <label class="small">{{'Timestamp value'|translate}}</label>
+    <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead="fields.list" type="text" class="input-small" ng-model="panel.value_sort">
+  </div>
+  <div class="span1"> <label class="small">{{'Default timestamp'|translate}}</label><input type="checkbox" ng-model="panel.defaulttimestamp" ng-checked="panel.defaulttimestamp"></div>
+</div>
+<div class="row-fluid">
+  <div class="span2">
+    <label class="small">{{'Style'|translate}}</label>
+    <select class="input-small" ng-model="panel.chart" ng-options="f for f in ['rosepie','pie','table','dashboard','bar','horizontalBar','radar','bars','ebar','funnel','liquidfill']"></select></span>
+  </div>
+  <div class="span2" ng-if="((panel.chart == 'pie' ||panel.chart == 'ebar'||panel.chart == 'rosepie' ) && (panel.labels|| panel.eLegend))||panel.chart == 'bar'||panel.chart == 'dashboard'||panel.chart == 'radar'||panel.chart == 'bars'||panel.chart == 'horizontalBar'">
+    <label class="small">{{'Font Size'|translate}}</label>
+    <select class="input-mini" ng-model="panel.fontsize" ng-options="f for f in [7,8,9,10,12,14,16,18,20,24,28,32,36,42,48,52,60,72]"></select></span>
+  </div>
+  <div class="span3" ng-if="(panel.chart == 'pie' ||panel.chart == 'rosepie') && panel.eLegend">
+    <label class="small">{{'Legend Format'|translate}}</label>
+    <select class="input-small" ng-model="panel.arrangement" ng-options="f for f in ['horizontal','vertical']"></select></span>
+  </div>
+  <div class="span2" ng-if="panel.chart != 'bar' && panel.chart != 'dashboard'&& panel.chart != 'bars'">
+    <label class="small">{{'Legend'|translate}}</label><input type="checkbox" ng-model="panel.eLegend" ng-checked="panel.eLegend">
+  </div>
+  <div class="span2" ng-if="panel.chart == 'pie' ||panel.chart == 'rosepie'">
+    <label class="small">{{'Donut'|translate}}</label><input type="checkbox" ng-model="panel.donut" ng-checked="panel.donut">
+  </div>
+  <div class="span1" ng-if="panel.chart == 'pie'">
+    <label class="small">{{'Tilt'|translate}}</label><input type="checkbox" ng-model="panel.tilt" ng-checked="panel.tilt">
+  </div>
+  <div class="span2" ng-if="panel.chart == 'pie' ||panel.chart == 'rosepie'||panel.chart == 'bar'||panel.chart == 'bars'">
+    <label class="small">{{'Labels'|translate}}</label><input type="checkbox" ng-model="panel.labels" ng-checked="panel.labels">
+  </div>
+  <div class="span2" ng-if="panel.chart == 'bar'||panel.chart == 'bars'||panel.chart == 'horizontalBar'">
+    <label class="small">{{'yLabels'|translate}}</label><input type="checkbox" ng-model="panel.ylabels" ng-checked="panel.ylabels">
+  </div>
+  <div class="span2" ng-if="panel.chart == 'rosepie'">
+    <label class="small">{{'RoseType'|translate}}</label>
+    <select class="input-small" ng-model="panel.RoseType" ng-options="f for f in ['radius','area']"></select></span>
+  </div>
+  <div class="span2" ng-if="panel.chart == 'dashboard'">
+      <label class="small">{{'First threshold'|translate}}</label>
+      <input ng-change="set_refresh(true)" placeholder="1000" type="number" class="input-small" ng-model="panel.threshold_first">
+    </div>
+	<div class="span2" ng-if="panel.chart == 'dashboard'">
+      <label class="small">{{'Second threshold'|translate}}</label>
+      <input ng-change="set_refresh(true)" placeholder="2000" type="number" class="input-small" ng-model="panel.threshold_second">
+    </div>
+</div>
+<div class="row-fluid">
+<div class="span2" ng-if="panel.chart == 'dashboard'">
+      <label class="small">{{'Min value'|translate}}</label>
+      <input ng-change="set_refresh(true)" placeholder="0" type="number" class="input-small" ng-model="panel.dashboard_min">
+    </div>
+<div class="span2" ng-if="panel.chart == 'dashboard'">
+      <label class="small">{{'Max value'|translate}}</label>
+      <input ng-change="set_refresh(true)" placeholder="100" type="number" class="input-small" ng-model="panel.dashboard_max">
+    </div>	
+<div class="span2" ng-if="panel.chart == 'dashboard'">
+      <label class="small">{{'splitNumber'|translate}} </label>
+      <input ng-change="set_refresh(true)" placeholder="10" type="number" class="input-small" ng-model="panel.dashboard_splitNumber">
+    </div>
+</div>
+<div class="row-fluid">
+  <div class="span2">
+    <label class="small">{{'Mode'|translate}}</label>
+    <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['count','min','mean','max','sum']"></select>
+  </div>
+  <div class="span2" ng-if="panel.mode != 'count'">
+    <label class="small">{{'Stats Field'|translate}}</label>
+    <input type="text" class="input-small" bs-typeahead="fields.list" ng-model="panel.stats_field" ng-change="set_refresh(true)">
+  </div>
+  <div class="span3">
+    <label class="small">{{'Display Precision'|translate}}</label>
+    <select class="input-mini" ng-model="panel.decimal_points" ng-options="f for f in [0,1,2,3,4,5,6,7,8,9]"></select>
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span12">
+    <label class="small">{{'Default Colors for Chart'|translate}} </label>
+    <textarea class="input-xxlarge" type="text" ng-model="panel.chartColors" ng-list></textarea>
+  </div>
+</div>
+<div class="row-fluid">
+  <h5>{{'Real-time (Auto-refresh)'|translate}}</h5>  
+  <div class="span1">
+    <label class="small">{{'Enable'|translate}}</label><input type="checkbox" ng-model="panel.refresh.enable" ng-checked="panel.refresh.enable">
+  </div>
+  <div class="span2">
+    <label class="small">{{'Interval (seconds)'|translate}} </label>
+    <input type="number" min="2" class="input-mini" ng-model="panel.refresh.interval">
+  </div>
+</div>
+<div class="row-fluid">
+  <h5>{{'Linkage Effective'|translate}} </h5>
+  <div class="span1">
+    <label class="small">{{'LinkageID'|translate}}</label><input type="text" class="input-small" ng-model="panel.linkage_id" ng-change="set_refresh(true)">
+  </div>
+
+</div>

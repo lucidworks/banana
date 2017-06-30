@@ -1,25 +1,25 @@
 <div>
   <div class="row-fluid">
-    <h4>Add Panel to Column</h4>
+    <h4>{{'Add Panel to Column'|translate}}</h4>
     <select class="input-medium" ng-model="new_panel.type" ng-options="f for f in _.without(config.panel_names,'column')| stringSort" ng-change="reset_panel(new_panel.type);send_render();"></select>
-    <small>Select Type</small>
-    <div ng-show="!(_.isUndefined(new_panel.type))">
+    <small>{{'Select Type'|translate}}</small>
+    <div ng-if="!(_.isUndefined(new_panel.type))">
       <div column-edit panel="new_panel" config="config" row="row" dashboards="dashboards" type="new_panel.type"></div>
       <button ng-click="add_panel(new_panel); reset_panel();" class="btn btn-primary">Create Panel</button><br>
     </div>
   </div>
   <div class="row-fluid">
     <div class="span12">
-      <h4>Panels</h4>
+      <h4>{{'Panels'|translate}}</h4>
       <table class="table table-condensed table-striped">
         <thead>
-          <th>Title</th>
-          <th>Type</th>
-          <th>Height</th>
-          <th>Delete</th>
-          <th>Move</th>
-          <th></th>
-          <th>Hide</th>
+        <th>{{'Title'|translate}}</th>
+        <th>{{'Type'|translate}}</th>
+        <th>{{'Height'|translate}}</th>
+        <th>{{'Delete'|translate}}</th>
+        <th>{{'Move'|translate}}</th>
+        <th></th>
+        <th>{{'Hide'|translate}}</th>
         </thead>
         <tr ng-repeat="app in panel.panels">
           <td>{{app.title}}</td>

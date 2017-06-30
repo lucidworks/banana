@@ -59,5 +59,7 @@
         z-index: 99;
     }
   </style>
-  <div class="jvectormap" map params="{{panel}}" ng-style="{height:panel.height || row.height}"></div>
+  <div ng-style="{'display':panel.display}">
+  <div  class="jvectormap " map params="{{panel}}" ng-style="{height:panel.height || row.height}"></div>
+</div>
 </div>

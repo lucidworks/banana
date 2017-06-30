@@ -1,34 +1,29 @@
 /*
 
- ## Scatterplot Panel
+  ## Multiseries Panel
 
- */
+*/
 define([
     'angular',
     'app',
     'underscore',
     'jquery',
     'd3',
-], function (angular, app, _, $, d3) {
+], function(angular, app, _, $, d3) {
     'use strict';
 
     var module = angular.module('kibana.panels.scatterplot', []);
     app.useModule(module);
 
-    module.controller('scatterplot', function ($scope, $timeout, timer, dashboard, querySrv, filterSrv) {
+    module.controller('scatterplot', function($scope, $translate,dashboard, querySrv, filterSrv) {
         $scope.panelMeta = {
-            modals: [{
-                description: "Inspect",
-                icon: "icon-info-sign",
-                partial: "app/partials/inspector.html",
-                show: $scope.panel.spyable
-            }],
+
             editorTabs: [{
-                title: 'Queries',
+                title: $translate.instant('Queries'),
                 src: 'app/partials/querySelect.html'
             }],
-            status: "Stable",
-            description: "This panel helps you to plot a bubble scatterplot between two to four variables."
+            status: "Experimental",
+          description : ""
         };
 
         // default values
@@ -36,62 +31,34 @@ define([
             queries: {
                 mode: 'all',
                 ids: [],
+                display:'block',
+                icon:"icon-caret-down",
                 query: '*:*',
                 custom: ''
             },
             max_rows: 1000, // maximum number of rows returned from Solr
-            xaxis: '',
-            yaxis: '',
-            xaxisLabel: '',
-            yaxisLabel: '',
-            colorField: '',
-            bubbleSizeField: '',
+            field: 'date',
+            xAxis: 'Date',
+            yAxis: 'Rates',
+            linkage_id:'a',
+            fl: 'open,high,low,close',
+            rightAxis: 'volume', // TODO: need to remove hard coded field (volume).
             spyable: true,
-            show_queries: true,
-            refresh: {
-                enable: false,
-                interval: 2
-            }
+            show_queries:true,
         };
 
         _.defaults($scope.panel, _d);
 
-        $scope.init = function () {
-            // Start refresh timer if enabled
-            if ($scope.panel.refresh.enable) {
-                $scope.set_timer($scope.panel.refresh.interval);
-            }
 
-            $scope.$on('refresh', function () {
+        $scope.init = function() {
+            $scope.$on('refresh', function() {
                 $scope.get_data();
             });
             $scope.get_data();
         };
 
-        $scope.set_timer = function (refresh_interval) {
-            $scope.panel.refresh.interval = refresh_interval;
-            if (_.isNumber($scope.panel.refresh.interval)) {
-                timer.cancel($scope.refresh_timer);
-                $scope.realtime();
-            } else {
-                timer.cancel($scope.refresh_timer);
-            }
-        };
-
-        $scope.realtime = function () {
-            if ($scope.panel.refresh.enable) {
-                timer.cancel($scope.refresh_timer);
-
-                $scope.refresh_timer = timer.register($timeout(function () {
-                    $scope.realtime();
-                    $scope.get_data();
-                }, $scope.panel.refresh.interval * 1000));
-            } else {
-                timer.cancel($scope.refresh_timer);
-            }
-        };
-
-        $scope.get_data = function () {
+        $scope.get_data = function() {
+            if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
             // Show progress by displaying a spinning wheel icon on panel
             $scope.panelMeta.loading = true;
             delete $scope.panel.error;
@@ -99,7 +66,6 @@ define([
             var request, results;
             // Set Solr server
             $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
-
             // -------------------- TODO: REMOVE ALL ELASTIC SEARCH AFTER FIXING SOLRJS --------------
             $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
             // This could probably be changed to a BoolFilter
@@ -123,16 +89,9 @@ define([
                 fq = '&' + filterSrv.getSolrFq();
             }
             var wt_json = '&wt=csv';
+            var fl = '&fl=' + $scope.panel.xaxis + ',' + $scope.panel.yaxis + ',' + $scope.panel.field_type;
             var rows_limit = '&rows=' + $scope.panel.max_rows;
-            var fl = '&fl=' + $scope.panel.xaxis + ',' + $scope.panel.yaxis;
-
-            if ($scope.panel.colorField) {
-                fl += ',' + $scope.panel.colorField;
-            }
-
-            if ($scope.panel.bubbleSizeField) {
-                fl += ',' + $scope.panel.bubbleSizeField;
-            }
+            //var sort = '&sort=' + $scope.panel.field + ' asc';
 
             $scope.panel.queries.query = querySrv.getORquery() + fq + fl + wt_json + rows_limit;
 
@@ -149,43 +108,37 @@ define([
             // Populate scope when we have results
             results.then(function (results) {
                 // build $scope.data array
-                $scope.data = d3.csv.parse(results, function (d) {
-                    var value = {};
-                    // Convert string to number
-                    value[$scope.panel.xaxis] = +d[$scope.panel.xaxis];
-                    value[$scope.panel.yaxis] = +d[$scope.panel.yaxis];
-                    if ($scope.panel.colorField) {
-                        value[$scope.panel.colorField] = d[$scope.panel.colorField];
-                    }
-                    if ($scope.panel.bubbleSizeField) {
-                        value[$scope.panel.bubbleSizeField] = +d[$scope.panel.bubbleSizeField];
-                    }
-
-                    return value;
-                }, function(error, rows) {
-                    console.log('Error parsing results from Solr: ', rows);
-                });
-
-                if ($scope.data.length === 0) {
+                //$scope.data = results.response.docs;
+                $scope.data = d3.csv.parse(results);
+                if (!$scope.data.length) {
                     $scope.panel.error = $scope.parse_error("There's no data to show");
                 }
-
+                // $scope.data = results;
                 $scope.render();
             });
 
             // Hide the spinning wheel icon
             $scope.panelMeta.loading = false;
+        }
         };
 
-        $scope.set_refresh = function (state) {
+        $scope.display=function() {
+            if($scope.panel.display === 'none'){
+                $scope.panel.display='block';
+                $scope.panel.icon="icon-caret-down";
+
+
+            }else{
+                $scope.panel.display='none';
+                $scope.panel.icon="icon-caret-up";
+            }
+        };
+
+        $scope.set_refresh = function(state) {
             $scope.refresh = state;
         };
 
-        $scope.close_edit = function () {
-            // Start refresh timer if enabled
-            if ($scope.panel.refresh.enable) {
-                $scope.set_timer($scope.panel.refresh.interval);
-            }
+        $scope.close_edit = function() {
             if ($scope.refresh) {
                 $scope.get_data();
             }
@@ -193,183 +146,90 @@ define([
             $scope.$emit('render');
         };
 
-        $scope.render = function () {
+        $scope.render = function() {
             $scope.$emit('render');
         };
 
-        $scope.populate_modal = function (request) {
+        $scope.populate_modal = function(request) {
             $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
         };
 
-        $scope.pad = function (n) {
+        $scope.pad = function(n) {
             return (n < 10 ? '0' : '') + n;
         };
+
     });
 
-    module.directive('scatterplot', function (dashboard, filterSrv) {
+    module.directive('scatterplot', function() {
         return {
             restrict: 'E',
-            link: function (scope, element) {
+            link: function(scope, element) {
 
-                scope.$on('render', function () {
+                scope.$on('render', function() {
                     render_panel();
                 });
 
-                angular.element(window).bind('resize', function () {
+                angular.element(window).bind('resize', function() {
                     render_panel();
                 });
 
                 // Function for rendering panel
                 function render_panel() {
                     element.html("");
+
                     var el = element[0];
+
                     var parent_width = element.parent().width(),
                         height = parseInt(scope.row.height),
                         padding = 50;
+
                     var margin = {
-                            top: 20,
-                            right: 20,
-                            bottom: 100,
-                            left: 50
-                        },
-                        width = parent_width - margin.left - margin.right;
+                        top: 20,
+                        right: 20,
+                        bottom: 100,
+                        left: 50
+                    },
+                    width = parent_width - margin.left - margin.right;
 
                     height = height - margin.top - margin.bottom;
 
-                    // Scales
-                    var color = d3.scale.category20();
-                    var rScale;
-                    if (scope.panel.bubbleSizeField) {
-                        rScale = d3.scale.linear()
-                            .domain(d3.extent(scope.data, function (d) {
-                                return d[scope.panel.bubbleSizeField];
-                            }))
-                            .range([3, 20])
-                            .nice();
-                    }
                     var x = d3.scale.linear()
                         .range([0, width - padding * 2]);
+
                     var y = d3.scale.linear()
                         .range([height, 0]);
 
-                    x.domain(d3.extent(scope.data, function (d) {
-                        return d[scope.panel.xaxis];
-                    })).nice();
+                    var color = d3.scale.category10();
 
-                    y.domain(d3.extent(scope.data, function (d) {
-                        return d[scope.panel.yaxis];
-                    })).nice();
-
-                    var svg = d3.select(el).append("svg")
-                        .attr("width", width + margin.left + margin.right)
-                        .attr("height", height + margin.top + margin.bottom)
-                        .attr("viewBox", "0 0 " + parent_width + " " + (height + margin.top + margin.bottom))
-                        .attr("preserveAspectRatio", "xMidYMid")
-                        .append("g")
-                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-                    // add the tooltip area to the webpage
-                    var $tooltip = $('<div>');
-
-                    // Bubble
-                    svg.selectAll(".dot")
-                        .data(scope.data)
-                        .enter().append("circle")
-                        .attr("class", "dot")
-                        .attr("r", function (d) {
-                            if (scope.panel.bubbleSizeField) {
-                                return rScale(d[scope.panel.bubbleSizeField]);
-                            } else {
-                                return 3;
-                            }
-                        })
-                        .attr("cx", function (d) {
-                            return x(d[scope.panel.xaxis]);
-                        })
-                        .attr("cy", function (d) {
-                            return y(d[scope.panel.yaxis]);
-                        })
-                        .style("fill", function (d) {
-                            return color(d[scope.panel.colorField]);
-                        })
-                        .on("mouseover", function (d) {
-                            var colorField = d[scope.panel.colorField] ? d[scope.panel.colorField] : "";
-                            $tooltip
-                                .html('<i class="icon-circle" style="color:' + color(d[scope.panel.colorField]) + ';"></i>' + ' ' +
-                                    colorField + " (" + d[scope.panel.xaxis] + ", " + d[scope.panel.yaxis] + ")<br>")
-                                .place_tt(d3.event.pageX, d3.event.pageY);
-                        })
-                        .on("mouseout", function () {
-                            $tooltip.detach();
-                        })
-                        .on("click", function (d) {
-                            if (scope.panel.colorField) {
-                                filterSrv.set({
-                                    type: 'terms',
-                                    field: scope.panel.colorField,
-                                    value: d[scope.panel.colorField],
-                                    mandate: 'must'
-                                });
-                                $tooltip.detach();
-                                dashboard.refresh();
-                            }
-                        });
-
-                    if (scope.panel.colorField) {
-                        var legend = svg.selectAll(".legend")
-                            .data(color.domain())
-                            .enter().append("g")
-                            .attr("class", "legend")
-                            .attr("transform", function (d, i) {
-                                return "translate(0," + i * 20 + ")";
-                            })
-                            .on("mouseover", function () {
-                                el.style.cursor = 'pointer';
-                            })
-                            .on("mouseout", function () {
-                                el.style.cursor = 'auto';
-                            })
-                            .on("click", function (d) {
-                                filterSrv.set({
-                                    type: 'terms',
-                                    field: scope.panel.colorField,
-                                    value: d,
-                                    mandate: 'must'
-                                });
-
-                                el.style.cursor = 'auto';
-                                dashboard.refresh();
-                            });
-                        legend.append("text")
-                            .attr("x", width - 24)
-                            .attr("y", 9)
-                            .attr("dy", ".35em")
-                            .style("text-anchor", "end")
-                            .text(function (d) {
-                                return d;
-                            });
-                        legend.append("rect")
-                            .attr("x", width - 18)
-                            .attr("width", 18)
-                            .attr("height", 18)
-                            .style("fill", color);
-                    }
-
-                    // Axis
                     var xAxis = d3.svg.axis()
                         .scale(x)
                         .orient("bottom");
+
                     var yAxis = d3.svg.axis()
                         .scale(y)
                         .orient("left");
 
-                    // X-axis label
-                    var xaxisLabel = '';
-                    if (scope.panel.xaxisLabel) {
-                        xaxisLabel = scope.panel.xaxisLabel;
-                    } else {
-                        xaxisLabel = scope.panel.xaxis;
-                    }
+                    var svg = d3.select(el).append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .attr("viewBox", "0 0 " + parent_width + " " + (height + margin.top))
+                        .attr("preserveAspectRatio", "xMidYMid")
+                        .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                    // add the tooltip area to the webpage
+                    var $tooltip = $('<div>');
+
+                    scope.data.forEach(function(d) {
+                        d[scope.panel.yaxis] = +d[scope.panel.yaxis];
+                        d[scope.panel.xaxis] = +d[scope.panel.xaxis];
+                    });
+
+                    x.domain(d3.extent(scope.data, function(d) {
+                        return d[scope.panel.xaxis];
+                    })).nice();
+                    y.domain(d3.extent(scope.data, function(d) {
+                        return d[scope.panel.yaxis];
+                    })).nice();
 
                     svg.append("g")
                         .attr("class", "x axis")
@@ -377,17 +237,9 @@ define([
                         .call(xAxis)
                         .append("text")
                         .attr("class", "label")
-                        .attr("transform", "translate(" + ((width / 2) - margin.left) + " ," + 30 + ")")
+                        .attr("transform", "translate(" + ((width / 2) - margin.left) + " ," + 30+ ")")
                         .style("text-anchor", "middle")
-                        .text(xaxisLabel);
-
-                    // Y-axis label
-                    var yaxisLabel = '';
-                    if (scope.panel.yaxisLabel) {
-                        yaxisLabel = scope.panel.yaxisLabel;
-                    } else {
-                        yaxisLabel = scope.panel.yaxis;
-                    }
+                        .text(scope.panel.xaxis);
 
                     svg.append("g")
                         .attr("class", "y axis")
@@ -396,10 +248,60 @@ define([
                         .attr("class", "label")
                         .attr("transform", "rotate(-90)")
                         .attr("y", 0 - margin.left)
-                        .attr("x", 0 - ((height - margin.top - margin.bottom) / 2))
+                        .attr("x",0 - ((height-margin.top-margin.bottom) / 2))
                         .attr("dy", ".71em")
                         .style("text-anchor", "end")
-                        .text(yaxisLabel);
+                        .text(scope.panel.yaxis);
+
+                    svg.selectAll(".dot")
+                        .data(scope.data)
+                        .enter().append("circle")
+                        .attr("class", "dot")
+                        .attr("r", 3.5)
+                        .attr("cx", function(d) {
+                            return x(d[scope.panel.xaxis]);
+                        })
+                        .attr("cy", function(d) {
+                            return y(d[scope.panel.yaxis]);
+                        })
+                        .style("fill", function(d) {
+                            return color(d[scope.panel.field_type]);
+                        }).on("mouseover", function(d) {
+                            var field_type = d[scope.panel.field_type] ? d[scope.panel.field_type] : "";
+                            $tooltip
+                                .html('<i class="icon-circle" style="color:' + color(d[scope.panel.field_type]) + ';"></i>' + ' ' +
+                                    field_type + " (" + d[scope.panel.xaxis] + ", " + d[scope.panel.yaxis] + ")<br>")
+                                .place_tt(d3.event.pageX, d3.event.pageY);
+                        })
+                        .on("mouseout", function() {
+                            $tooltip.detach();
+                        });
+                    if (scope.panel.field_type) {
+                        var legend = svg.selectAll(".legend")
+                            .data(color.domain())
+                            .enter().append("g")
+                            .attr("class", "legend")
+                            .attr("transform", function(d, i) {
+                                return "translate(0," + i * 20 + ")";
+                            });
+                        legend.append("text")
+                            .attr("x", width - 24)
+                            .attr("y", 9)
+                            .attr("dy", ".35em")
+                            .style("text-anchor", "end")
+                            .text(function(d) {
+                                return d;
+                            });
+
+                        legend.append("rect")
+                            .attr("x", width - 18)
+                            .attr("width", 18)
+                            .attr("height", 18)
+                            .style("fill", color);
+
+
+                    }
+
                 }
             }
         };

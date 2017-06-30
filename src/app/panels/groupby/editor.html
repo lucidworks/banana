@@ -1,0 +1,58 @@
+  <div class="row-fluid">
+    <div class="span2">
+      <label class="small">{{'Mode'|translate}}</label>
+      <!-- Banana: does not support 'min','mean','max', and 'total' modes yet -->
+      <!-- <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['count','min','mean','max','total','value']"></select> -->
+      <select ng-change="set_refresh(true)" class="input-small" ng-model="panel.mode" ng-options="f for f in ['values']"></select>
+    </div>
+    <div class="span2" >
+      <label class="small">{{'Field'|translate}}</label>
+        <input ng-change="set_refresh(true)" placeholder="Start typing" bs-typeahead="fields.list" type="text" class="input-small" ng-model="panel.value_field">
+    </div>
+    <div class="span2" >
+      <label class="small">{{'Max Rows'|translate}}</label>
+      <input ng-change="set_refresh(true)" placeholder="100000" type="number" class="input-small" ng-model="panel.max_rows">
+    </div>
+    <div class="span2" >
+      <label class="small">{{'Y-Name'|translate}}</label>
+      <input type="text" class="input-small" ng-model="panel.yname" ng-checked="panel.yname">
+    </div>
+
+  </div>
+  <!-- Row for Group By field when Mode is values -->
+  <div class="row-fluid" ng-if="panel.mode == 'values'">
+    <div class="span2">
+      <label class="small">{{'Group By Field'|translate}}</label>
+      <input ng-change="set_refresh(true)" placeholder="Optional" bs-typeahead="fields.list" type="text" class="input-small" ng-model="panel.group_field">
+    </div>
+    <!-- <div class="span3">
+      <label class="small">Max Rows/Group <tip>Specify the number of results to return for each group.</tip></label>
+      <input ng-change="set_refresh(true)" placeholder="10" type="number" class="input-small" ng-model="panel.group_limit">
+    </div> -->
+  </div>
+
+  <h5>{{'Tooltip Settings'|translate}}</h5>
+  <div class="row-fluid" style="margin-bottom:10px;">
+    <div class="span3">
+      <label class="small">{{'Display Query'|translate}}</label>
+      <input type="checkbox" ng-model="panel.tooltip.query_as_alias" />
+    </div>
+  </div>
+
+  <div class="row-fluid">
+      <h5>{{'Real-time (Auto-refresh)'|translate}}</h5>
+      <div class="span1">
+          <label class="small">{{'Enable'|translate}}</label><input type="checkbox" ng-model="panel.refresh.enable" ng-checked="panel.refresh.enable">
+      </div>
+      <div class="span2">
+          <label class="small">{{'Interval (seconds)'|translate}}</label>
+          <input type="number" min="2" class="input-mini" ng-model="panel.refresh.interval">
+      </div>
+  </div>
+  <div class="row-fluid">
+    <h5>{{'Linkage Effective'|translate}}</h5>
+    <div class="span1">
+      <label class="small">{{'LinkageID'|translate}}</label><input type="text" class="input-small" ng-model="panel.linkage_id" ng-change="set_refresh(true)">
+    </div>
+
+  </div>

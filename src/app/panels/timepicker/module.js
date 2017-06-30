@@ -28,15 +28,9 @@ function (angular, app, _, moment, kbn, $) {
 
   module.controller('timepicker', function($scope, $rootScope, $timeout, timer, $http, dashboard, filterSrv) {
     $scope.panelMeta = {
-      modals: [{
-        description: "Inspect",
-        icon: "icon-info-sign",
-        partial: "app/partials/inspector.html",
-        show: true
-      }],
+
       status  : "Stable",
-      description : "A panel for controlling the time range filters. If you have time based data, "+
-        " or if you're using time stamped indices, you need one of these"
+      description : ""
     };
 
     // Set and populate defaults
@@ -48,6 +42,8 @@ function (angular, app, _, moment, kbn, $) {
       timefield: 'event_timestamp',
       timeformat: "",
       spyable: true,
+        display:'block',
+        icon:"icon-caret-down",
       refresh: {
         enable: false,
         interval: 30,
@@ -88,7 +84,13 @@ function (angular, app, _, moment, kbn, $) {
       // These 3 statements basicly do everything time_apply() does
       set_timepicker($scope.time.from,$scope.time.to);
       update_panel();
-      set_time_filter($scope.time);
+
+      // If we're in a mode where something must be calculated, clear existing filters
+      // and set new ones
+      //if($scope.panel.mode !== 'absolute') {
+        set_time_filter($scope.time);
+      //}
+
       dashboard.refresh();
 
       // Start refresh timer if enabled
@@ -110,7 +112,20 @@ function (angular, app, _, moment, kbn, $) {
           }
         }
       });
+        dashboard.current.load = false;
     };
+
+      $scope.display=function() {
+          if($scope.panel.display === 'none'){
+              $scope.panel.display='block';
+              $scope.panel.icon="icon-caret-down";
+
+
+          }else{
+              $scope.panel.display='none';
+              $scope.panel.icon="icon-caret-up";
+          }
+      };
 
     $scope.set_interval = function (refresh_interval) {
       $scope.panel.refresh.interval = refresh_interval;
@@ -177,7 +192,6 @@ function (angular, app, _, moment, kbn, $) {
       };
       $scope.time_apply();
     };
-
     $scope.close_edit = function() {
       $scope.time_apply();
     };
@@ -244,7 +258,7 @@ function (angular, app, _, moment, kbn, $) {
 
       update_panel();
       set_time_filter($scope.time);
-
+      dashboard.current.enable_linkage = true;
       dashboard.refresh();
     };
 

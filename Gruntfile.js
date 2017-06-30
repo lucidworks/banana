@@ -58,8 +58,9 @@ module.exports = function (grunt) {
         }
       },
       options: {
-        jshintrc: '.jshintrc',
-        reporterOutput: ''
+        jshintrc:'.jshintrc',
+        reporterOutput: '',
+        force: true,
       }
     },
     htmlmin:{
@@ -229,7 +230,8 @@ module.exports = function (grunt) {
         'jquery.flot.pie',
         'angular-sanitize',
         'angular-dragdrop',
-        'd3'
+        'd3',
+        'echarts',
       ]
     }
   ];

@@ -1,0 +1,48 @@
+<div ng-controller='statistics' ng-init="init()">
+  <div ng-style="{'display':panel.display }">
+    <style type="text/css">
+      table td {
+        word-break: break-all;
+      }
+    </style>
+  <!-- START Table -->
+
+    <table st-table="displayedCollection" st-safe-src="data" class="table table-striped">
+      <thead>
+      <tr>
+        <th st-sort="term">{{'Iterm'|translate}}</th>
+        <th st-sort="count">{{'Count'|translate}}</th>
+        <th ng-if="panel.mode === 'statistic'" st-sort="mean">{{'Mean'|translate}}</th>
+        <th ng-if="panel.mode === 'statistic'" st-sort="mean">{{'Max'|translate}}</th>
+        <th ng-if="panel.mode === 'statistic'" st-sort="mean">{{'Min'|translate}}</th>
+        <th ng-if="panel.mode === 'statistic'" st-sort="mean">{{'Stddev'|translate}}</th>
+      </tr>
+      <tr>
+        <th>
+          <input st-search placeholder="global search" class="input-sm form-control" type="search"/>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="row in displayedCollection">
+        <td>{{row.term}}</td>
+        <td>{{row.count}}</td>
+        <td ng-if="panel.mode === 'statistic'">{{row.mean}}</td>
+        <td ng-if="panel.mode === 'statistic'">{{row.max}}</td>
+        <td ng-if="panel.mode === 'statistic'">{{row.min}}</td>
+        <td ng-if="panel.mode === 'statistic'">{{row.stddev}}</td>
+      </tr>
+      </tbody>
+      <tfoot>
+      <tr>
+        <td colspan="5">
+          <div st-pagination="" st-items-by-page="panel.itemsByPage" st-displayed-pages="panel.displayPage" class="pagination pull-right"></div>
+        </td>
+      </tr>
+      </tfoot>
+    </table>
+  <!-- END Table -->
+  <!-- Dummy div for testing color name -->
+  <div id="colorTest"></div>
+</div>
+</div>

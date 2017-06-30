@@ -24,29 +24,21 @@ function (angular, app, _, L, localRequire) {
   'use strict';
 
   var DEBUG = false; // DEBUG mode
-  var fitBoundsFlag = true;
 
   var module = angular.module('kibana.panels.bettermap', []);
   app.useModule(module);
 
-  module.controller('bettermap', function($scope, querySrv, dashboard, filterSrv) {
+  module.controller('bettermap', function($scope,$translate, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
-      modals : [
-        {
-          description: "Inspect",
-          icon: "icon-info-sign",
-          partial: "app/partials/inspector.html",
-          show: $scope.panel.spyable
-        }
-      ],
+
       editorTabs : [
         {
-          title: 'Queries',
+          title: $translate.instant('Queries'),
           src: 'app/partials/querySelect.html'
         }
       ],
       status  : "Experimental",
-      description : "Displays geo points in clustered groups on a map. For better or worse, this panel does NOT use the geo-faceting capabilities of Solr. This means that it transfers more data and is generally heavier to compute, while showing less actual data. If you have a time filter, it will attempt to show to most recent points in your search, up to your defined limit. It is best used after filtering the results through other queries and filter queries, or when you want to inspect a recent sample of points."
+      description : ""
     };
 
     // Set and populate defaults
@@ -62,13 +54,13 @@ function (angular, app, _, L, localRequire) {
       lat_start: '',
       lat_end  : '',
       lon_start: '',
-      lon_end  : '',
+        linkage_id:'a',
+        display:'block',
+        icon:"icon-caret-down",
+      lon_end: '',
 //      tooltip : "_id",
-      field: null,
-      show_queries: true,
-      fitBoundsAuto: true,
-      lat_empty: 0,
-      lon_empty: 0
+      field   : null,
+      show_queries:true,
     };
 
     _.defaults($scope.panel, _d);
@@ -88,6 +80,18 @@ function (angular, app, _, L, localRequire) {
       $scope.refresh = state;
     };
 
+      $scope.display=function() {
+          if($scope.panel.display === 'none'){
+              $scope.panel.display='block';
+              $scope.panel.icon="icon-caret-down";
+
+
+          }else{
+              $scope.panel.display='none';
+              $scope.panel.icon="icon-caret-up";
+          }
+      };
+
     $scope.close_edit = function() {
       if($scope.refresh) {
         $scope.get_data();
@@ -95,132 +99,123 @@ function (angular, app, _, L, localRequire) {
       $scope.refresh =  false;
     };
 
-    $scope.fitBounds = function() {
-      fitBoundsFlag = true;
-      $scope.$emit('draw');
-    };
-
     $scope.get_data = function(segment,query_id) {
-      $scope.require(['./leaflet/plugins'], function () {
-        $scope.panel.error =  false;
-        delete $scope.panel.error;
+        if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+        $scope.require(['./leaflet/plugins'], function () {
+            $scope.panel.error = false;
+            delete $scope.panel.error;
 
-        // Make sure we have everything for the request to complete
-        if(dashboard.indices.length === 0) {
-          return;
-        }
+            // Make sure we have everything for the request to complete
+            if (dashboard.indices.length === 0) {
+                return;
+            }
 
-        // check if [lat,lon] field is defined
-        if(_.isUndefined($scope.panel.field)) {
-          $scope.panel.error = "Please select a field that contains geo point in [lon,lat] format";
-          return;
-        }
+            // check if [lat,lon] field is defined
+            if (_.isUndefined($scope.panel.field)) {
+                $scope.panel.error = "Please select a field that contains geo point in [lon,lat] format";
+                return;
+            }
 
-        // Solr.js
-        $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
+            // Solr.js
+            $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
-        var _segment = _.isUndefined(segment) ? 0 : segment;
+            var _segment = _.isUndefined(segment) ? 0 : segment;
 
-        // var request = $scope.sjs.Request().indices(dashboard.indices);
+            // var request = $scope.sjs.Request().indices(dashboard.indices);
 
-        $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
-        var boolQuery = $scope.sjs.BoolQuery();
-        _.each($scope.panel.queries.ids,function(id) {
-          boolQuery = boolQuery.should(querySrv.getEjsObj(id));
+            $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
+            var boolQuery = $scope.sjs.BoolQuery();
+            _.each($scope.panel.queries.ids, function (id) {
+                boolQuery = boolQuery.should(querySrv.getEjsObj(id));
+            });
+
+            var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
+
+            request = request.query(
+                $scope.sjs.FilteredQuery(
+                    boolQuery,
+                    filterSrv.getBoolFilter(filterSrv.ids)
+                ))
+                .size($scope.panel.size); // Set the size of query result
+
+            $scope.populate_modal(request);
+
+            if (DEBUG) {
+                console.debug('bettermap:\n\trequest=', request, '\n\trequest.toString()=', request.toString());
+            }
+
+            // Build Solr query
+            var fq = '';
+            if (filterSrv.getSolrFq()) {
+                fq = '&' + filterSrv.getSolrFq();
+            }
+            var query_size = $scope.panel.size;
+            var wt_json = '&wt=json';
+            var rows_limit;
+            var sorting = '&sort=' + filterSrv.getTimeField() + ' desc'; // Only get the latest data, sorted by time field.
+
+            // set the size of query result
+            if (query_size !== undefined && query_size !== 0) {
+                rows_limit = '&rows=' + query_size;
+            } else { // default
+                rows_limit = '&rows=25';
+            }
+
+            // FIXED LatLong Query
+            if ($scope.panel.lat_start && $scope.panel.lat_end && $scope.panel.lon_start && $scope.panel.lon_end && $scope.panel.field) {
+                fq += '&fq=' + $scope.panel.field + ':[' + $scope.panel.lat_start + ',' + $scope.panel.lon_start + ' TO ' + $scope.panel.lat_end + ',' + $scope.panel.lon_end + ']';
+            }
+
+            // Set the panel's query
+            $scope.panel.queries.query = querySrv.getORquery() + wt_json + rows_limit + fq + sorting;
+
+            // Set the additional custom query
+            if ($scope.panel.queries.custom != null) {
+                request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
+            } else {
+                request = request.setQuery($scope.panel.queries.query);
+            }
+
+            var results = request.doSearch();
+
+            results.then(function (results) {
+                $scope.panelMeta.loading = false;
+
+                if (_segment === 0) {
+                    $scope.data = [];
+                    query_id = $scope.query_id = new Date().getTime();
+                }
+
+                // Check for error and abort if found
+                if (!(_.isUndefined(results.error))) {
+                    $scope.panel.error = $scope.parse_error(results.error.msg);
+                    return;
+                }
+
+                // Check that we're still on the same query, if not stop
+                if ($scope.query_id === query_id) {
+                    // Keep only what we need for the set
+                    $scope.data = $scope.data.slice(0, $scope.panel.size).concat(_.map(results.response.docs, function (hit) {
+                        var latlon = hit[$scope.panel.field].split(',');
+                        return {
+                            coordinates: new L.LatLng(latlon[0], latlon[1]),
+                            tooltip: hit[$scope.panel.tooltip]
+                        };
+                    }));
+
+                } else {
+                    return;
+                }
+
+                $scope.$emit('draw');
+                // Get $size results then stop querying
+                // Searching Solr using Segments
+                if ($scope.data.length < $scope.panel.size && _segment + 1 < dashboard.indices.length) {
+                    $scope.get_data(_segment + 1, $scope.query_id);
+                }
+            });
         });
-
-        var request = $scope.sjs.Request().indices(dashboard.indices[_segment]);
-
-        request = request.query(
-        $scope.sjs.FilteredQuery(
-          boolQuery,
-          filterSrv.getBoolFilter(filterSrv.ids)
-        ))
-        .size($scope.panel.size); // Set the size of query result
-
-        $scope.populate_modal(request);
-
-        if (DEBUG) {
-            console.debug('bettermap:\n\trequest=',request,'\n\trequest.toString()=',request.toString());
-        }
-
-        // Build Solr query
-        var fq = '';
-        if (filterSrv.getSolrFq()) {
-          fq = '&' + filterSrv.getSolrFq();
-        }
-        var query_size = $scope.panel.size;
-        var wt_json = '&wt=json';
-        var rows_limit;
-        var sorting = '&sort=' + filterSrv.getTimeField() + ' desc'; // Only get the latest data, sorted by time field.
-
-        // set the size of query result
-        if (query_size !== undefined && query_size !== 0) {
-          rows_limit = '&rows=' + query_size;
-        } else { // default
-          rows_limit = '&rows=25';
-        }
-
-        // FIXED LatLong Query
-        if($scope.panel.lat_start && $scope.panel.lat_end && $scope.panel.lon_start && $scope.panel.lon_end && $scope.panel.field) {
-          fq += '&fq=' + $scope.panel.field + ':[' + $scope.panel.lat_start + ',' + $scope.panel.lon_start + ' TO ' + $scope.panel.lat_end + ',' + $scope.panel.lon_end + ']';
-        }
-
-        // Set the panel's query
-        $scope.panel.queries.query = querySrv.getORquery() + wt_json + rows_limit + fq + sorting;
-
-        // Set the additional custom query
-        if ($scope.panel.queries.custom != null) {
-          request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
-        } else {
-          request = request.setQuery($scope.panel.queries.query);
-        }
-
-        var results = request.doSearch();
-
-        results.then(function(results) {
-          $scope.panelMeta.loading = false;
-
-          if(_segment === 0) {
-            $scope.data = [];
-            query_id = $scope.query_id = new Date().getTime();
-          }
-
-          // Check for error and abort if found
-          if(!(_.isUndefined(results.error))) {
-            $scope.panel.error = $scope.parse_error(results.error.msg);
-            return;
-          }
-
-          // Check that we're still on the same query, if not stop
-          if($scope.query_id === query_id) {
-            // Keep only what we need for the set
-            $scope.data = $scope.data.slice(0,$scope.panel.size).concat(_.map(results.response.docs, function(hit) {
-              var latlon;
-              if (hit[$scope.panel.field]) {
-                latlon = hit[$scope.panel.field].split(',');
-              } else {
-                latlon = [$scope.panel.lat_empty, $scope.panel.lon_empty];
-              }
-
-              return {
-                coordinates : new L.LatLng(latlon[0],latlon[1]),
-                tooltip : hit[$scope.panel.tooltip]
-              };
-            }));
-
-          } else {
-            return;
-          }
-
-          $scope.$emit('draw');
-          // Get $size results then stop querying
-          // Searching Solr using Segments
-          if($scope.data.length < $scope.panel.size && _segment+1 < dashboard.indices.length) {
-            $scope.get_data(_segment+1, $scope.query_id);
-          }
-        });
-      });
+    }
     };
 
     $scope.populate_modal = function(request) {
@@ -286,10 +281,7 @@ function (angular, app, _, L, localRequire) {
 
             layerGroup.addTo(map);
 
-            if (scope.panel.fitBoundsAuto || fitBoundsFlag) {
-              map.fitBounds(_.pluck(scope.data,'coordinates'));
-              fitBoundsFlag = false;
-            }
+            map.fitBounds(_.pluck(scope.data,'coordinates'));
           });
         }
       }

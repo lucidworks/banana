@@ -20,13 +20,15 @@ function (angular, app, _, require) {
   module.controller('text', function($scope) {
     $scope.panelMeta = {
       status  : "Stable",
-      description : "A static text panel that can use plain text, markdown, or (sanitized) HTML"
+      description : ""
     };
 
     // Set and populate defaults
     var _d = {
       status  : "Stable",
       mode    : "markdown",
+        display:'block',
+        icon:"icon-caret-down",
       content : "",
       style: {},
     };
@@ -35,6 +37,17 @@ function (angular, app, _, require) {
     $scope.init = function() {
       $scope.ready = false;
     };
+      $scope.display=function() {
+          if($scope.panel.display === 'none'){
+              $scope.panel.display='block';
+              $scope.panel.icon="icon-caret-down";
+
+
+          }else{
+              $scope.panel.display='none';
+              $scope.panel.icon="icon-caret-up";
+          }
+      };
 
   });
 

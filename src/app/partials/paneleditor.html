@@ -1,18 +1,18 @@
 <div class="modal-body">
-  <div class="pull-right editor-title">{{panel.type}} settings</div>
+  <div class="pull-right editor-title">{{panel.type}} {{'Settings'|translate}}</div>
   <div ng-model="editor.index" bs-tabs>
     <div ng-repeat="tab in setEditorTabs(panelMeta)" data-title="{{tab}}">
     </div>
   </div>
-  <div ng-show="editorTabs[editor.index] == 'General'">
+  <div ng-show="editorTabs[editor.index] == 'General'||editorTabs[editor.index] == '通用设置'">
     <div ng-include src="'app/partials/panelgeneral.html'"></div>
   </div>
 
-  <div ng-show="editorTabs[editor.index] == 'Panel'">
+  <div ng-show="editorTabs[editor.index] == 'Panel'||editorTabs[editor.index] == '图表设置'">
     <div ng-include src="edit_path(panel.type)"></div>
   </div>
 
-  <div ng-show="editorTabs[editor.index] == 'Info'">
+  <div ng-show="editorTabs[editor.index] == 'Info'||editorTabs[editor.index] == '信息'">
     <div ng-include src="'app/partials/panelinfo.html'"></div>
   </div>
 
@@ -23,5 +23,5 @@
 
 <div class="modal-footer">
   <!-- close_edit() is provided here to allow for a scope to perform action on dismiss -->
-  <button type="button" class="btn btn-danger" ng-click="editor.index=0;close_edit();dismiss()">Close</button>
+  <button type="button" class="btn btn-danger" ng-click="editor.index=0;close_edit();dismiss()">{{'Close'|translate}}</button>
 </div>

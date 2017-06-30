@@ -15,24 +15,17 @@ function (angular, app, _, $, d3) {
   var module = angular.module('kibana.panels.bar', []);
   app.useModule(module);
 
-  module.controller('bar', function($scope, dashboard, querySrv, filterSrv) {
+  module.controller('bar', function($scope,$translate, dashboard, querySrv, filterSrv) {
     $scope.panelMeta = {
-      modals: [
-        {
-          description: 'Inspect',
-          icon: 'icon-info-sign',
-          partial: 'app/partials/inspector.html',
-          show: $scope.panel.spyable
-        }
-      ],
+
       editorTabs: [
         {
-          title: 'Queries',
+          title: $translate.instant('Queries'),
           src: 'app/partials/querySelect.html'
         }
       ],
       status: 'Experimental',
-      description: 'Bar module for tutorial'
+      description : ""
     };
 
     // Define panel's default properties and values
@@ -43,8 +36,11 @@ function (angular, app, _, $, d3) {
         custom: ''
       },
       field: '',
+        linkage_id:'a',
       max_rows: 10,
       spyable: true,
+        display:'block',
+        icon:"icon-caret-down",
       show_queries: true
     };
 
@@ -73,51 +69,64 @@ function (angular, app, _, $, d3) {
     $scope.render = function() {
       $scope.$emit('render');
     };
+      $scope.display=function() {
+          if($scope.panel.display === 'none'){
+              $scope.panel.display='block';
+              $scope.panel.icon="icon-caret-down";
 
+
+          }else{
+              $scope.panel.display='none';
+              $scope.panel.icon="icon-caret-up";
+          }
+      };
     $scope.get_data = function() {
-      // Show the spinning wheel icon
-      $scope.panelMeta.loading = true;
+        if(($scope.panel.linkage_id === dashboard.current.linkage_id)||dashboard.current.enable_linkage){
 
-      // Set Solr server
-      $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
-      var request = $scope.sjs.Request();
+            // Show the spinning wheel icon
+        $scope.panelMeta.loading = true;
 
-      // Construct Solr query
-      var fq = '';
-      if (filterSrv.getSolrFq()) {
-          fq = '&' + filterSrv.getSolrFq();
-      }
-      var wt = '&wt=csv';
-      var fl = '&fl=' + $scope.panel.field;
-      var rows_limit = '&rows=' + $scope.panel.max_rows;
+        // Set Solr server
+        $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
+        var request = $scope.sjs.Request();
 
-      $scope.panel.queries.query = querySrv.getQuery(0) + fq + fl + wt + rows_limit;
+        // Construct Solr query
+        var fq = '';
+        if (filterSrv.getSolrFq()) {
+            fq = '&' + filterSrv.getSolrFq();
+        }
+        var wt = '&wt=csv';
+        var fl = '&fl=' + $scope.panel.field;
+        var rows_limit = '&rows=' + $scope.panel.max_rows;
 
-      // Set the additional custom query
-      if ($scope.panel.queries.custom != null) {
-          request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
-      } else {
-          request = request.setQuery($scope.panel.queries.query);
-      }
+        $scope.panel.queries.query = querySrv.getQuery(0) + fq + fl + wt + rows_limit;
 
-      // Execute the search and get results
-      var results = request.doSearch();
+        // Set the additional custom query
+        if ($scope.panel.queries.custom != null) {
+            request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
+        } else {
+            request = request.setQuery($scope.panel.queries.query);
+        }
 
-      // Populate scope when we have results
-      results.then(function(results) {
-        $scope.data = {};
+        // Execute the search and get results
+        var results = request.doSearch();
 
-        var parsedResults = d3.csv.parse(results, function(d) {
-          d[$scope.panel.field] = +d[$scope.panel.field]; // coerce to number
-          return d;
+        // Populate scope when we have results
+        results.then(function (results) {
+            $scope.data = {};
+
+            var parsedResults = d3.csv.parse(results, function (d) {
+                d[$scope.panel.field] = +d[$scope.panel.field]; // coerce to number
+                return d;
+            });
+
+            $scope.data = _.pluck(parsedResults, $scope.panel.field);
+            $scope.render();
         });
 
-        $scope.data = _.pluck(parsedResults,$scope.panel.field);
-        $scope.render();
-      });
-
-      // Hide the spinning wheel icon
-      $scope.panelMeta.loading = false;
+        // Hide the spinning wheel icon
+        $scope.panelMeta.loading = false;
+    }
     };
   });
 
