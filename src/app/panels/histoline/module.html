@@ -42,34 +42,34 @@
   <!-- START Pie or bar chart -->
   <div ng-style="{'display':panel.display}">
   <div >
-    <span ng-if='panel.options'>
-      <a class="link underline small" ng-if='panel.options' ng-click="options=!options">
-        <i ng-if="!options" class="icon-caret-right"></i><i ng-if="options" class="icon-caret-down"></i> View
+    <span ng-show='panel.options'>
+      <a class="link underline small" ng-show='panel.options' ng-click="options=!options">
+        <i ng-if="!options" class="icon-caret-right"></i><i ng-if="options" class="icon-caret-down"></i>{{'View'|translate}}
       </a>
     </span>
     <form class="form-inline bordered histogram-options" ng-if="options">
     <span class="checkbox">
       <label class="small">
         <input type="checkbox" ng-model="panel.bars" ng-checked="panel.bars" ng-change="render()">
-        Bars
+        {{'Bars'|translate}}
       </label>
     </span>
       <span class="checkbox">
       <label class="small">
         <input type="checkbox" ng-model="panel.linkage" ng-checked="panel.linkage" ng-change="render()">
-        Linkage
+        {{'Linkage'|translate}}
       </label>
     </span>
       <span class="checkbox">
       <label class="small">
         <input type="checkbox" ng-model="panel.area" ng-checked="panel.area" ng-change="render()">
-        Area
+        {{'Area'|translate}}
       </label>
     </span>
       <span class="checkbox">
       <label class="small">
         <input type="checkbox" ng-model="panel.average" ng-checked="panel.average" ng-change="render()">
-        Average
+        {{'Average'|translate}}
       </label>
     </span>
 

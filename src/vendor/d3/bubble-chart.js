@@ -28,7 +28,9 @@
     self.options = {};
     $.extend(self.options, {
       plugins: [],
-      container: ".bubbleChart",
+      container: settings.container,
+      elwidth:settings.elwidth,
+      elheight:settings.elheight,
       viewBoxSize: defaultViewBoxSize,
       innerRadius: defaultInnerRadius,
       outerRadius: defaultOuterRadius,
@@ -147,9 +149,10 @@
 
       if (options.supportResponsive) {
         $(window).resize(function() {
-          var width = $(options.container).width();
-          self.svg.attr("width", width);
-          self.svg.attr("height", width);
+          var width = $(options.elwidth);
+          var height = $(options.elheight);
+          self.svg.attr("width", width[0]);
+          self.svg.attr("height", width[0]);
         });
         $(window).resize();
       }

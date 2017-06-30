@@ -98,7 +98,7 @@
                             <a href="{{event.kibana._source[panel.url_field]}}" target="_blank"> {{event.kibana._source[panel.header_field] | tableTruncate:panel.trimFactor:1}} </a>
                             <br>
                             <div ng-if="highlight_flag" ng-bind-html="(highlighting[highlightingKeys[panel.offset + $index]][panel.body_field]) | tableTruncate:panel.trimFactor:3 | tableHighlight"></div>
-                            <div ng-if="!highlight_flag" ng-bind-html-unsafe="(event.kibana._source[panel.body_field]) | tableTruncate:panel.trimFactor:3"></div>
+                            <div ng-if="!highlight_flag" ng-bind-html="(event.kibana._source[panel.body_field]) | tableTruncate:panel.trimFactor:3"></div>
                             <br>
                         </td>
                         </td>
@@ -128,7 +128,7 @@
                                     </td>
                                     <!-- At some point we need to create a more efficient way of applying the filter pipeline
                                     -->
-                                    <td style="white-space:pre-wrap" ng-bind-html-unsafe="value|noXml|urlLink|stringify|tablebody|tableTruncate:panel.trimFactor:1"></td>
+                                    <td style="white-space:pre-wrap" ng-bind-html="value|noXml|urlLink|stringify|tablebody|tableTruncate:panel.trimFactor:1"></td>
                                 </tr>
                             </table>
                             <pre style="white-space:pre-wrap" ng-bind-html="without_kibana(event)|tableJson:2" ng-switch-when="json"></pre>

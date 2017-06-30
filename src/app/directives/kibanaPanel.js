@@ -6,7 +6,7 @@ function (angular) {
 
   angular
     .module('kibana.directives')
-    .directive('kibanaPanel', function($compile,$translate) {
+    .directive('kibanaPanel', function($compile) {
       var container = '<div class="panelCont animated fadeInLeft" ></div>';
 
       var editorTemplate =

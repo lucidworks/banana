@@ -57,11 +57,11 @@
             <td ng-if="panel.fields.length<1">{{event.kibana._source|stringify|tableTruncate:panel.trimFactor:1}}</td>
 
             <!-- Table columns -->
-            <td ng-if="panel.fields.length>0" ng-repeat="field in panel.fields" ng-bind-html-unsafe="(event.kibana.highlight[field]||event.kibana._source[field]) |tableHighlight |tableTruncate:panel.trimFactor:panel.fields.length:field:panel.imageFields |tableDisplayImageField:field:panel.imageFields:panel.imgFieldWidth:panel.imgFieldHeight"></td>
+            <td ng-if="panel.fields.length>0" ng-repeat="field in panel.fields" ng-bind-html="(event.kibana.highlight[field]||event.kibana._source[field]) |tableHighlight |tableTruncate:panel.trimFactor:panel.fields.length:field:panel.imageFields |tableDisplayImageField:field:panel.imageFields:panel.imgFieldWidth:panel.imgFieldHeight"></td>
 
             <!-- Hyperlink column -->
-            <td ng-click="" ng-if="panel.enableHyperlink && panel.displayLinkIcon" ng-bind-html-unsafe="event.kibana._source[panel.hyperlinkColumnForURI] |urlLinkAsIcon"></td>
-            <td ng-if="panel.enableHyperlink && !panel.displayLinkIcon" ng-bind-html-unsafe="event.kibana._source[panel.hyperlinkColumnForURI] |urlLink"></td>
+            <td ng-click="" ng-if="panel.enableHyperlink && panel.displayLinkIcon" ng-bind-html="event.kibana._source[panel.hyperlinkColumnForURI] |urlLinkAsIcon"></td>
+            <td ng-if="panel.enableHyperlink && !panel.displayLinkIcon" ng-bind-html="event.kibana._source[panel.hyperlinkColumnForURI] |urlLink"></td>
             <!-- end Hyperlink column -->
           </tr>
 
@@ -88,7 +88,7 @@
                     <i class="pointer icon-th" ng-click="toggle_field(key)" bs-tooltip="'Toggle table column'"></i>
                   </td>
                   <!-- At some point we need to create a more efficient way of applying the filter pipeline -->
-                  <td style="white-space:pre-wrap" ng-bind-html-unsafe="value|noXml|urlLink|stringify"></td>
+                  <td style="white-space:pre-wrap" ng-bind-html="value|noXml|urlLink|stringify"></td>
                 </tr>
               </table>
               <pre style="white-space:pre-wrap"  ng-bind-html="without_kibana(event)|tableJson:2" ng-switch-when="json"></pre>

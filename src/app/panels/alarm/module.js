@@ -431,7 +431,7 @@ function (angular, app, _, $, kbn) {
             if(scope.data[i1].name==="low"){
               low_value = scope.data[i1].value;
             }else if(scope.data[i1].name==="medium"){
-              middle_value = scope.data[i].value;
+              middle_value = scope.data[i1].value;
             }else if(scope.data[i1].name==="high"){
               high_value = scope.data[i1].value;
             }

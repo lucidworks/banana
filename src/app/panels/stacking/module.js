@@ -535,9 +535,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           var idd = scope.$id;
           require(['echarts'], function(ec){
               var echarts = ec;
-              if(myChart) {
-                myChart.dispose();
-              }
+
 
 				  var labelcolor = false;
           if (dashboard.current.style === 'dark'){
@@ -545,7 +543,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           }
               // Add plot to scope so we can build out own legend
           if(scope.panel.chart === 'stacking') {
-
+            if(myChart) {
+              myChart.dispose();
+            }
             myChart = echarts.init(document.getElementById(idd));
             var option = {
    
@@ -722,7 +722,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             sum_tcpElapsed/=chartData[0].length;
             sum_requestElapsed/=chartData[0].length;
             sum_responseElapsed/=chartData[0].length;
-			   
+            if(myChart) {
+              myChart.dispose();
+            }
 				    myChart = echarts.init(document.getElementById(idd));
 				   
 					  var option1 = {

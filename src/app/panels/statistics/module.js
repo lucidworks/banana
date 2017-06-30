@@ -108,7 +108,7 @@ define([
                 }
             };
             $scope.display=function() {
-                if($scope.panel.display=='none'){
+                if($scope.panel.display==='none'){
                     $scope.panel.display='block';
                     $scope.panel.icon="icon-caret-down";
 
@@ -199,7 +199,7 @@ define([
             };
 
             $scope.get_data = function() {
-                if(($scope.panel.linkage_id==dashboard.current.linkage_id)||dashboard.current.enable_linkage){
+                if(($scope.panel.linkage_id===dashboard.current.linkage_id)||dashboard.current.enable_linkage){
                     // Make sure we have everything for the request to complete
                     if (dashboard.indices.length === 0) {
                         return;
@@ -409,7 +409,7 @@ define([
                             $scope.search();
 
                             $scope.sort_by = function(newSortingOrder) {
-                                if ($scope.sortingOrder == newSortingOrder){
+                                if ($scope.sortingOrder === newSortingOrder){
                                     $scope.reverse = !$scope.reverse;
                                     console.log($scope.reverse);
                                     $scope.filteredItems.reverse();
@@ -428,9 +428,9 @@ define([
                                     $(this).removeClass().addClass('icon-sort');
                                 });
                                 if (!$scope.reverse)
-                                    $('th.'+newSortingOrder+' i').removeClass().addClass('icon-chevron-up');
+                                {$('th.'+newSortingOrder+' i').removeClass().addClass('icon-chevron-up');}
                                 else
-                                    $('th.'+newSortingOrder+' i').removeClass().addClass('icon-chevron-down');
+                                { $('th.'+newSortingOrder+' i').removeClass().addClass('icon-chevron-down');}
 
                             };
 

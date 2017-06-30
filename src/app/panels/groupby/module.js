@@ -50,7 +50,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
   var module = angular.module('kibana.panels.histogram', []);
   app.useModule(module);
 
-  module.controller('histogra', function($scope,$translate, $q, $timeout, timer, querySrv, dashboard, filterSrv) {
+  module.controller('groupby', function($scope,$translate, $q, $timeout, timer, querySrv, dashboard, filterSrv) {
     $scope.panelMeta = {
 
       editorTabs : [
@@ -65,7 +65,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
     // Set and populate defaults
     var _d = {
-      mode        : 'count',
+      mode        : 'values',
       queries     : {
         mode        : 'all',
         ids         : [],
@@ -78,10 +78,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       sum_value   : false,
       auto_int    : true,
       linkage_id:'a',
+      yname:'时间（ms）',
       resolution  : 100,
       interval    : '5m',
       intervals   : ['auto','1s','1m','5m','10m','30m','1h','3h','12h','1d','1w','1M','1y'],
       fill        : 0,
+      chartColors :['#6ef7d8','#6ef4f7','#6ed1f7','#6eb9f7','#6ea6f7','#6e8bf7','#6e6ff7','#f7d36e','#f7b86e','#f79f6e','#f78d6e'],
       linewidth   : 3,
       timezone    : 'browser', // browser, utc or a standard timezone
       spyable     : true,
@@ -508,12 +510,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
   });
 
-  module.directive('histograChart', function(dashboard, filterSrv) {
+  module.directive('groupbyChart', function(dashboard, filterSrv) {
     return {
       restrict: 'A',
       template: '<div></div>',
       link: function(scope, elem) {
-
+      var myChart;
         // Receive render events
         scope.$on('render',function(){
           render_panel();
@@ -528,306 +530,147 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         function render_panel() {
           // IE doesn't work without this
           elem.css({height:scope.panel.height || scope.row.height});
+          var aaa= scope.data;
+          var label=[];
+          var timedata=[];
+          var y1 = 0;
+          var y2=0;
+          var y3=0;
+          var dataAll=[];
+          var data = [];
+          for(var i1=0;i1<aaa.length;i1++){
+            label[i1] = aaa[i1].info.alias;
 
-          Date.prototype.pattern = function (fmt) {
-            var o = {
-              "M+" : this.getMonth() + 1, //月份
-              "d+" : this.getDate(), //日
-              "h+" : this.getHours() % 12 === 0 ? 12 : this.getHours() % 12, //小时
-              "H+" : this.getHours(), //小时
-              "m+" : this.getMinutes(), //分
-              "s+" : this.getSeconds(), //秒
-              "q+" : Math.floor((this.getMonth() + 3) / 3), //季度
-              "S" : this.getMilliseconds() //毫秒
-            };
-            var week = {
-              "0" : "/u65e5",
-              "1" : "/u4e00",
-              "2" : "/u4e8c",
-              "3" : "/u4e09",
-              "4" : "/u56db",
-              "5" : "/u4e94",
-              "6" : "/u516d"
-            };
-            if (/(y+)/.test(fmt)) {
-              fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-            }
-            if (/(E+)/.test(fmt)) {
-              fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "/u661f/u671f" : "/u5468") : "") + week[this.getDay() + ""]);
-            }
-            for (var k in o) {
-              if (new RegExp("(" + k + ")").test(fmt)) {
-                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            for(var k in aaa[i1].time_series._data ){
+              if(y1%2!==0){
+              timedata[y2]=new Date(parseInt(k)).toLocaleString();
+              dataAll[y3]=[timedata[y2],aaa[i1].time_series._data[k]];
+              y2++;
+              y3++;
               }
+              y1++;
+
             }
-            return fmt;
-          };
+            data[i1]=dataAll.sort();
+            y1=0;
+            y3=0;
+          }
+          timedata.sort();
+          var series = [];
+          for(var i = 0;i<label.length;i++){
+            series[i]={name:label[i],type:'line',areaStyle: {normal: {opacity:0.6}},data:data[i]};
 
-
+          }
 
           // Populate from the query service
-          try {
-            _.each(scope.data, function(series) {
-              series.label = series.info.alias;
-              series.color = series.info.color;
-            });
-          } catch(e) {return;}
+          var idd = scope.$id;
+          require(['echarts'], function(ec){
+            var echarts = ec;
 
-          // Set barwidth based on specified interval
-          var barwidth = kbn.interval_to_ms(scope.panel.interval);
-
-          var stack = scope.panel.stack ? true : null;
-
-          // Populate element
-          try {
-            var options = {
-              legend: { show: false },
-              series: {
-                stackpercent: scope.panel.stack ? scope.panel.percentage : false,
-                stack: scope.panel.percentage ? null : stack,
-                lines:  {
-                  show: scope.panel.lines,
-                  // Silly, but fixes bug in stacked percentages
-                  fill: scope.panel.fill === 0 ? 0.001 : scope.panel.fill/10,
-                  lineWidth: scope.panel.linewidth,
-                  steps: false
-                },
-                bars:   {
-                  show: scope.panel.bars,
-                  fill: 1,
-                  barWidth: barwidth/1.8,
-                  zero: false,
-                  lineWidth: 0
-                },
-                points: {
-                  show: scope.panel.points,
-                  fill: 1,
-                  fillColor: false,
-                  radius: 5
-                },
-                shadowSize: 1
-              },
-               axisLabels: {
-                show: true
-              },
-              yaxis: {
-                show: scope.panel['y-axis'],
-                min: null, // TODO - make this adjusted dynamicmally, and add it to configuration panel
-                max: scope.panel.percentage && scope.panel.stack ? 100 : null,
-                axisLabel: scope.panel.mode,
-              },
-              xaxis: {
-                timezone: scope.panel.timezone,
-                show: scope.panel['x-axis'],
-                mode: "time",
-                min: _.isUndefined(scope.range.from) ? null : scope.range.from.getTime(),
-                max: _.isUndefined(scope.range.to) ? null : scope.range.to.getTime(),
-                timeformat: time_format(scope.panel.interval),
-                label: "Datetime",
-                axisLabel: "",
-              },
-              grid: {
-                backgroundColor: null,
-                borderWidth: 0,
-                hoverable: true,
-                color: '#c8c8c8'
+            var labelcolor = false;
+            if (dashboard.current.style === 'dark'){
+              labelcolor = true;
+            }
+            // Add plot to scope so we can build out own legend
+              if(myChart) {
+                myChart.dispose();
               }
-            };
+              myChart = echarts.init(document.getElementById(idd));
+              var option = {
 
-            if(scope.panel.interactive) {
-              options.selection = { mode: "x", color: '#666' };
-            }
-
-            // when rendering stacked bars, we need to ensure each point that has data is zero-filled
-            // so that the stacking happens in the proper order
-            var required_times = [];
-            if (scope.data.length > 1) {
-              required_times = Array.prototype.concat.apply([], _.map(scope.data, function (query) {
-                return query.time_series.getOrderedTimes();
-              }));
-              required_times = _.uniq(required_times.sort(function (a, b) {
-                // decending numeric sort
-                return a-b;
-              }), true);
-            }
-
-            for (var i = 0; i < scope.data.length; i++) {
-              scope.data[i].data = scope.data[i].time_series.getFlotPairs(required_times);
-            }
-
-            // ISSUE: SOL-76
-            // If 'lines_smooth' is enabled, loop through $scope.data[] and remove zero filled entries.
-            // Without zero values, the line chart will appear smooth as SiLK ;-)
-            if (scope.panel.lines_smooth) {
-              for (var i=0; i < scope.data.length; i++) { // jshint ignore: line
-                var new_data = [];
-                for (var j=0; j < scope.data[i].data.length; j++) {
-                  // if value of the timestamp !== 0, then add it to new_data
-                  if (scope.data[i].data[j][1] !== 0) {
-                    new_data.push(scope.data[i].data[j]);
+                tooltip: {
+                  trigger: 'axis',
+                  confine:true,
+                  axisPointer: {
+                    animation: false
                   }
+                },
+                color:scope.panel.chartColors,
+                legend: {
+                  textStyle:{
+                    color:labelcolor?'#DCDCDC':'#696969'
+                  },
+                  data:label
+                },
+                toolbox: {
+                  feature: {
+                    dataZoom: {
+                      yAxisIndex: 'none'
+                    },
+                    dataView: {readOnly: false},
+                    restore: {}
+                  }
+                },
+
+                grid: {
+                  left: '3%',
+                  right: '4%',
+                  bottom: '3%',
+                  containLabel: true
+                },
+                xAxis : [
+                  {
+                    type : 'category',
+                    boundaryGap : false,
+                    axisLine: {onZero: true},
+                    axisLabel:{
+                      textStyle:{
+                        color:labelcolor?'#DCDCDC':'#696969'
+                      }
+                    },
+                    data :timedata
+                  }
+                ],
+                yAxis : [
+                  {
+                    type : 'value',
+                    name : scope.panel.yname,
+                    min :0,
+                    nameTextStyle:{
+                      color:labelcolor?'#DCDCDC':'#696969'
+                    },
+                    axisLine:{
+                      lineStyle:{
+                        color:'#46474C'
+                      }
+                    },
+                    splitLine:{
+                      lineStyle:{
+                        color:['#46474C']
+                      }
+                    },
+                    axisLabel:{
+                      textStyle:{
+                        color:labelcolor?'#DCDCDC':'#696969'
+                      }
+                    }
+                  }
+                ],
+                series : series
+              };
+              // 使用刚指定的配置项和数据显示图表。
+              myChart.setOption(option);
+              myChart.on('datazoom', function (params) {
+                if (scope.panel.linkage) {
+                  filterSrv.set({
+                    type: 'time',
+                    // from  : moment.utc(ranges.xaxis.from),
+                    // to    : moment.utc(ranges.xaxis.to),
+                    from: moment.utc(timedata[params.batch[0].startValue]).toDate(),
+                    to: moment.utc(timedata[params.batch[0].endValue]).toDate(),
+                    field: filterSrv.getTimeField()
+                  });
+                  dashboard.current.linkage_id = scope.panel.linkage_id;
+                  dashboard.current.enable_linkage = false;
+                  dashboard.refresh();
                 }
-                scope.data[i].data = new_data;
-              }
-            }
 
-            scope.plot = $.plot(elem, scope.data, options);
-          } catch(e) {
-            // TODO: Need to fix bug => "Invalid dimensions for plot, width = 0, height = 200"
-            console.log(e);
-          }
-        }
+              });
 
-        function time_format(interval) {
-          var _int = kbn.interval_to_seconds(interval);
-          if(_int >= 2628000) {
-            return "%m/%y";
-          }
-          if(_int >= 86400) {
-            return "%m/%d/%y";
-          }
-          if(_int >= 60) {
-            return "%H:%M<br>%m/%d";
-          }
-
-          return "%H:%M:%S";
-        }
-
-        var $tooltip = $('<div>');
-        elem.bind("plothover", function (event, pos, item) {
-          var group, value;
-          if (item) {
-            if (item.series.info.alias || scope.panel.tooltip.query_as_alias) {
-              group = '<small style="font-size:0.9em;">' +
-                '<i class="icon-circle" style="color:'+item.series.color+';"></i>' + ' ' +
-                (item.series.info.alias || item.series.info.query)+
-              '</small><br>';
-            } else {
-              group = kbn.query_color_dot(item.series.color, 15) + ' ';
-            }
-            if (scope.panel.stack && scope.panel.tooltip.value_type === 'individual')  {
-              value = item.datapoint[1] - item.datapoint[2];
-            } else {
-              value = item.datapoint[1];
-            }
-
-            var lnLastValue = value;
-            var isr =0;
-            var isnormal = 3;
-
-            var lbPositiveValue = (lnLastValue>0);
-
-            var lsItemTT="";
-            var lsTT="";
-            var isgroup = group;
-            var isvalue = value;
-            if(scope.panel.mode !== 'value'|| scope.panel.mode !== 'values'|| lnLastValue !==0){
-              lsItemTT = group + dashboard.numberWithCommas(value) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(item.datapoint[0]).format('MM/DD HH:mm:ss') : moment(item.datapoint[0]).format('MM/DD HH:mm:ss'));
-              lsTT = lsItemTT;
-              isr =1;
-            }else{
-              isnormal--;
-            }
-
-            var hoverSeries = item.series;
-            var x = item.datapoint[0];
-            // y = item.datapoint[1];
-
-
-            var allSeries = scope.plot.getData();
-            var posSerie = -1;
-            for (var i= allSeries.length - 1 ; i>=0; i--) {
-
-              //if stack stop at the first positive value
-              if (scope.panel.stack && lbPositiveValue){
-                break;
-              }
-
-              var s = allSeries[i];
-              i = parseInt(i);
-
-
-              if (s === hoverSeries ) {
-                posSerie = i;
-              }
-
-              //not consider serie "upper" the hover serie
-              if (  i >= posSerie ){
-                continue;
-              }
-
-              //search in current serie a point with de same position.
-              for(var j= 0; j< s.data.length;j++){
-                var p = s.data[j];
-                if (p[0] === x ){
-
-                  if (scope.panel.stack && scope.panel.tooltip.value_type === 'individual' && !isNaN(p[2]))  {
-                    value = p[1] - p[2];
-                  } else {
-                    value = p[1];
-                  }
-
-                  lbPositiveValue = value > 0;
-
-                  if (! scope.panel.stack && value !== lnLastValue){
-                    break;
-                  }
-
-                  posSerie = i;
-                  lnLastValue = value;
-
-
-                  if (s.info.alias.substring(0,s.info.alias.length-2) || scope.panel.tooltip.query_as_alias) {
-                    group = '<small style="font-size:0.9em;">' +
-                      '<i class="icon-circle" style="color:'+s.color+';"></i>' + ' ' +
-                      (s.info.alias.substring(0,s.info.alias.length-2) || s.info.query)+
-                      '</small><br>';
-                  } else {
-                    group = kbn.query_color_dot(s.color, 15) + ' ';
-                  }
-
-                  if(scope.panel.mode !== 'value' || scope.panel.mode !== 'values'|| lnLastValue !==0){
-
-                    lsItemTT = group + dashboard.numberWithCommas(value) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(p[0]).format('MM/DD HH:mm:ss') : moment(p[0]).format('MM/DD HH:mm:ss'));
-                    lsTT = lsTT +"</br>"+ lsItemTT;
-                    isr=1;
-                  }else{
-                    isnormal--;
-                  }
-                  break;
-                }
-              }
-            }
-
-
-            if(!isnormal){
-              lsItemTT = isgroup + dashboard.numberWithCommas(isvalue) + " @ " + (scope.panel.timezone === 'utc'? moment.utc(item.datapoint[0]).format('MM/DD HH:mm:ss') : moment(item.datapoint[0]).format('MM/DD HH:mm:ss'));
-              lsTT = lsItemTT;
-              isr=1;
-            }
-            if(isr){
-              $tooltip
-                .html( lsTT )
-                .place_tt(pos.pageX, pos.pageY);
-            }
-          } else {
-            $tooltip.detach();
-          }
-        });
-
-        elem.bind("plotselected", function (event, ranges) {
-          filterSrv.set({
-            type  : 'time',
-            // from  : moment.utc(ranges.xaxis.from),
-            // to    : moment.utc(ranges.xaxis.to),
-            from  : moment.utc(ranges.xaxis.from).toDate(),
-            to    : moment.utc(ranges.xaxis.to).toDate(),
-            field : filterSrv.getTimeField()
           });
-          dashboard.current.linkage_id = scope.panel.linkage_id;
-          dashboard.current.enable_linkage =false;
-          dashboard.refresh();
-        });
+
+        }
+
       }
     };
   });

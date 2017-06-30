@@ -534,9 +534,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
           var idd = scope.$id;
           var echarts = require('echarts');
-          if(myChart) {
-            myChart.dispose();
-          }
+
 
 				  var labelcolor = false;
 				  var isspan = false;
@@ -548,7 +546,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           }
               // Add plot to scope so we can build out own legend
           if(scope.panel.chart === 'histobar') {
-
+            if(myChart) {
+              myChart.dispose();
+            }
             myChart = echarts.init(document.getElementById(idd));
             var option = {
           grid: {

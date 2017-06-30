@@ -275,7 +275,23 @@
   "Iterm":"Iterm",
   "Mean":"Mean",
   "Stddev":"Stddev",
-  "Facet Fields":"Facet Fields"
+  "Add Anomaly Detection Name":"Add Anomaly Detection Name",
+  "Anomaly TH":"Anomaly TH",
+  "Cut Number":"Cut Number",
+  "by cluster":"by cluster",
+  "by probe name and contrast name":"by probe name and contrast name",
+  "by probe name":"by probe name",
+  "by contrast name":"by contrast name",
+  "by log2 ratio":"by log2 ratio",
+  "detection":"detection",
+  "index":"index",
+  "Abnormal quantity":"Abnormal quantity",
+  "Relevant":"Relevant",
+  "see":"see",
+  "Calculate Top Field Values From All Data":"Calculate Top Field Values From All Data",
+  "Anomaly detection":"Anomaly detection",
+  "Transaction link":"Transaction link",
+  "Y-Name":"Y-Name"
 
   
 }

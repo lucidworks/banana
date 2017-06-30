@@ -1573,9 +1573,9 @@ var option8 = {
 
                     myChart.on('brushselected', renderBrushed);
                   if(scope.panel.clickEnable){
-                    myChart.on('click', function (params) {
+                    myChart.on('click', function () {
                       // 点击联动
-                      dashboard.page_switch('App_Demo_User')
+                      dashboard.page_switch('App_Demo_User');
 
                     });
                   }

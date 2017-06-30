@@ -296,7 +296,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
         if ($scope.panel.mode === 'value' || $scope.panel.mode === 'counts') {
             var arr_id = [0];
-            _.each(arr_id, function (id) {
+            _.each(arr_id, function () {
                 var temp_q = 'q=' + $scope.panel.value_field + '%3A%5B' + '*' + '%20TO%20' + '*' + '%5D' + wt_json + sort_s + rows_limit + fq + facet + values_mode_query;
 
                 $scope.panel.queries.query += temp_q + "\n";
@@ -523,7 +523,7 @@ var myChart;
 			 if(chartData[0][i][scope.panel.value_field]>scope.panel.threshold_second){
 				 sum_risk++;
 				//  valuedata[i] ={name:"Risk",value:chartData[0][i][scope.panel.value_field],itemStyle:{normal:{color:'#c55249'}}};
-			 }else if(chartData[0][i][scope.panel.value_field]<scope.panel.threshold_first||chartData[0][i][scope.panel.value_field] == 0){
+			 }else if(chartData[0][i][scope.panel.value_field]<scope.panel.threshold_first||chartData[0][i][scope.panel.value_field] === 0){
 				 sum_normal++;
 			//	  valuedata[i] ={name:"Normal",value:chartData[0][i][scope.panel.value_field],itemStyle:{normal:{color:'#1a93f9'}}};
 			}else{
@@ -595,11 +595,11 @@ var option = {
                     myWarn = "卡顿";
                 }
             }
-
+          var res;
             if(scope.panel.another){
-                var res =  "APP 状态: "+myWarn+'<br/>'+"Time: "+params[0].name;
+                res =  "APP 状态: "+myWarn+'<br/>'+"Time: "+params[0].name;
             }else {
-                var res =  "APP 状态: " + myWarn+'<br/>'+"Time: "+params[0].name;
+              res =  "APP 状态: " + myWarn+'<br/>'+"Time: "+params[0].name;
             }
             return res;
         },

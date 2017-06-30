@@ -791,7 +791,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 			var isr =0;
 			var isnormal = 3;
 			
-            var lbPositiveValue = (lnLastValue>0);
+      var lbPositiveValue = (lnLastValue>0);
 			
 			var lsItemTT="";
 			var lsTT="";

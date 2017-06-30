@@ -246,18 +246,7 @@ function (angular, app, _, $, kbn) {
 
             // Function for validating HTML color by assign it to a dummy <div id="colorTest">
             // and let the browser do the work of validation.
-            var isValidHTMLColor = function (color) {
-                // clear attr first, before comparison
-                $('#colorTest').removeAttr('style');
-                var valid = $('#colorTest').css('color');
-                $('#colorTest').css('color', color);
 
-                if (valid === $('#colorTest').css('color')) {
-                    return false;
-                } else {
-                    return true;
-                }
-            };
 
             // Function for customizing chart color by using field values as colors.
 
@@ -701,7 +690,7 @@ var option_nodata = {
                             normal: {
                                 color: function(params) {
                                     var colorList = ['#42d3f0', '#1acef9', '#1ab0f9', '#1a93f9', '#1a75f9', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
-                                    return colorList[params.dataIndex]
+                                    return colorList[params.dataIndex];
                                 },
                                 shadowColor: '#fff',
                                 barBorderRadius: 5
@@ -710,7 +699,7 @@ var option_nodata = {
                             emphasis: {
                                 color: function(params) {
                                     var colorList = ['#ff951f', '#ff951f', '#ff951f', '#ff951f', '#ff951f', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
-                                    return colorList[params.dataIndex]
+                                    return colorList[params.dataIndex];
                                 },
                                 shadowColor: '#fff',
                                 barBorderRadius: 5
@@ -899,7 +888,7 @@ var option_nodata = {
                                   normal: {
                                       color: function(params) {
                                           var colorList = ['#42d3f0', '#1acef9', '#1ab0f9', '#1a93f9', '#1a75f9', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
-                                          return colorList[params.dataIndex]
+                                          return colorList[params.dataIndex];
                                       },
                                       shadowColor: '#fff',
                                       barBorderRadius: 5
@@ -908,7 +897,7 @@ var option_nodata = {
                                   emphasis: {
                                       color: function(params) {
                                           var colorList = ['#ff951f', '#ff951f', '#ff951f', '#ff951f', '#ff951f', '#e59d87', '#759aa0', '#dc6b67', '#efdd79', '#8dc1aa', '#ea7d52', '#8dace7', '#a6a1e1', '#FECDA3', '#FED980'];
-                                          return colorList[params.dataIndex]
+                                          return colorList[params.dataIndex];
                                       },
                                       shadowColor: '#fff',
                                       barBorderRadius: 5

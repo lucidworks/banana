@@ -11,11 +11,12 @@
   * lables :: Only 'pie' charts. Labels on the pie?
 */
 define([
-  '../../../../bower_components/angular/angular',
+  'angular',
   'app',
   'underscore',
   'jquery',
-  'kbn'
+  'kbn',
+    'echarts-liquidfill',
 ],
 function (angular, app, _, $, kbn) {
   'use strict';

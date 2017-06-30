@@ -700,13 +700,13 @@ function (angular, app, _, $, kbn) {
     ]
 };
 
-          if(scope.hits==0){
+          if(scope.hits===0){
             myChart.setOption(option_health_nodata);}else{
             myChart.setOption(option);
             if(scope.panel.clickEnable){
-              myChart.on('click', function (params) {
+              myChart.on('click', function () {
                 // 点击联动
-                dashboard.page_switch('App_Demo_Performance')
+                dashboard.page_switch('App_Demo_Performance');
 
               });
             }

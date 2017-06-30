@@ -37,14 +37,14 @@
     }
   </style>
   <div>
-    <span ng-if='panel.options'>
-      <a class="link underline small" ng-if='panel.options' ng-click="options=!options">
-        <i ng-if="!options" class="icon-caret-right"></i><i ng-if="options" class="icon-caret-down"></i> View
+    <span ng-show='panel.options'>
+      <a class="link underline small" ng-show='panel.options' ng-click="options=!options">
+        <i ng-if="!options" class="icon-caret-right"></i><i ng-if="options" class="icon-caret-down"></i> {{'View'|translate}}
       </a> |&nbsp
     </span>
     <span ng-if='panel.zoomlinks && data'>
       <!--<a class='small' ng-click='zoom(0.5)'><i class='icon-zoom-in'></i> Zoom In</a>-->
-      <a class='small' ng-click='zoom(2)'><i class='icon-zoom-out'></i> Zoom Out</a> |&nbsp
+      <a class='small' ng-click='zoom(2)'><i class='icon-zoom-out'></i> {{'Zoom Out'|translate}}</a> |&nbsp
     </span>
     <span ng-if="panel.legend" ng-repeat='series in data' class="histogram-legend">
       <i class='icon-circle' ng-style="{color: series.info.color}"></i>
@@ -56,32 +56,32 @@
     <span class="checkbox">
       <label class="small">
         <input type="checkbox" ng-model="panel.bars" ng-checked="panel.bars" ng-change="render()">
-        Bars
+        {{'Bars'|translate}}
       </label>
     </span>
     <span class="checkbox">
       <label class="small">
         <input type="checkbox" ng-model="panel.lines" ng-checked="panel.lines" ng-change="render()">
-        Lines
+        {{'Lines'|translate}}
       </label>
     </span>
     <span class="checkbox">
       <label class="small">
         <input type="checkbox" ng-model="panel.points" ng-checked="panel.points" ng-change="render()">
-        Points
+        {{'Points'|translate}}
       </label>
     </span>
     <span class="checkbox">
       <label class="small">
         <input type="checkbox" ng-model="panel.stack" ng-checked="panel.stack" ng-change="render()">
-        Stack
+         {{'Stack'|translate}}
       </label>
     </span>
     <span ng-if="panel.stack">
       <div class="checkbox">
         <label style="white-space:nowrap" class="small">
           <input type="checkbox"  ng-model="panel.percentage" ng-checked="panel.percentage" ng-change="render()">
-          Percent
+          {{'Percent'|translate}}
         </label>
       </div>
     </span>

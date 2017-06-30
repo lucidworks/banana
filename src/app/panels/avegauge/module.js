@@ -354,7 +354,8 @@ function (angular, app, _, $, kbn) {
 
             // Populate element
             try {
-				
+              var term;
+              var color_term;
 				var labelcolor = false;
 					if (dashboard.current.style === 'dark'){
 							labelcolor = true;
@@ -377,8 +378,8 @@ function (angular, app, _, $, kbn) {
           if(myChart) {
                   myChart.dispose();
                 }
-				  var term  = "告警";
-          var color_term = "#F6AB60";
+				  term  = "告警";
+          color_term = "#F6AB60";
           if(scope.meandata<=20){
                       term  = "风险";
                       color_term = '#EB5768';
@@ -658,8 +659,8 @@ function (angular, app, _, $, kbn) {
                 if(myChart) {
                   myChart.dispose();
                 }
-                var term  = "告警";
-                var color_term = "#F6AB60";
+                 term  = "告警";
+                 color_term = "#F6AB60";
                 if(scope.apdex>=80){
                   term  = "风险";
                   color_term = '#EB5768';

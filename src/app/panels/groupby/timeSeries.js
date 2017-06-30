@@ -16,6 +16,7 @@ function (_, Interval) {
   function getDatesTime(date) {
     return Math.floor(date.getTime() / 1000)*1000;
   }
+
   /**
    * Certain graphs require 0 entries to be specified for them to render
    * properly (like the line graph). So with this we will caluclate all of
@@ -63,6 +64,30 @@ function (_, Interval) {
     }
     if (!isNaN(time)) {
       this._data[time] = (_.isUndefined(value) ? 0 : value);
+    }
+    this._cached_times = null;
+  };
+
+  /**
+   * Add a row and sum the value
+   * @param {int}  time  The time for the value, in
+   * @param {any}  value The value at this time
+   */
+  ts.ZeroFilled.prototype.sumValue = function (time, value) {
+    if (time instanceof Date) {
+      time = getDatesTime(time);
+    } else {
+      time = base10Int(time);
+    }
+    if (!isNaN(time)) {
+
+      var curValue = 0;
+      if (!isNaN(this._data[time])){
+          curValue = this._data[time];
+      }
+
+
+      this._data[time] = curValue + (_.isUndefined(value) ? 0 : value);
     }
     this._cached_times = null;
   };
