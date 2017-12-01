@@ -113,6 +113,7 @@ function (Settings) {
       'ticker',
       'bettermap',
       'query',
+      'significantTerms',
       'terms',
       'rangeFacet',
       'heatmap',

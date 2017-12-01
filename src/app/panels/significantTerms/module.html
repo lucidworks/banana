@@ -1,0 +1,70 @@
+<div ng-controller='significantTerms' ng-init="init()">
+
+<style>
+    table.significantTermsTableSection {
+        display: table;
+        width: 100%;
+    }
+    table.significantTermsTableSection thead, table.significantTermsTableSection tbody {
+        float: left;
+        width: 100%;
+    }
+    table.significantTermsTableSection tbody {
+        overflow: auto;
+        /*height: 150px;*/
+    }
+    table.significantTermsTableSection tr {
+        width: 100%;
+        display: table;
+        text-align: left;
+    }
+    table.significantTermsTableSection th, table.significantTermsTableSection td {
+        width: 20%;
+    }
+    .floatleft{
+      float:left;
+    }
+    .floatright{
+      float:right;
+    }
+
+    .below{
+      display: inline-block !important;
+    }
+
+    .leftRightLegend {
+      margin-left: 10px;
+      margin-right: 10px; 
+      overflow:overlay; 
+      padding-right:10px 
+    }
+    </style>
+
+  <!-- START Table -->
+  <table ng-style="panel.style" class="table significantTermsTableSection table-striped table-condensed">
+    <thead>
+      <th>Term</th>
+      <th>Score</th>
+      <th>Foreground</th>
+      <th>Background</th>
+      <th>Action</th>
+    </thead>
+    <tbody ng-style="{height: row.height}">
+    <tr ng-repeat="term in data" ng-show="showMeta(term)">
+      <td>{{term.label}}</td>
+      <td>{{term.data[0][1]}}</td>
+      <td>{{term.data[0][2]}}</td>
+      <td>{{term.data[0][3]}}</td>
+      <td>
+        <span ng-hide="term.meta == 'other'">
+          <i class='icon-search pointer' ng-click="build_search(term)"></i>
+          <i class='icon-ban-circle pointer' ng-click="build_search(term,true)"></i>
+        </span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <!-- END Table -->
+  <!-- Dummy div for testing color name -->
+  <div id="colorTest"></div>
+</div>

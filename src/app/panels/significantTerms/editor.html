@@ -1,0 +1,24 @@
+<div class="row-fluid">
+  <div class="span4">
+    <label class="small">Field <tip>This is the significant terms field.</tip></label>
+    <input type="text" class="input-small" bs-typeahead="fields.list" ng-model="panel.field" ng-change="set_refresh(true)">
+  </div>
+  <div class="span4">
+    <label class="small">Length <tip>Specify a maximum number of terms to display (Top N).</tip></label>
+    <input class="input-small" type="number" ng-model="panel.size" ng-change="set_refresh(true)">
+  </div>
+  <div class="span4">
+    <label class="small">Font Size</label>
+    <select class="input-mini" ng-model="panel.style['font-size']" ng-options="f for f in ['7pt','8pt','9pt','10pt','12pt','14pt','16pt','18pt','20pt','24pt','28pt','32pt','36pt','42pt','48pt','52pt','60pt','72pt']"></select></span>
+  </div>
+</div>
+<h5>Real-time (Auto-refresh)</h5>  
+<div class="row-fluid">
+  <div class="span3">
+    <label class="small">Enable</label><input type="checkbox" ng-model="panel.refresh.enable" ng-checked="panel.refresh.enable">
+  </div>
+  <div class="span9">
+    <label class="small">Interval (seconds) <tip>The minimum value is 2.</tip></label>
+    <input type="number" min="2" class="input-mini" ng-model="panel.refresh.interval">
+  </div>
+</div>
