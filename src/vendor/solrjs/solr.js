@@ -8858,12 +8858,12 @@
             @param {Function} errorcb A callback function that handles errors.
             @returns {Object} The return value is dependent on client implementation.
             */
-      doIndex: function (useFusion, successcb, errorcb) {
+      doIndex: function (useFusion, blobId, successcb, errorcb) {
         // make sure the user has set a client
         if (sjs.client == null) {
           throw new Error("No Client Set");
         }
-        
+
         if (index == null || type == null) {
           throw new Error('Index and Type must be set');
         }
@@ -8871,11 +8871,6 @@
         if (params.source == null) {
           throw new Error('No source document found');
         }
-        
-        // var url = '/' + index + '/' + type,
-        //   data = JSON.stringify(params.source),
-        //   paramStr = genParamStr(),
-        //   response;
 
         // Need to convert params.source to an array of a JSON obj, so it can be indexed by Solr.
         // Otherwise, SolrException "Unknown Command" will occur.
@@ -8889,7 +8884,9 @@
         // Check if use Fusion or Solr
         var url = '/update?commit=true';
         if (useFusion) {
-          url = '/index?echo=false&commit=true';
+          // url = '/index?echo=false&commit=true';
+          // This is the blob (dashboard) id to be saved.
+          url = '/' + blobId;
         }
         var data = JSON.stringify(params.source);
         var paramStr = genParamStr();
@@ -8912,8 +8909,12 @@
         //   // put when id is specified
         //   response = sjs.client.put(url, data, successcb, errorcb);
         // }
-        
-        response = sjs.client.post(url, data, successcb, errorcb);
+
+        if (useFusion) {
+          response = sjs.client.put(url, data, successcb, errorcb);
+        } else {
+          response = sjs.client.post(url, data, successcb, errorcb);
+        }
         
         return response;
       },
@@ -9010,24 +9011,27 @@
 
         // Check if use Fusion or Solr
         if (useFusion) {
-          var url = '/index';
-          var data = angular.toJson([
-            {
-              id: id,
-              commands: [
-                { name: "delete", value: id },
-                { name: "commit", value: true }
-              ]
-            }
-          ]);
-          return sjs.client.postDel(url, data, successcb, errorcb);
+          // var url = '/index';
+          // var data = angular.toJson([
+          //   {
+          //     id: id,
+          //     commands: [
+          //       { name: "delete", value: id },
+          //       { name: "commit", value: true }
+          //     ]
+          //   }
+          // ]);
+          // return sjs.client.postDel(url, data, successcb, errorcb);
+
+          // Fusion uses Blob Store API
+          var url = '/' + id;
+          var data = {};
+          return sjs.client.del(url, data, successcb, errorcb);
         } else {
           var url = '/update';
           var data = 'commit=true&wt=json&stream.body=<delete><query>id:"'+id+'"</query></delete>';
           return sjs.client.get(url, data, successcb, errorcb);
         }
-        
-        // return sjs.client.del(url, data, successcb, errorcb);
       }
 
     };

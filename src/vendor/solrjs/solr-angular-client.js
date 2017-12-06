@@ -85,10 +85,15 @@ angular.module('solrjs.service', [])
         if (DEBUG) { console.debug('solr-angular-client: GET url=',url,', path=',path,', data=',data); }
         return promiseThen($http.get(path), successcb, errorcb);
       },
+      // PUT is only used for saving a dashboard.
       put: function (path, data, successcb, errorcb) {
         path = url + path;
+
+        if (DEBUG) { console.debug('solr-angular-client: PUT path=',path,', data=',data); }
+
         return promiseThen($http.put(path, data), successcb, errorcb);
       },
+      // DELETE is for deleting a saved dashboard.
       del: function (path, data, successcb, errorcb) {
         path = url + path;
         return promiseThen($http.delete(path, data), successcb, errorcb);

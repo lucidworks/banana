@@ -95,15 +95,7 @@
                     "query": "*:*",
                     "pinned": true,
                     "history": [
-                        "*:*",
-                        "query_s:ipad*",
-                        "query_s:ipad",
-                        "params_name_s:HP* AND params_name_s:*TouchPad*",
-                        "params_name_s:*HP*",
-                        "params_name_s:HP*",
-                        "flag_s:aggr",
-                        "doc_id_s:1945531",
-                        "query_s:iPad"
+                        "*:*"
                     ],
                     "remember": 10,
                     "title": "Search",
@@ -117,7 +109,7 @@
                     "loadingEditor": false,
                     "status": "Stable",
                     "mode": "markdown",
-                    "content": "By default, Lucidworks Fusion does not ship with a default collection.  As such, this dashboard is configured by default to look for a collection named *demo_signals*.  To change it to use your signals collection, choose the *Configure* option in the upper right corner of the screen (hint: it looks like a gear) and set your collection name to be the name of your collection's signals store.  For instance, if you have a collection named *web*, then your signals collection would be named *web_signals*.   \n\n*Note*\n\nYour collection must have the signal capture feature enabled.  To turn on signal capture, visit the Admin app, select Collections, then select the collection you wish to enable signals for and toggle the signals option.",
+                    "content": "Lucidworks Fusion ships with a collection named *default*. As such, this dashboard is initially configured to look for a collection named *default_signals*. To change it to use your signals collection, choose the *Configure* option in the upper right corner of the screen (hint: it looks like a gear) and set your collection name to be the name of your collection's signals store. For instance, if you have a collection named *web*, then your signals collection would be named *web_signals*. \n\n*Notes*\n\nYour collection must have the signal capture feature enabled. To turn on signal capture, visit the Admin app, select Collections, then select the collection you wish to enable signals for and toggle the signals option.",
                     "style": {},
                     "title": "Getting Started"
                 }
@@ -768,21 +760,7 @@
                     "imageFields": [],
                     "imgFieldWidth": "auto",
                     "imgFieldHeight": "85px",
-                    "important_fields": [
-                        "_version_",
-                        "count_i",
-                        "doc_id_s",
-                        "filters_orig_ss",
-                        "filters_s",
-                        "flag_s",
-                        "id",
-                        "query_orig_s",
-                        "query_s",
-                        "query_t",
-                        "timestamp_tdt",
-                        "type_s",
-                        "tz_timestamp_txt"
-                    ],
+                    "important_fields": [],
                     "show_queries": true,
                     "maxNumCalcTopFields": 20,
                     "calcTopFieldValuesFromAllData": false,
@@ -838,8 +816,8 @@
         "save_as_public": false
     },
     "solr": {
-        "server": "/api/apollo/solr/",
-        "core_name": "",
+        "server": "/api/apollo/query-pipelines/_system/collections/",
+        "core_name": "default_signals",
         "core_list": []
     },
     "username": "admin"

@@ -62,7 +62,7 @@
           "loadingEditor": false,
           "status": "Stable",
           "mode": "markdown",
-          "content": "In order for the search analytics dashboard to display your data correctly, you will have to select a collection that contains search logs. For example, if you have a collection named, _fusion_, and you want to look at its search analytics information. Then you need to choose _fusion\\_logs_ collection by using the collection drop-down box on top of this page or configure it under Solr tab in Dashboard Settings.",
+          "content": "In order for the search analytics dashboard to display your data correctly, you will have to select a collection that contains search logs. For example, if you have a collection named, *web*, and you want to look at its search analytics information, then you need to choose *web_logs* collection by using the collection drop-down box on top of this page or configure it under Solr tab in Dashboard Settings. We have initially selected the *default_logs* collection for you, corresponding with the *default* collection that ships with Fusion.",
           "style": {},
           "title": "Guide"
         }
@@ -118,9 +118,7 @@
           "type": "query",
           "label": "Search",
           "history": [
-            "*:*",
-            "strange",
-            "search"
+            "*:*"
           ],
           "remember": 10,
           "pinned": true,
@@ -1093,30 +1091,7 @@
           "imgFieldHeight": "85px",
           "title": "Table panel",
           "show_queries": true,
-          "important_fields": [
-            "_version_",
-            "collection_s",
-            "httpmethod_s",
-            "id",
-            "numdocs_l",
-            "q_s",
-            "q_txt",
-            "qtime_l",
-            "req_debug_ss",
-            "req_defType_ss",
-            "req_echoParams_ss",
-            "req_facet_ss",
-            "req_fl_ss",
-            "req_isFusionQuery_ss",
-            "req_json.nl_ss",
-            "req_lw.pipelineId_ss",
-            "req_q_ss",
-            "req_rows_ss",
-            "req_start_ss",
-            "req_wt_ss",
-            "timestamp_tdt",
-            "totaltime_l"
-          ],
+          "important_fields": [],
           "maxNumCalcTopFields": 20,
           "calcTopFieldValuesFromAllData": false,
           "refresh": {
@@ -1152,8 +1127,8 @@
     "dropdown_collections": true
   },
   "solr": {
-    "server": "/api/apollo/solr/",
-    "core_name": "collection1_logs",
+    "server": "/api/apollo/query-pipelines/_system/collections/",
+    "core_name": "default_logs",
     "core_list": [],
     "global_params": "&df=q_txt"
   }
