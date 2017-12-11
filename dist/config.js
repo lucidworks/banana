@@ -50,7 +50,11 @@ function (Settings) {
      * @type {String}
      */
     banana_index: "system_banana",
-    // uncomment the following line to specify the URL of banana-int
+    // Uncomment the following line to specify the URL of Solr server that will be used to store and load saved dashboards.
+    // If you specify a remote Solr server, then you need to enable CORS on it in order to allow dashboards to be saved or loaded.
+    // Also, you need to uncomment this same line in src/app/components/settings.js to enable banana_server config.
+    // Reference: https://github.com/lucidworks/banana/tree/fusion/resources/enable-cors
+    //
     // banana_server: "http://localhost:8983/solr/",
 
     /**

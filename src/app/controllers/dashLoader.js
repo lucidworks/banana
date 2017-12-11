@@ -345,6 +345,6 @@ function (angular, _, config) {
             url = config.banana_server;
           }
           return url;
-        }
+        };
     });
 });

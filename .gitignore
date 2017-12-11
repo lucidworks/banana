@@ -5,6 +5,10 @@ npm-debug.log
 tmp/
 build.number
 build/
+target/
 *.iml
 .vscode
 .idea
+.classpath
+.project
+.settings
