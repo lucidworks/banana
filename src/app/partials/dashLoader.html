@@ -59,10 +59,9 @@
         <li ng-show='dashboard.current.loader.load_elasticsearch'>
             <h5 ng-show="elasticsearch.dashboards.length">Saved Dashboards ({{hits}})</h5>
             <h5 ng-hide="elasticsearch.dashboards.length">No dashboards matching your query found</h5>
-            <form style="margin-bottom: 0;">
-                <!-- Fusion 4 BlobStore uses '/' prefix to all blob names, need backslash in front of the query also -->
+            <form style="margin-bottom: 0;">                
                 <input type="text" ng-model="elasticsearch.query"
-                       ng-change="elasticsearch_dblist('\\/' + elasticsearch.query)"
+                       ng-change="elasticsearch_dblist(elasticsearch.query)"
                        placeholder="Type to filter"/>
             </form>
 
