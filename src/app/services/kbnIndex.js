@@ -40,14 +40,12 @@ function (angular, _, config, moment) {
         return p;
       });
     };
-      
+
     function all_collections(solrServer) {
       var collectionApi;
 
       // Remove trailing slash in solrServer
-      if (solrServer.endsWith('/')) {
-        solrServer = solrServer.replace(/\/$/, '');
-      }
+      solrServer = solrServer.replace(/\/$/, '');
 
       // Check if use Fusion or Solr
       if (config.USE_FUSION) {
@@ -60,8 +58,8 @@ function (angular, _, config, moment) {
           // admin API is disabled, then we cannot retrieve the collection list from Solr.
           // return an empty list
           return new Promise(function(resolve) {
-            resolve([]);  
-          });  
+            resolve([]);
+          });
         }
       }
 
@@ -85,11 +83,11 @@ function (angular, _, config, moment) {
           if (config.USE_FUSION) {
             _.each(p.data, function(v) {
               collections.push(v.id);
-            });  
+            });
           } else {
             _.each(p.data.status, function(v,k) {
-              collections.push(k);  
-            });  
+              collections.push(k);
+            });
           }
         }
         if (DEBUG) { console.debug('kbnIndex: all_collections response p = ',p,'collections = ',collections); }
@@ -134,7 +132,7 @@ function (angular, _, config, moment) {
 
       return something.then(function(p) {
         if (DEBUG) { console.debug('kbnIndex: p=',p); }
-        
+
         // var indices = [];
         // _.each(p.data, function(v,k) {
         //   indices.push(k);
@@ -143,7 +141,7 @@ function (angular, _, config, moment) {
         //     indices.push(k);
         //   });
         // });
-      
+
         var indices = [];
 
         var timestamp_array = p.data.facet_counts.facet_ranges.event_timestamp.counts;
@@ -156,7 +154,7 @@ function (angular, _, config, moment) {
 
         // indices[] should be in this format
         // indices = ['logstash-2013.11.25'];
-        
+
         if (DEBUG) { console.debug('kbnIndex: indices=',indices); }
 
         return indices;
