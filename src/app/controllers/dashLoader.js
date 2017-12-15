@@ -320,8 +320,8 @@ function (angular, _, config) {
             for (var i=0; i < dashboardList.length; i++) {
                 var doc = {};
                 if (config.USE_FUSION) {                
-                  // strip out the '/' prefix
-                  if (dashboardList[i].name.startsWith('/')) {
+                  // strip out the '/' prefix                  
+                  if (dashboardList[i].name.indexOf('/') !== -1) {
                     doc.id = dashboardList[i].name.substring(1);
                   } else {
                     doc.id = dashboardList[i].name;
