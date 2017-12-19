@@ -27,13 +27,19 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.17
+## Banana 1.6.18
 
-This release includes adding support for changes in Fusion 3.1 BlobStore API, which used for loading, saving, and searching dashboards. It also include the following bug fixes:
-1. Fix "to" field does not properly convert display of its text from ASCII.
-2. Fix issues with BlobStore API.
-3. Fix filter panel to display time filter in locale value, instead of UTC time.
-4. Fix error when running grunt build.
+This release includes bug fixes and adding support for changes in Blob Store API of Fusion 4. Here is the list of changes:
+1.  Fix bug for Solr when saving and loading dashboards from the dashboard field defined as a multi-valued field.
+2.  Rename index.html title from "Banana 3" to "Banana".
+3.  Add Japan map.
+4.  Update README for enabling CORS in Solr and add a sample webdefault.xml for Solr 6.
+5.  Fix bug when loading saved dashboards from another Solr server.
+6.  Fix rows=0 bug when exporting from Terms panel.
+7.  Fix error when loading dashboard from blob due to '/' prefix in name.
+8.  Fix IE 11 issues by replacing startsWith() and endsWith() with indexOf().
+9.  Update Search Analytics dashboard for Fusion.
+10. Add notes to Fusion Metrics dashboard telling users to enable metrics first.
 
 ## Older Release Notes
 
