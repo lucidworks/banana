@@ -1,4 +1,4 @@
-{
+﻿{
   "title": "Search Analytics",
   "services": {
     "query": {
@@ -33,8 +33,8 @@
           "to": "NOW/DAY%2B1DAY",
           "field": "timestamp_tdt",
           "type": "time",
-          "fromDateObj": "2014-10-11T15:04:43.319Z",
-          "toDateObj": "2014-11-10T16:04:43.320Z",
+          "fromDateObj": "2017-11-18T21:45:57.874Z",
+          "toDateObj": "2017-12-18T21:45:57.874Z",
           "mandate": "must",
           "active": true,
           "alias": "",
@@ -62,7 +62,7 @@
           "loadingEditor": false,
           "status": "Stable",
           "mode": "markdown",
-          "content": "In order for the search analytics dashboard to display your data correctly, you will have to select a collection that contains search logs. For example, if you have a collection named, *web*, and you want to look at its search analytics information, then you need to choose *web_logs* collection by using the collection drop-down box on top of this page or configure it under Solr tab in Dashboard Settings. We have initially selected the *default_logs* collection for you, corresponding with the *default* collection that ships with Fusion.",
+          "content": "In order for the search analytics dashboard to display your data correctly, you will have to select a collection that contains query signals. For example, if you have a collection named, *web*, and you want to look at its search analytics information, then you need to choose the  *web_signals* collection by using the collection drop-down box on top of this page or configure it under Solr tab in Dashboard Settings. We have initially selected the *default_signals* collection for you, corresponding with the *default* collection that ships with Fusion.",
           "style": {},
           "title": "Guide"
         }
@@ -137,9 +137,9 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&wt=json&rows=0",
+            "query": "q=*%3A*&df=query_t&fq=type_s:query&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.field=id&wt=json&rows=0\n",
             "basic_query": "",
-            "custom": ""
+            "custom": "&fq=type_s:query"
           },
           "style": {
             "font-size": "14pt"
@@ -159,7 +159,7 @@
               "field": "id",
               "decimalDigits": 0,
               "label": "",
-              "value": "0"
+              "value": "28400"
             }
           ],
           "refresh": {
@@ -187,7 +187,6 @@
           "type": "filtering"
         },
         {
-          "error": false,
           "span": 6,
           "editable": true,
           "type": "terms",
@@ -197,11 +196,11 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=q_s&facet.limit=10",
+            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=query_s&facet.limit=10&facet.missing=true&f.query_s.facet.sort=count",
             "custom": ""
           },
           "mode": "count",
-          "field": "q_s",
+          "field": "query_s",
           "stats_field": "",
           "decimal_points": 0,
           "exclude": [],
@@ -279,7 +278,14 @@
             "#DEDAF7"
           ],
           "title": "Top 10 Searches",
-          "show_queries": true
+          "show_queries": true,
+          "sortBy": "count",
+          "logAxis": false,
+          "exportSize": 10000,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         }
       ]
     },
@@ -302,7 +308,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.range=timestamp_tdt&facet.range.start=NOW/DAY-30DAY&facet.range.end=NOW/DAY%2B1DAY&facet.range.gap=%2B12HOUR",
+            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.range=timestamp_tdt&facet.range.start=NOW/DAY-30DAY&facet.range.end=NOW/DAY%2B1DAY&facet.range.gap=%2B12HOUR\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -346,10 +352,15 @@
             "query_as_alias": false
           },
           "title": "Event Counts",
-          "lines_smooth": false
+          "lines_smooth": false,
+          "sum_value": false,
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         },
         {
-          "error": false,
           "span": 6,
           "editable": true,
           "type": "terms",
@@ -359,11 +370,11 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=q_s&facet.limit=10",
-            "custom": "&fq=numdocs_l:0"
+            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=query_s&facet.limit=10&facet.missing=true&f.query_s.facet.sort=count&fq=hits:0",
+            "custom": "&fq=hits:0"
           },
           "mode": "count",
-          "field": "q_s",
+          "field": "query_s",
           "stats_field": "",
           "decimal_points": 0,
           "exclude": [],
@@ -441,7 +452,14 @@
             "#DEDAF7"
           ],
           "title": "Top 10 Searches with Zero Result",
-          "show_queries": true
+          "show_queries": true,
+          "sortBy": "count",
+          "logAxis": false,
+          "exportSize": 10000,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         }
       ]
     },
@@ -453,7 +471,6 @@
       "collapsable": true,
       "panels": [
         {
-          "error": false,
           "span": 4,
           "editable": true,
           "type": "terms",
@@ -463,12 +480,12 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=qtime_l",
+            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=qtime&facet.missing=true&f.query_s.facet.sort=count",
             "custom": ""
           },
           "mode": "mean",
-          "field": "q_s",
-          "stats_field": "qtime_l",
+          "field": "query_s",
+          "stats_field": "qtime",
           "decimal_points": 2,
           "exclude": [],
           "missing": false,
@@ -545,10 +562,16 @@
             "#DEDAF7"
           ],
           "title": "Avg Query Time by Search Terms",
-          "show_queries": true
+          "show_queries": true,
+          "sortBy": "count",
+          "logAxis": false,
+          "exportSize": 10000,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         },
         {
-          "error": false,
           "span": 4,
           "editable": true,
           "type": "terms",
@@ -558,12 +581,12 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=qtime_l",
+            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=qtime&facet.missing=true&f.query_s.facet.sort=count",
             "custom": ""
           },
           "mode": "min",
-          "field": "q_s",
-          "stats_field": "qtime_l",
+          "field": "query_s",
+          "stats_field": "qtime",
           "decimal_points": 2,
           "exclude": [],
           "missing": false,
@@ -640,10 +663,16 @@
             "#DEDAF7"
           ],
           "title": "Min Query Time by Search Terms",
-          "show_queries": true
+          "show_queries": true,
+          "sortBy": "count",
+          "logAxis": false,
+          "exportSize": 10000,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         },
         {
-          "error": false,
           "span": 4,
           "editable": true,
           "type": "terms",
@@ -653,12 +682,12 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=qtime_l",
+            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=qtime&facet.missing=true&f.query_s.facet.sort=count",
             "custom": ""
           },
           "mode": "max",
-          "field": "q_s",
-          "stats_field": "qtime_l",
+          "field": "query_s",
+          "stats_field": "qtime",
           "decimal_points": 2,
           "exclude": [],
           "missing": false,
@@ -735,7 +764,14 @@
             "#DEDAF7"
           ],
           "title": "Max Query Time by Search Terms",
-          "show_queries": true
+          "show_queries": true,
+          "sortBy": "count",
+          "logAxis": false,
+          "exportSize": 10000,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         }
       ]
     },
@@ -747,7 +783,6 @@
       "collapsable": true,
       "panels": [
         {
-          "error": false,
           "span": 4,
           "editable": true,
           "type": "terms",
@@ -757,12 +792,12 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=totaltime_l",
+            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=totaltime&facet.missing=true&f.query_s.facet.sort=count",
             "custom": ""
           },
           "mode": "mean",
-          "field": "q_s",
-          "stats_field": "totaltime_l",
+          "field": "query_s",
+          "stats_field": "totaltime",
           "decimal_points": 2,
           "exclude": [],
           "missing": false,
@@ -839,10 +874,16 @@
             "#DEDAF7"
           ],
           "title": "Avg Total Time by Search Terms",
-          "show_queries": true
+          "show_queries": true,
+          "sortBy": "count",
+          "logAxis": false,
+          "exportSize": 10000,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         },
         {
-          "error": false,
           "span": 4,
           "editable": true,
           "type": "terms",
@@ -852,12 +893,12 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=totaltime_l",
+            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=totaltime&facet.missing=true&f.query_s.facet.sort=count",
             "custom": ""
           },
           "mode": "min",
-          "field": "q_s",
-          "stats_field": "totaltime_l",
+          "field": "query_s",
+          "stats_field": "totaltime",
           "decimal_points": 2,
           "exclude": [],
           "missing": false,
@@ -934,10 +975,16 @@
             "#DEDAF7"
           ],
           "title": "Min Total Time by Search Terms",
-          "show_queries": true
+          "show_queries": true,
+          "sortBy": "count",
+          "logAxis": false,
+          "exportSize": 10000,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         },
         {
-          "error": false,
           "span": 4,
           "editable": true,
           "type": "terms",
@@ -947,12 +994,12 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=q_s&stats.field=totaltime_l",
+            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=totaltime&facet.missing=true&f.query_s.facet.sort=count",
             "custom": ""
           },
           "mode": "max",
-          "field": "q_s",
-          "stats_field": "totaltime_l",
+          "field": "query_s",
+          "stats_field": "totaltime",
           "decimal_points": 2,
           "exclude": [],
           "missing": false,
@@ -1029,7 +1076,14 @@
             "#DEDAF7"
           ],
           "title": "Max Total Time by Search Terms",
-          "show_queries": true
+          "show_queries": true,
+          "sortBy": "count",
+          "logAxis": false,
+          "exportSize": 10000,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          }
         }
       ]
     },
@@ -1051,8 +1105,8 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=q_txt&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&sort=timestamp_tdt desc&wt=json&rows=10000",
-            "basic_query": "q=*%3A*&df=q_txt&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&sort=timestamp_tdt desc",
+            "query": "q=*%3A*&df=query_t&fq=type_s:query&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&sort=timestamp_tdt desc&wt=json&rows=10000",
+            "basic_query": "q=*%3A*&df=query_t&fq=type_s:query&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&sort=timestamp_tdt desc",
             "custom": ""
           },
           "size": 10,
@@ -1069,10 +1123,12 @@
           "overflow": "min-height",
           "fields": [
             "timestamp_tdt",
-            "q_s",
-            "numdocs_l",
-            "qtime_l",
-            "totaltime_l"
+            "query_s",
+            "hits",
+            "qtime",
+            "totaltime",
+            "user_id",
+            "app_id"
           ],
           "highlight": [],
           "sortable": true,
@@ -1091,7 +1147,121 @@
           "imgFieldHeight": "85px",
           "title": "Table panel",
           "show_queries": true,
-          "important_fields": [],
+          "important_fields": [
+            "_raw_content_",
+            "_root_",
+            "_text_",
+            "_version_",
+            "activity_count",
+            "anonymous",
+            "app_id",
+            "browser_name",
+            "browser_type",
+            "browser_version",
+            "collection",
+            "count_i",
+            "ctx_curr_path",
+            "ctx_curr_query",
+            "ctx_prev_path",
+            "ctx_prev_path_original",
+            "ctx_prev_query",
+            "ctx_prev_uri",
+            "ctype",
+            "date",
+            "date_day",
+            "date_month",
+            "date_year",
+            "day_of_week",
+            "doc_id",
+            "doc_id_s",
+            "doc_ids",
+            "doc_ids_s",
+            "domain",
+            "duration",
+            "end",
+            "experiment_collection",
+            "experiment_id",
+            "experiment_variant",
+            "fields",
+            "filter",
+            "filter_field",
+            "filters",
+            "flag_s",
+            "geo_city_name",
+            "geo_country_iso",
+            "geo_country_name",
+            "geo_lat",
+            "geo_loc_coord",
+            "geo_lon",
+            "geo_postal_code",
+            "geo_subdivision_iso",
+            "geo_subdivision_name",
+            "has_clicks",
+            "has_filters",
+            "has_query",
+            "hits",
+            "host",
+            "hour_of_day",
+            "http_method",
+            "id",
+            "ip_address",
+            "is_fusion_query",
+            "keywords",
+            "label",
+            "locale",
+            "orientation",
+            "os_device",
+            "os_group",
+            "os_id",
+            "os_manufacturer",
+            "os_name",
+            "page",
+            "page_title",
+            "params.defType_s",
+            "params.experiment_variants_s",
+            "params.facet_s",
+            "params.wt_s",
+            "path",
+            "path_transition",
+            "pipeline_id",
+            "platform",
+            "qtime",
+            "query",
+            "query_id",
+            "query_orig_s",
+            "query_s",
+            "query_t",
+            "query_transition",
+            "query_type",
+            "referrer",
+            "referrer_domain",
+            "request_transition",
+            "res_offset",
+            "res_pos",
+            "response_type",
+            "rows",
+            "score",
+            "session",
+            "session_id_s",
+            "start",
+            "time",
+            "timestamp",
+            "timestamp_tdt",
+            "totaltime",
+            "twigkitRequestToken",
+            "type",
+            "type_s",
+            "tz_timestamp_txt",
+            "url",
+            "url_domain",
+            "url_path",
+            "url_type",
+            "user",
+            "user_id",
+            "user_id_s",
+            "user_roles",
+            "user_token"
+          ],
           "maxNumCalcTopFields": 20,
           "calcTopFieldValuesFromAllData": false,
           "refresh": {
@@ -1124,12 +1294,14 @@
     "load_elasticsearch_size": 20,
     "load_local": true,
     "hide": false,
-    "dropdown_collections": true
+    "dropdown_collections": true,
+    "save_as_public": false
   },
   "solr": {
     "server": "/api/apollo/query-pipelines/_system/collections/",
-    "core_name": "default_logs",
+    "core_name": "default_signals",
     "core_list": [],
-    "global_params": "&df=q_txt"
-  }
+    "global_params": "&df=query_t&fq=type_s:query"
+  },
+  "username": "admin"
 }
