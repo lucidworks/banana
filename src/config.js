@@ -125,6 +125,7 @@ function (Settings) {
       'fullTextSearch',
       'facet',
       'tagcloud',
+      'timeseries',
       'multiseries',
       'sunburst',
       'docviewer'
