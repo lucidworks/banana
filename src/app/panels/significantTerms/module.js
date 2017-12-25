@@ -76,7 +76,9 @@ function (angular, app, _, $, kbn) {
 
     $scope.init = function () {
       $scope.hits = 0;
-      //$scope.testMultivalued();
+      $scope.panel.mindoc_freq = 5;
+      $scope.panel.maxdoc_freq = 0.3;
+      $scope.panel.minterm_len = 4;
 
       // Start refresh timer if enabled
       if ($scope.panel.refresh.enable) {
@@ -109,7 +111,11 @@ function (angular, app, _, $, kbn) {
         fq = ',' + filterSrv.getSolrFq(false, ',');
       }
 
-      var expression = 'expr=significantTerms(' + dashboard.current.solr.core_name + ',' + querySrv.getORquery() + fq + ',field=' + $scope.panel.field + ',limit=' + $scope.panel.size + ')';
+      var expression = 'expr=significantTerms(' + dashboard.current.solr.core_name + ','
+        + querySrv.getORquery() + fq + ',field=' + $scope.panel.field
+        + ',limit=' + $scope.panel.size + ',minDocFreq=' + $scope.panel.mindoc_freq
+        + ',maxDocFreq=' + $scope.panel.maxdoc_freq  + ',minTermLength='
+        + $scope.panel.minterm_len  + ')';
 
       return expression;
     };
