@@ -1,5 +1,7 @@
 # Banana
 
+![](https://travis-ci.org/aadel/banana.svg?branch=develop)
+
 The Banana project was forked from [Kibana](https://github.com/elastic/kibana), and works with all kinds of time series
 (and non-time series) data stored in [Apache Solr](https://lucene.apache.org/solr/). It uses Kibana's powerful dashboard
 configuration capabilities, ports key panels to work with Solr, and provides significant additional capabilities,
