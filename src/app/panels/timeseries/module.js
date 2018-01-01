@@ -306,6 +306,8 @@ define([
               for (var j = 0; j < entries.length; j++) {
                 entry_time = new Date(entries[j][time_field]).getTime(); // convert to millisec
                 var entry_count = entries[j][$scope.panel.metric + '(' + $scope.panel.field + ')'];
+                if (!entry_count)
+                  entry_count = 0;
                 time_series.addValue(entry_time, entry_count);
                 hits += entry_count; // The series level hits counter
                 $scope.hits += entry_count; // Entire dataset level hits counter
@@ -457,7 +459,7 @@ define([
                   show: scope.panel['y-axis'],
                   min: null, // TODO - make this adjusted dynamicmally, and add it to configuration panel
                   max: scope.panel.percentage && scope.panel.stack ? 100 : null,
-                  axisLabel: scope.panel.mode,
+                  axisLabel: scope.panel.metric + '(' + scope.panel.field + ')',
                 },
                 xaxis: {
                   timezone: scope.panel.timezone,

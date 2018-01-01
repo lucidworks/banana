@@ -114,6 +114,7 @@ function (Settings) {
       'text',
       'hits',
       'column',
+      'graph',
       'ticker',
       'bettermap',
       'query',
