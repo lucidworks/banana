@@ -197,7 +197,7 @@ function (angular, app, _, $, vis, X2JS, kbn) {
           element.html('');
 
           var parent_width = element.parent().width(),
-            height = parseInt(scope.row.height),
+            height = scope.row.height,
             width = parent_width - 20;
 
           var nodes = new vis.DataSet();

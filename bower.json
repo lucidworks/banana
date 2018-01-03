@@ -3,7 +3,6 @@
   "description": "Banana for Solr Data Visualization",
   "homepage": "https://github.com/LucidWorks/banana/wiki",
   "license": "Apache License",
-  "directory": "src/bower_components/",
   "dependencies": {
     "angular": "1.0.8",
     "angular-loader": "1.0.8",
@@ -19,8 +18,7 @@
     "modernizr": "2.6.1",
     "moment": "2.1.0",
     "underscore": "1.5.1",
-    "vis": "^4.21.0",
-    "angular-visjs": "^4.16.0",
+    "vis": "4.21.0",
     "abdmob/x2js": "^1.2.0"
   },
   "resolutions": {
