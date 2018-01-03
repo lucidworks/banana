@@ -3,6 +3,7 @@
   "description": "Banana for Solr Data Visualization",
   "homepage": "https://github.com/LucidWorks/banana/wiki",
   "license": "Apache License",
+  "directory": "src/bower_components/",
   "dependencies": {
     "angular": "1.0.8",
     "angular-loader": "1.0.8",
