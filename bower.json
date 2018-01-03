@@ -21,7 +21,7 @@
     "underscore": "1.5.1",
     "vis": "^4.21.0",
     "angular-visjs": "^4.16.0",
-    "abdmob/x2js": "x2js#^1.2.0"
+    "abdmob/x2js": "^1.2.0"
   },
   "resolutions": {
     "angular": "1.0.8",
