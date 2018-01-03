@@ -102,7 +102,7 @@ function (angular, app, _, $, vis, X2JS, kbn) {
         fq = ',' + filterSrv.getSolrFq(false, ',');
       }
 
-      var expression = $scope.panel.expression + /* fq ? */ + ')';
+      var expression = $scope.panel.expression /* + fq ? + ')' */;
 
       return expression;
     };
