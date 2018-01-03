@@ -117,6 +117,7 @@ function (Settings) {
       'ticker',
       'bettermap',
       'query',
+      'significantTerms',
       'terms',
       'rangeFacet',
       'heatmap',
@@ -124,6 +125,7 @@ function (Settings) {
       'fullTextSearch',
       'facet',
       'tagcloud',
+      'timeseries',
       'multiseries',
       'sunburst',
       'docviewer'
