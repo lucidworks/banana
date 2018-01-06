@@ -18494,7 +18494,7 @@
 
       /** Stream expression **/
 
-      streamExpression: function(successcb, errorcb) {
+      streamExpression: function(custom_handler, successcb, errorcb) {
         if (DEBUG) { console.debug('streamExpression()'); }
         
         // make sure the user has set a client
@@ -18502,7 +18502,7 @@
           throw new Error("No Client Set");
         }
 
-        return sjs.client.get(getRestPath('stream'), query.solrquery, successcb, errorcb);        
+        return sjs.client.get(getRestPath(custom_handler? custom_handler: 'stream'), query.solrquery, successcb, errorcb);
       },
 
       /**

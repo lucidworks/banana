@@ -43,7 +43,9 @@ require.config({
     modernizr:                '../vendor/modernizr-2.6.1',
     elasticjs:                '../vendor/elasticjs/elastic-angular-client',
     solrjs:                   '../vendor/solrjs/solr-angular-client',
-    d3:                       '../vendor/d3'
+    d3:                       '../vendor/d3',
+    vis:                      '../bower_components/vis/dist/vis',
+    x2js:                     '../bower_components/abdmob/x2js/xml2json'
   },
   shim: {
     underscore: {
