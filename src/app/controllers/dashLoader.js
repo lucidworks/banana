@@ -321,10 +321,10 @@ function (angular, _, config) {
                 var doc = {};
                 if (config.USE_FUSION) {                
                   // strip out the '/' prefix                  
-                  if (dashboardList[i].name.indexOf('/') !== -1) {
-                    doc.id = dashboardList[i].name.substring(1);
+                  if (dashboardList[i].id.indexOf('/') !== -1) {
+                    doc.id = dashboardList[i].id.substring(1);
                   } else {
-                    doc.id = dashboardList[i].name;
+                    doc.id = dashboardList[i].id;
                   }
                   // Don't need doc.server for Fusion Blob Store API.
                   doc.server = '';

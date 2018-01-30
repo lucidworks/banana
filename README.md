@@ -27,19 +27,12 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.18
+## Banana 1.6.19
 
-This release includes bug fixes and adding support for changes in Blob Store API of Fusion 4. Here is the list of changes:
-1.  Fix bug for Solr when saving and loading dashboards from the dashboard field defined as a multi-valued field.
-2.  Rename index.html title from "Banana 3" to "Banana".
-3.  Add Japan map.
-4.  Update README for enabling CORS in Solr and add a sample webdefault.xml for Solr 6.
-5.  Fix bug when loading saved dashboards from another Solr server.
-6.  Fix rows=0 bug when exporting from Terms panel.
-7.  Fix error when loading dashboard from blob due to '/' prefix in name.
-8.  Fix IE 11 issues by replacing startsWith() and endsWith() with indexOf().
-9.  Update Search Analytics dashboard for Fusion.
-10. Add notes to Fusion Metrics dashboard telling users to enable metrics first.
+This release fixes a few minor bugs related to changes in Fusion 4.
+1. In Search Analytics dashboard, change global fq from type_s:query to type_s:response.
+2. Remove hard coded '/' prefix in query to load saved dashboards (due to change in Blob Store API).
+3. Rename saved dashboards field "name" to use "id" instead (due to change in Blob Store API).
 
 ## Older Release Notes
 

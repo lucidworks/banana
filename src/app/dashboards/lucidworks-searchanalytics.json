@@ -137,9 +137,9 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type_s:query&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.field=id&wt=json&rows=0\n",
+            "query": "q=*%3A*&df=query_t&fq=type_s:response&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.field=id&wt=json&rows=0\n",
             "basic_query": "",
-            "custom": "&fq=type_s:query"
+            "custom": ""
           },
           "style": {
             "font-size": "14pt"
@@ -196,7 +196,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=query_s&facet.limit=10&facet.missing=true&f.query_s.facet.sort=count",
+            "query": "q=*%3A*&df=query_t&fq=type_s:response&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=query_s&facet.limit=10&facet.missing=true&f.query_s.facet.sort=count",
             "custom": ""
           },
           "mode": "count",
@@ -308,7 +308,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.range=timestamp_tdt&facet.range.start=NOW/DAY-30DAY&facet.range.end=NOW/DAY%2B1DAY&facet.range.gap=%2B12HOUR\n",
+            "query": "q=*%3A*&df=query_t&fq=type_s:response&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.range=timestamp_tdt&facet.range.start=NOW/DAY-30DAY&facet.range.end=NOW/DAY%2B1DAY&facet.range.gap=%2B12HOUR\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -370,7 +370,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=query_s&facet.limit=10&facet.missing=true&f.query_s.facet.sort=count&fq=hits:0",
+            "query": "q=*%3A*&df=query_t&fq=type_s:response&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=query_s&facet.limit=10&facet.missing=true&f.query_s.facet.sort=count&fq=hits:0",
             "custom": "&fq=hits:0"
           },
           "mode": "count",
@@ -480,7 +480,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=qtime&facet.missing=true&f.query_s.facet.sort=count",
+            "query": "q=*%3A*&df=query_t&fq=type_s:response&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=qtime&facet.missing=true&f.query_s.facet.sort=count",
             "custom": ""
           },
           "mode": "mean",
@@ -581,7 +581,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=qtime&facet.missing=true&f.query_s.facet.sort=count",
+            "query": "q=*%3A*&df=query_t&fq=type_s:response&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=qtime&facet.missing=true&f.query_s.facet.sort=count",
             "custom": ""
           },
           "mode": "min",
@@ -682,7 +682,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=qtime&facet.missing=true&f.query_s.facet.sort=count",
+            "query": "q=*%3A*&df=query_t&fq=type_s:response&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=qtime&facet.missing=true&f.query_s.facet.sort=count",
             "custom": ""
           },
           "mode": "max",
@@ -792,7 +792,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=totaltime&facet.missing=true&f.query_s.facet.sort=count",
+            "query": "q=*%3A*&df=query_t&fq=type_s:response&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=totaltime&facet.missing=true&f.query_s.facet.sort=count",
             "custom": ""
           },
           "mode": "mean",
@@ -893,7 +893,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=totaltime&facet.missing=true&f.query_s.facet.sort=count",
+            "query": "q=*%3A*&df=query_t&fq=type_s:response&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=totaltime&facet.missing=true&f.query_s.facet.sort=count",
             "custom": ""
           },
           "mode": "min",
@@ -994,7 +994,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type_s:query&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=totaltime&facet.missing=true&f.query_s.facet.sort=count",
+            "query": "q=*%3A*&df=query_t&fq=type_s:response&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=totaltime&facet.missing=true&f.query_s.facet.sort=count",
             "custom": ""
           },
           "mode": "max",
@@ -1105,8 +1105,8 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type_s:query&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&sort=timestamp_tdt desc&wt=json&rows=10000",
-            "basic_query": "q=*%3A*&df=query_t&fq=type_s:query&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&sort=timestamp_tdt desc",
+            "query": "q=*%3A*&df=query_t&fq=type_s:response&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&sort=timestamp_tdt desc&wt=json&rows=10000",
+            "basic_query": "q=*%3A*&df=query_t&fq=type_s:response&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&sort=timestamp_tdt desc",
             "custom": ""
           },
           "size": 10,
@@ -1301,7 +1301,7 @@
     "server": "/api/apollo/query-pipelines/_system/collections/",
     "core_name": "default_signals",
     "core_list": [],
-    "global_params": "&df=query_t&fq=type_s:query"
+    "global_params": "&df=query_t&fq=type_s:response"
   },
   "username": "admin"
 }
