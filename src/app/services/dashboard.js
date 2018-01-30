@@ -532,8 +532,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             var server = banana_server + config.banana_index;
             if (config.USE_FUSION) {
                 // Use Blob Store API to list all dashboards
-                // NOTES: Fusion 4 BlobStore uses '/' prefix to all blob names, need to put a backslash in front of the query also.
-                return lucidworksSrv.getDashboardList('\\/' + query);
+                return lucidworksSrv.getDashboardList(query);
             }
 
             sjs.client.server(server);
