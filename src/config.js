@@ -100,8 +100,10 @@ function (Settings) {
      * @type {Array}
      */
     panel_names: [
-      'bar',
-      'histogram',
+	  'bar',
+	  'wheel',
+	  'pie',
+	  'histogram',
       'map',
       'table',
       'filtering',
