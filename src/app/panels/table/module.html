@@ -22,6 +22,7 @@
     <div style="{{panel.overflow}}:{{panel.height || row.height}};" ng-class="{'span9':panel.field_list,'span12':!panel.field_list}" class="table-doc-table">
       <i class="pull-left icon-chevron-sign-right pointer" ng-click="panel.field_list = !panel.field_list" bs-tooltip="'Show field list'" ng-show="!panel.field_list"></i>
 
+      <!-- Paging at the top of table -->
       <div class="row-fluid" ng-show="panel.paging">
         <div class="span1 offset1" style="text-align:right">
           <i ng-click="panel.offset = 0" ng-show="panel.offset > 0" class='icon-circle-arrow-left pointer'></i>
@@ -36,7 +37,9 @@
         </div>
       </div>
 
+      <!-- Table -->
       <table class="table-hover table table-condensed" ng-style="panel.style">
+        <!-- Table Headers -->
         <thead ng-show="panel.header">
           <th ng-show="panel.fields.length<1">message (select columns from the list to the left)</th>
           <th style="white-space:nowrap" ng-repeat="field in panel.fields">
@@ -52,19 +55,34 @@
           <th ng-show="panel.enableHyperlink" style="white-space:nowrap">{{panel.hyperlinkColumnHeader}}</th>
         </thead>
 
+        <!-- Table Content -->
         <tbody ng-repeat="event in data | slice:panel.offset:panel.offset+panel.size" ng-class-odd="'odd'">
+          <!-- Main Row -->
           <tr ng-click="toggle_details(event)" class="pointer">
             <td ng-show="panel.fields.length<1">{{event.kibana._source|stringify|tableTruncate:panel.trimFactor:1}}</td>
 
-            <!-- Table columns -->
-            <td ng-show="panel.fields.length>0" ng-repeat="field in panel.fields" ng-bind-html-unsafe="(event.kibana.highlight[field]||event.kibana._source[field]) |tableHighlight |tableTruncate:panel.trimFactor:panel.fields.length:field:panel.imageFields |tableDisplayImageField:field:panel.imageFields:panel.imgFieldWidth:panel.imgFieldHeight"></td>
+            <!-- Column Values -->
+            <td ng-show="panel.fields.length>0" ng-repeat="field in panel.fields"
+                ng-bind-html-unsafe="(event.kibana.highlight[field] || event.kibana._source[field])
+                  | tableHighlight
+                  | tableTruncate:panel.trimFactor:panel.fields.length:field:panel.imageFields
+                  | tableDisplayImageField:field:panel.imageFields:panel.imgFieldWidth:panel.imgFieldHeight">
+            </td>
 
-            <!-- Hyperlink column -->
+            <!-- Hyperlink Column -->
             <td ng-click="" ng-show="panel.enableHyperlink && panel.displayLinkIcon" ng-bind-html-unsafe="event.kibana._source[panel.hyperlinkColumnForURI] |urlLinkAsIcon"></td>
             <td ng-show="panel.enableHyperlink && !panel.displayLinkIcon" ng-bind-html-unsafe="event.kibana._source[panel.hyperlinkColumnForURI] |urlLink"></td>
             <!-- end Hyperlink column -->
           </tr>
 
+          <!-- Sub-row (if enabled) -->
+          <tr ng-show="panel.enableSubrow && panel.subrowField">
+            <td colspan="{{panel.fields.length}}">
+              <p>{{ event.kibana._source[panel.subrowField] | tableSubrowOffset:panel.subrowOffset | tableTruncate:panel.subrowMaxChar:1 }}</p>
+            </td>
+          </tr>
+
+          <!-- Show full details of the row when clicked -->
           <tr ng-show="event.kibana.details">
             <td colspan={{panel.fields.length}} ng-switch="event.kibana.view">
               <span>
@@ -98,6 +116,7 @@
         </tbody>
       </table>
 
+      <!-- Paging at the bottom of table -->
       <div class="row-fluid" ng-show="panel.paging">
         <div class="span1 offset3" style="text-align:right">
           <i ng-click="panel.offset = 0" ng-show="panel.offset > 0" class='icon-circle-arrow-left pointer'></i>
