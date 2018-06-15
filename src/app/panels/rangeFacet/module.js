@@ -110,17 +110,12 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         $scope.set_timer($scope.panel.refresh.interval);
       }
 
-      $scope.$on('refresh',function(){
-        $scope.get_data();
-        if (filterSrv.idsByTypeAndField('range',$scope.panel.range_field).length > 0) {
-          $scope.panel.showChart =  true;
-        } else {
-          $scope.panel.showChart =  false;
-        }
-      });
-
       $scope.set_configurations($scope.panel.minimum, $scope.panel.maximum);
       $scope.get_data();
+
+      $scope.$on('refresh',function(){
+        $scope.get_data();
+      });
     };
 
     $scope.set_timer = function(refresh_interval) {
@@ -151,7 +146,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
     $scope.set_interval = function(interval) {
-      if(interval !== 'auto') {
+      if (interval !== 'auto') {
         $scope.panel.auto_int = false;
         $scope.panel.interval = interval;
       } else {
@@ -181,19 +176,27 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
     };
 
     /**
-     * The facet range effecting the panel
-     * return type {from:number, to:number}
+     * Get the range filter effecting the panel.
+     * If no existing filter being applied from the filter panel, use the panel's settings.
+     * @return {from:number, to:number} - range filter object
      */
-    $scope.get_facet_range = function () {
-      return filterSrv.facetRange($scope.panel.range_field);
+    $scope.get_facet_range = function() {
+      var foundFilter = {};
+      var filterIds = filterSrv.idsByTypeAndField('range', $scope.panel.range_field);
+
+      if (!_.isEmpty(filterIds)) {
+        foundFilter = filterSrv.getEjsObj(filterIds[0]); // There should be only one filter id.
+      }
+
+      if (_.isEmpty(foundFilter)) return {from: $scope.panel.minimum, to: $scope.panel.maximum};
+      return {from: foundFilter.from(), to: foundFilter.to()};
     };
 
-    /*
-     * get interval to be used
+    /**
+     * Get interval to be used
      */
-    $scope.get_interval = function () {
-      var interval = $scope.panel.interval,
-                      range;
+    $scope.get_interval = function() {
+      var interval = $scope.panel.interval, range;
       if ($scope.panel.auto_int) {
         range = $scope.get_facet_range();
         if (range) {
@@ -204,12 +207,15 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       return $scope.panel.interval;
     };
 
+    /**
+     * Set a range filter and remove an existing filter. This is mainly used when selecting an area in the chart.
+     * @param from - facet.range.start
+     * @param to - facet.range.end
+     */
     $scope.set_range_filter = function(from,to) {
       filterSrv.removeByTypeAndField('range',$scope.panel.range_field);
       filterSrv.set({
         type: 'range',
-        // from: parseFloat(from).toPrecision(2),
-        // to: parseFloat(to).toPrecision(2),
         from: parseFloat(from).toFixed($scope.panel.interval_decimal),
         to: parseFloat(to).toFixed($scope.panel.interval_decimal),
         field: $scope.panel.range_field
@@ -217,24 +223,14 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       dashboard.refresh();
     };
 
-    // set the configrations in settings 
-    $scope.set_configurations = function(from,to){
-      // $scope.panel.chart_minimum = parseFloat(from).toPrecision(2);
-      // $scope.panel.chart_maximum = parseFloat(to).toPrecision(2);
+    /**
+     * Set the configurations in settings (for chart display)
+     * @param from - facet.range.start
+     * @param to - facet.range.end
+     */
+    $scope.set_configurations = function(from,to) {
       $scope.panel.chart_minimum = parseFloat(from).toFixed($scope.panel.interval_decimal);
       $scope.panel.chart_maximum = parseFloat(to).toFixed($scope.panel.interval_decimal);
-    };
-
-    //set the range filter from old configrations
-    $scope.range_apply = function(){
-      filterSrv.set({
-        type: 'range',
-        from: parseFloat($scope.panel.minimum),
-        to: parseFloat($scope.panel.maximum),
-        field: $scope.panel.range_field
-      });
-      $scope.set_configurations($scope.panel.minimum, $scope.panel.maximum);
-      dashboard.refresh();
     };
 
     /**
@@ -251,7 +247,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         return user_interval;
       } else {
         var gap_interval = ((to-from)/size);
-
         if (gap_interval > 1) {
           return $scope.round_gap(gap_interval);
         } else {
@@ -273,7 +268,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       return Math.round(interval) + 1;
     };
 
- 
     /**
      * Fetch the data for a chunk of a queries results. Multiple segments occur when several indicies
      * need to be consulted (like timestamped logstash indicies)
@@ -291,11 +285,11 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
      */
     $scope.get_data = function(segment, query_id) {
       $scope.panelMeta.loading = true;
+      delete $scope.panel.error;
 
       if (_.isUndefined(segment)) {
         segment = 0;
       }
-      delete $scope.panel.error;
 
       // Make sure we have everything for the request to complete
       if(dashboard.indices.length === 0) {
@@ -330,17 +324,17 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
         var facet = $scope.sjs.DateHistogramFacet(id);
 
-        if($scope.panel.mode === 'count') {
+        if ($scope.panel.mode === 'count') {
           facet = facet.field($scope.panel.time_field);
         } else {
-          if(_.isNull($scope.panel.value_field)) {
+          if (_.isNull($scope.panel.value_field)) {
             $scope.panel.error = "In " + $scope.panel.mode + " mode a field must be specified";
             return;
           }
           facet = facet.keyField($scope.panel.time_field).valueField($scope.panel.value_field);
         }
-        facet = facet.facetFilter($scope.sjs.QueryFilter(query));
 
+        facet = facet.facetFilter($scope.sjs.QueryFilter(query));
         request = request.facet(facet).size(0);
       });
 
@@ -356,13 +350,13 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       var rows_limit = '&rows=0'; // for RangeFacet, we do not need the actual response doc, so set rows=0
       var facet = '&facet=true' +
                   '&facet.range=' + $scope.panel.range_field +
-                  '&facet.range.start=' + (parseFloat($scope.panel.chart_minimum)) +
-                  '&facet.range.end=' + (parseFloat($scope.panel.chart_maximum)+$scope.calculate_tick_value(parseFloat($scope.panel.interval))) +
+                  '&facet.range.start=' + (parseFloat(_range.from)) +
+                  '&facet.range.end=' + (parseFloat(_range.to) + $scope.calculate_tick_value(parseFloat($scope.panel.interval))) +
                   '&facet.range.gap=' + $scope.panel.interval;
       var promises = [];
       $scope.panel.queries.query = "";
 
-       _.each($scope.panel.queries.ids, function(id) {
+      _.each($scope.panel.queries.ids, function(id) {
         var temp_q =  querySrv.getQuery(id) + wt_json + rows_limit + fq + facet ;
         $scope.panel.queries.query += temp_q + "\n";
         if ($scope.panel.queries.custom !== null) {
@@ -384,75 +378,58 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           query_id = $scope.query_id = new Date().getTime();
         }
 
-        // Convert facet ids to numbers
-        // var facetIds = _.map(_.keys(results.facets),function(k){return parseInt(k, 10);});
-        // TODO: change this, Solr do faceting differently
-        // var facetIds = [0]; // Need to fix this
+        var i = 0,
+          numeric_series,
+          hits;
 
-        // Make sure we're still on the same query/queries
-        // TODO: We probably DON'T NEED THIS unless we have to support multiple queries in query module.
-        // if($scope.query_id === query_id && _.difference(facetIds, $scope.panel.queries.ids).length === 0) {
-          var i = 0,
-            numeric_series,
-            hits;
+        _.each($scope.panel.queries.ids, function(id,index) {
+          // Check for error and abort if found
+          if (!(_.isUndefined(results[index].error))) {
+            $scope.panel.error = $scope.parse_error(results[index].error.msg);
+            return;
+          }
+          // we need to initialize the data variable on the first run,
+          // and when we are working on the first segment of the data.
+          if(_.isUndefined($scope.data[i]) || segment === 0) {
+            numeric_series = new timeSeries.ZeroFilled({
+              start_date: _range && _range.from,
+              end_date: _range && _range.to,
+              fill_style: 'minimal'
+            });
+            hits = 0;
+          } else {
+            numeric_series = $scope.data[i].numeric_series;
+            // Bug fix for wrong event count:
+            //   Solr don't need to accumulate hits count since it can get total count from facet query.
+            //   Therefore, I need to set hits and $scope.hits to zero.
+            // hits = $scope.data[i].hits;
+            hits = 0;
+            $scope.hits = 0;
+          }
+          $scope.range_count = 0;
+          // Solr facet counts response is in one big array.
+          // So no need to get each segment like Elasticsearch does.
+          // Entries from facet_ranges counts
+          var entries = results[index].facet_counts.facet_ranges[$scope.panel.range_field].counts;
+          for (var j = 0; j < entries.length; j++) {
+            var entry_time = parseFloat(entries[j]).toFixed($scope.panel.interval_decimal); // convert to the same number of decimals as specified interval.
+            j++;
+            var entry_count = entries[j];
+            numeric_series.addValue(entry_time, entry_count);
+            hits += entry_count; // The series level hits counter
+            $scope.hits += entry_count; // Entire dataset level hits counter
+            $scope.range_count += 1; // count the number of ranges to help later in bar width
+          }
+          $scope.data[i] = {
+            info: querySrv.list[id],
+            numeric_series: numeric_series,
+            hits: hits
+          };
 
-          _.each($scope.panel.queries.ids, function(id,index) {
+          i++;
+        });
 
-            // Check for error and abort if found
-            if (!(_.isUndefined(results[index].error))) {
-              $scope.panel.error = $scope.parse_error(results[index].error.msg);
-              return;
-            }
-            // we need to initialize the data variable on the first run,
-            // and when we are working on the first segment of the data.
-            if(_.isUndefined($scope.data[i]) || segment === 0) {
-              numeric_series = new timeSeries.ZeroFilled({
-                start_date: _range && _range.from,
-                end_date: _range && _range.to,
-                fill_style: 'minimal'
-              });
-              hits = 0;
-            } else {
-              numeric_series = $scope.data[i].numeric_series;
-              // Bug fix for wrong event count:
-              //   Solr don't need to accumulate hits count since it can get total count from facet query.
-              //   Therefore, I need to set hits and $scope.hits to zero.
-              // hits = $scope.data[i].hits;
-              hits = 0;
-              $scope.hits = 0;
-            }
-            $scope.range_count = 0;
-            // Solr facet counts response is in one big array.
-            // So no need to get each segment like Elasticsearch does.
-            // Entries from facet_ranges counts
-            var entries = results[index].facet_counts.facet_ranges[$scope.panel.range_field].counts;
-            for (var j = 0; j < entries.length; j++) {
-              var entry_time = parseFloat(entries[j]).toFixed($scope.panel.interval_decimal); // convert to the same number of decimals as specified interval.
-              j++;
-              var entry_count = entries[j];
-              numeric_series.addValue(entry_time, entry_count);
-              hits += entry_count; // The series level hits counter
-              $scope.hits += entry_count; // Entire dataset level hits counter
-              $scope.range_count += 1; // count the number of ranges to help later in bar width
-            }
-            $scope.data[i] = {
-              info: querySrv.list[id],
-              numeric_series: numeric_series,
-              hits: hits
-            };
-
-            i++;
-          });
-
-          // Tell the RangeFacet directive to render.
-          $scope.$emit('render');
-          
-          // Don't need this for Solr unless we need to support multiple queries.
-          // If we still have segments left, get them
-          // if(segment < dashboard.indices.length-1) {
-          //   $scope.get_data(segment+1,query_id);
-          // }
-        // }
+        $scope.render();
       });
     };
 
@@ -492,19 +469,18 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       if ($scope.panel.refresh.enable) {
         $scope.set_timer($scope.panel.refresh.interval);
       }
+
       if ($scope.refresh) {
         $scope.get_data();
       }
-      $scope.set_range_filter($scope.panel.minimum, $scope.panel.maximum);
-      $scope.set_configurations($scope.panel.minimum, $scope.panel.maximum);
-      $scope.refresh =  false;
-      $scope.$emit('render');
+
+      $scope.refresh = false;
+      $scope.render();
     };
 
     $scope.render = function() {
       $scope.$emit('render');
     };
-
   });
 
   module.directive('rangefacetChart', function(dashboard) {
@@ -517,7 +493,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           render_panel();
         });
 
-        scope.set_range_filter(scope.panel.chart_minimum, scope.panel.chart_maximum);
         // Re-render if the window is resized
         angular.element(window).bind('resize', function(){
           render_panel();
@@ -538,9 +513,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
           // Set barwidth based on specified interval
           var barwidth = scope.panel.chart_maximum - scope.panel.chart_minimum;
-          // var count = scope.range_count > 15 ? scope.range_count : 15;
           var stack = scope.panel.stack ? true : null;
           var facet_range = scope.get_facet_range();
+
           // Populate element
           try {
             var options = {
@@ -659,7 +634,6 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             }
             $tooltip
               .html(
-                // group + dashboard.numberWithCommas(value) + " [" + item.datapoint[0].toPrecision(2) +" - "+ (item.datapoint[0] + parseFloat(scope.panel.interval)).toPrecision(2) +"]"
                 group + dashboard.numberWithCommas(value) + " [" + item.datapoint[0].toFixed(scope.panel.interval_decimal) +" - "+ (item.datapoint[0] + parseFloat(scope.panel.interval)).toFixed(scope.panel.interval_decimal) +"]"
               )
               .place_tt(pos.pageX, pos.pageY);
@@ -676,5 +650,4 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       }
     };
   });
-
 });
