@@ -188,7 +188,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
         foundFilter = filterSrv.getEjsObj(filterIds[0]); // There should be only one filter id.
       }
 
-      if (_.isEmpty(foundFilter)) return {from: $scope.panel.minimum, to: $scope.panel.maximum};
+      if (_.isEmpty(foundFilter)) { return {from: $scope.panel.minimum, to: $scope.panel.maximum}; }
+
       return {from: foundFilter.from(), to: foundFilter.to()};
     };
 

@@ -68,7 +68,9 @@ define([
     // If an id is passed, the filter at that id is updated.
     this.set = function(filter,id) {
       // Check for duplicate filter, if it is already exist, do nothing (don't add it to the Filter panel).
-      if (isDuplicate(filter)) {
+      // If the filter type is 'time', then we allow duplicate so that Histogram panel will behave correctly
+      // (by adding a new time filter to the Filter panel, every time when a user selects an area in the histogram).
+      if (filter.type !== 'time' && isDuplicate(filter)) {
         return false;
       }
 

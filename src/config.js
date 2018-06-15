@@ -34,7 +34,7 @@ function (Settings) {
 
     // Specify Solr server and core to store the data.
     solr: "/api/apollo/query-pipelines/_system/collections/",
-    solr_core: "logs",
+    solr_core: "system_logs",
     timefield: "timestamp_tdt",
 
     /**
