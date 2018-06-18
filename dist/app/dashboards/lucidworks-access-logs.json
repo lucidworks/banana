@@ -1,5 +1,5 @@
 ﻿{
-  "title": "Service Logs",
+  "title": "Access Logs",
   "services": {
     "query": {
       "idQueue": [
@@ -34,8 +34,8 @@
           "to": "NOW/HOUR%2B1HOUR",
           "field": "timestamp_tdt",
           "type": "time",
-          "fromDateObj": "2018-06-18T06:25:33.409Z",
-          "toDateObj": "2018-06-18T07:25:33.409Z",
+          "fromDateObj": "2018-06-18T06:26:25.956Z",
+          "toDateObj": "2018-06-18T07:26:25.956Z",
           "mandate": "must",
           "active": true,
           "alias": "",
@@ -103,6 +103,7 @@
               "pinned": true,
               "history": [
                 "*",
+                "type_s:http",
                 "memory"
               ],
               "spyable": true,
@@ -153,7 +154,7 @@
             "ids": [
               0
             ],
-            "query": "q=*&df=message_txt&fq=type_s:java&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.range=timestamp_tdt&facet.range.start=NOW/HOUR-1HOUR&facet.range.end=NOW/HOUR%2B1HOUR&facet.range.gap=%2B30SECOND\n",
+            "query": "q=*&fq=type_s:http OR type_s:https&df=message_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.range=timestamp_tdt&facet.range.start=NOW/HOUR-1HOUR&facet.range.end=NOW/HOUR%2B1HOUR&facet.range.gap=%2B30SECOND\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -208,8 +209,8 @@
       ]
     },
     {
-      "title": "Services",
-      "height": "250px",
+      "title": "Access",
+      "height": "200px",
       "editable": true,
       "collapse": false,
       "collapsable": true,
@@ -224,113 +225,11 @@
             "ids": [
               0
             ],
-            "query": "q=*&df=message_txt&fq=type_s:java&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=service_s&facet.limit=10&facet.missing=true&f.service_s.facet.sort=count",
+            "query": "q=*&fq=type_s:http OR type_s:https&df=message_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=status_i&facet.limit=10&facet.missing=true&f.status_i.facet.sort=count",
             "custom": ""
           },
           "mode": "count",
-          "field": "service_s",
-          "stats_field": "",
-          "decimal_points": 0,
-          "exclude": [],
-          "missing": false,
-          "other": false,
-          "size": 10,
-          "pages": 10,
-          "sortBy": "count",
-          "order": "descending",
-          "style": {
-            "font-size": "10pt"
-          },
-          "donut": false,
-          "tilt": false,
-          "labels": true,
-          "logAxis": false,
-          "arrangement": "horizontal",
-          "chart": "bar",
-          "counter_pos": "left",
-          "exportSize": 100,
-          "lastColor": "",
-          "spyable": true,
-          "show_queries": true,
-          "chartColors": [
-            "#7EB26D",
-            "#EAB839",
-            "#6ED0E0",
-            "#EF843C",
-            "#E24D42",
-            "#1F78C1",
-            "#BA43A9",
-            "#705DA0",
-            "#508642",
-            "#CCA300",
-            "#447EBC",
-            "#C15C17",
-            "#890F02",
-            "#0A437C",
-            "#6D1F62",
-            "#584477",
-            "#B7DBAB",
-            "#F4D598",
-            "#70DBED",
-            "#F9BA8F",
-            "#F29191",
-            "#82B5D8",
-            "#E5A8E2",
-            "#AEA2E0",
-            "#629E51",
-            "#E5AC0E",
-            "#64B0C8",
-            "#E0752D",
-            "#BF1B00",
-            "#0A50A1",
-            "#962D82",
-            "#614D93",
-            "#9AC48A",
-            "#F2C96D",
-            "#65C5DB",
-            "#F9934E",
-            "#EA6460",
-            "#5195CE",
-            "#D683CE",
-            "#806EB7",
-            "#3F6833",
-            "#967302",
-            "#2F575E",
-            "#99440A",
-            "#58140C",
-            "#052B51",
-            "#511749",
-            "#3F2B5B",
-            "#E0F9D7",
-            "#FCEACA",
-            "#CFFAFF",
-            "#F9E2D2",
-            "#FCE2DE",
-            "#BADFF4",
-            "#F9D9F9",
-            "#DEDAF7"
-          ],
-          "refresh": {
-            "enable": false,
-            "interval": 2
-          },
-          "title": "Services"
-        },
-        {
-          "span": 4,
-          "editable": true,
-          "type": "terms",
-          "loadingEditor": false,
-          "queries": {
-            "mode": "all",
-            "ids": [
-              0
-            ],
-            "query": "q=*&df=message_txt&fq=type_s:java&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=level_s&facet.limit=10&facet.missing=true&f.level_s.facet.sort=count",
-            "custom": ""
-          },
-          "mode": "count",
-          "field": "level_s",
+          "field": "status_i",
           "stats_field": "",
           "decimal_points": 0,
           "exclude": [],
@@ -416,7 +315,7 @@
             "enable": false,
             "interval": 2
           },
-          "title": "Levels"
+          "title": "HTTP Status Codes"
         },
         {
           "span": 4,
@@ -428,7 +327,109 @@
             "ids": [
               0
             ],
-            "query": "q=*&df=message_txt&fq=type_s:java&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=host_s&facet.limit=10&facet.missing=true&f.host_s.facet.sort=count",
+            "query": "q=*&fq=type_s:http OR type_s:https&df=message_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=verb_s&facet.limit=10&facet.missing=true&f.verb_s.facet.sort=count",
+            "custom": ""
+          },
+          "mode": "count",
+          "field": "verb_s",
+          "stats_field": "",
+          "decimal_points": 0,
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 10,
+          "pages": 10,
+          "sortBy": "count",
+          "order": "descending",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "logAxis": false,
+          "arrangement": "horizontal",
+          "chart": "bar",
+          "counter_pos": "left",
+          "exportSize": 100,
+          "lastColor": "",
+          "spyable": true,
+          "show_queries": true,
+          "chartColors": [
+            "#7EB26D",
+            "#EAB839",
+            "#6ED0E0",
+            "#EF843C",
+            "#E24D42",
+            "#1F78C1",
+            "#BA43A9",
+            "#705DA0",
+            "#508642",
+            "#CCA300",
+            "#447EBC",
+            "#C15C17",
+            "#890F02",
+            "#0A437C",
+            "#6D1F62",
+            "#584477",
+            "#B7DBAB",
+            "#F4D598",
+            "#70DBED",
+            "#F9BA8F",
+            "#F29191",
+            "#82B5D8",
+            "#E5A8E2",
+            "#AEA2E0",
+            "#629E51",
+            "#E5AC0E",
+            "#64B0C8",
+            "#E0752D",
+            "#BF1B00",
+            "#0A50A1",
+            "#962D82",
+            "#614D93",
+            "#9AC48A",
+            "#F2C96D",
+            "#65C5DB",
+            "#F9934E",
+            "#EA6460",
+            "#5195CE",
+            "#D683CE",
+            "#806EB7",
+            "#3F6833",
+            "#967302",
+            "#2F575E",
+            "#99440A",
+            "#58140C",
+            "#052B51",
+            "#511749",
+            "#3F2B5B",
+            "#E0F9D7",
+            "#FCEACA",
+            "#CFFAFF",
+            "#F9E2D2",
+            "#FCE2DE",
+            "#BADFF4",
+            "#F9D9F9",
+            "#DEDAF7"
+          ],
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          },
+          "title": "Methods"
+        },
+        {
+          "span": 4,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*&fq=type_s:http OR type_s:https&df=message_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=host_s&facet.limit=10&facet.missing=true&f.host_s.facet.sort=count",
             "custom": ""
           },
           "mode": "count",
@@ -523,8 +524,139 @@
       ]
     },
     {
+      "title": "Range Facets",
+      "height": "200px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 6,
+          "editable": true,
+          "type": "rangeFacet",
+          "loadingEditor": false,
+          "mode": "count",
+          "time_field": "timestamp",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*&fq=type_s:http OR type_s:https&df=message_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.range=duration_i&facet.range.start=0&facet.range.end=1001&facet.range.gap=11\n",
+            "custom": ""
+          },
+          "max_rows": 100000,
+          "value_field": null,
+          "fill": 0,
+          "linewidth": 3,
+          "auto_int": true,
+          "resolution": 100,
+          "interval": 11,
+          "interval_decimal": 0,
+          "resolutions": [
+            5,
+            10,
+            25,
+            50,
+            75,
+            100
+          ],
+          "spyable": true,
+          "zoomlinks": true,
+          "bars": false,
+          "stack": true,
+          "points": false,
+          "lines": true,
+          "lines_smooth": false,
+          "legend": true,
+          "x-axis": true,
+          "y-axis": false,
+          "percentage": false,
+          "interactive": true,
+          "options": true,
+          "minimum": 0,
+          "maximum": 1000,
+          "chart_minimum": "0",
+          "chart_maximum": "1000",
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "showChart": true,
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          },
+          "title": "Latency",
+          "range_field": "duration_i"
+        },
+        {
+          "span": 6,
+          "editable": true,
+          "type": "rangeFacet",
+          "loadingEditor": false,
+          "mode": "count",
+          "time_field": "timestamp",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*&fq=type_s:http OR type_s:https&df=message_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.range=body_bytes_sent_i&facet.range.start=0&facet.range.end=50001&facet.range.gap=501\n",
+            "custom": ""
+          },
+          "max_rows": 100000,
+          "value_field": null,
+          "fill": 0,
+          "linewidth": 3,
+          "auto_int": true,
+          "resolution": 100,
+          "interval": 501,
+          "interval_decimal": 0,
+          "resolutions": [
+            5,
+            10,
+            25,
+            50,
+            75,
+            100
+          ],
+          "spyable": true,
+          "zoomlinks": true,
+          "bars": false,
+          "stack": true,
+          "points": false,
+          "lines": true,
+          "lines_smooth": false,
+          "legend": false,
+          "x-axis": true,
+          "y-axis": false,
+          "percentage": false,
+          "interactive": true,
+          "options": true,
+          "minimum": 0,
+          "maximum": 50000,
+          "chart_minimum": "0",
+          "chart_maximum": "50000",
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": false
+          },
+          "showChart": true,
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          },
+          "title": "Bytes Sent",
+          "range_field": "body_bytes_sent_i"
+        }
+      ]
+    },
+    {
       "title": "Table with Search box",
-      "height": "150px",
+      "height": "200px",
       "editable": true,
       "collapse": false,
       "collapsable": true,
@@ -537,17 +669,21 @@
           "loadingEditor": false,
           "panels": [
             {
-              "type": "query",
+              "loading": false,
+              "error": false,
+              "sizeable": false,
+              "span": 12,
               "height": "50px",
+              "editable": true,
+              "type": "query",
+              "draggable": false,
               "query": "*:*",
               "pinned": true,
               "history": [
-                "*",
-                "type_s:http"
+                "*"
               ],
               "spyable": true,
               "remember": 10,
-              "span": 4,
               "title": "Search Events"
             },
             {
@@ -558,14 +694,15 @@
               "editable": true,
               "type": "table",
               "draggable": false,
+              "header": true,
               "status": "Stable",
               "queries": {
                 "mode": "all",
                 "ids": [
                   0
                 ],
-                "query": "q=*&df=message_txt&fq=type_s:java&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&wt=json&rows=200",
-                "basic_query": "q=*&df=message_txt&fq=type_s:java&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]",
+                "query": "q=*&fq=type_s:http OR type_s:https&df=message_txt&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&wt=json&rows=200",
+                "basic_query": "q=*&fq=type_s:http OR type_s:https&df=message_txt&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]",
                 "custom": ""
               },
               "size": 20,
@@ -583,25 +720,22 @@
               "fields": [
                 "timestamp_tdt",
                 "host_s",
-                "type_s",
-                "service_s",
-                "level_s",
-                "tags"
+                "status_i",
+                "verb_s",
+                "uri_path_s",
+                "duration_i",
+                "body_bytes_sent_i"
               ],
               "important_fields": [
                 "body_bytes_sent_i",
-                "duration_i",
-                "file_s",
                 "host_s",
-                "id",
-                "level_s",
+                "logmessage_txt",
                 "message_txt",
                 "param_s",
                 "port",
                 "protocol_s",
                 "remote_addr_s",
                 "request_s",
-                "service_s",
                 "status_i",
                 "tags",
                 "tags_str",
@@ -609,10 +743,10 @@
                 "type_s",
                 "uri_host_s",
                 "uri_path_s",
-                "verb_s"
+                "verb_s",
+                "duration_i"
               ],
               "highlight": [],
-              "header": true,
               "paging": true,
               "field_list": false,
               "trimFactor": 300,
@@ -634,10 +768,11 @@
               },
               "subrowMaxChar": 300,
               "enableSubrow": true,
-              "subrowField": "logmessage_txt",
+              "subrowField": "request_s",
               "subrowOffset": 0
             }
-          ]
+          ],
+          "title": ""
         }
       ]
     }
@@ -671,7 +806,7 @@
     "server": "/api/apollo/query-pipelines/_system/collections/",
     "core_name": "system_logs",
     "core_list": [],
-    "global_params": "&df=message_txt&fq=type_s:java"
+    "global_params": "&fq=type_s:http OR type_s:https&df=message_txt"
   },
   "username": "guest"
 }

@@ -33,7 +33,6 @@
         display: inline-block;
     }
   </style>
-  <div ng-show='panel.showChart'>
   <div>
     <span ng-show='panel.options'>
       <a class="link underline small" ng-show='panel.options' ng-click="options=!options">
@@ -48,7 +47,11 @@
       <i class='icon-circle' ng-style="{color: series.info.color}"></i>
       <span class='small histogram-legend-item'>{{series.info.alias}} ({{dashboard.numberWithCommas(series.hits)}})</span>
     </span>
-    <span ng-show="panel.legend" class="small"><span ng-show="panel.value_field && panel.mode != 'count'">{{panel.value_field}}</span> {{panel.mode}} per <strong>{{dashboard.numberWithCommas(panel.gap)}} {{panel.unit}}</strong> | (<strong>{{dashboard.numberWithCommas(hits)}}</strong> hits)</span>
+    <span ng-show="panel.legend" class="small">
+      <span ng-show="panel.value_field && panel.mode != 'count'">{{panel.value_field}}</span>
+      {{panel.mode}} per <strong>{{dashboard.numberWithCommas(panel.gap)}} {{panel.unit}}</strong>
+      | (<strong>{{dashboard.numberWithCommas(hits)}}</strong> hits)
+    </span>
   </div>
   <form class="form-inline bordered histogram-options" ng-show="options">
     <span class="checkbox">
@@ -70,16 +73,12 @@
       </label>
     </span>
     <span ng-show="panel.auto_int">
-      <label class="small">Precision</label> <select ng-disabled="!panel.auto_int" ng-change="set_precision(panel.resolution);get_data();" class="input-small" ng-model="panel.resolution" ng-options="interval_label(time) for time in panel.resolutions"></select>
+      <label class="small">Precision</label>
+      <select ng-disabled="!panel.auto_int" ng-change="set_precision(panel.resolution);get_data();"
+              class="input-small" ng-model="panel.resolution" ng-options="interval_label(time) for time in panel.resolutions">
+      </select>
     </span>
   </form>
   <center><img ng-show='panel.loading && _.isUndefined(data)' src="img/load_big.gif"></center>
   <div rangefacet-chart class="histogram-chart" params="{{panel}}"></div>
-  </div>
-  <div ng-show='!panel.showChart'>
-    <div class="span11">
-      <h4>No range filter present</h4>
-    </div>
-    <a class='btn btn-small' ng-click="range_apply()">Create a range filter</a>
-  </div>
 </div>
