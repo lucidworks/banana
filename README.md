@@ -14,9 +14,10 @@ the power of Apache Solr. Data can be ingested into Solr through a variety of wa
 When you are ready to do a new release for Lucidworks Fusion. Do the following steps:
 
 1. Edit `package.json` by increasing the version number. 
-2. Run `grunt build` 
-3. Push your commit to Github.
-4. Run `npm publish`
+2. Edit `dasheditor.html` to use the new version number. (This is the version number in Dashboard Settings page) 
+3. Run `grunt build`
+4. Push your commit to Github.
+5. Run `npm publish`
  
 ## IMPORTANT
 
