@@ -100,10 +100,10 @@ define([
             var facet = '&facet=true';
             var facet_pivot = '&facet.pivot=' + $scope.panel.facet_pivot_strings.join().replace(/ /g, '');
             var facet_limits = '&facet.limit=' + $scope.panel.facet_limit;
+
+            // Set the panel's query
             $scope.panel.queries.query = querySrv.getORquery() + fq + wt_json + facet + facet_pivot + facet_limits + rows;
-            if (DEBUG) {
-                console.log($scope.panel.queries.query);
-            }
+
             // Set the additional custom query
             if ($scope.panel.queries.custom != null) {
                 request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
@@ -115,7 +115,6 @@ define([
             results = request.doSearch();
             results.then(function (results) {
                 $scope.data = $scope.parse_facet_pivot(results.facet_counts.facet_pivot[$scope.panel.facet_pivot_strings.join().replace(/ /g, '')]);
-                console.log($scope.data);
                 $scope.render();
             });
         };
@@ -147,9 +146,6 @@ define([
         };
 
         $scope.set_filters = function (d) {
-            if (DEBUG) {
-                console.log("Setting Filters to " + d);
-            }
             for (var i = 0; i < d.length; i++) {
                 filterSrv.set({
                     type: 'terms',
@@ -157,20 +153,17 @@ define([
                     mandate: 'must',
                     value: d[i]
                 });
-                console.log($scope.panel.facet_pivot_strings[i].replace(/ /g, '') + ' - ' + d[i]);
             }
-
             dashboard.refresh();
         };
     });
 
     module.directive('sunburst', function () {
         return {
-            //terminal: true,
             restrict: 'E',
-            link: function (scope, element/*,attrs*/) { // attrs is never used
+            link: function (scope, element) {
+                // Receive render events
                 scope.$on('render', function () {
-                    console.log("Sending sunburst 'render'");
                     render_panel();
                 });
 
@@ -181,12 +174,6 @@ define([
 
                 // Function for rendering panel
                 function render_panel() {
-                    var DEBUG = true;
-                    if (DEBUG) {
-                        console.log("Rendering Sunburst");
-                        console.log(scope.data);
-                    }
-
                     function click(d) {
                         var parents = getAncestors(d);
                         var out = parents.map(function (a) {
@@ -202,16 +189,13 @@ define([
 
                     function mouseover(d) {
                         var parents = getAncestors(d);
-
                         d3.selectAll("path")
                             .style("opacity", 0.3);
-
                         d3.selectAll("path")
                             .filter(function (node) {
                                 return (parents.indexOf(node) >= 0);
                             })
                             .style("opacity", 1);
-
                         $tooltip
                             .html(d['name'] + ' (' + scope.dash.numberWithCommas(d['size']) + ')')
                             .place_tt(d3.event.pageX, d3.event.pageY);
