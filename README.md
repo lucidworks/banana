@@ -17,6 +17,10 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
+## Banana 1.6.17a
+
+This is a hot fix release that includes a fix for Sunburst panel rendering issue in Firefox.
+
 ## Banana 1.6.17
 
 This release includes adding support for changes in Fusion 3.1 BlobStore API, which used for loading, saving, and searching dashboards. It also include the following bug fixes:
