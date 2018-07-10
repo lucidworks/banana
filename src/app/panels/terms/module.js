@@ -57,6 +57,8 @@ function (angular, app, _, $, kbn) {
       missing : false,
       other   : false,
       size    : 10,
+      pages   : 10, // This is only used for computing number of rows in the export input-box placeholder.
+                    // Otherwise, the placeholder will display "null".
       sortBy  : 'count',
       order   : 'descending',
       style   : { "font-size": '10pt'},
@@ -121,7 +123,8 @@ function (angular, app, _, $, kbn) {
         fq = '&' + filterSrv.getSolrFq();
       }
       var wt_json = '&wt=' + filetype;
-      var rows_limit = isForExport ? '&rows=0' : ''; // for terms, we do not need the actual response doc, so set rows=0
+      var rowsExportSize = $scope.panel.exportSize || 100;
+      var rows_limit = isForExport ? '&rows=' + rowsExportSize : '&rows=0'; // for terms, we do not need the actual response doc, so set rows=0
       var facet = '';
 
       if ($scope.panel.mode === 'count') {
