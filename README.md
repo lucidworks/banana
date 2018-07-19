@@ -17,6 +17,10 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
+## Banana 1.6.17c
+
+This is a hot fix release that includes a fix for CSV exporting issue in Full Text Search panel, where a custom query does not take effect.
+
 ## Banana 1.6.17b
 
 This is a hot fix release that includes a fix for CSV exporting issue in Terms panel (which already fixed in 1.6.18).

@@ -383,6 +383,11 @@ define([
           }
         }
         var exportQuery = $scope.panel.queries.basic_query + '&wt=' + filetype + omitHeader + rows_limit + fl;
+        // Set the additional custom query
+        if ($scope.panel.queries.custom != null) {
+          exportQuery += $scope.panel.queries.custom;
+        }
+
         var request = $scope.panel_request;
         request = request.setQuery(exportQuery);
         var response = request.doSearch();
