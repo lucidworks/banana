@@ -14,10 +14,11 @@ the power of Apache Solr. Data can be ingested into Solr through a variety of wa
 When you are ready to do a new release for Lucidworks Fusion. Do the following steps:
 
 1. Edit `package.json` by increasing the version number. 
-2. Edit `dasheditor.html` to use the new version number. (This is the version number in Dashboard Settings page) 
-3. Run `grunt build`
-4. Push your commit to Github.
-5. Run `npm publish`
+1. Edit `dasheditor.html` to use the new version number. (This is the version number in Dashboard Settings page)
+1. Update README 
+1. Run `grunt build`
+1. Push your commit to Github.
+1. Run `npm publish`
  
 ## IMPORTANT
 
@@ -28,22 +29,10 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.20
+## Banana 1.6.21
 
-This release is for Fusion 4.1 which includes the followings:
-1. Add three new dashboards for Fusion: Service Logs, Access Logs, and Combined Logs dashboards.
-2. Service Logs dashboard will be the new default (home) dashboard in Fusion.
-3. Add Sub-row feature to Table panel. Sub-row allows a specified field to be shown by itself in its own row for each event
-in the table. You can also specify the maximum number of characters to be shown and the character offset number (from the
-beginning of the line).
-4. Fix the timepicker issue; date filter skip-back-one-day if browser time is behind UTC (SILK-345).
-5. Fix RangeFacet panel so that it does not add a global filter when first initialized. Now when a range facet panel is
-added to a dashboard, it will initially use the panel's settings, instead of creating a new range filter that effects the
-whole dashboard.
-6. Prevent duplicate filters from being repeatedly added to Filter panel (except for time filter). Now a user will not
-see duplicate filters being added to the Filter panel, when clicking on the same filter in a chart for multiple times.
-7. Allow duplicate for time filters, so that Histogram panel will work correctly.
-8. Change default collection from `logs` to `system_logs` in config.js for Fusion 4.1.
+This release is for Fusion 4.1.1 which includes a minor bug fix for Search Analytics dashboard:
+* Changing `fq=type_s:response` to `fq=type:response` due to the schema changed in signal collections.
 
 ## Older Release Notes
 
