@@ -537,10 +537,15 @@ function (angular, app, _, $, kbn) {
             // } else {
             //   value = value.toFixed(scope.panel.decimal_points);
             // }
+
+            // Escape HTML tags to prevent the XSS or script injection attack
+            var escapedValue = dashboard.escapeHtml(
+              item.series.label + " (" + dashboard.numberWithCommas(value.toFixed(scope.panel.decimal_points)) + ")"
+            );
+
             $tooltip
               .html(
-                kbn.query_color_dot(item.series.color, 20) + ' ' +
-                item.series.label + " (" + dashboard.numberWithCommas(value.toFixed(scope.panel.decimal_points)) +")"
+                kbn.query_color_dot(item.series.color, 20) + ' ' + escapedValue
               )
               .place_tt(pos.pageX, pos.pageY);
           } else {
