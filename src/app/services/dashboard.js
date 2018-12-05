@@ -624,7 +624,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
             return chars_to_replace[tag] || tag;
           });
-        }
+        };
     });
 
 });

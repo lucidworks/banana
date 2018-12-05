@@ -33,8 +33,8 @@
           "to": "NOW/DAY%2B1DAY",
           "field": "timestamp_tdt",
           "type": "time",
-          "fromDateObj": "2017-11-18T21:45:57.874Z",
-          "toDateObj": "2017-12-18T21:45:57.874Z",
+          "fromDateObj": "2018-11-05T10:20:55.215Z",
+          "toDateObj": "2018-12-05T10:20:55.215Z",
           "mandate": "must",
           "active": true,
           "alias": "",
@@ -196,11 +196,11 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type:response&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=query_s&facet.limit=10&facet.missing=true&f.query_s.facet.sort=count",
+            "query": "q=*%3A*&df=query_t&fq=type:response&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=query&facet.limit=10&facet.missing=true&f.query.facet.sort=count",
             "custom": ""
           },
           "mode": "count",
-          "field": "query_s",
+          "field": "query",
           "stats_field": "",
           "decimal_points": 0,
           "exclude": [],
@@ -285,7 +285,8 @@
           "refresh": {
             "enable": false,
             "interval": 2
-          }
+          },
+          "pages": 10
         }
       ]
     },
@@ -370,11 +371,11 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type:response&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=query_s&facet.limit=10&facet.missing=true&f.query_s.facet.sort=count&fq=hits:0",
+            "query": "q=*%3A*&df=query_t&fq=type:response&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=query&facet.limit=10&facet.missing=true&f.query.facet.sort=count&fq=hits:0",
             "custom": "&fq=hits:0"
           },
           "mode": "count",
-          "field": "query_s",
+          "field": "query",
           "stats_field": "",
           "decimal_points": 0,
           "exclude": [],
@@ -459,7 +460,8 @@
           "refresh": {
             "enable": false,
             "interval": 2
-          }
+          },
+          "pages": 10
         }
       ]
     },
@@ -480,11 +482,11 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type:response&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=qtime&facet.missing=true&f.query_s.facet.sort=count",
+            "query": "q=*%3A*&df=query_t&fq=type:response&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.field={!tag=piv1}qtime&facet=true&facet.pivot={!stats=piv1}query&facet.limit=10&facet.missing=true&f.query.facet.sort=count",
             "custom": ""
           },
           "mode": "mean",
-          "field": "query_s",
+          "field": "query",
           "stats_field": "qtime",
           "decimal_points": 2,
           "exclude": [],
@@ -569,7 +571,8 @@
           "refresh": {
             "enable": false,
             "interval": 2
-          }
+          },
+          "pages": 10
         },
         {
           "span": 4,
@@ -581,11 +584,11 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type:response&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=qtime&facet.missing=true&f.query_s.facet.sort=count",
+            "query": "q=*%3A*&df=query_t&fq=type:response&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.field={!tag=piv1}qtime&facet=true&facet.pivot={!stats=piv1}query&facet.limit=10&facet.missing=true&f.query.facet.sort=count",
             "custom": ""
           },
           "mode": "min",
-          "field": "query_s",
+          "field": "query",
           "stats_field": "qtime",
           "decimal_points": 2,
           "exclude": [],
@@ -670,7 +673,8 @@
           "refresh": {
             "enable": false,
             "interval": 2
-          }
+          },
+          "pages": 10
         },
         {
           "span": 4,
@@ -682,11 +686,11 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type:response&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=qtime&facet.missing=true&f.query_s.facet.sort=count",
+            "query": "q=*%3A*&df=query_t&fq=type:response&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.field={!tag=piv1}qtime&facet=true&facet.pivot={!stats=piv1}query&facet.limit=10&facet.missing=true&f.query.facet.sort=count",
             "custom": ""
           },
           "mode": "max",
-          "field": "query_s",
+          "field": "query",
           "stats_field": "qtime",
           "decimal_points": 2,
           "exclude": [],
@@ -771,7 +775,8 @@
           "refresh": {
             "enable": false,
             "interval": 2
-          }
+          },
+          "pages": 10
         }
       ]
     },
@@ -792,11 +797,11 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type:response&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=totaltime&facet.missing=true&f.query_s.facet.sort=count",
+            "query": "q=*%3A*&df=query_t&fq=type:response&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.field={!tag=piv1}totaltime&facet=true&facet.pivot={!stats=piv1}query&facet.limit=10&facet.missing=true&f.query.facet.sort=count",
             "custom": ""
           },
           "mode": "mean",
-          "field": "query_s",
+          "field": "query",
           "stats_field": "totaltime",
           "decimal_points": 2,
           "exclude": [],
@@ -881,7 +886,8 @@
           "refresh": {
             "enable": false,
             "interval": 2
-          }
+          },
+          "pages": 10
         },
         {
           "span": 4,
@@ -893,11 +899,11 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type:response&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=totaltime&facet.missing=true&f.query_s.facet.sort=count",
+            "query": "q=*%3A*&df=query_t&fq=type:response&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.field={!tag=piv1}totaltime&facet=true&facet.pivot={!stats=piv1}query&facet.limit=10&facet.missing=true&f.query.facet.sort=count",
             "custom": ""
           },
           "mode": "min",
-          "field": "query_s",
+          "field": "query",
           "stats_field": "totaltime",
           "decimal_points": 2,
           "exclude": [],
@@ -982,7 +988,8 @@
           "refresh": {
             "enable": false,
             "interval": 2
-          }
+          },
+          "pages": 10
         },
         {
           "span": 4,
@@ -994,11 +1001,11 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&df=query_t&fq=type:response&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.facet=query_s&stats.field=totaltime&facet.missing=true&f.query_s.facet.sort=count",
+            "query": "q=*%3A*&df=query_t&fq=type:response&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&stats=true&stats.field={!tag=piv1}totaltime&facet=true&facet.pivot={!stats=piv1}query&facet.limit=10&facet.missing=true&f.query.facet.sort=count",
             "custom": ""
           },
           "mode": "max",
-          "field": "query_s",
+          "field": "query",
           "stats_field": "totaltime",
           "decimal_points": 2,
           "exclude": [],
@@ -1083,7 +1090,8 @@
           "refresh": {
             "enable": false,
             "interval": 2
-          }
+          },
+          "pages": 10
         }
       ]
     },
@@ -1123,7 +1131,7 @@
           "overflow": "min-height",
           "fields": [
             "timestamp_tdt",
-            "query_s",
+            "query",
             "hits",
             "qtime",
             "totaltime",
@@ -1266,7 +1274,9 @@
           "refresh": {
             "enable": false,
             "interval": 2
-          }
+          },
+          "subrowMaxChar": 300,
+          "subrowOffset": 0
         }
       ]
     }
