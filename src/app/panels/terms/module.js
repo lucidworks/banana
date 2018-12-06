@@ -132,7 +132,9 @@ function (angular, app, _, $, kbn) {
       } else {
         // if mode != 'count' then we need to use stats query
         // stats does not support something like facet.limit, so we have to sort and limit the results manually.
-        facet = '&stats=true&stats.facet=' + $scope.panel.field + '&stats.field=' + $scope.panel.stats_field + '&facet.missing=true';
+        // Combining stats with pivot
+        facet = '&stats=true&stats.field={!tag=piv1}' + $scope.panel.stats_field + '&facet=true&facet.pivot={!stats=piv1}' +
+                $scope.panel.field + '&facet.limit=' + $scope.panel.size + '&facet.missing=true';
       }
       facet += '&f.' + $scope.panel.field + '.facet.sort=' + ($scope.panel.sortBy || 'count');
 
@@ -282,8 +284,13 @@ function (angular, app, _, $, kbn) {
         } else {
           // In stats mode, set y-axis min to null so jquery.flot will set the scale automatically.
           $scope.yaxis_min = null;
-          _.each(results.stats.stats_fields[$scope.panel.stats_field].facets[$scope.panel.field], function(stats_obj,facet_field) {
-            var slice = { label:facet_field, data:[[k,stats_obj[$scope.panel.mode]]], actions: true };
+
+          _.each(results.facet_counts.facet_pivot[$scope.panel.field], function(pivot_obj) {
+            var slice = {
+              label: pivot_obj.value,
+              data: [[k, pivot_obj.stats.stats_fields[$scope.panel.stats_field][$scope.panel.mode]]],
+              actions: true
+            };
             $scope.data.push(slice);
           });
         }
@@ -537,10 +544,15 @@ function (angular, app, _, $, kbn) {
             // } else {
             //   value = value.toFixed(scope.panel.decimal_points);
             // }
+
+            // Escape HTML tags to prevent the XSS or script injection attack
+            var escapedValue = dashboard.escapeHtml(
+              item.series.label + " (" + dashboard.numberWithCommas(value.toFixed(scope.panel.decimal_points)) + ")"
+            );
+
             $tooltip
               .html(
-                kbn.query_color_dot(item.series.color, 20) + ' ' +
-                item.series.label + " (" + dashboard.numberWithCommas(value.toFixed(scope.panel.decimal_points)) +")"
+                kbn.query_color_dot(item.series.color, 20) + ' ' + escapedValue
               )
               .place_tt(pos.pageX, pos.pageY);
           } else {
