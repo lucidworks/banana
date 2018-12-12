@@ -29,12 +29,15 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.22
+## Banana 1.6.23
 
-This release is for Fusion 4.2 which includes the following fixes:
-* Fix the cross-site scripting (XSS) vulnerability in the Terms panel when hovering over the chart.
-* Improve the Terms panel by using `stats` combining with `facet.pivot`, instead of `stats.facet`.
-* Change the Search Analytics dashboard (`lucidworks-searchanalytics.json`) to use `query` field instead of `query_s` field. 
+This release includes minor fixes for the default dashboards in Fusion 4.2:
+* Change to use `query` field instead of `query_s` field in the Metrics dashboard (`lucidworks-metrics.json`).
+* For the Signals dashboard (`lucidworks-signals.json`):
+  * Change from `query_s` to `query` field.
+  * Change from `type_s` to `type` field.
+  * Change from `doc_id_s` to `doc_ids_s` field.
+  * Remove `count_i` and `weight_d` fields.
 
 ## Older Release Notes
 

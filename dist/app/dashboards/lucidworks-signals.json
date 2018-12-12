@@ -194,9 +194,9 @@
                         "ids": [
                             0
                         ],
-                        "query": "q=*%3A*&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=query_s&facet.limit=20&facet.missing=true&f.query_s.facet.sort=count"
+                        "query": "q=*%3A*&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=query&facet.limit=20&facet.missing=true&f.query.facet.sort=count"
                     },
-                    "field": "query_s",
+                    "field": "query",
                     "exclude": [],
                     "missing": true,
                     "other": true,
@@ -304,9 +304,9 @@
                         "ids": [
                             0
                         ],
-                        "query": "q=*%3A*&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=doc_id_s&facet.limit=10&facet.missing=true&f.doc_id_s.facet.sort=count"
+                        "query": "q=*%3A*&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=doc_ids_s&facet.limit=10&facet.missing=true&f.doc_ids_s.facet.sort=count"
                     },
-                    "field": "doc_id_s",
+                    "field": "doc_ids_s",
                     "exclude": [],
                     "missing": true,
                     "other": true,
@@ -405,9 +405,9 @@
                         "ids": [
                             0
                         ],
-                        "query": "q=*%3A*&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=type_s&facet.limit=10&facet.missing=true&f.type_s.facet.sort=count"
+                        "query": "q=*%3A*&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=type&facet.limit=10&facet.missing=true&f.type.facet.sort=count"
                     },
-                    "field": "type_s",
+                    "field": "type",
                     "exclude": [],
                     "missing": false,
                     "other": false,
@@ -596,107 +596,6 @@
                         "enable": false,
                         "interval": 2
                     }
-                },
-                {
-                    "span": 3,
-                    "editable": true,
-                    "type": "terms",
-                    "loadingEditor": false,
-                    "queries": {
-                        "mode": "all",
-                        "ids": [
-                            0
-                        ],
-                        "query": "q=*%3A*&wt=json&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=count_i&facet.limit=10&facet.missing=true&f.count_i.facet.sort=count"
-                    },
-                    "field": "count_i",
-                    "exclude": [],
-                    "missing": true,
-                    "other": true,
-                    "size": 10,
-                    "order": "count",
-                    "style": {
-                        "font-size": "10pt"
-                    },
-                    "donut": false,
-                    "tilt": false,
-                    "labels": true,
-                    "arrangement": "horizontal",
-                    "chart": "pie",
-                    "counter_pos": "none",
-                    "spyable": true,
-                    "time_field": "timestamp_tdt",
-                    "title": "Counts in Event",
-                    "mode": "count",
-                    "stats_field": "",
-                    "decimal_points": 0,
-                    "lastColor": "",
-                    "chartColors": [
-                        "#7EB26D",
-                        "#EAB839",
-                        "#6ED0E0",
-                        "#EF843C",
-                        "#E24D42",
-                        "#1F78C1",
-                        "#BA43A9",
-                        "#705DA0",
-                        "#508642",
-                        "#CCA300",
-                        "#447EBC",
-                        "#C15C17",
-                        "#890F02",
-                        "#0A437C",
-                        "#6D1F62",
-                        "#584477",
-                        "#B7DBAB",
-                        "#F4D598",
-                        "#70DBED",
-                        "#F9BA8F",
-                        "#F29191",
-                        "#82B5D8",
-                        "#E5A8E2",
-                        "#AEA2E0",
-                        "#629E51",
-                        "#E5AC0E",
-                        "#64B0C8",
-                        "#E0752D",
-                        "#BF1B00",
-                        "#0A50A1",
-                        "#962D82",
-                        "#614D93",
-                        "#9AC48A",
-                        "#F2C96D",
-                        "#65C5DB",
-                        "#F9934E",
-                        "#EA6460",
-                        "#5195CE",
-                        "#D683CE",
-                        "#806EB7",
-                        "#3F6833",
-                        "#967302",
-                        "#2F575E",
-                        "#99440A",
-                        "#58140C",
-                        "#052B51",
-                        "#511749",
-                        "#3F2B5B",
-                        "#E0F9D7",
-                        "#FCEACA",
-                        "#CFFAFF",
-                        "#F9E2D2",
-                        "#FCE2DE",
-                        "#BADFF4",
-                        "#F9D9F9",
-                        "#DEDAF7"
-                    ],
-                    "sortBy": "count",
-                    "logAxis": false,
-                    "exportSize": 10000,
-                    "show_queries": true,
-                    "refresh": {
-                        "enable": false,
-                        "interval": 2
-                    }
                 }
             ]
         },
@@ -727,12 +626,10 @@
                     },
                     "overflow": "min-height",
                     "fields": [
-                        "query_s",
-                        "doc_id_s",
-                        "type_s",
-                        "count_i",
+                        "query",
+                        "doc_ids_s",
+                        "type",
                         "flag_s",
-                        "weight_d",
                         "timestamp_tdt"
                     ],
                     "highlight": [],

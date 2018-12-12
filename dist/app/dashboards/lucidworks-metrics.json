@@ -114,14 +114,14 @@
           "pinned": true,
           "history": [
             "*:*",
-            "query_s:ipad*",
-            "query_s:ipad",
+            "query:ipad*",
+            "query:ipad",
             "params_name_s:HP* AND params_name_s:*TouchPad*",
             "params_name_s:*HP*",
             "params_name_s:HP*",
             "flag_s:aggr",
             "doc_id_s:1945531",
-            "query_s:iPad"
+            "query:iPad"
           ],
           "remember": 10,
           "title": "Search",
