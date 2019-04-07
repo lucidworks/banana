@@ -31,6 +31,7 @@ function (Settings) {
      * your banana web application.
      * @type {String}
      */
+
     // Specify Solr server and core to store the data.
     solr: "/solr/",
     solr_core: "logs",
@@ -49,8 +50,12 @@ function (Settings) {
      * @type {String}
      */
     banana_index: "banana-int",
-    banana_queryPipeline: "system_banana-default",
-    banana_indexPipeline: "system_banana-default",
+    // Uncomment the following line to specify the URL of Solr server that will be used to store and load saved dashboards.
+    // If you specify a remote Solr server, then you need to enable CORS on it in order to allow dashboards to be saved or loaded.
+    // Also, you need to uncomment this same line in src/app/components/settings.js to enable banana_server config.
+    // Reference: https://github.com/lucidworks/banana/tree/fusion/resources/enable-cors
+    //
+    // banana_server: "http://localhost:8983/solr/",
 
     /**
      * Lucidworks Fusion settings
@@ -58,7 +63,6 @@ function (Settings) {
      * USE_FUSION = true, mean that Banana will talk to Lucidworks Fusion APIs, instead of Solr.
      * This mainly affect the APIs used to get the list of collections and schemas (fields).
      */
-    // USE_FUSION: true,
     USE_FUSION: false,
     apollo: "/api/apollo",
     apollo_queryPipeline: "/api/apollo/query-pipelines/",

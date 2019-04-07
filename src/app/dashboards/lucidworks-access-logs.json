@@ -1,0 +1,812 @@
+﻿{
+  "title": "Access Logs",
+  "services": {
+    "query": {
+      "idQueue": [
+        1
+      ],
+      "list": {
+        "0": {
+          "query": "*",
+          "alias": "",
+          "color": "#7EB26D",
+          "id": 0,
+          "pin": false,
+          "type": "lucene"
+        }
+      },
+      "ids": [
+        0
+      ]
+    },
+    "filter": {
+      "idQueue": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "list": {
+        "0": {
+          "from": "NOW/HOUR-1HOUR",
+          "to": "NOW/HOUR%2B1HOUR",
+          "field": "timestamp_tdt",
+          "type": "time",
+          "fromDateObj": "2018-06-18T06:26:25.956Z",
+          "toDateObj": "2018-06-18T07:26:25.956Z",
+          "mandate": "must",
+          "active": true,
+          "alias": "",
+          "id": 0
+        }
+      },
+      "ids": [
+        0
+      ]
+    }
+  },
+  "rows": [
+    {
+      "title": "Options",
+      "height": "100px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 6,
+          "editable": false,
+          "type": "column",
+          "loadingEditor": false,
+          "panels": [
+            {
+              "type": "timepicker",
+              "mode": "relative",
+              "timefield": "timestamp_tdt",
+              "time_options": [
+                "5m",
+                "15m",
+                "1h",
+                "6h",
+                "12h",
+                "24h",
+                "7d",
+                "30d",
+                "1y"
+              ],
+              "timespan": "1h",
+              "height": "50px",
+              "status": "Stable",
+              "timeformat": "",
+              "spyable": true,
+              "refresh": {
+                "enable": false,
+                "interval": 30,
+                "min": 3
+              },
+              "filter_id": 0,
+              "error": ""
+            },
+            {
+              "loading": false,
+              "error": false,
+              "sizeable": false,
+              "span": 12,
+              "height": "50px",
+              "editable": true,
+              "type": "query",
+              "draggable": false,
+              "query": "*:*",
+              "pinned": true,
+              "history": [
+                "*",
+                "type_s:http",
+                "memory"
+              ],
+              "spyable": true,
+              "remember": 10
+            }
+          ],
+          "title": "Search"
+        },
+        {
+          "error": false,
+          "span": 6,
+          "editable": true,
+          "type": "text",
+          "loadingEditor": false,
+          "status": "Stable",
+          "mode": "markdown",
+          "content": "You have a few choices:\n\n* [Blank Dashboard](index.html#/dashboard/file/blank.json) I don't have much data yet, please extract some basics for me\n* [Access Logs](index.html#/dashboard/file/lucidworks-access-logs.json) Show all Fusion access logs\n* [Service Logs](index.html#/dashboard/file/lucidworks-service-logs.json) Show all Fusion services logs\n* [Combined Logs](index.html#/dashboard/file/lucidworks-combined-logs.json) Useful dashboard for power users who need to troubleshoot Fusion issues.\n* [Signals](index.html#/dashboard/file/lucidworks-signals.json) Explore the Lucidworks Fusion Signals collection\n* [Metrics](index.html#/dashboard/file/lucidworks-metrics.json) Show me how my system is performing\n* [Search Analytics](index.html#/dashboard/file/lucidworks-searchanalytics.json) Use this dashboard to display search analytics info from your collection",
+          "style": {},
+          "title": "Explore Dashboards"
+        }
+      ]
+    },
+    {
+      "title": "Filters",
+      "height": "150px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 6,
+          "editable": true,
+          "type": "filtering",
+          "loadingEditor": false,
+          "spyable": true,
+          "title": "Filter"
+        },
+        {
+          "span": 6,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "count",
+          "time_field": "timestamp_tdt",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*&fq=type_s:http OR type_s:https&df=message_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.range=timestamp_tdt&facet.range.start=NOW/HOUR-1HOUR&facet.range.end=NOW/HOUR%2B1HOUR&facet.range.gap=%2B30SECOND\n",
+            "custom": ""
+          },
+          "max_rows": 100000,
+          "value_field": null,
+          "group_field": null,
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "30s",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1M",
+            "1y"
+          ],
+          "fill": 0,
+          "linewidth": 3,
+          "timezone": "browser",
+          "spyable": true,
+          "zoomlinks": true,
+          "bars": true,
+          "stack": true,
+          "points": false,
+          "lines": false,
+          "lines_smooth": false,
+          "legend": true,
+          "x-axis": true,
+          "y-axis": true,
+          "percentage": false,
+          "interactive": true,
+          "options": true,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": false
+          },
+          "title": "Event Timeline",
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 30
+          },
+          "sum_value": false
+        }
+      ]
+    },
+    {
+      "title": "Access",
+      "height": "200px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 4,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*&fq=type_s:http OR type_s:https&df=message_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=status_i&facet.limit=10&facet.missing=true&f.status_i.facet.sort=count",
+            "custom": ""
+          },
+          "mode": "count",
+          "field": "status_i",
+          "stats_field": "",
+          "decimal_points": 0,
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 10,
+          "pages": 10,
+          "sortBy": "count",
+          "order": "descending",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "logAxis": false,
+          "arrangement": "horizontal",
+          "chart": "bar",
+          "counter_pos": "left",
+          "exportSize": 100,
+          "lastColor": "rgb(110,208,224)",
+          "spyable": true,
+          "show_queries": true,
+          "chartColors": [
+            "#7EB26D",
+            "#EAB839",
+            "#6ED0E0",
+            "#EF843C",
+            "#E24D42",
+            "#1F78C1",
+            "#BA43A9",
+            "#705DA0",
+            "#508642",
+            "#CCA300",
+            "#447EBC",
+            "#C15C17",
+            "#890F02",
+            "#0A437C",
+            "#6D1F62",
+            "#584477",
+            "#B7DBAB",
+            "#F4D598",
+            "#70DBED",
+            "#F9BA8F",
+            "#F29191",
+            "#82B5D8",
+            "#E5A8E2",
+            "#AEA2E0",
+            "#629E51",
+            "#E5AC0E",
+            "#64B0C8",
+            "#E0752D",
+            "#BF1B00",
+            "#0A50A1",
+            "#962D82",
+            "#614D93",
+            "#9AC48A",
+            "#F2C96D",
+            "#65C5DB",
+            "#F9934E",
+            "#EA6460",
+            "#5195CE",
+            "#D683CE",
+            "#806EB7",
+            "#3F6833",
+            "#967302",
+            "#2F575E",
+            "#99440A",
+            "#58140C",
+            "#052B51",
+            "#511749",
+            "#3F2B5B",
+            "#E0F9D7",
+            "#FCEACA",
+            "#CFFAFF",
+            "#F9E2D2",
+            "#FCE2DE",
+            "#BADFF4",
+            "#F9D9F9",
+            "#DEDAF7"
+          ],
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          },
+          "title": "HTTP Status Codes"
+        },
+        {
+          "span": 4,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*&fq=type_s:http OR type_s:https&df=message_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=verb_s&facet.limit=10&facet.missing=true&f.verb_s.facet.sort=count",
+            "custom": ""
+          },
+          "mode": "count",
+          "field": "verb_s",
+          "stats_field": "",
+          "decimal_points": 0,
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 10,
+          "pages": 10,
+          "sortBy": "count",
+          "order": "descending",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "logAxis": false,
+          "arrangement": "horizontal",
+          "chart": "bar",
+          "counter_pos": "left",
+          "exportSize": 100,
+          "lastColor": "",
+          "spyable": true,
+          "show_queries": true,
+          "chartColors": [
+            "#7EB26D",
+            "#EAB839",
+            "#6ED0E0",
+            "#EF843C",
+            "#E24D42",
+            "#1F78C1",
+            "#BA43A9",
+            "#705DA0",
+            "#508642",
+            "#CCA300",
+            "#447EBC",
+            "#C15C17",
+            "#890F02",
+            "#0A437C",
+            "#6D1F62",
+            "#584477",
+            "#B7DBAB",
+            "#F4D598",
+            "#70DBED",
+            "#F9BA8F",
+            "#F29191",
+            "#82B5D8",
+            "#E5A8E2",
+            "#AEA2E0",
+            "#629E51",
+            "#E5AC0E",
+            "#64B0C8",
+            "#E0752D",
+            "#BF1B00",
+            "#0A50A1",
+            "#962D82",
+            "#614D93",
+            "#9AC48A",
+            "#F2C96D",
+            "#65C5DB",
+            "#F9934E",
+            "#EA6460",
+            "#5195CE",
+            "#D683CE",
+            "#806EB7",
+            "#3F6833",
+            "#967302",
+            "#2F575E",
+            "#99440A",
+            "#58140C",
+            "#052B51",
+            "#511749",
+            "#3F2B5B",
+            "#E0F9D7",
+            "#FCEACA",
+            "#CFFAFF",
+            "#F9E2D2",
+            "#FCE2DE",
+            "#BADFF4",
+            "#F9D9F9",
+            "#DEDAF7"
+          ],
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          },
+          "title": "Methods"
+        },
+        {
+          "span": 4,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*&fq=type_s:http OR type_s:https&df=message_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.field=host_s&facet.limit=10&facet.missing=true&f.host_s.facet.sort=count",
+            "custom": ""
+          },
+          "mode": "count",
+          "field": "host_s",
+          "stats_field": "",
+          "decimal_points": 0,
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 10,
+          "pages": 10,
+          "sortBy": "count",
+          "order": "descending",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "logAxis": false,
+          "arrangement": "horizontal",
+          "chart": "bar",
+          "counter_pos": "left",
+          "exportSize": 100,
+          "lastColor": "rgb(126,178,109)",
+          "spyable": true,
+          "show_queries": true,
+          "chartColors": [
+            "#7EB26D",
+            "#EAB839",
+            "#6ED0E0",
+            "#EF843C",
+            "#E24D42",
+            "#1F78C1",
+            "#BA43A9",
+            "#705DA0",
+            "#508642",
+            "#CCA300",
+            "#447EBC",
+            "#C15C17",
+            "#890F02",
+            "#0A437C",
+            "#6D1F62",
+            "#584477",
+            "#B7DBAB",
+            "#F4D598",
+            "#70DBED",
+            "#F9BA8F",
+            "#F29191",
+            "#82B5D8",
+            "#E5A8E2",
+            "#AEA2E0",
+            "#629E51",
+            "#E5AC0E",
+            "#64B0C8",
+            "#E0752D",
+            "#BF1B00",
+            "#0A50A1",
+            "#962D82",
+            "#614D93",
+            "#9AC48A",
+            "#F2C96D",
+            "#65C5DB",
+            "#F9934E",
+            "#EA6460",
+            "#5195CE",
+            "#D683CE",
+            "#806EB7",
+            "#3F6833",
+            "#967302",
+            "#2F575E",
+            "#99440A",
+            "#58140C",
+            "#052B51",
+            "#511749",
+            "#3F2B5B",
+            "#E0F9D7",
+            "#FCEACA",
+            "#CFFAFF",
+            "#F9E2D2",
+            "#FCE2DE",
+            "#BADFF4",
+            "#F9D9F9",
+            "#DEDAF7"
+          ],
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          },
+          "title": "Hosts"
+        }
+      ]
+    },
+    {
+      "title": "Range Facets",
+      "height": "200px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 6,
+          "editable": true,
+          "type": "rangeFacet",
+          "loadingEditor": false,
+          "mode": "count",
+          "time_field": "timestamp",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*&fq=type_s:http OR type_s:https&df=message_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.range=duration_i&facet.range.start=0&facet.range.end=1001&facet.range.gap=11\n",
+            "custom": ""
+          },
+          "max_rows": 100000,
+          "value_field": null,
+          "fill": 0,
+          "linewidth": 3,
+          "auto_int": true,
+          "resolution": 100,
+          "interval": 11,
+          "interval_decimal": 0,
+          "resolutions": [
+            5,
+            10,
+            25,
+            50,
+            75,
+            100
+          ],
+          "spyable": true,
+          "zoomlinks": true,
+          "bars": false,
+          "stack": true,
+          "points": false,
+          "lines": true,
+          "lines_smooth": false,
+          "legend": true,
+          "x-axis": true,
+          "y-axis": false,
+          "percentage": false,
+          "interactive": true,
+          "options": true,
+          "minimum": 0,
+          "maximum": 1000,
+          "chart_minimum": "0",
+          "chart_maximum": "1000",
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "showChart": true,
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          },
+          "title": "Latency",
+          "range_field": "duration_i"
+        },
+        {
+          "span": 6,
+          "editable": true,
+          "type": "rangeFacet",
+          "loadingEditor": false,
+          "mode": "count",
+          "time_field": "timestamp",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*&fq=type_s:http OR type_s:https&df=message_txt&wt=json&rows=0&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&facet=true&facet.range=body_bytes_sent_i&facet.range.start=0&facet.range.end=50001&facet.range.gap=501\n",
+            "custom": ""
+          },
+          "max_rows": 100000,
+          "value_field": null,
+          "fill": 0,
+          "linewidth": 3,
+          "auto_int": true,
+          "resolution": 100,
+          "interval": 501,
+          "interval_decimal": 0,
+          "resolutions": [
+            5,
+            10,
+            25,
+            50,
+            75,
+            100
+          ],
+          "spyable": true,
+          "zoomlinks": true,
+          "bars": false,
+          "stack": true,
+          "points": false,
+          "lines": true,
+          "lines_smooth": false,
+          "legend": false,
+          "x-axis": true,
+          "y-axis": false,
+          "percentage": false,
+          "interactive": true,
+          "options": true,
+          "minimum": 0,
+          "maximum": 50000,
+          "chart_minimum": "0",
+          "chart_maximum": "50000",
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": false
+          },
+          "showChart": true,
+          "show_queries": true,
+          "refresh": {
+            "enable": false,
+            "interval": 2
+          },
+          "title": "Bytes Sent",
+          "range_field": "body_bytes_sent_i"
+        }
+      ]
+    },
+    {
+      "title": "Table with Search box",
+      "height": "200px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "type": "column",
+          "loadingEditor": false,
+          "panels": [
+            {
+              "loading": false,
+              "error": false,
+              "sizeable": false,
+              "span": 12,
+              "height": "50px",
+              "editable": true,
+              "type": "query",
+              "draggable": false,
+              "query": "*:*",
+              "pinned": true,
+              "history": [
+                "*"
+              ],
+              "spyable": true,
+              "remember": 10,
+              "title": "Search Events"
+            },
+            {
+              "loading": false,
+              "sizeable": false,
+              "span": 12,
+              "height": "150px",
+              "editable": true,
+              "type": "table",
+              "draggable": false,
+              "header": true,
+              "status": "Stable",
+              "queries": {
+                "mode": "all",
+                "ids": [
+                  0
+                ],
+                "query": "q=*&fq=type_s:http OR type_s:https&df=message_txt&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]&wt=json&rows=200",
+                "basic_query": "q=*&fq=type_s:http OR type_s:https&df=message_txt&fq=timestamp_tdt:[NOW/HOUR-1HOUR%20TO%20NOW/HOUR%2B1HOUR]",
+                "custom": ""
+              },
+              "size": 20,
+              "pages": 10,
+              "offset": 0,
+              "sort": [
+                "timestamp_tdt"
+              ],
+              "sortable": true,
+              "group": "default",
+              "style": {
+                "font-size": "9pt"
+              },
+              "overflow": "min-height",
+              "fields": [
+                "timestamp_tdt",
+                "host_s",
+                "status_i",
+                "verb_s",
+                "uri_path_s",
+                "duration_i",
+                "body_bytes_sent_i"
+              ],
+              "important_fields": [
+                "body_bytes_sent_i",
+                "host_s",
+                "logmessage_txt",
+                "message_txt",
+                "param_s",
+                "port",
+                "protocol_s",
+                "remote_addr_s",
+                "request_s",
+                "status_i",
+                "tags",
+                "tags_str",
+                "timestamp_tdt",
+                "type_s",
+                "uri_host_s",
+                "uri_path_s",
+                "verb_s",
+                "duration_i"
+              ],
+              "highlight": [],
+              "paging": true,
+              "field_list": false,
+              "trimFactor": 300,
+              "normTimes": true,
+              "spyable": true,
+              "saveOption": "json",
+              "exportSize": 200,
+              "exportAll": true,
+              "displayLinkIcon": true,
+              "imageFields": [],
+              "imgFieldWidth": "auto",
+              "imgFieldHeight": "85px",
+              "show_queries": true,
+              "maxNumCalcTopFields": 20,
+              "calcTopFieldValuesFromAllData": false,
+              "refresh": {
+                "enable": false,
+                "interval": 2
+              },
+              "subrowMaxChar": 300,
+              "enableSubrow": true,
+              "subrowField": "request_s",
+              "subrowOffset": 0
+            }
+          ],
+          "title": ""
+        }
+      ]
+    }
+  ],
+  "editable": true,
+  "failover": false,
+  "index": {
+    "interval": "none",
+    "pattern": "[logstash-]YYYY.MM.DD",
+    "default": "NO_TIME_FILTER_OR_INDEX_PATTERN_NOT_MATCHED"
+  },
+  "style": "light",
+  "panel_hints": true,
+  "loader": {
+    "save_gist": false,
+    "save_elasticsearch": true,
+    "save_local": true,
+    "save_default": true,
+    "save_temp": true,
+    "save_temp_ttl_enable": true,
+    "save_temp_ttl": "30d",
+    "load_gist": true,
+    "load_elasticsearch": true,
+    "load_elasticsearch_size": 20,
+    "load_local": true,
+    "hide": false,
+    "dropdown_collections": false,
+    "save_as_public": false
+  },
+  "solr": {
+    "server": "/api/apollo/query-pipelines/_system/collections/",
+    "core_name": "system_logs",
+    "core_list": [],
+    "global_params": "&fq=type_s:http OR type_s:https&df=message_txt"
+  },
+  "username": "guest"
+}

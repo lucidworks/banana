@@ -5,7 +5,11 @@ npm-debug.log
 tmp/
 build.number
 build/
+target/
 dist
 *.iml
 .vscode
 .idea
+.classpath
+.project
+.settings

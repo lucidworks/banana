@@ -85,9 +85,9 @@ function (angular, _, config) {
             if (type === 'share') {
                 return (_l.save_temp);
             }
-            if(type === 'home') {
+            if (type === 'home') {
                 return (dashboard.current.home || $scope.home);
-            }  
+            }
 
             return false;
         };
@@ -318,7 +318,12 @@ function (angular, _, config) {
             for (var i=0; i < dashboardList.length; i++) {
                 var doc = {};
                 if (config.USE_FUSION) {
-                  doc.id = dashboardList[i].name;
+                  // strip out the '/' prefix
+                  if (dashboardList[i].id.indexOf('/') !== -1) {
+                    doc.id = dashboardList[i].id.substring(1);
+                  } else {
+                    doc.id = dashboardList[i].id;
+                  }
                   // Don't need doc.server for Fusion Blob Store API.
                   doc.server = '';
                 } else {
@@ -328,12 +333,21 @@ function (angular, _, config) {
                     doc.server = angular.fromJson(dashboardList[i][self.DASHBOARD_FIELD][0]).solr.server;
                   } else {
                     doc.server = angular.fromJson(dashboardList[i][self.DASHBOARD_FIELD]).solr.server;
-                  }                  
+                  }
                 }
                 docs.push(doc);
             }
 
             return docs;
         }
+
+        // If banana_server url is configured in config.js, then use it to load or save dashboards.
+        // This will allow the saved dashboards to be loaded from another Solr server correctly.
+        $scope.getBananaServer = function getBananaServer(url) {
+          if (config.banana_server) {
+            url = config.banana_server;
+          }
+          return url;
+        };
     });
 });

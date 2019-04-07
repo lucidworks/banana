@@ -46,12 +46,34 @@ define([
         self.list[time.id].fromDateObj = new Date(time.fromDateObj);
         self.list[time.id].toDateObj = new Date(time.toDateObj);
       });
-
     };
+
+    /**
+     * Check if the specified filter is already exist in the filter service.
+     * @param filter
+     * @returns {boolean}
+     */
+    function isDuplicate(filter) {
+      var foundDup = _.find(self.list, function(f) {
+        if (f.type === filter.type && f.field === filter.field && f.value === filter.value) {
+          // This filter is a duplicate.
+          return true;
+        }
+      });
+
+      return !!foundDup; // Return boolean value of foundDup
+    }
 
     // This is used both for adding filters and modifying them.
     // If an id is passed, the filter at that id is updated.
     this.set = function(filter,id) {
+      // Check for duplicate filter, if it is already exist, do nothing (don't add it to the Filter panel).
+      // If the filter type is 'time', then we allow duplicate so that Histogram panel will behave correctly
+      // (by adding a new time filter to the Filter panel, every time when a user selects an area in the histogram).
+      if (filter.type !== 'time' && isDuplicate(filter)) {
+        return false;
+      }
+
       _.defaults(filter,{mandate:'must'});
       filter.active = true;
 
@@ -107,7 +129,6 @@ define([
         // otherwise return the key itself
         return key;
     };
-
 
     this.getBoolFilter = function(ids) {
       // A default match all filter, just in case there are no other filters
