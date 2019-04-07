@@ -49,7 +49,7 @@ function (angular, app, _) {
               type      : 'querystring',
               query     : startWithMandate ? value.substr(1, value.length) : value,
               mandate   : mandate
-            }, undefined, true);
+            }, undefined);
           }
         });
         $scope.refresh();
@@ -68,7 +68,7 @@ function (angular, app, _) {
         type      : 'querystring',
         query     : query,
         mandate   : 'must'
-      },undefined,true);
+      }, undefined);
     };
 
     $scope.toggle = function(id) {

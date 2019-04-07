@@ -9028,9 +9028,19 @@
           var data = {};
           return sjs.client.del(url, data, successcb, errorcb);
         } else {
+          // Starting with Solr 7, stream.body is disable by default, so we need to do POST /update with xml commands
+          // in order to delete saved dashboards.
           var url = '/update';
-          var data = 'commit=true&wt=json&stream.body=<delete><query>id:"'+id+'"</query></delete>';
-          return sjs.client.get(url, data, successcb, errorcb);
+          var data = '<delete><query>id:"' + id + '"</query></delete>';
+          var config = {
+            headers: {'Content-type':'text/xml'},
+            params: {
+              wt: 'json',
+              commit: true
+            }
+          };
+
+          return sjs.client.postWithConfig(url, data, config, successcb, errorcb);
         }
       }
 
