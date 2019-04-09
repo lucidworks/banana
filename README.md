@@ -17,25 +17,18 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.17c
+## Banana 1.6.xx
 
-This is a hot fix release that includes a fix for CSV exporting issue in Full Text Search panel, where a custom query does not take effect.
-
-## Banana 1.6.17b
-
-This is a hot fix release that includes a fix for CSV exporting issue in Terms panel (which already fixed in 1.6.18).
-
-## Banana 1.6.17a
-
-This is a hot fix release that includes a fix for Sunburst panel rendering issue in Firefox.
-
-## Banana 1.6.17
-
-This release includes adding support for changes in Fusion 3.1 BlobStore API, which used for loading, saving, and searching dashboards. It also include the following bug fixes:
+This release includes the following bug fixes and improvement:
 1. Fix "to" field does not properly convert display of its text from ASCII.
-2. Fix issues with BlobStore API.
-3. Fix filter panel to display time filter in locale value, instead of UTC time.
-4. Fix error when running grunt build.
+1. Fix filter panel to display time filter in locale value, instead of UTC time.
+1. Fix error when running grunt build.
+1. Fix for Sunburst panel rendering issue in Firefox.
+1. Fix for CSV exporting issue in Terms panel.
+1. Fix for CSV exporting issue in Full Text Search panel, where a custom query does not take effect.
+1. Fix the Filter panel querystring encoding bug when trying to add a filter manually.
+1. Fix the delete saved dashboards issue in Solr 7+ (changing the delete method from using stream.body to POST /update with XML delete command).
+1. Fix issues with BlobStore API (for Lucidworks Fusion) to add support for changes in Fusion 3.1 BlobStore API, which used for loading, saving, and searching dashboards.
 
 ## Older Release Notes
 
