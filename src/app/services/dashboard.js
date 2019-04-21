@@ -394,7 +394,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
                   source_json = angular.fromJson(response.response.docs[0][self.DASHBOARD_FIELD][0]);
                 } else {
                   source_json = angular.fromJson(response.response.docs[0][self.DASHBOARD_FIELD]);
-                }                
+                }
               }
 
               if (DEBUG) {
@@ -461,11 +461,10 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             request = type === 'temp' && ttl ? request.ttl(ttl) : request;
 
             // For Fusion, set sjs.client.server to use Index Pipeline for saving the dashboard.
-            var server = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
-            var dashboardUrl = '/dashboard/solr/' + title + '?server=' + self.current.solr.server;
+            var banana_server = config.banana_server || self.current.solr.server || config.solr;
+            var server = banana_server + config.banana_index;
+            var dashboardUrl = '/dashboard/solr/' + title + '?server=' + banana_server;
             if (config.USE_FUSION) {
-                // The index pipeline uses /index endpoint, which is different from Solr /update and accepts different params.
-                // server = config.SYSTEM_BANANA_INDEX_PIPELINE;
                 server = config.SYSTEM_BANANA_BLOB_API;
                 dashboardUrl = '/dashboard/solr/' + title;
             }
@@ -497,7 +496,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         };
 
         this.elasticsearch_delete = function (id) {
-            var server = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
+            var banana_server = config.banana_server || self.current.solr.server || config.solr;
+            var server = banana_server + config.banana_index;
             // The index pipeline use /index endpoint, which is different from Solr (/update) and accepts different params.
             if (config.USE_FUSION) {
                 // Fusion uses Blob Store API to manage saved dashboards.
@@ -531,7 +531,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
         // Get a list of saved dashboards from Fusion or Solr
         this.elasticsearch_list = function (query, count) {
-            var server = self.current.solr.server + config.banana_index || config.solr + config.banana_index;
+            var banana_server = config.banana_server || self.current.solr.server || config.solr;
+            var server = banana_server + config.banana_index;
             if (config.USE_FUSION) {
                 // Use Blob Store API to list all dashboards
                 return lucidworksSrv.getDashboardList(query);
@@ -605,6 +606,28 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             }
         };
 
+      /**
+       * Escape the given HTML string.
+       *
+       * @param html_str
+       * @returns {*|void|string}
+       */
+        this.escapeHtml = function(html_str) {
+          return html_str.replace(/[&<>"]/g, function(tag) {
+            var chars_to_replace = {
+              '&': '&amp;',
+              '<': '&lt;',
+              '>': '&gt;',
+              '"': '&quot;',
+              "'": '&#39;',
+              '/': '&#x2F;',
+              '`': '&#x60;',
+              '=': '&#x3D;'
+            };
+
+            return chars_to_replace[tag] || tag;
+          });
+        };
     });
 
 });

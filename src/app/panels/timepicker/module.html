@@ -9,15 +9,15 @@
     <div ng-switch-when="absolute" >
       <div class="timepicker-block">
         <form class="nomargin">
-          <input type="text" class="input-smaller" ng-change="time_check()" ng-model="timepicker.from.date" data-date-format="mm/dd/yyyy" bs-datepicker>
-          <input type="text" class="input-mini" ng-change="time_check()" data-show-meridian="false" data-show-seconds="true" ng-model="timepicker.from.time" bs-timepicker>
+          <input type="text" class="input-smaller" ng-model="timepicker.from.date" data-date-format="mm/dd/yyyy" bs-datepicker>
+          <input type="text" class="input-mini" data-show-meridian="false" data-show-seconds="true" ng-model="timepicker.from.time" bs-timepicker>
         </form>
       </div>
       to
       <div class="timepicker-block" style="margin-left:5px">
         <form class="nomargin">
-          <input type="text" class="input-smaller" ng-change="time_check()" ng-model="timepicker.to.date" data-date-format="mm/dd/yyyy" bs-datepicker>
-          <input type="text" class="input-mini" ng-change="time_check()" data-show-meridian="false" data-show-seconds="true" ng-model="timepicker.to.time" bs-timepicker> <!--(<a ng-click="to_now()">now</a>)-->
+          <input type="text" class="input-smaller" ng-model="timepicker.to.date" data-date-format="mm/dd/yyyy" bs-datepicker>
+          <input type="text" class="input-mini" data-show-meridian="false" data-show-seconds="true" ng-model="timepicker.to.time" bs-timepicker>
       </form>
       </div>
       <div class="timepicker-block">
@@ -31,8 +31,8 @@
     <div ng-switch-when="since">
       <div class="timepicker-block">
         <form class="nomargin">
-          <input type="text" class="input-smaller" ng-change="time_check()" ng-model="timepicker.from.date" data-date-format="mm/dd/yyyy" bs-datepicker>
-          <input type="text" class="input-mini" ng-change="time_check()" data-show-meridian="false" data-show-seconds="true" ng-model="timepicker.from.time" bs-timepicker>
+          <input type="text" class="input-smaller" ng-model="timepicker.from.date" data-date-format="mm/dd/yyyy" bs-datepicker>
+          <input type="text" class="input-mini" data-show-meridian="false" data-show-seconds="true" ng-model="timepicker.from.time" bs-timepicker>
         </form>
       </div>
       <div class="timepicker-block" style="margin-left:5px">

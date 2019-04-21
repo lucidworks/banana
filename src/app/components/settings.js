@@ -17,6 +17,8 @@ function (_) {
       USE_ADMIN_CORES: true,
       panel_names: [],
       banana_index: "system_banana",
+      // uncomment the following line to specify the URL of banana-int
+      // banana_server: "http://localhost:8983/solr/",
 
       // Lucidworks Fusion settings
       USE_FUSION: true,  

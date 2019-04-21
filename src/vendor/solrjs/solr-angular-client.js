@@ -74,6 +74,10 @@ angular.module('solrjs.service', [])
         if (DEBUG) { console.debug('solr-angular-client: POST url=',url,', path=',path,', data=',data); }
         return promiseThen($http.post(path, data, config), successcb, errorcb);
       },
+      postWithConfig: function (path, data, config, successcb, errorcb) {
+        path = url + path;
+        return promiseThen($http.post(path, data, config), successcb, errorcb);
+      },
       // This function is only use for Fusion Index Pipeline when deleting a saved dashboard.
       postDel: function (path, data, successcb, errorcb) {
         var config = { headers: {'Content-type':'application/vnd.lucidworks-document'} };

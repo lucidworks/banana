@@ -5,11 +5,14 @@ npm-debug.log
 tmp/
 build.number
 build/
+target/
 dist
 *.iml
 .vscode
 .idea
-
 package-lock.json
 *.ipr
 *.iws
+.classpath
+.project
+.settings

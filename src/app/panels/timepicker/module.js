@@ -239,22 +239,31 @@ function (angular, app, _, moment, kbn, $) {
       // Remove all other time filters
       filterSrv.removeByType('time');
 
+      // Fix SILK-345 Timepicker skip-back-one-day issue if browser time is behind UTC.
+      // This is caused by the timepicker component set Date obj that skip-back-one-day automatically.
+      // It happens when we manually select date in Absolute or Since mode. Timepicker will return Date obj,
+      // not string, which already skip-back-one-day and this will mess up the time filter.
+      // Therefore, we need to convert Date obj using moment.utc() to add-back-one-day and then convert it to string.
+      // This add-back-one-day does not affect browser time that is before UTC (e.g. UTC+7)
+      // NOTES: the skip-back-one-day could be a bug in angular-strap timepicker. So the solution here is a workaround.
+      if ($scope.timepicker.from.date instanceof Date) {
+        $scope.timepicker.from.date = moment.utc($scope.timepicker.from.date.toISOString()).format('MM/DD/YYYY');
+      }
+      if ($scope.timepicker.to.date instanceof Date) {
+        $scope.timepicker.to.date = moment.utc($scope.timepicker.to.date.toISOString()).format('MM/DD/YYYY');
+      }
+
       $scope.time = $scope.time_calc();
       $scope.time.field = $scope.panel.timefield;
 
       update_panel();
       set_time_filter($scope.time);
-
       dashboard.refresh();
     };
 
     // No need to automatically call time_apply() when changing time mode,
     // because it will mess up the timepicker.
-    // 
     // $scope.$watch('panel.mode', $scope.time_apply);
-
-    $scope.time_check = function() {
-    };
 
     function set_time_filter(time) {
       time.type = 'time';

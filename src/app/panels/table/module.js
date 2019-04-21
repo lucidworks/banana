@@ -98,6 +98,8 @@ function (angular, app, _, kbn, moment) {
             maxNumCalcTopFields: 20, // Set the max number of fields for calculating top values
             calcTopFieldValuesFromAllData: false, // false: calculate top field values from $scope.data
                                                   // true: calculate from all data using Solr facet
+            subrowMaxChar: 300, // Default value for sub-row maximum characters to be shown
+            subrowOffset: 0, // Default value for sub-row char offset. 0 means no offset and show the full line from beginning.
             refresh: {
                 enable: false,
                 interval: 2
@@ -459,6 +461,7 @@ function (angular, app, _, kbn, moment) {
         };
     });
 
+    // Truncate a table column text if it exceeds the specified length.
     module.filter('tableTruncate', function () {
         return function (text, length, factor, field, imageFields) {
             // If image field, then do not truncate, otherwise we will get invalid URIs.
@@ -467,9 +470,25 @@ function (angular, app, _, kbn, moment) {
             }
 
             if (!_.isUndefined(text) && !_.isNull(text) && text.toString().length > 0) {
+                // Make sure text is a string by converting it
+                text = text.toString();
                 return text.length > length / factor ? text.substr(0, length / factor) + '...' : text;
             }
             return '';
+        };
+    });
+
+    // Offset character from the beginning of a line in the sub-row.
+    module.filter('tableSubrowOffset', function() {
+        return function (text, offset) {
+          if (!_.isUndefined(text) && !_.isNull(text) && text.toString().length > 0 && !isNaN(offset)) {
+            // Make sure that offset number is less than text.length
+            text = text.toString();
+            if (offset < text.length) {
+              return text.substr(offset);
+            }
+          }
+          return text;
         };
     });
 
