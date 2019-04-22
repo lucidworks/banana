@@ -125,7 +125,9 @@ function (Settings) {
       'tagcloud',
       'multiseries',
       'sunburst',
-      'docviewer'
+      'docviewer',
+      'sankey',
+      'force'
     ]
   });
 });

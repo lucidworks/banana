@@ -10,6 +10,9 @@ dist
 *.iml
 .vscode
 .idea
+package-lock.json
+*.ipr
+*.iws
 .classpath
 .project
 .settings

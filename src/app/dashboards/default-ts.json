@@ -1,4 +1,4 @@
-{
+﻿{
   "title": "New Time Series Dashboard",
   "services": {
     "query": {
@@ -284,7 +284,7 @@
           "title": "Table panel"
         }
       ]
-    }    
+    }
   ],
   "editable": true,
   "index": {
