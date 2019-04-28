@@ -20,6 +20,8 @@ is in the configuration.
 ## Banana 1.6.23
 
 This release includes the following bug fixes and improvement:
+1. Add new diagrams: D3 Sankey and Force panels ([#337](https://github.com/lucidworks/banana/pull/337) thanks! @iampeter)
+1. Fix the overflow issue in Query panel.
 1. Fix "to" field does not properly convert display of its text from ASCII.
 1. Fix filter panel to display time filter in locale value, instead of UTC time.
 1. Fix error when running grunt build.
