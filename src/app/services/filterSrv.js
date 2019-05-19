@@ -55,7 +55,11 @@ define([
      */
     function isDuplicate(filter) {
       var foundDup = _.find(self.list, function(f) {
-        if (f.type === filter.type && f.field === filter.field && f.value === filter.value) {
+        if (f.editing === filter.editing &&
+            f.type === filter.type &&
+            f.query === filter.query &&
+            f.field === filter.field &&
+            f.value === filter.value) {
           // This filter is a duplicate.
           return true;
         }
