@@ -61,7 +61,7 @@ define([
         var links = [];
         var count = 0;
 
-        var addNode = function(key, category) {
+        var addNode = function(key, fcount, category) {
           var k = category + "-" + key;
           var existing = nodes[k];
           if (!!existing) {
@@ -72,7 +72,8 @@ define([
           nodes[k] = {
             node: id,
             name: key,
-            category: category
+            category: category,
+            // fixedValue: fcount
           };
 
           return id;
@@ -80,13 +81,13 @@ define([
 
         var processNodes = function(parent, parentCount, data, category) {
           for (var ob in data) {
-            var id1 = addNode(data[ob].value, category + 1);
+            var id1 = addNode(data[ob].value, data[ob].count, category + 1);
 
             if (parent !== null) {
               links.push({
                 source: parent,
                 target: id1,
-                value: parentCount
+                value: data[ob].count
               });
             }
 
@@ -248,7 +249,7 @@ define([
 
             var format = function (d) {
               var f = d3.format(",.0f");
-              return f(d) + " TWh";
+              return f(d) + "";
             };
             var color = d3.scale.category10();
 
@@ -284,7 +285,7 @@ define([
             });
 
             link.append("title").text(function (d) {
-              return d.source.name + " \u2192 " + d.target.name + "\n" + format(d.value);
+              return d.source.name + " \u2192 " + d.target.name + ", " + d.value;
             });
 
             svg.append("g").style("font", "10px sans-serif").selectAll("text").data(nodes).enter().append("text").attr("x", function (d) {
