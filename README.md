@@ -23,6 +23,8 @@ This release includes the following bug fixes and improvement:
 1. Fix the filter panel where we cannot add more than one filer when clicking on the plus icon.
 1. Fix the Sankey panel. [#338](https://github.com/lucidworks/banana/pull/338)
 1. Allow the Terms panel to have a horizontal bar chart. [#338](https://github.com/lucidworks/banana/pull/338)
+1. Add Sankey hover/highlight effect. [#340](https://github.com/lucidworks/banana/pull/340)
+1. Force diagram numerical node names fix. [#340](https://github.com/lucidworks/banana/pull/340)
 
 ## Older Release Notes
 
