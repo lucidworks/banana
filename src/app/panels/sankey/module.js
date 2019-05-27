@@ -72,8 +72,7 @@ define([
           nodes[k] = {
             node: id,
             name: key,
-            category: category,
-            // fixedValue: fcount
+            category: category
           };
 
           return id;
@@ -87,7 +86,8 @@ define([
               links.push({
                 source: parent,
                 target: id1,
-                value: data[ob].count
+                value: data[ob].count,
+                key: parent + "-" + id1
               });
             }
 
@@ -253,7 +253,7 @@ define([
             };
             var color = d3.scale.category10();
 
-            svg.append("g").attr("stroke", "#000").selectAll("rect").data(nodes).enter().append("rect").attr("x", function (d) {
+            var node = svg.append("g").attr("stroke-width", 0).selectAll("rect").data(nodes).enter().append("rect").attr("x", function (d) {
               return d.x0;
             }).attr("y", function (d) {
               return d.y0;
@@ -263,8 +263,20 @@ define([
               return d.x1 - d.x0;
             }).attr("fill", function (d) {
               return color(d.category);
-            }).append("title").text(function (d) {
+            });
+
+            node.append("title").text(function (d) {
               return d.name + "\n" + format(d.value);
+            });
+
+            var labels = svg.append("g").style("font", "10px sans-serif").selectAll("text").data(nodes).enter().append("text").attr("x", function (d) {
+              return d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6;
+            }).attr("y", function (d) {
+              return (d.y1 + d.y0) / 2;
+            }).attr("dy", "0.35em").attr("text-anchor", function (d) {
+              return d.x0 < width / 2 ? "start" : "end";
+            }).text(function (d) {
+              return d.name;
             });
 
             var link = svg.append("g")
@@ -288,14 +300,63 @@ define([
               return d.source.name + " \u2192 " + d.target.name + ", " + d.value;
             });
 
-            svg.append("g").style("font", "10px sans-serif").selectAll("text").data(nodes).enter().append("text").attr("x", function (d) {
-              return d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6;
-            }).attr("y", function (d) {
-              return (d.y1 + d.y0) / 2;
-            }).attr("dy", "0.35em").attr("text-anchor", function (d) {
-              return d.x0 < width / 2 ? "start" : "end";
-            }).text(function (d) {
-              return d.name;
+            var hoverLinksNodes = function(ns, ls, on) {
+              node.each(function(n) {
+                if (!_.contains(ns, n.node)) {
+                  d3.select(this).attr("opacity", on ? 0.3 : 1);
+                }
+              });
+              labels.each(function(n) {
+                if (!_.contains(ns, n.node)) {
+                  d3.select(this).attr("opacity", on ? 0.3 : 1);
+                }
+              });
+              link.each(function(ll) {
+                if (!_.contains(ls, ll.key)) {
+                  d3.select(this).attr("opacity", on ? 0.3 : 1);
+                }
+              });
+            };
+
+            var hoverLink = function(l, on) {
+              hoverLinksNodes([l.source.node, l.target.node], [l.key], on);
+            };
+
+            link.on("mouseover", function(d) {
+              hoverLink(d, true);
+            }).on("mouseout", function(d) {
+              hoverLink(d, false);
+            });
+
+            var hoverNode = function(n, on) {
+              var nlist = [n.node];
+              var llist = [];
+              var parseOut = function(ns) {
+                _.each(ns, function(nn) {
+                  nlist.push(nn.source.node);
+                  llist.push(nn.key);
+                });
+              };
+              var parseIn = function(ns) {
+                _.each(ns, function(nn) {
+                  nlist.push(nn.target.node);
+                  llist.push(nn.key);
+                  parseIn(nn.target.sourceLinks);
+                });
+              };
+              _.each(nodes, function(nn) {
+                if (n.node === nn.node) {
+                  parseOut(n.targetLinks);
+                  parseIn(n.sourceLinks);
+                }
+              });
+              hoverLinksNodes(nlist, llist, on);
+            };
+
+            node.on("mouseover", function(d) {
+              hoverNode(d, true);
+            }).on("mouseout", function(d) {
+              hoverNode(d, false);
             });
 
             scope.panelMeta.loading = false;
