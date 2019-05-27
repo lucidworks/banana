@@ -17,20 +17,14 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.23
+## Banana 1.6.24
 
 This release includes the following bug fixes and improvement:
-1. Add new diagrams: D3 Sankey and Force panels ([#337](https://github.com/lucidworks/banana/pull/337) thanks! @iampeter)
-1. Fix the overflow issue in Query panel.
-1. Fix "to" field does not properly convert display of its text from ASCII.
-1. Fix filter panel to display time filter in locale value, instead of UTC time.
-1. Fix error when running grunt build.
-1. Fix for Sunburst panel rendering issue in Firefox.
-1. Fix for CSV exporting issue in Terms panel.
-1. Fix for CSV exporting issue in Full Text Search panel, where a custom query does not take effect.
-1. Fix the Filter panel querystring encoding bug when trying to add a filter manually.
-1. Fix the delete saved dashboards issue in Solr 7+ (changing the delete method from using stream.body to POST /update with XML delete command).
-1. Fix issues with BlobStore API (for Lucidworks Fusion) to add support for changes in Fusion 3.1 BlobStore API, which used for loading, saving, and searching dashboards.
+1. Fix the filter panel where we cannot add more than one filer when clicking on the plus icon.
+1. Fix the Sankey panel. [#338](https://github.com/lucidworks/banana/pull/338)
+1. Allow the Terms panel to have a horizontal bar chart. [#338](https://github.com/lucidworks/banana/pull/338)
+1. Add Sankey hover/highlight effect. [#340](https://github.com/lucidworks/banana/pull/340)
+1. Force diagram numerical node names fix. [#340](https://github.com/lucidworks/banana/pull/340)
 
 ## Older Release Notes
 

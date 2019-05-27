@@ -88,6 +88,12 @@
   </div>
 </div>
 <div class="row-fluid">
+  <div class="span6" ng-show="panel.chart == 'bar'">
+    <label class="small" >Bar Chart Arrangement</label>
+    <select class="input-small" ng-model="panel.bar_chart_arrangement" ng-options="f for f in ['horizontal','vertical']"></select></span>
+  </div>
+</div>
+<div class="row-fluid">
   <h5>Real-time (Auto-refresh)</h5>  
   <div class="span1">
     <label class="small">Enable</label><input type="checkbox" ng-model="panel.refresh.enable" ng-checked="panel.refresh.enable">

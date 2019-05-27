@@ -58,7 +58,7 @@ define([
       };
 
       _.defaults($scope.panel, _d);
-      var DEBUG = true;
+      var DEBUG = false;
 
       $scope.init = function () {
         $scope.$on('refresh', function () {
@@ -83,15 +83,16 @@ define([
         var count = 0;
 
         var addNode = function (key, category, cnt) {
-          var existing = nodes[key];
+          var k = category + "-" + key;
+          var existing = nodes[k];
           if (!!existing) {
             return existing.node;
           }
 
           var id = count++;
-          nodes[key] = {
+          nodes[k] = {
             node: id,
-            name: key,
+            name: "" + key,
             category: category,
             count: cnt,
           };
@@ -100,10 +101,10 @@ define([
         };
 
         for (var ob in data) {
-          var id1 = addNode("" + data[ob].value, 1, data[ob].count);
+          var id1 = addNode(data[ob].value, 1, data[ob].count);
 
           for (var p in data[ob].pivot) {
-            var id2 = addNode("" + data[ob].pivot[p].value, 2, data[ob].pivot[p].count);
+            var id2 = addNode(data[ob].pivot[p].value, 2, data[ob].pivot[p].count);
 
             links.push({
               source: id1,
