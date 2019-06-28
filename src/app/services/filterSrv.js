@@ -240,11 +240,11 @@ define([
             }
           } else if (v.type === 'querystring') {
             if (v.mandate === 'must') {
-              filter_fq = filter_fq + '&fq=' + encodeURIComponent(v.query);
+              filter_fq = filter_fq + '&fq=' + v.query;
             } else if (v.mandate === 'mustNot') {
-              filter_fq = filter_fq + '&fq=-' + encodeURIComponent(v.query);
+              filter_fq = filter_fq + '&fq=-' + v.query;
             } else if (v.mandate === 'either') {
-              filter_either.push(encodeURIComponent(v.query));
+              filter_either.push(v.query);
             }
           } else if (v.type === 'range') {
             if (v.mandate === 'must') {
