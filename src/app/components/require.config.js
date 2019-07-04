@@ -44,6 +44,8 @@ require.config({
     elasticjs:                '../vendor/elasticjs/elastic-angular-client',
     solrjs:                   '../vendor/solrjs/solr-angular-client',
     d3:                       '../vendor/d3',
+    vis:                      '../bower_components/vis/dist/vis',
+    x2js:                     '../bower_components/abdmob/x2js/xml2json'
     'd3-sankey':              '../vendor/d3-sankey',
     'd3-array':               '../vendor/d3-array',
     'd3-collection':          '../vendor/d3-collection',
