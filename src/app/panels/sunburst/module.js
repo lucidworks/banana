@@ -1,14 +1,12 @@
-/*
-
- ## Sunburst Panel For Banana 1.5
-
+/**
+ * Sunburst panel
  */
 define([
     'angular',
     'app',
     'underscore',
     'jquery',
-    'd3',
+    'd3'
 ], function (angular, app, _, $, d3) {
     'use strict';
 
@@ -30,6 +28,7 @@ define([
             status: "Experimental",
             description: "This panel generates a sunburst graphic based on solr Facet Pivots output. "
         };
+
         // default values
         var _d = {
             queries: {
@@ -40,16 +39,13 @@ define([
             },
             facet_limit: 1000, // maximum number of rows returned from Solr
             spyable: true,
-            show_queries: true,
+            show_queries: true
         };
-
         _.defaults($scope.panel, _d);
-        var DEBUG = true;
 
         $scope.init = function () {
             $scope.$on('refresh', function () {
                 $scope.get_data();
-
             });
             $scope.get_data();
         };
@@ -104,10 +100,10 @@ define([
             var facet = '&facet=true';
             var facet_pivot = '&facet.pivot=' + $scope.panel.facet_pivot_strings.join().replace(/ /g, '');
             var facet_limits = '&facet.limit=' + $scope.panel.facet_limit;
+
+            // Set the panel's query
             $scope.panel.queries.query = querySrv.getORquery() + fq + wt_json + facet + facet_pivot + facet_limits + rows;
-            if (DEBUG) {
-                console.log($scope.panel.queries.query);
-            }
+
             // Set the additional custom query
             if ($scope.panel.queries.custom != null) {
                 request = request.setQuery($scope.panel.queries.query + $scope.panel.queries.custom);
@@ -119,14 +115,12 @@ define([
             results = request.doSearch();
             results.then(function (results) {
                 $scope.data = $scope.parse_facet_pivot(results.facet_counts.facet_pivot[$scope.panel.facet_pivot_strings.join().replace(/ /g, '')]);
-                console.log($scope.data);
                 $scope.render();
             });
-
-
         };
 
         $scope.dash = dashboard;
+
         $scope.set_refresh = function (state) {
             $scope.refresh = state;
         };
@@ -152,9 +146,6 @@ define([
         };
 
         $scope.set_filters = function (d) {
-            if (DEBUG) {
-                console.log("Setting Filters to " + d);
-            }
             for (var i = 0; i < d.length; i++) {
                 filterSrv.set({
                     type: 'terms',
@@ -162,37 +153,27 @@ define([
                     mandate: 'must',
                     value: d[i]
                 });
-                console.log($scope.panel.facet_pivot_strings[i].replace(/ /g, '') + ' - ' + d[i]);
-
             }
-
             dashboard.refresh();
         };
-
     });
 
     module.directive('sunburst', function () {
         return {
-            terminal: true,
             restrict: 'E',
-            link: function (scope, element/*,attrs*/) { // attrs is never used
+            link: function (scope, element) {
+                // Receive render events
                 scope.$on('render', function () {
-                    console.log("Sending SunBurzt 'render' Emit");
-
                     render_panel();
                 });
 
+                // Re-render if the window is resized
                 angular.element(window).bind('resize', function () {
                     render_panel();
                 });
 
+                // Function for rendering panel
                 function render_panel() {
-                    var DEBUG = true;
-                    if (DEBUG) {
-                        console.log("Starting to Render Sunburst");
-                        console.log(scope.data);
-                    }
-
                     function click(d) {
                         var parents = getAncestors(d);
                         var out = parents.map(function (a) {
@@ -208,16 +189,13 @@ define([
 
                     function mouseover(d) {
                         var parents = getAncestors(d);
-
                         d3.selectAll("path")
                             .style("opacity", 0.3);
-
                         d3.selectAll("path")
                             .filter(function (node) {
                                 return (parents.indexOf(node) >= 0);
                             })
                             .style("opacity", 1);
-
                         $tooltip
                             .html(d['name'] + ' (' + scope.dash.numberWithCommas(d['size']) + ')')
                             .place_tt(d3.event.pageX, d3.event.pageY);
@@ -258,8 +236,8 @@ define([
                     var color = d3.scale.category20c();
                     var radius = Math.min(width, height) / 2;
                     var svg = d3.select(el).append("svg")
-                        .style('height', height)
-                        .style('width', width)
+                        .attr('height', height)
+                        .attr('width', width)
                         .append("g")
                         .attr("transform", "translate(" + width / 2 + "," + height * 0.50 + ")");
 

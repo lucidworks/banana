@@ -46,6 +46,16 @@ require.config({
     d3:                       '../vendor/d3',
     vis:                      '../bower_components/vis/dist/vis',
     x2js:                     '../bower_components/abdmob/x2js/xml2json'
+    'd3-sankey':              '../vendor/d3-sankey',
+    'd3-array':               '../vendor/d3-array',
+    'd3-collection':          '../vendor/d3-collection',
+    'd3-shape':               '../vendor/d3-shape',
+    'd3-path':                '../vendor/d3-path',
+    'd3-force':               '../vendor/d3-force',
+    'd3-quadtree':            '../vendor/d3-quadtree',
+    'd3-dispatch':            '../vendor/d3-dispatch',
+    'd3-timer':               '../vendor/d3-timer',
+    'd3v5':                   '../vendor/d3v5'
   },
   shim: {
     underscore: {

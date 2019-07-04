@@ -31,6 +31,7 @@ function (Settings) {
      * your banana web application.
      * @type {String}
      */
+
     // Specify Solr server and core to store the data.
     solr: "/solr/",
     solr_core: "logs",
@@ -55,8 +56,6 @@ function (Settings) {
     // Reference: https://github.com/lucidworks/banana/tree/fusion/resources/enable-cors
     //
     // banana_server: "http://localhost:8983/solr/",
-    banana_queryPipeline: "system_banana-default",
-    banana_indexPipeline: "system_banana-default",    
 
     /**
      * Lucidworks Fusion settings
@@ -129,7 +128,9 @@ function (Settings) {
       'timeseries',
       'multiseries',
       'sunburst',
-      'docviewer'
+      'docviewer',
+      'sankey',
+      'force'
     ]
   });
 });

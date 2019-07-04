@@ -1,0 +1,19 @@
+<div ng-controller='force' ng-init="init()">
+  <style>
+    .force-search-box {
+      position: absolute;
+      left: 20px;
+      bottom: 0;
+    }
+  </style>
+
+  <div force-chart style="overflow:hidden; position:relative"></div>
+
+  <form ng-submit="searchForNode()" class="form-inline force-search-box">
+    <div class="form-group">
+      <input type="text" bs-typeahead="taList" ng-model="searchQuery" class="form-control" data-delay="500" data-limit="15" on-select="searchForNode()"/>
+      <button class="btn btn-primary">Search</button>
+      <button type="button" class="btn btn-secondary" ng-click="clearSearchForNode()">Clear</button>
+    </div>
+  </form>
+</div>

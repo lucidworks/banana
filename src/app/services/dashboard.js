@@ -471,6 +471,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
 
             sjs.client.useFusion(config.USE_FUSION);
             sjs.client.server(server);
+
             return request.doIndex(
                 config.USE_FUSION,
                 blobId,
@@ -506,6 +507,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             // Set sjs.client.server to use 'banana-int' for deleting dashboard
             sjs.client.useFusion(config.USE_FUSION);
             sjs.client.server(server);
+
             return sjs.Document(config.banana_index, 'dashboard', id).doDelete(
                 config.USE_FUSION,
                 // Success
@@ -604,6 +606,28 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             }
         };
 
+      /**
+       * Escape the given HTML string.
+       *
+       * @param html_str
+       * @returns {*|void|string}
+       */
+        this.escapeHtml = function(html_str) {
+          return html_str.replace(/[&<>"]/g, function(tag) {
+            var chars_to_replace = {
+              '&': '&amp;',
+              '<': '&lt;',
+              '>': '&gt;',
+              '"': '&quot;',
+              "'": '&#39;',
+              '/': '&#x2F;',
+              '`': '&#x60;',
+              '=': '&#x3D;'
+            };
+
+            return chars_to_replace[tag] || tag;
+          });
+        };
     });
 
 });

@@ -1,4 +1,4 @@
-{
+﻿{
   "title": "Fusion Metrics",
   "services": {
     "query": {
@@ -27,8 +27,8 @@
           "to": "NOW/DAY%2B1DAY",
           "field": "timestamp_tdt",
           "type": "time",
-          "fromDateObj": "2015-11-04T04:43:51.776Z",
-          "toDateObj": "2015-12-04T04:43:51.776Z",
+          "fromDateObj": "2017-11-19T05:49:53.799Z",
+          "toDateObj": "2017-12-19T05:49:53.800Z",
           "mandate": "must",
           "active": true,
           "alias": "",
@@ -41,6 +41,27 @@
     }
   },
   "rows": [
+    {
+      "title": "Guide",
+      "height": "100px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "type": "text",
+          "loadingEditor": false,
+          "status": "Stable",
+          "mode": "markdown",
+          "content": "In order for the Fusion Metrics dashboard to display your data correctly, you will have to **enable system metrics** in Fusion first. For more information, please read about **System Metrics** under **Dev Ops** section in [Fusion Documentation](https://doc.lucidworks.com/).",
+          "style": {},
+          "title": "Guide"
+        }
+      ]
+    },
     {
       "title": "Options",
       "height": "50px",
@@ -93,14 +114,14 @@
           "pinned": true,
           "history": [
             "*:*",
-            "query_s:ipad*",
-            "query_s:ipad",
+            "query:ipad*",
+            "query:ipad",
             "params_name_s:HP* AND params_name_s:*TouchPad*",
             "params_name_s:*HP*",
             "params_name_s:HP*",
             "flag_s:aggr",
             "doc_id_s:1945531",
-            "query_s:iPad"
+            "query:iPad"
           ],
           "remember": 10,
           "title": "Search",
@@ -176,7 +197,8 @@
           "refresh": {
             "enable": false,
             "interval": 2
-          }
+          },
+          "sum_value": false
         },
         {
           "span": 4,
@@ -239,7 +261,8 @@
           "refresh": {
             "enable": false,
             "interval": 2
-          }
+          },
+          "sum_value": false
         },
         {
           "span": 4,
@@ -302,7 +325,8 @@
           "refresh": {
             "enable": false,
             "interval": 2
-          }
+          },
+          "sum_value": false
         }
       ]
     },
@@ -332,7 +356,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=server_s&facet.limit=10&facet.missing=true",
+            "query": "q=*%3A*&wt=json&rows=0&fq=timestamp_tdt:[NOW/DAY-30DAY%20TO%20NOW/DAY%2B1DAY]&facet=true&facet.field=server_s&facet.limit=10&facet.missing=true&f.server_s.facet.sort=count",
             "custom": ""
           },
           "field": "server_s",
@@ -420,7 +444,10 @@
           "refresh": {
             "enable": false,
             "interval": 2
-          }
+          },
+          "pages": 10,
+          "sortBy": "count",
+          "exportSize": 100
         },
         {
           "span": 3,
@@ -483,7 +510,8 @@
           "refresh": {
             "enable": false,
             "interval": 2
-          }
+          },
+          "sum_value": false
         },
         {
           "span": 4,
@@ -546,7 +574,8 @@
           "refresh": {
             "enable": false,
             "interval": 2
-          }
+          },
+          "sum_value": false
         }
       ]
     }
@@ -573,11 +602,28 @@
     "load_elasticsearch_size": 20,
     "load_local": true,
     "hide": false,
-    "dropdown_collections": false
+    "dropdown_collections": false,
+    "save_as_public": false
   },
   "solr": {
     "server": "/api/apollo/query-pipelines/_system/collections/",
     "core_name": "system_metrics",
-    "core_list": []
-  }
+    "core_list": [
+      "system_messages",
+      "app-1_signals",
+      "app-1_signals_aggr",
+      "default_signals",
+      "default_signals_aggr",
+      "recommender_models",
+      "audit_logs",
+      "system_history",
+      "app-1",
+      "system_metrics",
+      "system_blobs",
+      "default",
+      "logs",
+      "system_jobs_history"
+    ]
+  },
+  "username": "admin"
 }

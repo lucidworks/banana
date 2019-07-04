@@ -1,0 +1,57 @@
+<div class="row-fluid">
+  <div class="span6">
+    <h6>Facet Pivot String <tip>Separated by commas</tip></h6>
+    <input array-join bs-typeahead="fields.list" style="width:500px;" type="text" placeholder="field1,field2" class="input-small" ng-model="panel.facet_pivot_strings" ng-change="set_refresh(true)">
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span3">
+    <h6>Facet Limit</h6>
+    <input class="input-medium" ng-model="panel.facet_limit" ng-change="set_refresh(true)">
+  </div>
+  <div class="span3">
+    <h6>Strength</h6>
+    <input type="number" class="input-medium" ng-model="panel.strength" ng-change="set_refresh(true)">
+  </div>
+</div>
+
+<div class="row-fluid">
+  <div class="span3">
+    <h6>Node Size Weight</h6>
+    <input type="number" class="input-medium" ng-model="panel.node_size_weight" ng-change="set_refresh(true)">
+  </div>
+  <div class="span3">
+    <h6>Link Width Weight</h6>
+    <input type="number" class="input-medium" ng-model="panel.link_width_weight" ng-change="set_refresh(true)">
+  </div>
+  <div class="span3">
+    <h6>Link Strength Weight</h6>
+    <input type="number" class="input-medium" ng-model="panel.link_strength_weight" ng-change="set_refresh(true)">
+  </div>
+  <div class="span3">
+    <h6>Link Distance Weight</h6>
+    <input type="number" class="input-medium" ng-model="panel.link_distance_weight" ng-change="set_refresh(true)">
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span3">
+    <h6>Spheres</h6>
+    <input type="checkbox" class="input-medium" ng-model="panel.spheres" ng-change="set_refresh(true)">
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span3">
+    <h6>Mute Category 1</h6>
+    <input type="checkbox" class="input-medium" ng-model="panel.mute_category_1" ng-change="set_refresh(true)">
+  </div>
+  <div class="span3">
+    <h6>Mute Category 2</h6>
+    <input type="checkbox" class="input-medium" ng-model="panel.mute_category_2" ng-change="set_refresh(true)">
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span6">
+    <h6>Colors</h6>
+    <input type="text" class="input-medium" style="width:500px;" ng-model="panel.colors" ng-change="set_refresh(true)">
+  </div>
+</div>

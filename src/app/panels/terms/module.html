@@ -45,13 +45,13 @@
     <table class="small" ng-show="panel.arrangement == 'vertical'">
       <tr ng-repeat="term in legend">
         <td><i class="icon-circle" ng-style="{color:term.color}"></i></td> <td style="padding-right:10px;padding-left:10px;">{{term.label}}</td>
-        <td>{{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}</td>
+        <td>{{dashboard.numberWithCommas(dataByAlignment(term.data).toFixed(panel.decimal_points))}}</td>
       </tr>
     </table>
 
     <!-- horizontal legend above -->
     <div class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="term in legend" style="float:left;padding-left: 10px;">
-      <span><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}) </span>
+      <span><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{dashboard.numberWithCommas(dataByAlignment(term.data).toFixed(panel.decimal_points))}}) </span>
     </div><br>
 
   </div>
@@ -64,7 +64,7 @@
     <table class="small">
       <tr ng-repeat="term in legend">
         <td><i class="icon-circle" ng-style="{color:term.color}"></i></td> <td style="padding-right:10px;padding-left:10px;">{{term.label}}</td>
-        <td>{{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}</td>
+        <td>{{dashboard.numberWithCommas(dataByAlignment(term.data).toFixed(panel.decimal_points))}}</td>
       </tr>
     </table>
   </div>
@@ -76,13 +76,13 @@
     <table class="small" ng-show="panel.arrangement == 'vertical'">
       <tr ng-repeat="term in legend">
         <td><i class="icon-circle" ng-style="{color:term.color}"></i></i></td> <td style="padding-right:10px;padding-left:10px;">{{term.label}}</td>
-        <td>{{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}</td>
+        <td>{{dashboard.numberWithCommas(dataByAlignment(term.data).toFixed(panel.decimal_points))}}</td>
       </tr>
     </table>
 
     <!-- horizontal legend below -->
     <div class="small" ng-show="panel.arrangement == 'horizontal'" ng-repeat="term in legend" style="float:left;padding-left: 10px;">
-      <span><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{dashboard.numberWithCommas(term.data[0][1].toFixed(panel.decimal_points))}}) </span>
+      <span><i class="icon-circle" ng-style="{color:term.color}"></i> {{term.label}} ({{dashboard.numberWithCommas(dataByAlignment(term.data).toFixed(panel.decimal_points))}}) </span>
     </div><br>
 
   </div>
@@ -98,7 +98,7 @@
     <tbody ng-style="{height: row.height}">
     <tr ng-repeat="term in data" ng-show="showMeta(term)">
       <td>{{term.label}}</td>
-      <td>{{term.data[0][1].toFixed(panel.decimal_points)}}</td>
+      <td>{{dataByAlignment(term.data).toFixed(panel.decimal_points)}}</td>
       <td>
         <span ng-hide="term.meta == 'other'">
           <i class='icon-search pointer' ng-click="build_search(term)"></i>
