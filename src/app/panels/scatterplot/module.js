@@ -134,7 +134,7 @@ define([
                 fl += ',' + $scope.panel.bubbleSizeField;
             }
 
-            $scope.panel.queries.query = querySrv.getORquery() + fq + fl + wt_json + rows_limit;
+            $scope.panel.queries.query = querySrv.getOPquery() + fq + fl + wt_json + rows_limit;
 
             // Set the additional custom query
             if ($scope.panel.queries.custom != null) {
