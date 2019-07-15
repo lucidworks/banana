@@ -121,11 +121,11 @@ function (angular, _, config) {
       return  solr_q;
     };
 
-    // used in multiquery case only:  it return the query in form "query1 OR query2 OR ..."
-    this.getORquery = function() {
+    // used in multiquery case only:  it return the query in form "query1 OP query2 OP ..."
+    this.getOPQuery = function() {
       var solr_q = 'q=';
       for (var key in self.list) {
-        solr_q += encodeURIComponent(self.list[key].query) + " OR ";
+        solr_q += encodeURIComponent(self.list[key].query) + ' ' + self.operator + ' ';
       }
       solr_q = solr_q.substring(0, solr_q.length - 4);
       if (dashboard.current.solr.global_params) {

@@ -31,7 +31,7 @@ function (angular, _) {
       }
       var wt = '&wt=json';
       var facet = '&rows=0&facet=true&facet.limit=10&facet.field=' + fields.join('&facet.field=');
-      var query = '/select?' + querySrv.getORquery() + fq + wt + facet;
+      var query = '/select?' + querySrv.getOPQuery() + fq + wt + facet;
 
       // loop through each field to send facet query to Solr
       // _.each(fields, function(field) {
