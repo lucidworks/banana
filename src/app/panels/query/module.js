@@ -44,6 +44,7 @@ define([
     $scope.querySrv = querySrv;
 
     $scope.init = function() {
+      querySrv.operator = $scope.panel.operator;
     };
 
     $scope.reset = function() {

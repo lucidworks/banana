@@ -23,7 +23,7 @@ function (angular, _, config) {
                 var indices = _.difference(n, _.keys(self.mapping));
                 // Only get the mapping if there are indices
                 if (indices.length > 0) {
-                    self.map(indices).then(function (result) {
+                    self.map().then(function (result) {
                         self.mapping = _.extend(self.mapping, result);
                         self.list = mapFields(self.mapping);
                     });
@@ -46,7 +46,7 @@ function (angular, _, config) {
         };
 
         // This function is for getting the list of fields from a collection.
-        this.map = function () {
+        this.map = function (collection_name) {
             // Check USE_ADMIN_LUKE flag in config.js
             // And also check USE_FUSION flag, if true, use Fusion Collection API instead of Solr.
             var fieldApi = '';
@@ -63,7 +63,8 @@ function (angular, _, config) {
             if (!config.USE_FUSION) {
                 request = $http({
                     // Get all fields in Solr core
-                    url: dashboard.current.solr.server + dashboard.current.solr.core_name + fieldApi,
+                    url: dashboard.current.solr.server + 
+                        (collection_name? collection_name : dashboard.current.solr.core_name) + fieldApi,
                     method: "GET"
                 }).error(function (data, status) {
                     if (status === 0) {

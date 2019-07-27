@@ -112,7 +112,7 @@ function (angular, app, _, $, kbn) {
       }
 
       var expression = 'expr=significantTerms(' + dashboard.current.solr.core_name + ','
-        + querySrv.getOPquery() + fq + ',field=' + $scope.panel.field
+        + querySrv.getOPQuery() + fq + ',field=' + $scope.panel.field
         + ',limit=' + $scope.panel.size + ',minDocFreq=' + $scope.panel.mindoc_freq
         + ',maxDocFreq=' + $scope.panel.maxdoc_freq  + ',minTermLength='
         + $scope.panel.minterm_len  + ')';
