@@ -1,8 +1,6 @@
 /*
-  ## Significant Terms
+  ## Graph
 
-  ### Parameters
-  * size :: top N
 */
 define([
   'angular',
@@ -20,6 +18,8 @@ function (angular, app, _, $, vis, X2JS, kbn) {
   app.useModule(module);
 
   module.controller('graph', function($scope, $timeout, timer, querySrv, dashboard, filterSrv) {
+    $scope.TRUNC_LENGTH = 25;
+
     $scope.panelMeta = {
       modals : [
         {
@@ -72,7 +72,8 @@ function (angular, app, _, $, vis, X2JS, kbn) {
       refresh: {
         enable: false,
         interval: 2
-      }
+      },
+      root_nodes_sort_order: 'desc'
     };
     _.defaults($scope.panel,_d);
 
@@ -82,6 +83,17 @@ function (angular, app, _, $, vis, X2JS, kbn) {
       });
       $scope.get_data();
 
+      var fields_request = $scope.fields.map($scope.panel.graph_collection);
+
+      fields_request.then(p => {
+        // TODO: ?
+        $scope.fields.aux_list = _.keys(p['logstash-2999.12.31'].logs);
+      });
+
+      String.prototype.trunc = String.prototype.trunc ||
+            function(n){
+                return (this.length > n) ? this.substr(0, n-1) + '...' : this;
+            };
     };
 
     $scope.testMultivalued = function() {
@@ -96,16 +108,55 @@ function (angular, app, _, $, vis, X2JS, kbn) {
       }
     };
 
-    $scope.build_expression = function() {
+    $scope.build_graph_expression = function() {
       var fq = '';
       if (filterSrv.getSolrFq()) {
         fq = ',' + filterSrv.getSolrFq(false, ',');
       }
 
-      var expression = $scope.panel.expression /* + fq ? + ')' */;
+      var graph_expression_template = 'nodes(%%GRAPH_COLLECTION%%,' +
+                                  'nodes(%%GRAPH_COLLECTION%%, ' +
+                                  'search(%%COLLECTION%%, q="%%QUERY%%", fl="%%FL%%" %%ROOT_NODES_SORT%% ' +
+                                  '%%ROOT_NODES%%),' +
+                                  'walk="%%JOIN_FIELD%%->%%FROM_FIELD%%",' +
+                                        'trackTraversal="true",' +
+                                        'gather="%%TO_FIELD%%"),' +
+                                  'walk="node->%%FROM_FIELD%%",' +
+                                  'scatter="leaves,branches",' +
+                                  'trackTraversal="true",' +
+                                  'gather="%%TO_FIELD%%")';
 
-      return expression;
+      var graph_expression = graph_expression_template
+        .replace(/%%GRAPH_COLLECTION%%/g, $scope.panel.graph_collection)
+        .replace(/%%COLLECTION%%/, dashboard.current.solr.core_name)
+        .replace(/%%ROOT_NODE%%/, $scope.panel.root_node)
+        .replace(/%%TO_FIELD%%/g, $scope.panel.to_field)
+        .replace(/%%ROOT_NODES%%/, $scope.panel.root_nodes? ', rows=' + $scope.panel.root_nodes : '')
+        .replace(/%%ROOT_NODES_SORT%%/, $scope.panel.root_nodes_sort? ', sort="' +
+            $scope.panel.root_nodes_sort + ' %%ROOT_NODES_SORT_ORDER%%"' : '')
+        .replace(/%%ROOT_NODES_SORT_ORDER%%/, $scope.panel.root_nodes_sort_order)
+        .replace(/%%JOIN_FIELD%%/g, $scope.panel.join_field)
+        .replace(/%%FL%%/g, $scope.panel.join_field + ($scope.panel.root_nodes_sort? ',' + 
+          $scope.panel.root_nodes_sort : ''))
+        .replace(/%%FROM_FIELD%%/g, $scope.panel.from_field)
+        .replace(/%%QUERY%%/, querySrv.getOPQuery().substring(2))
+        /* + fq ? + ')' */;
+
+      return graph_expression;
     };
+
+    $scope.build_base_expression = function() {
+      var base_expression_template = 'fetch(%%COLLECTION%%, select(' +
+        this.build_graph_expression() +
+        ', node as %%JOIN_FIELD%%), fl="%%LABEL_FIELD%%", on="%%JOIN_FIELD%%")';
+
+      var base_expression = base_expression_template
+        .replace(/%%COLLECTION%%/, dashboard.current.solr.core_name)
+        .replace(/%%JOIN_FIELD%%/g, $scope.panel.join_field)
+        .replace(/%%LABEL_FIELD%%/, $scope.panel.label_field);
+
+      return base_expression;
+    }
 
     $scope.get_data = function() {
       // Make sure we have everything for the request to complete
@@ -115,7 +166,7 @@ function (angular, app, _, $, vis, X2JS, kbn) {
 
       delete $scope.panel.error;
       $scope.panelMeta.loading = true;
-      var request, results;
+      var request, response;
 
       $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
 
@@ -125,32 +176,52 @@ function (angular, app, _, $, vis, X2JS, kbn) {
       // Populate the inspector panel
       $scope.inspector = angular.toJson(JSON.parse(request.toString()),true);
 
-      var query = this.build_expression('json', false);
+      var query = 'expr=' + this.build_graph_expression();
 
       // Set the panel's query
       $scope.panel.queries.query = query;
 
       request.setQuery(query);
 
-      results = request.streamExpression('graph');
+      response = request.streamExpression('graph');
 
       // Populate scope when we have results
-      results.then(function(results) {
+      response.then(function(graph_response) {
         // Check for error and abort if found
-        if(!(_.isUndefined(results.error))) {
-          $scope.panel.error = $scope.parse_error(results.error.msg);
+        if(!(_.isUndefined(graph_response.error))) {
+          $scope.panel.error = $scope.parse_error(graph_response.error.msg);
           $scope.data = [];
           $scope.panelMeta.loading = false;
           $scope.$emit('render');
           return;
         }
+        var query = 'expr=' + $scope.build_base_expression();
+        request = $scope.sjs.Request().indices(dashboard.indices);
+        request.setQuery(query);
+        response = request.streamExpression('stream');
+        
+        response.then(function(base_reponse) {
+          // Check for error and abort if found
+          if(!(_.isUndefined(base_reponse.error))) {
+            $scope.panel.error = $scope.parse_error(base_reponse.error.msg);
+            $scope.data = [];
+            $scope.panelMeta.loading = false;
+            $scope.$emit('render');
+            return;
+          }
 
-        var x2js = new X2JS();
-        $scope.graphML = x2js.xml_str2json(results);
+          var x2js = new X2JS();
+          $scope.graphML = x2js.xml_str2json(graph_response);
 
-        $scope.panelMeta.loading = false;
+          base_reponse['result-set'].docs.filter(d => d.title_s != undefined).map(d => {
+            var node = $scope.graphML.graphml.graph.node.filter(n => n._id === d[$scope.panel.join_field])
+              .map(n => n.title = d[$scope.panel.label_field])
+          });
 
-        $scope.$emit('render');
+          $scope.panelMeta.loading = false;
+
+          $scope.$emit('render');
+        });
       });
     };
 
@@ -160,6 +231,13 @@ function (angular, app, _, $, vis, X2JS, kbn) {
       if ($scope.panel.mode === 'count') {
         $scope.panel.decimal_points = 0;
       }
+
+      var fields_request = $scope.fields.map($scope.panel.graph_collection);
+
+      fields_request.then(p => {
+        // TODO: ?
+        $scope.fields.aux_list = _.keys(p['logstash-2999.12.31'].logs);
+      });
     };
 
     $scope.close_edit = function() {
@@ -210,24 +288,32 @@ function (angular, app, _, $, vis, X2JS, kbn) {
             nodes: nodes,
             edges: edges
           };
-          var options = {height: height, edges: {arrows: {to: {enabled: true, scaleFactor: 0.5}}}};
+          var options = {height: height, edges: {arrows: {to: {enabled: true, scaleFactor: 0.5}}},
+            nodes: {widthConstraint: {maximum: 75}}};
 
           // initialize your network!
           var network = new vis.Network(element[0], data, options);
 
-          if (!(scope.graphML.graphml.graph.node instanceof Array))
-            nodes.add({id: scope.graphML.graphml.graph.node._id, label: scope.graphML.graphml.graph.node._id});
-          else
-            scope.graphML.graphml.graph.node.forEach(function(n) {
-              nodes.add({id: n._id, label: n._id});
-          });
+          if (scope.graphML.graphml.graph.node) {
+            if (!(scope.graphML.graphml.graph.node instanceof Array))
+              nodes.add({id: scope.graphML.graphml.graph.node._id, 
+                label: scope.graphML.graphml.graph.node.title? scope.graphML.graphml.graph.node.title.trunc(scope.TRUNC_LENGTH) :
+                  scope.graphML.graphml.graph.node._id,
+                title: scope.graphML.graphml.graph.node.title});
+            else
+              scope.graphML.graphml.graph.node.forEach(function(n) {
+                nodes.add({id: n._id, label: n.title? n.title.trunc(scope.TRUNC_LENGTH) : n._id, title: n.title});
+            });
+          }
 
-          if (!(scope.graphML.graphml.graph.edge instanceof Array))
-            edges.add({from: scope.graphML.graphml.graph.edge._source, to: scope.graphML.graphml.graph.edge._target});
-          else
-            scope.graphML.graphml.graph.edge.forEach(function(e) {
-              edges.add({from: e._source, to: e._target});
-          });
+          if (scope.graphML.graphml.graph.edge) {
+            if (scope.graphML.graphml.graph.edge && !(scope.graphML.graphml.graph.edge instanceof Array))
+              edges.add({from: scope.graphML.graphml.graph.edge._source, to: scope.graphML.graphml.graph.edge._target});
+            else
+              scope.graphML.graphml.graph.edge.forEach(function(e) {
+                edges.add({from: e._source, to: e._target});
+            });
+          }
         }
       }
     };
