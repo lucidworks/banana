@@ -102,7 +102,7 @@ define([
             var facet_limits = '&facet.limit=' + $scope.panel.facet_limit;
 
             // Set the panel's query
-            $scope.panel.queries.query = querySrv.getORquery() + fq + wt_json + facet + facet_pivot + facet_limits + rows;
+            $scope.panel.queries.query = querySrv.getOPQuery() + fq + wt_json + facet + facet_pivot + facet_limits + rows;
 
             // Set the additional custom query
             if ($scope.panel.queries.custom != null) {
