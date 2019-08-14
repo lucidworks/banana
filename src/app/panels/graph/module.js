@@ -213,7 +213,7 @@ function (angular, app, _, $, vis, X2JS, kbn) {
           var x2js = new X2JS();
           $scope.graphML = x2js.xml_str2json(graph_response);
 
-          base_reponse['result-set'].docs.filter(d => d.title_s != undefined).map(d => {
+          base_reponse['result-set'].docs.filter(d => d[$scope.panel.label_field] != undefined).map(d => {
             var node = $scope.graphML.graphml.graph.node.filter(n => n._id === d[$scope.panel.join_field])
               .map(n => n.title = d[$scope.panel.label_field])
           });
