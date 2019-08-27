@@ -17,14 +17,11 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.24
+## Banana 1.6.25
 
 This release includes the following bug fixes and improvement:
-1. Fix the filter panel where we cannot add more than one filer when clicking on the plus icon.
-1. Fix the Sankey panel. [#338](https://github.com/lucidworks/banana/pull/338)
-1. Allow the Terms panel to have a horizontal bar chart. [#338](https://github.com/lucidworks/banana/pull/338)
-1. Add Sankey hover/highlight effect. [#340](https://github.com/lucidworks/banana/pull/340)
-1. Force diagram numerical node names fix. [#340](https://github.com/lucidworks/banana/pull/340)
+1. Remove the double URI encoding issue in Filter service. [#343](https://github.com/lucidworks/banana/pull/343)
+1. Fix rounding issue in the relative mode of the Timepicker panel. [#346](https://github.com/lucidworks/banana/pull/346)
 
 ## Older Release Notes
 
