@@ -281,7 +281,7 @@ define([
                         const TICK_LENGTH = 10;
                         const LABEL_CLEARANCE = -10;
                         const LEGEND_CLEARANCE = 30;
-                        const LEGEND_HEIGHT = 30;
+                        const LEGEND_HEIGHT = 25;
 
                         element.html('<div id="tooltip_' + scope.generated_id +'" class="popup hidden"><p><span id="value"></p></div>');
                         var el = element[0];
@@ -313,7 +313,7 @@ define([
 
                         const labels = {
                             top: 60,
-                            left: 60
+                            left: 100
                         };
 
                         var parent_width = element.parent().width(),
@@ -365,7 +365,7 @@ define([
                             .attr("width", svg_width)
                             .attr("height", svg_height)
                             .append("g")
-                            .attr("transform", "translate(" + labels.left + ", " + labels.top + ")");
+                            .attr("transform", "translate(" + (labels.left - margin.left) + ", " + labels.top + ")");
 
                         // Row Labels
                         var rowLabels = svg.append("g") // jshint ignore:line
@@ -568,7 +568,7 @@ define([
                             .attr("x", parseInt(canvas_width * 0.10))
                             .attr("y", canvas_height + LEGEND_CLEARANCE)
                             .attr("width", canvas_width * 0.80)
-                            .attr("height", 30)
+                            .attr("height", LEGEND_HEIGHT)
                             .attr("fill", "url('#legendGradient_" + scope.generated_id + "')");
                             
                         svg.append("g")
@@ -579,11 +579,11 @@ define([
                             .attr("x1", (d) => {
                                 return parseInt(canvas_width * 0.10) + parseInt(d * (canvas_width * 0.80 / 10));
                             })
-                            .attr("y1", parseInt(canvas_height + LEGEND_CLEARANCE + 30 - TICK_LENGTH))
+                            .attr("y1", parseInt(canvas_height + LEGEND_CLEARANCE + LEGEND_HEIGHT - TICK_LENGTH))
                             .attr("x2", (d) => {
                                 return parseInt(canvas_width * 0.10) + parseInt(d * (canvas_width * 0.80 / 10));
                             })
-                            .attr("y2", parseInt(canvas_height + LEGEND_CLEARANCE + 30))
+                            .attr("y2", parseInt(canvas_height + LEGEND_CLEARANCE + LEGEND_HEIGHT))
                             .attr("class", "tick");
 
                         svg.append("g")
