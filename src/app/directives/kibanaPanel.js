@@ -40,8 +40,8 @@ function (angular) {
             '<a title="Configure" alt="Configure" href="" class="icon-cog pointer" bs-tooltip="\'Configure\'"></a></span>'+
           '</span>' +
 
-          '<span class="row-button extra" ng-show="panel.transpose_show">' +
-          '<span class="rotate-icon pointer" bs-tooltip="\'Transpose Rows and Columns\'" ng-click="flip()"></span>' +
+          '<span class="row-button extra" ng-show="panel.transpose_show != undefined && !transpose_show">' +
+            '<a ng-click="flip()" bs-tooltip="\'Transpose rows and columns\'"><i class="pointer icon-repeat"></i></a>'+
           '</span>' +
 
           '<span ng-repeat="task in panelMeta.modals" class="row-button extra" ng-show="panel.spyable">' +
