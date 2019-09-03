@@ -16,6 +16,10 @@ define([
         app.useModule(module);
 
         module.controller('heatmap', function ($scope, dashboard, querySrv, filterSrv) {
+            
+            $scope.MIN_ROWS = 1;
+            $scope.MAX_ROWS = 100;
+
             $scope.panelMeta = {
                 modals: [
                     {
@@ -47,7 +51,6 @@ define([
                 row_field: '',
                 col_field: '',
                 row_size: 5,
-                editor_size: 0,
                 color:'gray',
                 spyable: true,
                 transpose_show: true,
@@ -60,8 +63,7 @@ define([
             $scope.requireContext = localRequire;
 
             $scope.init = function () {
-                $scope.panel.row_size = $scope.panel.editor_size;
-                $scope.generated_id = "tooltip_" + $scope.randomNumberRange(1,1000000);
+                $scope.generated_id = $scope.randomNumberRange(1, 1000000);
                 $scope.$on('refresh', function () {
                     $scope.get_data();
                 });
@@ -229,7 +231,6 @@ define([
             $scope.close_edit = function () {
                 var valid = $scope.validateLimit();
                 if (valid && $scope.refresh) {
-                    $scope.panel.row_size = $scope.panel.editor_size;
                     $scope.get_data();
                     $scope.formatData($scope.facets, $scope.panel.transposed);
                     $scope.render();
@@ -249,12 +250,8 @@ define([
             };
 
             $scope.validateLimit = function() {
-                var el = $('#rows_limit');
-                var min = +el.attr('min');
-                var max = +el.attr('max');
-                var value = +el.attr('value');
-
-                var valid = value >= min && value <= max;
+                var valid = $scope.panel.row_size >= $scope.MIN_ROWS 
+                    && $scope.panel.row_size <= $scope.MAX_ROWS;
 
                 if(!valid) {
                     el.attr('value', $scope.panel.row_size);
@@ -285,9 +282,8 @@ define([
                         const LABEL_CLEARANCE = -10;
                         const LEGEND_CLEARANCE = 30;
                         const LEGEND_HEIGHT = 30;
-                        const LEGEND_SPACING = 20;
 
-                        element.html('<div id="' + scope.generated_id +'" class="popup hidden"><p><span id="value"></p></div>');
+                        element.html('<div id="tooltip_' + scope.generated_id +'" class="popup hidden"><p><span id="value"></p></div>');
                         var el = element[0];
 
                         var data = jQuery.extend(true, [], scope.data); // jshint ignore:line
@@ -323,9 +319,7 @@ define([
                         var parent_width = element.parent().width(),
                             row_height = parseInt(scope.row.height);
 
-                        var width = parent_width - labels.left,
-                            height = row_height - labels.top,
-                            svg_width = parent_width - margin.left - margin.right,
+                        var svg_width = parent_width - margin.left - margin.right,
                             svg_height = row_height - margin.top - margin.bottom + 20,
                             canvas_height = svg_height - labels.top - LEGEND_CLEARANCE - LEGEND_HEIGHT - TICK_LENGTH - 20,
                             canvas_width = svg_width - labels.left;
@@ -424,7 +418,7 @@ define([
                             .attr("x2", 0)
                             .attr("y2", TICK_LENGTH)
                             .attr("transform", (d, i) => {
-                                return "translate(5, " + (hcrow.indexOf(i + 1) * cell_height + cell_height / 2) + ") rotate (90)"
+                                return "translate(5, " + (hcrow.indexOf(i + 1) * cell_height + cell_height / 2) + ") rotate (90)";
                             })
                             .attr("class", "tick");
 
@@ -480,7 +474,7 @@ define([
                             .attr("x2", 0)
                             .attr("y2", TICK_LENGTH)
                             .attr("transform", (d, i) => {
-                                return "translate(" + (hccol.indexOf(i + 1) * cell_width + cell_width / 2) + ", -5)"
+                                return "translate(" + (hccol.indexOf(i + 1) * cell_width + cell_width / 2) + ", -5)";
                             })
                             .attr("class", "tick");
 
@@ -526,39 +520,40 @@ define([
                                 $tooltip.detach();
                             });
 
-                        var gridv = svg.append("g")
+                        // Grid
+                        svg.append("g")
                             .selectAll(".gridgv")
                             .data(d3.range(hccol.length + 1))
                             .enter()
                             .append("line")
-                            .attr("x1", (d, i) => {
+                            .attr("x1", (d) => {
                                 return d * cell_width;
                             })
                             .attr("y1", 0)
-                            .attr("x2", (d, i) => {
+                            .attr("x2", (d) => {
                                 return d * cell_width;
                             })
                             .attr("y2", hcrow.length * cell_height)
                             .attr("class", "grid");
 
-                        var gridh = svg.append("g")
+                        svg.append("g")
                             .selectAll(".gridgh")
                             .data(d3.range(hcrow.length + 1))
                             .enter()
                             .append("line")
                             .attr("x1", 0)
-                            .attr("y1", (d, i) => {
+                            .attr("y1", (d) => {
                                 return d * cell_height;
                             })
                             .attr("x2", hccol.length * cell_width)
-                            .attr("y2", (d, i) => {
+                            .attr("y2", (d) => {
                                 return d * cell_height;
                             })
                             .attr("class", "grid");
 
                         // Legend
                         var linearGradient = svg.append("defs").append("linearGradient")
-                            .attr("id", "legendGradient");
+                            .attr("id", "legendGradient_" + scope.generated_id);
 
                         linearGradient.append("stop")
                            .attr("offset", "0%")
@@ -568,35 +563,35 @@ define([
                            .attr("offset", "100%")
                            .attr("stop-color", colorScale(10));
 
-                        var legend = svg.append("g")
+                        svg.append("g")
                             .append("rect")
                             .attr("x", parseInt(canvas_width * 0.10))
                             .attr("y", canvas_height + LEGEND_CLEARANCE)
                             .attr("width", canvas_width * 0.80)
                             .attr("height", 30)
-                            .attr("fill", "url('#legendGradient')");
+                            .attr("fill", "url('#legendGradient_" + scope.generated_id + "')");
                             
-                        var legendTicks = svg.append("g")
+                        svg.append("g")
                             .selectAll(".legendt")
                             .data(d3.range(11))
                             .enter()
                             .append("line")
-                            .attr("x1", (d, i) => {
+                            .attr("x1", (d) => {
                                 return parseInt(canvas_width * 0.10) + parseInt(d * (canvas_width * 0.80 / 10));
                             })
                             .attr("y1", parseInt(canvas_height + LEGEND_CLEARANCE + 30 - TICK_LENGTH))
-                            .attr("x2", (d, i) => {
+                            .attr("x2", (d) => {
                                 return parseInt(canvas_width * 0.10) + parseInt(d * (canvas_width * 0.80 / 10));
                             })
                             .attr("y2", parseInt(canvas_height + LEGEND_CLEARANCE + 30))
                             .attr("class", "tick");
 
-                        var legendLabels = svg.append("g")
+                        svg.append("g")
                             .selectAll(".legendl")
                             .data(d3.range(11))
                             .enter()
                             .append("text")
-                            .attr("x", (d, i) => {
+                            .attr("x", (d) => {
                                 return parseInt(canvas_width * 0.10) + parseInt(d * (canvas_width * 0.80 / 10));
                             })
                             .attr("y", parseInt(canvas_height + LEGEND_CLEARANCE + 30 + 25))
