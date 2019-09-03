@@ -1,4 +1,4 @@
-<div ng-controller="heatmap" ng-init="init()">
+<div ng-controller="heatmap" ng-init="init()" class="ng-scope">
     <style>
         /* disable text selection */
         svg *::selection {
@@ -27,11 +27,6 @@
         rect.cell-hover {
             stroke: #F00;
             stroke-width: 0.3px;
-        }
-        text.mono {
-            font-size: 9pt;
-            font-family: Consolas, courier;
-            fill: #aaa;
         }
         text.text-selected {
             fill: #000;
