@@ -91,6 +91,7 @@ function (angular, app, _, L, localRequire) {
     $scope.close_edit = function() {
       if($scope.refresh) {
         $scope.get_data();
+        render_panel();
       }
       $scope.refresh =  false;
     };
