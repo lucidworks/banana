@@ -8,6 +8,7 @@ define([
     'jquery',
     'd3',
     'require',
+    'css!./module.css'
 ],
     function (angular, app, _, $, d3, localRequire) {
         'use strict';
@@ -229,13 +230,10 @@ define([
             };
 
             $scope.close_edit = function () {
-                var valid = $scope.validateLimit();
-                if (valid && $scope.refresh) {
+                if ($scope.refresh) {
                     $scope.get_data();
                     $scope.formatData($scope.facets, $scope.panel.transposed);
                     $scope.render();
-                } else if (!valid) {
-                    alert('invalid rows number');
                 }
                 $scope.refresh = false;
                 $scope.$emit('render');
@@ -247,17 +245,6 @@ define([
 
             $scope.populate_modal = function (request) {
                 $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
-            };
-
-            $scope.validateLimit = function() {
-                var valid = $scope.panel.row_size >= $scope.MIN_ROWS 
-                    && $scope.panel.row_size <= $scope.MAX_ROWS;
-
-                if(!valid) {
-                    el.attr('value', $scope.panel.row_size);
-                }
-
-                return valid;
             };
 
         });
@@ -278,13 +265,16 @@ define([
                     // Function for rendering panel
                     function render_panel() {
 
-                        const TICK_LENGTH = 10;
-                        const LABEL_CLEARANCE = -10;
-                        const LEGEND_CLEARANCE = 30;
-                        const LEGEND_HEIGHT = 25;
+                        var parent_width = element.parent().width(),
+                        row_height = parseInt(scope.row.height);
 
-                        element.html('<div id="tooltip_' + scope.generated_id +'" class="popup hidden"><p><span id="value"></p></div>');
-                        var el = element[0];
+                        const TICK_LENGTH = 10;
+                        const LEGEND_CLEARANCE = 15;
+                        const LEGEND_HEIGHT = 20;
+                        const LEGEND_WIDTH = parent_width / 2;
+                        const MAX_LABEL_LENGTH = 10;
+
+                        element.html('<div id="_' + scope.generated_id +'" style="height: 100%"></div>');
 
                         var data = jQuery.extend(true, [], scope.data); // jshint ignore:line
 
@@ -304,23 +294,13 @@ define([
                             };
                         });
 
-                        const margin = {
-                            top: 25,
-                            left: 25,
-                            bottom: 25,
-                            right: 25
-                        };
-
                         const labels = {
-                            top: 60,
-                            left: 100
+                            top: 70,
+                            left: 120
                         };
 
-                        var parent_width = element.parent().width(),
-                            row_height = parseInt(scope.row.height);
-
-                        var svg_width = parent_width - margin.left - margin.right,
-                            svg_height = row_height - margin.top - margin.bottom + 20,
+                        var svg_width = parent_width,
+                            svg_height = row_height,
                             canvas_height = svg_height - labels.top - LEGEND_CLEARANCE - LEGEND_HEIGHT - TICK_LENGTH - 20,
                             canvas_width = svg_width - labels.left;
                         
@@ -357,15 +337,14 @@ define([
                             colors.push(color(otherRange(n)).toString());
                         });
 
-                        var colorScale   = d3.scale.quantile().domain([0, 10]).range(colors);
+                        var colorScale = d3.scale.quantile().domain([0, 10]).range(colors);
 
                         var $tooltip = $('<div>');
 
-                        var svg = d3.select(el).append("svg")
-                            .attr("width", svg_width)
-                            .attr("height", svg_height)
-                            .append("g")
-                            .attr("transform", "translate(" + (labels.left - margin.left) + ", " + labels.top + ")");
+                        var svg = d3.select("#_" + scope.generated_id).append("svg")
+                            .attr("width", "98%")
+                            .attr("height", "98%")
+                            .append("g");
 
                         // Row Labels
                         var rowLabels = svg.append("g") // jshint ignore:line
@@ -374,21 +353,17 @@ define([
                             .enter()
                             .append("text")
                             .text(function (d) {
-                                if(d.length > 8) {
-                                    return d.substring(0,8)+'..';
+                                if(d.length > MAX_LABEL_LENGTH) {
+                                    return d.substring(0, MAX_LABEL_LENGTH) + '...';
                                 } else {
                                     return d;
                                 }
                             })
                             .attr("x", 0)
                             .attr("y", function (d, i) {
-                                return hcrow.indexOf(i + 1) * cell_height;
+                                return 80 + hcrow.indexOf(i + 1) * cell_height;
                             })
-                            .style("text-anchor", "end")
-                            .attr("transform", "translate(" + LABEL_CLEARANCE + ", " + cell_height / 1.5 + ")")
-                            .attr("class", function (d, i) {
-                                return "rowLabel_" + scope.generated_id + " r" + i + ";";
-                            })
+                            .attr("transform", "translate(25, " + cell_height / 2 + ")")
                             .on("mouseover", function (d) {
                                 d3.select(this).classed("text-hover", true);
                                 $tooltip.html(d).place_tt(d3.event.pageX, d3.event.pageY);
@@ -407,20 +382,11 @@ define([
                                 sortbylabel("r", i, rowSortOrder);
                             });
 
-                        // Row ticks
-                        var rowTicks = svg.append("g") // jshint ignore:line
-                            .selectAll(".rowLabelg")
-                            .data(rowLabel)
-                            .enter()
-                            .append("line")
-                            .attr("x1", 0)
-                            .attr("y1", 0)
-                            .attr("x2", 0)
-                            .attr("y2", TICK_LENGTH)
-                            .attr("transform", (d, i) => {
-                                return "translate(5, " + (hcrow.indexOf(i + 1) * cell_height + cell_height / 2) + ") rotate (90)";
-                            })
-                            .attr("class", "tick");
+                        svg.append("text")
+                            .attr("x", 0)
+                            .attr("y", 0)
+                            .text(scope.panel.row_field)
+                            .attr("transform", "translate(10, " + svg_height / 2 + ") rotate(-90)");
 
                         // Column labels
                         var colLabels = svg.append("g") // jshint ignore:line
@@ -429,18 +395,18 @@ define([
                             .enter()
                             .append("text")
                             .text(function (d) {
-                                if(d.length > 6) {
-                                    return d.substring(0,6)+'..';
+                                if(d.length > MAX_LABEL_LENGTH) {
+                                    return d.substring(0, MAX_LABEL_LENGTH) + '...';
                                 } else {
                                     return d;
                                 }
                             })
-                            .attr("x", 0)
+                            .attr("x", -75)
                             .attr("y", function (d, i) {
-                                return hccol.indexOf(i + 1) * cell_width;
+                                return 100 + hccol.indexOf(i + 1) * cell_width;
                             })
                             .style("text-anchor", "left")
-                            .attr("transform", "translate(" + cell_width / 2 + ", " + LABEL_CLEARANCE + ") rotate (-90)")
+                            .attr("transform", "translate(" + cell_width / 2 + ", 0) rotate (-90)")
                             .attr("class", function (d, i) {
                                 return "colLabel_" + scope.generated_id + " c" + i;
                             })
@@ -463,23 +429,16 @@ define([
                                 sortbylabel("c", i, colSortOrder);
                             });
 
-                        // Column ticks
-                        var colTicks = svg.append("g") // jshint ignore:line
-                            .selectAll(".colLabelg")
-                            .data(colLabel)
-                            .enter()
-                            .append("line")
-                            .attr("x1", 0)
-                            .attr("y1", 0)
-                            .attr("x2", 0)
-                            .attr("y2", TICK_LENGTH)
-                            .attr("transform", (d, i) => {
-                                return "translate(" + (hccol.indexOf(i + 1) * cell_width + cell_width / 2) + ", -5)";
-                            })
-                            .attr("class", "tick");
+                        svg.append("text")
+                            .attr("x", 0)
+                            .attr("y", 0)
+                            .text(scope.panel.col_field)
+                            .attr("transform", "translate(" + svg_width / 2 + ", 10)");
 
                         // Heatmap component
-                        var heatMap = svg.append("g") // jshint ignore:line
+                        var heatMap = svg.append("g"); // jshint ignore:line
+                        
+                        heatMap.attr("transform", "translate(100, 80)")
                             .selectAll(".cellg")
                             .data(data, function (d) {
                                 return d.row + ":" + d.col;
@@ -521,7 +480,7 @@ define([
                             });
 
                         // Grid
-                        svg.append("g")
+                        heatMap.append("g")
                             .selectAll(".gridgv")
                             .data(d3.range(hccol.length + 1))
                             .enter()
@@ -536,7 +495,7 @@ define([
                             .attr("y2", hcrow.length * cell_height)
                             .attr("class", "grid");
 
-                        svg.append("g")
+                        heatMap.append("g")
                             .selectAll(".gridgh")
                             .data(d3.range(hcrow.length + 1))
                             .enter()
@@ -551,6 +510,36 @@ define([
                             })
                             .attr("class", "grid");
 
+                        // Column ticks
+                        heatMap.append("g") // jshint ignore:line
+                            .selectAll(".colLabelg")
+                            .data(colLabel)
+                            .enter()
+                            .append("line")
+                            .attr("x1", 0)
+                            .attr("y1", 0)
+                            .attr("x2", 0)
+                            .attr("y2", TICK_LENGTH)
+                            .attr("transform", (d, i) => {
+                                return "translate(" + (hccol.indexOf(i + 1) * cell_width + cell_width / 2) + ", -5)";
+                            })
+                            .attr("class", "tick");
+
+                        // Row ticks
+                        heatMap.append("g") // jshint ignore:line
+                            .selectAll(".rowLabelg")
+                            .data(rowLabel)
+                            .enter()
+                            .append("line")
+                            .attr("x1", 0)
+                            .attr("y1", 0)
+                            .attr("x2", 0)
+                            .attr("y2", TICK_LENGTH)
+                            .attr("transform", (d, i) => {
+                                return "translate(5, " + (hcrow.indexOf(i + 1) * cell_height + cell_height / 2) + ") rotate (90)";
+                            })
+                            .attr("class", "tick");
+
                         // Legend
                         var linearGradient = svg.append("defs").append("linearGradient")
                             .attr("id", "legendGradient_" + scope.generated_id);
@@ -563,38 +552,39 @@ define([
                            .attr("offset", "100%")
                            .attr("stop-color", colorScale(10));
 
-                        svg.append("g")
-                            .append("rect")
-                            .attr("x", parseInt(canvas_width * 0.10))
-                            .attr("y", canvas_height + LEGEND_CLEARANCE)
-                            .attr("width", canvas_width * 0.80)
+                        var legend = svg.append("svg");
+                        legend.attr("x", parseInt((svg_width - LEGEND_WIDTH) / 2))
+                            .attr("y", svg_height - LEGEND_HEIGHT - LEGEND_CLEARANCE - 10).append("g");
+
+                        legend.append("rect")
+                            .attr("width", LEGEND_WIDTH)
                             .attr("height", LEGEND_HEIGHT)
                             .attr("fill", "url('#legendGradient_" + scope.generated_id + "')");
                             
-                        svg.append("g")
+                        legend.append("g")
                             .selectAll(".legendt")
                             .data(d3.range(11))
                             .enter()
                             .append("line")
                             .attr("x1", (d) => {
-                                return parseInt(canvas_width * 0.10) + parseInt(d * (canvas_width * 0.80 / 10));
+                                return parseInt(d * LEGEND_WIDTH / 10);
                             })
-                            .attr("y1", parseInt(canvas_height + LEGEND_CLEARANCE + LEGEND_HEIGHT - TICK_LENGTH))
+                            .attr("y1", LEGEND_HEIGHT - TICK_LENGTH)
                             .attr("x2", (d) => {
-                                return parseInt(canvas_width * 0.10) + parseInt(d * (canvas_width * 0.80 / 10));
+                                return parseInt(d * LEGEND_WIDTH / 10);
                             })
-                            .attr("y2", parseInt(canvas_height + LEGEND_CLEARANCE + LEGEND_HEIGHT))
+                            .attr("y2", LEGEND_HEIGHT)
                             .attr("class", "tick");
 
-                        svg.append("g")
+                        legend.append("g")
                             .selectAll(".legendl")
                             .data(d3.range(11))
                             .enter()
                             .append("text")
                             .attr("x", (d) => {
-                                return parseInt(canvas_width * 0.10) + parseInt(d * (canvas_width * 0.80 / 10));
+                                return parseInt(d * LEGEND_WIDTH / 10);
                             })
-                            .attr("y", parseInt(canvas_height + LEGEND_CLEARANCE + 30 + 25))
+                            .attr("y", parseInt(LEGEND_HEIGHT + 15))
                             .text((d) => {
                                 return Math.round((scope.domain[0] + (scope.domain[1] - scope.domain[0]) / 10 * d) * 100) / 100;
                             });
