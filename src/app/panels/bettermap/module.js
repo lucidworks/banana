@@ -4,7 +4,7 @@
 
   ### Parameters
   * size :: How many results to show, more results = slower
-  * field :: field containing a 2 element array in the format [lon,lat]
+  * field :: field containing a 2 element array in the format [lat,lon]
   * tooltip :: field to extract the tool tip value from
   * spyable :: Show the 'eye' icon that reveals the last ES query
 */
@@ -91,9 +91,9 @@ function (angular, app, _, L, localRequire) {
     $scope.close_edit = function() {
       if($scope.refresh) {
         $scope.get_data();
-        render_panel();
       }
       $scope.refresh =  false;
+      $scope.$emit('render');
     };
 
     $scope.fitBounds = function() {
@@ -113,7 +113,7 @@ function (angular, app, _, L, localRequire) {
 
         // check if [lat,lon] field is defined
         if(_.isUndefined($scope.panel.field)) {
-          $scope.panel.error = "Please select a field that contains geo point in [lon,lat] format";
+          $scope.panel.error = "Please select a field that contains geo point in [lat, lon] format";
           return;
         }
 
