@@ -364,6 +364,9 @@ define([
                                 return 80 + hcrow.indexOf(i + 1) * cell_height;
                             })
                             .attr("transform", "translate(25, " + cell_height / 2 + ")")
+                            .attr("class", function (d, i) {
+                                return "rowLabel_" + scope.generated_id + " axis-label";
+                            })
                             .on("mouseover", function (d) {
                                 d3.select(this).classed("text-hover", true);
                                 $tooltip.html(d).place_tt(d3.event.pageX, d3.event.pageY);
@@ -386,7 +389,8 @@ define([
                             .attr("x", 0)
                             .attr("y", 0)
                             .text(scope.panel.row_field)
-                            .attr("transform", "translate(10, " + svg_height / 2 + ") rotate(-90)");
+                            .attr("transform", "translate(10, " + svg_height / 2 + ") rotate(-90)")
+                            .attr("class", "axis-label");                            
 
                         // Column labels
                         var colLabels = svg.append("g") // jshint ignore:line
@@ -408,7 +412,7 @@ define([
                             .style("text-anchor", "left")
                             .attr("transform", "translate(" + cell_width / 2 + ", 0) rotate (-90)")
                             .attr("class", function (d, i) {
-                                return "colLabel_" + scope.generated_id + " c" + i;
+                                return "colLabel_" + scope.generated_id + " axis-label";
                             })
                             .on("mouseover", function (d) {
                                 d3.select(this).classed("text-hover", true);
@@ -433,7 +437,8 @@ define([
                             .attr("x", 0)
                             .attr("y", 0)
                             .text(scope.panel.col_field)
-                            .attr("transform", "translate(" + svg_width / 2 + ", 10)");
+                            .attr("transform", "translate(" + svg_width / 2 + ", 10)")
+                            .attr("class", "axis-label");
 
                         // Heatmap component
                         var heatMap = svg.append("g"); // jshint ignore:line
@@ -587,7 +592,8 @@ define([
                             .attr("y", parseInt(LEGEND_HEIGHT + 15))
                             .text((d) => {
                                 return Math.round((scope.domain[0] + (scope.domain[1] - scope.domain[0]) / 10 * d) * 100) / 100;
-                            });
+                            })
+                            .attr("class", "axis-label");
 
                         // Function to sort the cells with respect to selected row or column
                         function sortbylabel(rORc, i, sortOrder) {

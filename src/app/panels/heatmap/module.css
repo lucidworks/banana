@@ -39,6 +39,7 @@ text.text-hover {
 g > text {
     font-size: 12px;
 }
+
 .popup {
     position: absolute;
     width: 200px;
@@ -62,4 +63,11 @@ g > text {
     font-family: sans-serif;
     font-size: 12px;
     line-height: 20px;
+}
+.tick {
+    stroke: #C8C8C8;
+}
+.grid {
+    stroke: #C8C8C8;
+    stroke-dasharray: 1, 1;
 }
