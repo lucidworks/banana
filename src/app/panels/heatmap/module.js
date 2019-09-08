@@ -281,31 +281,27 @@ define([
                         const MARGIN = 15;
                         const MAX_LABEL_LENGTH = 10;
 
+                        const INTENSITY = 3;
+
                         const LEGEND = {
                             height: 20,
                             width: parent_width / 2,
                             margin: 10,
                             text_margin: 10,
                             text_height: 15
-                        }
+                        };
 
                         const labels = {
                             top: 90,
                             left: 120
                         };
                         
-                        element.html('<div id="_' + scope.generated_id +'" style="height: 100%"></div>');
-
+                        element.html('<div id="_' + scope.generated_id + '" style="height: 100%"></div>');
+                        
                         var data = jQuery.extend(true, [], scope.data); // jshint ignore:line
-
-                        var labels_columns = [];
-                        var intensity_domain = d3.scale.linear().domain(scope.domain).range([0,10]);
-
-                        _.each(scope.internal_domain, function(d){
-                            var d_range = d3.scale.linear().domain(d).range([0,10]);
-                            labels_columns.push(d_range);
-                        });
-
+                        
+                        var intensity_domain = d3.scale.linear().domain(scope.domain).range([-INTENSITY, INTENSITY]);
+                        
                         data = _.map(data, function(d){
                             return{
                                 row: +d.row,
@@ -323,16 +319,7 @@ define([
                         var rowSortOrder = false,
                             colSortOrder = false;
 
-                        var brightrange = d3.scale.linear().domain([0,300]).range([0,3]),
-                            colr_domain = d3.range(11),
-                            otherRange  = d3.scale.linear().domain([0,10]).range([-255,255]); // we have 255 intensities for a color range
-
                         var cell_color = scope.panel.color;
-
-                        function color(shift) {
-                            if (shift >= 0) {return d3.hsl(cell_color).darker(brightrange(shift));}
-                            else {return d3.hsl(cell_color).brighter(brightrange(-shift));}
-                        }
 
                         var hcrow, hccol, rowLabel, colLabel;
                         // jshint ignore:start
@@ -347,13 +334,7 @@ define([
                             col_number = colLabel.length,
                             row_number = rowLabel.length;
 
-                        var colors = [];
-
-                        _.each(colr_domain, function(n){
-                            colors.push(color(otherRange(n)).toString());
-                        });
-
-                        var colorScale = d3.scale.quantile().domain([0, 10]).range(colors);
+                        var colorScale = (shift) => { return d3.hsl(cell_color).darker(shift).toString(); };
 
                         var $tooltip = $('<div>');
 
@@ -379,8 +360,8 @@ define([
                             .attr("y", function (d, i) {
                                 return labels.top + MARGIN + hcrow.indexOf(i + 1) * cell_height;
                             })
-                            .attr("transform", "translate(25, " + cell_height / 2 + ")")
-                            .attr("class", function (d, i) {
+                            .attr("transform", "translate(25, " + (cell_height / 2 + 4) + ")")
+                            .attr("class", function () {
                                 return "rowLabel_" + scope.generated_id + " axis-label";
                             })
                             .on("mouseover", function (d) {
@@ -426,8 +407,8 @@ define([
                                 return 100 + hccol.indexOf(i + 1) * cell_width;
                             })
                             .style("text-anchor", "left")
-                            .attr("transform", "translate(" + cell_width / 2 + ", 0) rotate (-90)")
-                            .attr("class", function (d, i) {
+                            .attr("transform", "translate(" + (cell_width / 2 + 4) + ", 0) rotate (-90)")
+                            .attr("class", function () {
                                 return "colLabel_" + scope.generated_id + " axis-label";
                             })
                             .on("mouseover", function (d) {
@@ -499,7 +480,7 @@ define([
 
                                 $tooltip.detach();
                             })
-                            .on("click", (d, i) => {
+                            .on("click", (d) => {
                                 d3.select(this).classed("cell-hover", false);
                                 $tooltip.detach();
                                 scope.build_search(rowLabel[d.row - 1], colLabel[d.col - 1]);
@@ -572,11 +553,15 @@ define([
 
                         linearGradient.append("stop")
                            .attr("offset", "0%")
+                           .attr("stop-color", colorScale(-INTENSITY));
+
+                        linearGradient.append("stop")
+                           .attr("offset", "50%")
                            .attr("stop-color", colorScale(0));
 
                         linearGradient.append("stop")
                            .attr("offset", "100%")
-                           .attr("stop-color", colorScale(10));
+                           .attr("stop-color", colorScale(INTENSITY));
 
                         var legend = svg.append("svg");
                         legend.attr("x", parseInt((svg_width - LEGEND.width) / 2))
@@ -585,7 +570,8 @@ define([
                         legend.append("rect")
                             .attr("width", LEGEND.width)
                             .attr("height", LEGEND.height)
-                            .attr("fill", "url('#legendGradient_" + scope.generated_id + "')");
+                            .attr("fill", "url('#legendGradient_" + scope.generated_id + "')")
+                            .attr("border")
                             
                         legend.append("g")
                             .selectAll(".legendt")
@@ -612,7 +598,7 @@ define([
                             })
                             .attr("y", parseInt(LEGEND.height + 15))
                             .text((d) => {
-                                return Math.round((scope.domain[0] + (scope.domain[1] - scope.domain[0]) / 10 * d) * 100) / 100;
+                                return Math.round(scope.domain[0] + (scope.domain[1] - scope.domain[0]) / 10 * d);
                             })
                             .attr("class", "axis-label");
 
@@ -622,7 +608,7 @@ define([
                             var t = svg.transition().duration(1200);
 
                             var values = []; // holds the values in this specific row
-                            for(var j = 0; j < col_number; j++) { values.push(0); }
+                            for(var j = 0; j < col_number; j++) { values.push(-Infinity); }
 
                             var sorted; // sorted is zero-based index
                             d3.selectAll(".c" + rORc + i + "_" + scope.generated_id)
