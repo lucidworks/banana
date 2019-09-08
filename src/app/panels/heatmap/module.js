@@ -246,6 +246,16 @@ define([
             $scope.populate_modal = function (request) {
                 $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
             };
+
+            $scope.build_search = function(x, y) {
+                if (x && y) {
+                  filterSrv.set({type: 'terms', field: $scope.panel.row_field, value: x, mandate: 'must'});
+                  filterSrv.set({type: 'terms', field: $scope.panel.col_field, value: y, mandate: 'must'});
+                } else {
+                  return;
+                }
+                dashboard.refresh();
+              };
         });
 
         module.directive('heatmapChart', function () {
@@ -480,7 +490,7 @@ define([
                                     return ci === (d.col - 1);
                                 });
 
-                                $tooltip.html(rowLabel[d.row - 1] + "," + colLabel[d.col - 1] + " (" + scope.data[i].value + ")").place_tt(d3.event.pageX, d3.event.pageY);
+                                $tooltip.html(rowLabel[d.row - 1] + ", " + colLabel[d.col - 1] + " (" + scope.data[i].value + ")").place_tt(d3.event.pageX, d3.event.pageY);
                             })
                             .on("mouseout", function () {
                                 d3.select(this).classed("cell-hover", false);
@@ -489,8 +499,10 @@ define([
 
                                 $tooltip.detach();
                             })
-                            .on("click", () => {
-                                
+                            .on("click", (d, i) => {
+                                d3.select(this).classed("cell-hover", false);
+                                $tooltip.detach();
+                                scope.build_search(rowLabel[d.row - 1], colLabel[d.col - 1]);
                             });
 
                         // Grid
