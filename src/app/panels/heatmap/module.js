@@ -159,6 +159,7 @@ define([
                 $scope.hccol = [];
                 $scope.internal_sum = [];
                 $scope.domain = [Number.MAX_VALUE,0];
+                $scope.axis_labels = [$scope.panel.col_field, $scope.panel.row_field];
             };
 
             $scope.formatData = function(facets, flipped) {
@@ -173,6 +174,7 @@ define([
                     } else {
                         $scope.col_labels.push(d.value);
                         $scope.hccol.push($scope.col_labels.length);
+                        [$scope.axis_labels[0], $scope.axis_labels[1]] = [$scope.axis_labels[1], $scope.axis_labels[0]];
                     }
 
                     _.each(d.pivot, function(p) {
@@ -360,7 +362,8 @@ define([
                             .attr("y", function (d, i) {
                                 return labels.top + MARGIN + hcrow.indexOf(i + 1) * cell_height;
                             })
-                            .attr("transform", "translate(25, " + (cell_height / 2 + 4) + ")")
+                            .attr("transform", "translate(25, " + cell_height / 2 + ")")
+                            .attr("alignment-baseline", "middle")
                             .attr("class", function () {
                                 return "rowLabel_" + scope.generated_id + " axis-label";
                             })
@@ -385,7 +388,7 @@ define([
                         svg.append("text")
                             .attr("x", 0)
                             .attr("y", 0)
-                            .text(scope.panel.row_field)
+                            .text(scope.axis_labels[1])
                             .attr("transform", "translate(10, " + svg_height / 2 + ") rotate(-90)")
                             .attr("class", "axis-label");                            
 
@@ -406,8 +409,9 @@ define([
                             .attr("y", function (d, i) {
                                 return 100 + hccol.indexOf(i + 1) * cell_width;
                             })
-                            .style("text-anchor", "left")
-                            .attr("transform", "translate(" + (cell_width / 2 + 4) + ", 0) rotate (-90)")
+                            .attr("text-anchor", "start")
+                            .attr("alignment-baseline", "middle")
+                            .attr("transform", "translate(" + cell_width / 2 + ", 0) rotate (-90)")
                             .attr("class", function () {
                                 return "colLabel_" + scope.generated_id + " axis-label";
                             })
@@ -433,7 +437,7 @@ define([
                         svg.append("text")
                             .attr("x", 0)
                             .attr("y", 0)
-                            .text(scope.panel.col_field)
+                            .text(scope.axis_labels[0])
                             .attr("transform", "translate(" + svg_width / 2 + ", 10)")
                             .attr("class", "axis-label");
 
@@ -570,8 +574,7 @@ define([
                         legend.append("rect")
                             .attr("width", LEGEND.width)
                             .attr("height", LEGEND.height)
-                            .attr("fill", "url('#legendGradient_" + scope.generated_id + "')")
-                            .attr("border")
+                            .attr("fill", "url('#legendGradient_" + scope.generated_id + "')");
                             
                         legend.append("g")
                             .selectAll(".legendt")
@@ -600,6 +603,7 @@ define([
                             .text((d) => {
                                 return Math.round(scope.domain[0] + (scope.domain[1] - scope.domain[0]) / 10 * d);
                             })
+                            .attr("text-anchor", "middle")
                             .attr("class", "axis-label");
 
                         // Function to sort the cells with respect to selected row or column
