@@ -124,6 +124,14 @@ define([
             }
         };
 
+        $scope.updateFlow = function () {
+            if ($scope.panel.arrangement === 'horizontal')
+                $scope.panel.style['flex-direction'] = 'row';
+            else
+                $scope.panel.style['flex-direction'] = 'column';
+
+        }
+
         $scope.get_data = function () {
             delete $scope.panel.error;
             $scope.panelMeta.loading = true;
@@ -204,15 +212,7 @@ define([
                         return;
                     }
 
-                    // var info = dashboard.current.services.query.list[id];
-                    // Create series
-                    // $scope.data[i] = {
-                    //     info: info,
-                    //     id: id,
-                    //     hits: result_value,
-                    //     data: [[id, result_value]]
-                    // };
-                    $scope.$emit('render');
+                    $scope.updateFlow();
                 });
             });
         };
@@ -230,117 +230,11 @@ define([
                 $scope.get_data();
             }
             $scope.refresh = false;
-            $scope.$emit('render');
+            $scope.updateFlow();
         };
 
         $scope.populate_modal = function (request) {
             $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
-        };
-    });
-
-    module.directive('hitsChart', function (querySrv) {
-        return {
-            restrict: 'A',
-            link: function (scope, elem) {
-
-                // Receive render events
-                scope.$on('render', function () {
-                    render_panel();
-                });
-
-                // Re-render if the window is resized
-                angular.element(window).bind('resize', function () {
-                    render_panel();
-                });
-
-                // Function for rendering panel
-                function render_panel() {
-                    // IE doesn't work without this
-                    elem.css({height: scope.panel.height || scope.row.height});
-
-                    try {
-                        _.each(scope.data, function (series) {
-                            series.label = series.info.alias;
-                            series.color = series.info.color;
-                        });
-                    } catch (e) {
-                        return;
-                    }
-
-                    // Populate element
-                    try {
-                        // Add plot to scope so we can build out own legend
-                        if (scope.panel.chart === 'bar') {
-                            scope.plot = $.plot(elem, scope.data, {
-                                legend: {show: false},
-                                series: {
-                                    lines: {show: false,},
-                                    bars: {show: true, fill: 1, barWidth: 0.8, horizontal: false},
-                                    shadowSize: 1
-                                },
-                                yaxis: {show: true, min: 0, color: "#c8c8c8"},
-                                xaxis: {show: false},
-                                grid: {
-                                    borderWidth: 0,
-                                    borderColor: '#eee',
-                                    color: "#eee",
-                                    hoverable: true,
-                                },
-                                colors: querySrv.colors
-                            });
-                        }
-
-                        if (scope.panel.chart === 'pie') {
-                            scope.plot = $.plot(elem, scope.data, {
-                                legend: {show: false},
-                                series: {
-                                    pie: {
-                                        innerRadius: scope.panel.donut ? 0.4 : 0,
-                                        tilt: scope.panel.tilt ? 0.45 : 1,
-                                        radius: 1,
-                                        show: true,
-                                        combine: {
-                                            color: '#999',
-                                            label: 'The Rest'
-                                        },
-                                        stroke: {
-                                            width: 0
-                                        },
-                                        label: {
-                                            show: scope.panel.labels,
-                                            radius: 2 / 3,
-                                            formatter: function (label, series) {
-                                                return '<div ng-click="build_search(panel.query.field,\'' + label + '\')' +
-                                                    ' "style="font-size:8pt;text-align:center;padding:2px;color:white;">' +
-                                                    label + '<br/>' + Math.round(series.percent) + '%</div>';
-                                            },
-                                            threshold: 0.1
-                                        }
-                                    }
-                                },
-                                //grid: { hoverable: true, clickable: true },
-                                grid: {hoverable: true, clickable: true},
-                                colors: querySrv.colors
-                            });
-                        }
-                    } catch (e) {
-                        elem.text(e);
-                    }
-                }
-
-                var $tooltip = $('<div>');
-                elem.bind("plothover", function (event, pos, item) {
-                    if (item) {
-                        var value = scope.panel.chart === 'bar' ?
-                            item.datapoint[1] : item.datapoint[1][0][1];
-                        $tooltip
-                            .html(kbn.query_color_dot(item.series.color, 20) + ' ' + value.toFixed(0))
-                            .place_tt(pos.pageX, pos.pageY);
-                    } else {
-                        $tooltip.remove();
-                    }
-                });
-            }
         };
     });
 });

@@ -8,6 +8,7 @@ define([
     'jquery',
     'd3',
     'require',
+    'css!./module.css'
 ],
     function (angular, app, _, $, d3, localRequire) {
         'use strict';
@@ -16,6 +17,10 @@ define([
         app.useModule(module);
 
         module.controller('heatmap', function ($scope, dashboard, querySrv, filterSrv) {
+            
+            $scope.MIN_ROWS = 1;
+            $scope.MAX_ROWS = 100;
+
             $scope.panelMeta = {
                 modals: [
                     {
@@ -47,7 +52,6 @@ define([
                 row_field: '',
                 col_field: '',
                 row_size: 5,
-                editor_size: 0,
                 color:'gray',
                 spyable: true,
                 transpose_show: true,
@@ -60,8 +64,7 @@ define([
             $scope.requireContext = localRequire;
 
             $scope.init = function () {
-                $scope.panel.row_size = $scope.panel.editor_size;
-                $scope.generated_id = "tooltip_" + $scope.randomNumberRange(1,1000000);
+                $scope.generated_id = $scope.randomNumberRange(1, 1000000);
                 $scope.$on('refresh', function () {
                     $scope.get_data();
                 });
@@ -156,6 +159,7 @@ define([
                 $scope.hccol = [];
                 $scope.internal_sum = [];
                 $scope.domain = [Number.MAX_VALUE,0];
+                $scope.axis_labels = [$scope.panel.col_field, $scope.panel.row_field];
             };
 
             $scope.formatData = function(facets, flipped) {
@@ -170,6 +174,7 @@ define([
                     } else {
                         $scope.col_labels.push(d.value);
                         $scope.hccol.push($scope.col_labels.length);
+                        [$scope.axis_labels[0], $scope.axis_labels[1]] = [$scope.axis_labels[1], $scope.axis_labels[0]];
                     }
 
                     _.each(d.pivot, function(p) {
@@ -227,14 +232,10 @@ define([
             };
 
             $scope.close_edit = function () {
-                var valid = $scope.validateLimit();
-                if (valid && $scope.refresh) {
-                    $scope.panel.row_size = $scope.panel.editor_size;
+                if ($scope.refresh) {
                     $scope.get_data();
                     $scope.formatData($scope.facets, $scope.panel.transposed);
                     $scope.render();
-                } else if (!valid) {
-                    alert('invalid rows number');
                 }
                 $scope.refresh = false;
                 $scope.$emit('render');
@@ -248,21 +249,15 @@ define([
                 $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
             };
 
-            $scope.validateLimit = function() {
-                var el = $('#rows_limit');
-                var min = +el.attr('min');
-                var max = +el.attr('max');
-                var value = +el.attr('value');
-
-                var valid = value >= min && value <= max;
-
-                if(!valid) {
-                    el.attr('value', $scope.panel.row_size);
+            $scope.build_search = function(x, y) {
+                if (x && y) {
+                  filterSrv.set({type: 'terms', field: $scope.panel.row_field, value: x, mandate: 'must'});
+                  filterSrv.set({type: 'terms', field: $scope.panel.col_field, value: y, mandate: 'must'});
+                } else {
+                  return;
                 }
-
-                return valid;
-            };
-
+                dashboard.refresh();
+              };
         });
 
         module.directive('heatmapChart', function () {
@@ -281,25 +276,34 @@ define([
                     // Function for rendering panel
                     function render_panel() {
 
+                        var parent_width = element.parent().width(),
+                        row_height = parseInt(scope.row.height);
+
                         const TICK_LENGTH = 10;
-                        const LABEL_CLEARANCE = -10;
-                        const LEGEND_CLEARANCE = 30;
-                        const LEGEND_HEIGHT = 30;
-                        const LEGEND_SPACING = 20;
+                        const MARGIN = 15;
+                        const MAX_LABEL_LENGTH = 10;
 
-                        element.html('<div id="' + scope.generated_id +'" class="popup hidden"><p><span id="value"></p></div>');
-                        var el = element[0];
+                        const INTENSITY = 3;
 
+                        const LEGEND = {
+                            height: 20,
+                            width: parent_width / 2,
+                            margin: 10,
+                            text_margin: 10,
+                            text_height: 15
+                        };
+
+                        const labels = {
+                            top: 90,
+                            left: 120
+                        };
+                        
+                        element.html('<div id="_' + scope.generated_id + '" style="height: 100%"></div>');
+                        
                         var data = jQuery.extend(true, [], scope.data); // jshint ignore:line
-
-                        var labels_columns = [];
-                        var intensity_domain = d3.scale.linear().domain(scope.domain).range([0,10]);
-
-                        _.each(scope.internal_domain, function(d){
-                            var d_range = d3.scale.linear().domain(d).range([0,10]);
-                            labels_columns.push(d_range);
-                        });
-
+                        
+                        var intensity_domain = d3.scale.linear().domain(scope.domain).range([-INTENSITY, INTENSITY]);
+                        
                         data = _.map(data, function(d){
                             return{
                                 row: +d.row,
@@ -308,41 +312,16 @@ define([
                             };
                         });
 
-                        const margin = {
-                            top: 25,
-                            left: 25,
-                            bottom: 25,
-                            right: 25
-                        };
-
-                        const labels = {
-                            top: 60,
-                            left: 60
-                        };
-
-                        var parent_width = element.parent().width(),
-                            row_height = parseInt(scope.row.height);
-
-                        var width = parent_width - labels.left,
-                            height = row_height - labels.top,
-                            svg_width = parent_width - margin.left - margin.right,
-                            svg_height = row_height - margin.top - margin.bottom + 20,
-                            canvas_height = svg_height - labels.top - LEGEND_CLEARANCE - LEGEND_HEIGHT - TICK_LENGTH - 20,
+                        var svg_width = parent_width,
+                            svg_height = row_height,
+                            canvas_height = svg_height - labels.top - MARGIN - LEGEND.margin
+                                - LEGEND.height - LEGEND.text_margin - LEGEND.text_height,
                             canvas_width = svg_width - labels.left;
                         
                         var rowSortOrder = false,
                             colSortOrder = false;
 
-                        var brightrange = d3.scale.linear().domain([0,300]).range([0,3]),
-                            colr_domain = d3.range(11),
-                            otherRange  = d3.scale.linear().domain([0,10]).range([-255,255]); // we have 255 intensities for a color range
-
                         var cell_color = scope.panel.color;
-
-                        function color(shift) {
-                            if (shift >= 0) {return d3.hsl(cell_color).darker(brightrange(shift));}
-                            else {return d3.hsl(cell_color).brighter(brightrange(-shift));}
-                        }
 
                         var hcrow, hccol, rowLabel, colLabel;
                         // jshint ignore:start
@@ -357,21 +336,14 @@ define([
                             col_number = colLabel.length,
                             row_number = rowLabel.length;
 
-                        var colors = [];
-
-                        _.each(colr_domain, function(n){
-                            colors.push(color(otherRange(n)).toString());
-                        });
-
-                        var colorScale   = d3.scale.quantile().domain([0, 10]).range(colors);
+                        var colorScale = (shift) => { return d3.hsl(cell_color).darker(shift).toString(); };
 
                         var $tooltip = $('<div>');
 
-                        var svg = d3.select(el).append("svg")
-                            .attr("width", svg_width)
-                            .attr("height", svg_height)
-                            .append("g")
-                            .attr("transform", "translate(" + labels.left + ", " + labels.top + ")");
+                        var svg = d3.select("#_" + scope.generated_id).append("svg")
+                            .attr("width", "98%")
+                            .attr("height", "98%")
+                            .append("g");
 
                         // Row Labels
                         var rowLabels = svg.append("g") // jshint ignore:line
@@ -380,20 +352,20 @@ define([
                             .enter()
                             .append("text")
                             .text(function (d) {
-                                if(d.length > 8) {
-                                    return d.substring(0,8)+'..';
+                                if(d.length > MAX_LABEL_LENGTH) {
+                                    return d.substring(0, MAX_LABEL_LENGTH) + '...';
                                 } else {
                                     return d;
                                 }
                             })
                             .attr("x", 0)
                             .attr("y", function (d, i) {
-                                return hcrow.indexOf(i + 1) * cell_height;
+                                return labels.top + MARGIN + hcrow.indexOf(i + 1) * cell_height;
                             })
-                            .style("text-anchor", "end")
-                            .attr("transform", "translate(" + LABEL_CLEARANCE + ", " + cell_height / 1.5 + ")")
-                            .attr("class", function (d, i) {
-                                return "rowLabel_" + scope.generated_id + " r" + i + ";";
+                            .attr("transform", "translate(25, " + cell_height / 2 + ")")
+                            .attr("alignment-baseline", "middle")
+                            .attr("class", function () {
+                                return "rowLabel_" + scope.generated_id + " axis-label";
                             })
                             .on("mouseover", function (d) {
                                 d3.select(this).classed("text-hover", true);
@@ -413,20 +385,12 @@ define([
                                 sortbylabel("r", i, rowSortOrder);
                             });
 
-                        // Row ticks
-                        var rowTicks = svg.append("g") // jshint ignore:line
-                            .selectAll(".rowLabelg")
-                            .data(rowLabel)
-                            .enter()
-                            .append("line")
-                            .attr("x1", 0)
-                            .attr("y1", 0)
-                            .attr("x2", 0)
-                            .attr("y2", TICK_LENGTH)
-                            .attr("transform", (d, i) => {
-                                return "translate(5, " + (hcrow.indexOf(i + 1) * cell_height + cell_height / 2) + ") rotate (90)"
-                            })
-                            .attr("class", "tick");
+                        svg.append("text")
+                            .attr("x", 0)
+                            .attr("y", 0)
+                            .text(scope.axis_labels[1])
+                            .attr("transform", "translate(10, " + svg_height / 2 + ") rotate(-90)")
+                            .attr("class", "axis-label");                            
 
                         // Column labels
                         var colLabels = svg.append("g") // jshint ignore:line
@@ -435,20 +399,21 @@ define([
                             .enter()
                             .append("text")
                             .text(function (d) {
-                                if(d.length > 6) {
-                                    return d.substring(0,6)+'..';
+                                if(d.length > MAX_LABEL_LENGTH) {
+                                    return d.substring(0, MAX_LABEL_LENGTH) + '...';
                                 } else {
                                     return d;
                                 }
                             })
-                            .attr("x", 0)
+                            .attr("x", -labels.top)
                             .attr("y", function (d, i) {
-                                return hccol.indexOf(i + 1) * cell_width;
+                                return 100 + hccol.indexOf(i + 1) * cell_width;
                             })
-                            .style("text-anchor", "left")
-                            .attr("transform", "translate(" + cell_width / 2 + ", " + LABEL_CLEARANCE + ") rotate (-90)")
-                            .attr("class", function (d, i) {
-                                return "colLabel_" + scope.generated_id + " c" + i;
+                            .attr("text-anchor", "start")
+                            .attr("alignment-baseline", "middle")
+                            .attr("transform", "translate(" + cell_width / 2 + ", 0) rotate (-90)")
+                            .attr("class", function () {
+                                return "colLabel_" + scope.generated_id + " axis-label";
                             })
                             .on("mouseover", function (d) {
                                 d3.select(this).classed("text-hover", true);
@@ -469,23 +434,17 @@ define([
                                 sortbylabel("c", i, colSortOrder);
                             });
 
-                        // Column ticks
-                        var colTicks = svg.append("g") // jshint ignore:line
-                            .selectAll(".colLabelg")
-                            .data(colLabel)
-                            .enter()
-                            .append("line")
-                            .attr("x1", 0)
-                            .attr("y1", 0)
-                            .attr("x2", 0)
-                            .attr("y2", TICK_LENGTH)
-                            .attr("transform", (d, i) => {
-                                return "translate(" + (hccol.indexOf(i + 1) * cell_width + cell_width / 2) + ", -5)"
-                            })
-                            .attr("class", "tick");
+                        svg.append("text")
+                            .attr("x", 0)
+                            .attr("y", 0)
+                            .text(scope.axis_labels[0])
+                            .attr("transform", "translate(" + svg_width / 2 + ", 10)")
+                            .attr("class", "axis-label");
 
                         // Heatmap component
-                        var heatMap = svg.append("g") // jshint ignore:line
+                        var heatMap = svg.append("g"); // jshint ignore:line
+                        
+                        heatMap.attr("transform", "translate(100, " + (labels.top + MARGIN) + ")")
                             .selectAll(".cellg")
                             .data(data, function (d) {
                                 return d.row + ":" + d.col;
@@ -516,7 +475,7 @@ define([
                                     return ci === (d.col - 1);
                                 });
 
-                                $tooltip.html(rowLabel[d.row - 1] + "," + colLabel[d.col - 1] + " (" + scope.data[i].value + ")").place_tt(d3.event.pageX, d3.event.pageY);
+                                $tooltip.html(rowLabel[d.row - 1] + ", " + colLabel[d.col - 1] + " (" + scope.data[i].value + ")").place_tt(d3.event.pageX, d3.event.pageY);
                             })
                             .on("mouseout", function () {
                                 d3.select(this).classed("cell-hover", false);
@@ -524,85 +483,128 @@ define([
                                 d3.selectAll(".colLabel_" + scope.generated_id).classed("text-highlight", false);
 
                                 $tooltip.detach();
+                            })
+                            .on("click", (d) => {
+                                d3.select(this).classed("cell-hover", false);
+                                $tooltip.detach();
+                                scope.build_search(rowLabel[d.row - 1], colLabel[d.col - 1]);
                             });
 
-                        var gridv = svg.append("g")
+                        // Grid
+                        heatMap.append("g")
                             .selectAll(".gridgv")
                             .data(d3.range(hccol.length + 1))
                             .enter()
                             .append("line")
-                            .attr("x1", (d, i) => {
+                            .attr("x1", (d) => {
                                 return d * cell_width;
                             })
                             .attr("y1", 0)
-                            .attr("x2", (d, i) => {
+                            .attr("x2", (d) => {
                                 return d * cell_width;
                             })
                             .attr("y2", hcrow.length * cell_height)
                             .attr("class", "grid");
 
-                        var gridh = svg.append("g")
+                        heatMap.append("g")
                             .selectAll(".gridgh")
                             .data(d3.range(hcrow.length + 1))
                             .enter()
                             .append("line")
                             .attr("x1", 0)
-                            .attr("y1", (d, i) => {
+                            .attr("y1", (d) => {
                                 return d * cell_height;
                             })
                             .attr("x2", hccol.length * cell_width)
-                            .attr("y2", (d, i) => {
+                            .attr("y2", (d) => {
                                 return d * cell_height;
                             })
                             .attr("class", "grid");
 
+                        // Column ticks
+                        heatMap.append("g") // jshint ignore:line
+                            .selectAll(".colLabelg")
+                            .data(colLabel)
+                            .enter()
+                            .append("line")
+                            .attr("x1", 0)
+                            .attr("y1", 0)
+                            .attr("x2", 0)
+                            .attr("y2", TICK_LENGTH)
+                            .attr("transform", (d, i) => {
+                                return "translate(" + (hccol.indexOf(i + 1) * cell_width + cell_width / 2) + ", -5)";
+                            })
+                            .attr("class", "tick");
+
+                        // Row ticks
+                        heatMap.append("g") // jshint ignore:line
+                            .selectAll(".rowLabelg")
+                            .data(rowLabel)
+                            .enter()
+                            .append("line")
+                            .attr("x1", 0)
+                            .attr("y1", 0)
+                            .attr("x2", 0)
+                            .attr("y2", TICK_LENGTH)
+                            .attr("transform", (d, i) => {
+                                return "translate(5, " + (hcrow.indexOf(i + 1) * cell_height + cell_height / 2) + ") rotate (90)";
+                            })
+                            .attr("class", "tick");
+
                         // Legend
                         var linearGradient = svg.append("defs").append("linearGradient")
-                            .attr("id", "legendGradient");
+                            .attr("id", "legendGradient_" + scope.generated_id);
 
                         linearGradient.append("stop")
                            .attr("offset", "0%")
+                           .attr("stop-color", colorScale(-INTENSITY));
+
+                        linearGradient.append("stop")
+                           .attr("offset", "50%")
                            .attr("stop-color", colorScale(0));
 
                         linearGradient.append("stop")
                            .attr("offset", "100%")
-                           .attr("stop-color", colorScale(10));
+                           .attr("stop-color", colorScale(INTENSITY));
 
-                        var legend = svg.append("g")
-                            .append("rect")
-                            .attr("x", parseInt(canvas_width * 0.10))
-                            .attr("y", canvas_height + LEGEND_CLEARANCE)
-                            .attr("width", canvas_width * 0.80)
-                            .attr("height", 30)
-                            .attr("fill", "url('#legendGradient')");
+                        var legend = svg.append("svg");
+                        legend.attr("x", parseInt((svg_width - LEGEND.width) / 2))
+                            .attr("y", svg_height - LEGEND.margin - LEGEND.height - LEGEND.text_height).append("g"); 
+
+                        legend.append("rect")
+                            .attr("width", LEGEND.width)
+                            .attr("height", LEGEND.height)
+                            .attr("fill", "url('#legendGradient_" + scope.generated_id + "')");
                             
-                        var legendTicks = svg.append("g")
+                        legend.append("g")
                             .selectAll(".legendt")
                             .data(d3.range(11))
                             .enter()
                             .append("line")
-                            .attr("x1", (d, i) => {
-                                return parseInt(canvas_width * 0.10) + parseInt(d * (canvas_width * 0.80 / 10));
+                            .attr("x1", (d) => {
+                                return parseInt(d * LEGEND.width / 10);
                             })
-                            .attr("y1", parseInt(canvas_height + LEGEND_CLEARANCE + 30 - TICK_LENGTH))
-                            .attr("x2", (d, i) => {
-                                return parseInt(canvas_width * 0.10) + parseInt(d * (canvas_width * 0.80 / 10));
+                            .attr("y1", LEGEND.height - TICK_LENGTH)
+                            .attr("x2", (d) => {
+                                return parseInt(d * LEGEND.width / 10);
                             })
-                            .attr("y2", parseInt(canvas_height + LEGEND_CLEARANCE + 30))
+                            .attr("y2", LEGEND.height)
                             .attr("class", "tick");
 
-                        var legendLabels = svg.append("g")
+                        legend.append("g")
                             .selectAll(".legendl")
                             .data(d3.range(11))
                             .enter()
                             .append("text")
-                            .attr("x", (d, i) => {
-                                return parseInt(canvas_width * 0.10) + parseInt(d * (canvas_width * 0.80 / 10));
+                            .attr("x", (d) => {
+                                return parseInt(d * LEGEND.width / 10);
                             })
-                            .attr("y", parseInt(canvas_height + LEGEND_CLEARANCE + 30 + 25))
+                            .attr("y", parseInt(LEGEND.height + 15))
                             .text((d) => {
-                                return Math.round((scope.domain[0] + (scope.domain[1] - scope.domain[0]) / 10 * d) * 100) / 100;
-                            });
+                                return Math.round(scope.domain[0] + (scope.domain[1] - scope.domain[0]) / 10 * d);
+                            })
+                            .attr("text-anchor", "middle")
+                            .attr("class", "axis-label");
 
                         // Function to sort the cells with respect to selected row or column
                         function sortbylabel(rORc, i, sortOrder) {
@@ -610,7 +612,7 @@ define([
                             var t = svg.transition().duration(1200);
 
                             var values = []; // holds the values in this specific row
-                            for(var j = 0; j < col_number; j++) { values.push(0); }
+                            for(var j = 0; j < col_number; j++) { values.push(-Infinity); }
 
                             var sorted; // sorted is zero-based index
                             d3.selectAll(".c" + rORc + i + "_" + scope.generated_id)
@@ -642,7 +644,7 @@ define([
                                 });
                                 t.selectAll(".colLabel_" + scope.generated_id)
                                 .attr("y", function (d, i) {
-                                    return sorted.indexOf(i) * cell_width;
+                                    return 100 + sorted.indexOf(i) * cell_width;
                                 });
                             } else { // sorting by columns
                                 sorted = d3.range(row_number).sort(function (a, b) {
@@ -662,7 +664,7 @@ define([
                                 });
                                 t.selectAll(".rowLabel_" + scope.generated_id)
                                 .attr("y", function (d, i) {
-                                    return sorted.indexOf(i) * cell_height;
+                                    return labels.top + MARGIN + sorted.indexOf(i) * cell_height;
                                 });
                             }
                         }
