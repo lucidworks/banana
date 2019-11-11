@@ -19,14 +19,22 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.24
+## Banana 1.6.26
 
 This release includes the following bug fixes and improvement:
-1. Fix the filter panel where we cannot add more than one filer when clicking on the plus icon.
-1. Fix the Sankey panel. [#338](https://github.com/lucidworks/banana/pull/338)
-1. Allow the Terms panel to have a horizontal bar chart. [#338](https://github.com/lucidworks/banana/pull/338)
-1. Add Sankey hover/highlight effect. [#340](https://github.com/lucidworks/banana/pull/340)
-1. Force diagram numerical node names fix. [#340](https://github.com/lucidworks/banana/pull/340)
+
+1. Enhance heatmap
+    * Add axis and axis labels
+    * Add axis grid and ticks
+    * Add gradient legend and ranges
+    * Fix heatmap transpose icon
+    * Enhance positioning and padding of panel elements
+    * Fix bettermap tooltip and hint text
+1. Enhance hits panel
+    * Add panel horizontal and vertical direction option
+    * Fix metrics text and label overlap and margins
+1. Fix bettermap render issue when resized
+1. Fix jshint warnings
 
 ## Older Release Notes
 

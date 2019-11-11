@@ -385,33 +385,6 @@ define([
                 return d3.rgb(color(d.category)).darker(1.5);
               });
 
-            var node = container.append("g")
-              .attr("class", "nodes")
-              .selectAll("circle")
-              .data(scope.data.nodes)
-              .enter()
-              .append("circle")
-              .attr("r", nodeSize)
-              .attr("stroke-width", 1.5)
-              .attr("stroke", "#f1f1f1")
-              .attr("fill", function (d) {
-                return scope.panel.spheres ? "url(#gradient-" + d.category + ")" : color(d.category);
-              })
-              .call(
-                d3.drag()
-                  .on("start", dragstarted)
-                  .on("drag", dragged)
-                  .on("end", dragended)
-              );
-
-            node.on("mouseover", dofocus).on("mouseout", unfocus);
-
-            node.on("click", function (d) {
-              scope.selList["n" + d.node] = scope.selList["n" + d.node] !== true;
-              scope.selListCopy["n" + d.node] = scope.selList["n" + d.node];
-              label.attr("display", labelDisplay).attr("opacity", labelOpacity);
-            });
-
             function dragstarted(d) {
               d3.event.sourceEvent.stopPropagation();
               if (!d3.event.active) {
@@ -434,24 +407,24 @@ define([
               d.fy = null;
             }
 
-            var labelDisplay = function (d) {
-              return (scope.selList["n" + d.node] || !!scope.hoverList["n" + d.node]) ? "block" : "none";
-            };
-            var labelOpacity = function (d) {
-              return (!scope.selList["n" + d.node] && !!scope.hoverList["n" + d.node]) ? 0.5 : 1;
-            };
-
-            var label = container.append("g")
-              .attr("class", "labels")
-              .selectAll("text")
+            var node = container.append("g")
+              .attr("class", "nodes")
+              .selectAll("circle")
               .data(scope.data.nodes)
               .enter()
-              .append("text")
-              .text(function (d) {
-                return d.name;
+              .append("circle")
+              .attr("r", nodeSize)
+              .attr("stroke-width", 1.5)
+              .attr("stroke", "#f1f1f1")
+              .attr("fill", function (d) {
+                return scope.panel.spheres ? "url(#gradient-" + d.category + ")" : color(d.category);
               })
-              .attr("display", labelDisplay).attr("opacity", labelOpacity)
-              .style("pointer-events", "none");
+              .call(
+                d3.drag()
+                  .on("start", dragstarted)
+                  .on("drag", dragged)
+                  .on("end", dragended)
+              );
 
             function dofocus() {
               var index = d3.select(d3.event.target).datum().index;
@@ -472,6 +445,33 @@ define([
               scope.hoverList["n" + index] = false;
               label.attr("display", labelDisplay).attr("opacity", labelOpacity);
             }
+
+            node.on("mouseover", dofocus).on("mouseout", unfocus);
+
+            node.on("click", function (d) {
+              scope.selList["n" + d.node] = scope.selList["n" + d.node] !== true;
+              scope.selListCopy["n" + d.node] = scope.selList["n" + d.node];
+              label.attr("display", labelDisplay).attr("opacity", labelOpacity);
+            });
+
+            var labelDisplay = function (d) {
+              return (scope.selList["n" + d.node] || !!scope.hoverList["n" + d.node]) ? "block" : "none";
+            };
+            var labelOpacity = function (d) {
+              return (!scope.selList["n" + d.node] && !!scope.hoverList["n" + d.node]) ? 0.5 : 1;
+            };
+
+            var label = container.append("g")
+              .attr("class", "labels")
+              .selectAll("text")
+              .data(scope.data.nodes)
+              .enter()
+              .append("text")
+              .text(function (d) {
+                return d.name;
+              })
+              .attr("display", labelDisplay).attr("opacity", labelOpacity)
+              .style("pointer-events", "none");
 
             simulation.on("tick", function () {
               node
