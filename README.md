@@ -17,11 +17,22 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.25
+## Banana 1.6.26
 
 This release includes the following bug fixes and improvement:
-1. Remove the double URI encoding issue in Filter service. [#343](https://github.com/lucidworks/banana/pull/343)
-1. Fix rounding issue in the relative mode of the Timepicker panel. [#346](https://github.com/lucidworks/banana/pull/346)
+
+1. Enhance heatmap
+    * Add axis and axis labels
+    * Add axis grid and ticks
+    * Add gradient legend and ranges
+    * Fix heatmap transpose icon
+    * Enhance positioning and padding of panel elements
+    * Fix bettermap tooltip and hint text
+1. Enhance hits panel
+    * Add panel horizontal and vertical direction option
+    * Fix metrics text and label overlap and margins
+1. Fix bettermap render issue when resized
+1. Fix jshint warnings
 
 ## Older Release Notes
 
