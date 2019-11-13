@@ -19,22 +19,19 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.26
+## Banana 1.7.0
 
 This release includes the following bug fixes and improvement:
 
-1. Enhance heatmap
-    * Add axis and axis labels
-    * Add axis grid and ticks
-    * Add gradient legend and ranges
-    * Fix heatmap transpose icon
-    * Enhance positioning and padding of panel elements
-    * Fix bettermap tooltip and hint text
-1. Enhance hits panel
-    * Add panel horizontal and vertical direction option
-    * Fix metrics text and label overlap and margins
-1. Fix bettermap render issue when resized
-1. Fix jshint warnings
+1. Allow users to change URL setting of banana-int collection.
+1. Fixed bug when loading saved dashboards from a remote Solr server.
+1. Added new panels:
+    * Significant Terms panel
+    * Time Series panel
+    * Graph panel
+1. Added support for Travis CI
+1. Using collections API instead of cores API to populate collections list
+
 
 ## Older Release Notes
 
