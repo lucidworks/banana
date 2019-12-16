@@ -112,9 +112,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
                     case ('file'):
                         self.file_load(_id);
                         break;
-                    case('script'):
-                        self.script_load(_id);
-                        break;
                     default:
                         self.file_load('default.json');
                 }
@@ -321,29 +318,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
                 return true;
             }, function () {
                 alertSrv.set('Error', "Could not load <i>dashboards/" + file + "</i>. Please make sure it exists", 'error');
-                return false;
-            });
-        };
-
-        this.script_load = function (file) {
-            return $http({
-                url: "app/dashboards/" + file,
-                method: "GET",
-                transformResponse: function (response) {
-                    /*jshint -W054 */
-                    var _f = new Function('ARGS', 'kbn', '_', 'moment', 'window', 'document', 'angular', 'require', 'define', '$', 'jQuery', response);
-                    return _f($routeParams, kbn, _, moment);
-                }
-            }).then(function (result) {
-                if (!result) {
-                    return false;
-                }
-                self.dash_load(dash_defaults(result.data));
-                return true;
-            }, function () {
-                alertSrv.set('Error',
-                    "Could not load <i>scripts/" + file + "</i>. Please make sure it exists and returns a valid dashboard",
-                    'error');
                 return false;
             });
         };
