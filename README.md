@@ -23,15 +23,15 @@ is in the configuration.
 
 This release includes the following bug fixes and improvement:
 
-1. Allow users to change URL setting of banana-int collection.
-1. Fixed bug when loading saved dashboards from a remote Solr server.
 1. Added new panels:
     * Significant Terms panel
     * Time Series panel
     * Graph panel
-1. Added support for Travis CI
+1. Adding multi-query operator with a default OR operator
+1. Added Travis CI integration
 1. Using collections API instead of cores API to populate collections list
-
+1. Allow users to change URL setting of banana-int collection
+1. Fixed bug when loading saved dashboards from a remote Solr server
 
 ## Older Release Notes
 
