@@ -79,7 +79,7 @@
                     </li>
                 </ul>
                 <!-- Saved dashboard list -->
-                <table class="table table-condensed table-striped">                      
+                <table class="table table-condensed table-striped">
                     <tr ng-repeat="row in elasticsearch.dashboards | orderBy:['id'] | limitTo:dashboard.current.loader.load_elasticsearch_size">
                       <td class="span11" style="vertical-align: middle;"><a href="#/dashboard/solr/{{row.id}}?server={{ getBananaServer(row.server) }}">{{row.id}}</a></td>
                         <td class="span1" ng-show="dashboard.current.loader.save_elasticsearch">
