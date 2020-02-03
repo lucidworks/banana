@@ -29,9 +29,9 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.23a
+## Banana 1.6.24
 
-This release includes the security fixes for Fusion 4.2.
+This release includes the security fixes for Fusion 4.2
 
 ## Older Release Notes
 
