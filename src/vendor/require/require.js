@@ -2016,7 +2016,10 @@ var requirejs, require, define;
      */
     req.exec = function(text) {
         /*jslint evil: true */
-        return eval(text);
+        // Comment out the following line to fix the security vulnerability.
+        // It seems Banana does not use this function.
+        // return eval(text);
+      return text;
     };
 
     //Set up with config info.

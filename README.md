@@ -29,15 +29,9 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.23
+## Banana 1.6.24
 
-This release includes minor fixes for the default dashboards in Fusion 4.2:
-* Change to use `query` field instead of `query_s` field in the Metrics dashboard (`lucidworks-metrics.json`).
-* For the Signals dashboard (`lucidworks-signals.json`):
-  * Change from `query_s` to `query` field.
-  * Change from `type_s` to `type` field.
-  * Change from `doc_id_s` to `doc_ids_s` field.
-  * Remove `count_i` and `weight_d` fields.
+This release includes the security fixes for Fusion 4.2
 
 ## Older Release Notes
 
