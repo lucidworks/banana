@@ -57,7 +57,7 @@ define([
       var foundDup = _.find(self.list, function(f) {
         if (f.editing === filter.editing &&
             f.type === filter.type &&
-            f.query === filter.query &&
+            (f.query === filter.query || f.query === encodeURIComponent(filter.query)) &&
             f.field === filter.field &&
             f.value === filter.value) {
           // This filter is a duplicate.
