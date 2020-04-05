@@ -328,15 +328,32 @@ function (angular, app, _, $, kbn) {
     };
 
     $scope.build_search = function(term,negate) {
-      if(_.isUndefined(term.meta)) {
-        filterSrv.set({type:'terms',field:$scope.panel.field,value:term.label,
-          mandate:(negate ? 'mustNot':'must')});
-      } else if(term.meta === 'missing') {
-        filterSrv.set({type:'exists',field:$scope.panel.field,
-          mandate:(negate ? 'must':'mustNot')});
+      // Check for custom queries
+      if ($scope.panel.queries.custom) {
+        filterSrv.set({
+          type: 'querystring',
+          query: parseCustomQueriesToString($scope.panel.queries.custom),
+          mandate: (negate ? 'mustNot':'must')
+        });
+      }
+
+      if (_.isUndefined(term.meta)) {
+        filterSrv.set({
+          type: 'terms',
+          field: $scope.panel.field,
+          value: term.label,
+          mandate: (negate ? 'mustNot':'must')
+        });
+      } else if (term.meta === 'missing') {
+        filterSrv.set({
+          type: 'exists',
+          field: $scope.panel.field,
+          mandate: (negate ? 'must':'mustNot')
+        });
       } else {
         return;
       }
+
       dashboard.refresh();
     };
 
@@ -379,6 +396,23 @@ function (angular, app, _, $, kbn) {
       return ($scope.panel.chart === 'bar' && $scope.panel.bar_chart_arrangement === 'horizontal') ? data[0][0] : data[0][1];
     };
 
+    /**
+     * Parse the custom query into a proper query string to be used in a filter.
+     * For example, if we have this custom query, "&fq=cat:electronics&fq=inStock:true",
+     * then it will be parsed into this query string, "cat:electronics AND inStock:true".
+     *
+     * @param query - The custom query string.
+     * @return {string} - The query string that can be used in a filter.
+     */
+    function parseCustomQueriesToString(query) {
+      if (!query) { return ''; }
+
+      return query
+        .split('&')
+        .filter(q => q && q.startsWith('fq='))
+        .map(q => q.slice(3))
+        .join(' AND ');
+    }
   });
 
   module.directive('termsChart', function(querySrv,dashboard,filterSrv) {
