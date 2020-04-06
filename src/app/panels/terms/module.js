@@ -409,8 +409,12 @@ function (angular, app, _, $, kbn) {
 
       return query
         .split('&')
-        .filter(q => q && q.startsWith('fq='))
-        .map(q => q.slice(3))
+        .filter(function(q) {
+          return q && q.startsWith('fq=');
+        })
+        .map(function(q) {
+          return q.slice(3);
+        })
         .join(' AND ');
     }
   });
