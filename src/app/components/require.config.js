@@ -24,6 +24,7 @@ require.config({
 
     underscore:               'components/underscore.extended',
     'underscore-src':         '../vendor/underscore',
+    'underscore.string':         '../vendor/underscore.string.min',
     bootstrap:                '../vendor/bootstrap/bootstrap',
 
     jquery:                   '../vendor/jquery/jquery-1.12.1',

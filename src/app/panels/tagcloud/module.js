@@ -11,13 +11,14 @@ define([
     'angular',
     'app',
     'underscore',
+    'underscore.string',
     'jquery',
     'kbn',
     'd3',
     './stopWords',
     './d3.layout.cloud'
   ],
-  function(angular, app, _, $, kbn, d3, stopwords) {
+  function(angular, app, _, uString, $, kbn, d3, stopwords) {
     'use strict';
 
     var module = angular.module('kibana.panels.tagcloud', []);
@@ -52,6 +53,8 @@ define([
         alignment: 'vertical and horizontal',
         fontScale: 1,
         ignoreStopWords: false,
+        customStopWords: "",
+        customStopWordsLowercase: true,
         spyable: true,
         show_queries: true,
         error: '',
@@ -104,6 +107,10 @@ define([
 
         results = request.doSearch();
 
+        var finalStopWords = _.uniq(_.union(stopwords.stopwords.slice(), $scope.panel.customStopWords.split(",").map(function(word) {
+          return $scope.panel.customStopWordsLowercase ? uString.trim(word).toLowerCase() : uString.trim(word);
+        })));
+
         // Populate scope when we have results
         results.then(function(results) {
           // Check for error and abort if found
@@ -120,7 +127,6 @@ define([
           $scope.data = [];
           $scope.maxRatio = 0;
 
-
           $scope.yaxis_min = 0;
           _.each(results.facet_counts.facet_fields, function(v) {
             for (var i = 0; i < v.length; i++) {
@@ -130,7 +136,7 @@ define([
               sum += count;
 
               // if ignoreStopWords is enabled, skip this term.
-              if ($scope.panel.ignoreStopWords && stopwords.indexOf(term.toLowerCase()) > -1) {
+              if ($scope.panel.ignoreStopWords && finalStopWords.indexOf(term.toLowerCase()) > -1) {
                 continue;
               }
 
