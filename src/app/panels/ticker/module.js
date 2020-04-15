@@ -11,9 +11,10 @@ define([
     'angular',
     'app',
     'underscore',
-    'kbn'
+    'kbn',
+    'moment'
   ],
-  function(angular, app, _, kbn) {
+  function(angular, app, _, kbn, moment) {
     'use strict';
 
     var module = angular.module('kibana.panels.ticker', []);
@@ -39,6 +40,12 @@ define([
           " since 12:00-12:10pm"
       };
 
+      // Constants for selecting trend interval
+      var DAY_TO_DAY = 'Day to Day';
+      var WEEK_TO_WEEK = 'Week to Week';
+      var MONTH_TO_MONTH = 'Month to Month';
+      var YEAR_TO_YEAR = 'Year to Year';
+
       // Set and populate defaults
       var _d = {
         queries: {
@@ -49,6 +56,9 @@ define([
           "font-size": '14pt'
         },
         ago: '1d',
+        ignore_time_picker: false,
+        trend_interval: DAY_TO_DAY,
+        trend_interval_options: [DAY_TO_DAY, WEEK_TO_WEEK, MONTH_TO_MONTH, YEAR_TO_YEAR],
         arrangement: 'vertical',
         spyable: true,
         show_queries: true,
@@ -92,6 +102,9 @@ define([
         }
 
         $scope.time = filterSrv.timeRange('min');
+        // TODO
+        // if $scope.panel.ignore_time_picker
+        //
         $scope.old_time = {
           from: new Date($scope.time.from.getTime() - kbn.interval_to_ms($scope.panel.ago)),
           to: new Date($scope.time.to.getTime() - kbn.interval_to_ms($scope.panel.ago))
