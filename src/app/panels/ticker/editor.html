@@ -20,7 +20,8 @@
 
   <div class="row-fluid">
     <div class="span3">
-      <label class="small"></label>
+      <label class="small">Select the Ignore Time Picker checkbox if you want to display the trend data as Day-to-Day,
+        Week-to-Week, Month-to-Month, or Year-to-Year.</label>
     </div>
     <div class="span3">
       <label class="small">Ignore Time Picker
@@ -30,7 +31,8 @@
     </div>
     <div class="span4" ng-show="panel.ignore_time_picker">
       <label class="small">Show Trend Value For</label>
-      <select class="input-medium" ng-model="panel.trend_interval" ng-options="f for f in panel.trend_interval_options"></select>
+      <select class="input-medium" ng-model="panel.trend_interval" ng-options="f for f in panel.trend_interval_options"
+              ng-change="set_refresh(true)"></select>
     </div>
   </div>
 </div>
