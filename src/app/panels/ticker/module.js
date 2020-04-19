@@ -20,7 +20,7 @@ define([
     var module = angular.module('kibana.panels.ticker', []);
     app.useModule(module);
 
-    module.controller('ticker', function($scope,$q, kbnIndex, querySrv, dashboard, filterSrv) {
+    module.controller('ticker', function($scope, $q, kbnIndex, querySrv, dashboard, filterSrv) {
 
       $scope.panelMeta = {
         modals: [{
@@ -56,7 +56,7 @@ define([
           "font-size": '14pt'
         },
         ago: '1d',
-        ignore_time_picker: false,
+        ignore_time_picker: false, // If true, ignore the time picker and display data based on the selected trend_interval instead.
         trend_interval: DAY_TO_DAY,
         trend_interval_options: [DAY_TO_DAY, WEEK_TO_WEEK, MONTH_TO_MONTH, YEAR_TO_YEAR],
         arrangement: 'vertical',
@@ -102,9 +102,19 @@ define([
         }
 
         $scope.time = filterSrv.timeRange('min');
-        // TODO
-        // if $scope.panel.ignore_time_picker
-        //
+
+        // If ignore_time_picker is enabled, we'll process the data differently and skip the rest of this code block.
+        if ($scope.panel.ignore_time_picker) {
+          getTrendData($scope.panel.trend_interval).then(function(trendData) {
+            plotTrendData(trendData);
+            $scope.panelMeta.loading = false;
+          }, function(error) {
+            console.error('Error getting trend data.', error);
+          });
+
+          return;
+        }
+
         $scope.old_time = {
           from: new Date($scope.time.from.getTime() - kbn.interval_to_ms($scope.panel.ago)),
           to: new Date($scope.time.to.getTime() - kbn.interval_to_ms($scope.panel.ago))
@@ -129,7 +139,6 @@ define([
           ).size(0);
         });
 
-
         // And again for the old time period
         _.each($scope.panel.queries.ids, function(id) {
           var q = $scope.sjs.FilteredQuery(
@@ -144,6 +153,7 @@ define([
               .query(q)
           ).size(0);
         });
+
         // Populate the inspector panel
         $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
 
@@ -202,23 +212,6 @@ define([
           $scope.panel.queries.query += "-----------\n" ;
         });
 
-        // var first_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_first_range;
-        // var second_request = querySrv.getQuery(0) + wt_json + rows_limit + fq + facet_second_range;
-        // $scope.panel.queries.query = first_request + "\n\n" + second_request;
-
-        // request = request.setQuery(first_request);
-        // var results_new = request.doSearch();
-
-        // results_new.then(function(results_new) {
-        //   // Second Query
-        //   request = request.setQuery(second_request);
-        //   var results_old = request.doSearch();
-
-        //   results_old.then(function(results_old) {
-        //     processSolrResults(results_new, results_old);
-        //     $scope.$emit('render');
-        //   });
-        // });
         $scope.data = [];
         if (dashboard.current.services.query.ids.length >= 1) {
           $q.all(mypromises).then(function(results) {
@@ -232,9 +225,7 @@ define([
             });
           });
         }
-
       };
-
 
       function processSolrResults(results_new, results_old, id,i) {
         $scope.panelMeta.loading = false;
@@ -272,6 +263,90 @@ define([
         $scope.trends = $scope.data;
       }
 
+      function getTrendData(interval) {
+        if (!interval) return;
+
+        var startDate, gap;
+        switch (interval) {
+          case DAY_TO_DAY:
+            startDate = moment().subtract(1, 'days').startOf('day'); // Yesterday midnight
+            gap = encodeURIComponent('+1DAY');
+            break;
+          case WEEK_TO_WEEK:
+            startDate = moment().weekday(-7).startOf('day');
+            gap = encodeURIComponent('+7DAYS');
+            break;
+          case MONTH_TO_MONTH:
+            startDate = moment().month(moment().month() - 1).startOf('month');
+            gap = encodeURIComponent('+1MONTH');
+            break;
+          case YEAR_TO_YEAR:
+            startDate = moment().year(moment().year() -1).startOf('year');
+            gap = encodeURIComponent('+1YEAR');
+            break;
+          default:
+            // DAY_TO_DAY
+            startDate = moment().subtract(1, 'days').startOf('day'); // Yesterday midnight
+            gap = encodeURIComponent('+1DAY');
+        }
+
+        console.log('startData =', startDate, ' gap =', gap);
+
+        // Compose Solr query
+        var request = $scope.sjs.Request().indices(dashboard.indices);
+
+        // var q = $scope.sjs.FilteredQuery(
+        //   querySrv.getEjsObj(id),
+        //   filterSrv.getBoolFilter(_ids_without_time).must(
+        //     $scope.sjs.RangeFilter(timeField)
+        //     .from($scope.time.from)
+        //     .to($scope.time.to)
+        //   ));
+        //
+        // request = request
+        // .facet($scope.sjs.QueryFacet(id)
+        //   .query(q)
+        // ).size(0);
+
+        // Populate the inspector panel
+        console.log('request =', request);
+        $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
+
+        // Build SOLR query
+        var fq = '';
+        if (filterSrv.getSolrFq(true)) {
+          fq = '&' + filterSrv.getSolrFq(true);
+        }
+        var time_field = filterSrv.getTimeField();
+        var wt_json = '&wt=json';
+        var rows_limit = '&rows=0'; // for trends, we do not need the actual response doc, so set rows=0
+        var facet_range = '&facet=true' +
+          '&facet.range=' + time_field +
+          '&facet.range.start=' + startDate.toISOString() +
+          '&facet.range.end=' + new Date().toISOString() +
+          '&facet.range.gap=' + gap +
+          '&facet.range.hardend=false';
+
+        console.log('$scope.panel.queries.ids =', $scope.panel.queries.ids);
+        console.log('querySrv.getQuery(0) =', querySrv.getQuery(0));
+        var id = 0;
+        var solrQuery = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet_range;
+
+        if ($scope.panel.queries.custom != null) {
+          request = request.setQuery(solrQuery + $scope.panel.queries.custom);
+        } else {
+          request = request.setQuery(solrQuery);
+        }
+        $scope.panel.queries.query = solrQuery;
+        return request.doSearch();
+      }
+
+      function plotTrendData(data) {
+        console.log('data =', data);
+        //$scope.data = [];
+
+      }
+
       function diffDays(date1, date2) {
         // calculate the number of days between two dates
         var oneDay = 24 * 60 * 60 * 1000;
@@ -293,6 +368,5 @@ define([
         $scope.refresh = false;
         $scope.$emit('render');
       };
-
     });
   });
