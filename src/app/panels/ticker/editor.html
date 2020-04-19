@@ -29,10 +29,17 @@
       </label>
       <input type="checkbox" ng-model="panel.ignore_time_picker" ng-checked="panel.ignore_time_picker" ng-change="set_refresh(true)">
     </div>
-    <div class="span4" ng-show="panel.ignore_time_picker">
+    <div class="span3" ng-show="panel.ignore_time_picker">
       <label class="small">Show Trend Value For</label>
       <select class="input-medium" ng-model="panel.trend_interval" ng-options="f for f in panel.trend_interval_options"
               ng-change="set_refresh(true)"></select>
+    </div>
+    <div class="span3" ng-show="panel.ignore_time_picker">
+      <label class="small">Comparing</label>
+      <div ng-show="isDayToDay(panel.trend_interval)">Yesterday to today</div>
+      <div ng-show="isWeekToWeek(panel.trend_interval)">Last week to this week</div>
+      <div ng-show="isMonthToMonth(panel.trend_interval)">Last month to this month</div>
+      <div ng-show="isYearToYear(panel.trend_interval)">Last year to this year</div>
     </div>
   </div>
 </div>

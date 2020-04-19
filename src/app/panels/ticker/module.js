@@ -290,26 +290,10 @@ define([
             gap = encodeURIComponent('+1DAY');
         }
 
-        console.log('startData =', startDate, ' gap =', gap);
-
         // Compose Solr query
         var request = $scope.sjs.Request().indices(dashboard.indices);
 
-        // var q = $scope.sjs.FilteredQuery(
-        //   querySrv.getEjsObj(id),
-        //   filterSrv.getBoolFilter(_ids_without_time).must(
-        //     $scope.sjs.RangeFilter(timeField)
-        //     .from($scope.time.from)
-        //     .to($scope.time.to)
-        //   ));
-        //
-        // request = request
-        // .facet($scope.sjs.QueryFacet(id)
-        //   .query(q)
-        // ).size(0);
-
         // Populate the inspector panel
-        console.log('request =', request);
         $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
 
         // Build SOLR query
@@ -326,10 +310,7 @@ define([
           '&facet.range.end=' + new Date().toISOString() +
           '&facet.range.gap=' + gap +
           '&facet.range.hardend=false';
-
-        console.log('$scope.panel.queries.ids =', $scope.panel.queries.ids);
-        console.log('querySrv.getQuery(0) =', querySrv.getQuery(0));
-        var id = 0;
+        var id = 0; // This only works for the first query, if there are multiple queries in the dashboard.
         var solrQuery = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet_range;
 
         if ($scope.panel.queries.custom != null) {
@@ -337,14 +318,33 @@ define([
         } else {
           request = request.setQuery(solrQuery);
         }
+
         $scope.panel.queries.query = solrQuery;
         return request.doSearch();
       }
 
-      function plotTrendData(data) {
-        console.log('data =', data);
-        //$scope.data = [];
+      function plotTrendData(solrResp) {
+        var counts = solrResp.facet_counts.facet_ranges[filterSrv.getTimeField()].counts;
 
+        if (!counts || counts.length < 4) {
+          console.error('Cannot plot the trend data: Wrong data format.');
+          return;
+        }
+
+        var oldHits = counts[1]; // counts[0] is the start datetime of the first range
+        var newHits = counts[3]; // counts[2] is the start datetime of the second range
+        var percent = oldHits === 0 ?
+          newHits * 100 : Math.round((newHits - oldHits) / oldHits * 100);
+        $scope.trends = [
+          {
+            info: querySrv.list[0],
+            hits: {
+              old: oldHits,
+              new: newHits
+            },
+            percent: percent
+          }
+        ];
       }
 
       function diffDays(date1, date2) {
@@ -367,6 +367,22 @@ define([
         }
         $scope.refresh = false;
         $scope.$emit('render');
+      };
+
+      $scope.isDayToDay = function(interval) {
+        return interval === DAY_TO_DAY;
+      };
+
+      $scope.isWeekToWeek = function(interval) {
+        return interval === WEEK_TO_WEEK;
+      };
+
+      $scope.isMonthToMonth = function(interval) {
+        return interval === MONTH_TO_MONTH;
+      };
+
+      $scope.isYearToYear = function(interval) {
+        return interval === YEAR_TO_YEAR;
       };
     });
   });
