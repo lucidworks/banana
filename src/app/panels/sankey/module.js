@@ -5,12 +5,13 @@ define([
     'angular',
     'app',
     'underscore',
+    'underscore.string',
     'jquery',
     'kbn',
     'd3',
     'd3-sankey'
   ],
-  function (angular, app, _, $, kbn, d3, d3sankey) {
+  function (angular, app, _, uString, $, kbn, d3, d3sankey) {
     'use strict';
 
     var module = angular.module('kibana.panels.sankey', []);
@@ -41,12 +42,14 @@ define([
           custom: ''
         },
         facet_limit: 1000, // maximum number of rows returned from Solr
+        node_limit: 1000,
+        label_limit: 50,
         spyable: true,
         show_queries: true,
       };
 
       _.defaults($scope.panel, _d);
-      var DEBUG = false;
+      var DEBUG = true;
 
       $scope.init = function () {
         $scope.$on('refresh', function () {
@@ -60,6 +63,7 @@ define([
         var nodes = {};
         var links = [];
         var count = 0;
+        var nodeLimit = parseInt($scope.panel.node_limit || "1000", 10);
 
         var addNode = function(key, fcount, category) {
           var k = category + "-" + key;
@@ -78,8 +82,14 @@ define([
           return id;
         };
 
+        var cnt = 0;
+
         var processNodes = function(parent, parentCount, data, category) {
           for (var ob in data) {
+            if (cnt === nodeLimit) {
+              $scope.panel.moreNodes = true;
+              break;
+            }
             var id1 = addNode(data[ob].value, data[ob].count, category + 1);
 
             if (parent !== null) {
@@ -91,10 +101,12 @@ define([
               });
             }
 
+            cnt += 1;
             processNodes(id1, data[ob].count, data[ob].pivot, category + 1);
           }
         };
 
+        $scope.panel.moreNodes = false;
         processNodes(null, 0, data, 0);
 
         return {
@@ -276,7 +288,7 @@ define([
             }).attr("dy", "0.35em").attr("text-anchor", function (d) {
               return d.x0 < width / 2 ? "start" : "end";
             }).text(function (d) {
-              return d.name;
+              return !!scope.panel.label_limit ? uString.prune(d.name, scope.panel.label_limit, "...") : d.name;
             });
 
             var link = svg.append("g")
