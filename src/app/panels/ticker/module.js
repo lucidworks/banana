@@ -269,24 +269,24 @@ define([
         var startDate, gap;
         switch (interval) {
           case DAY_TO_DAY:
-            startDate = moment().subtract(1, 'days').startOf('day'); // Yesterday midnight
+            startDate = moment().subtract(2, 'days');
             gap = encodeURIComponent('+1DAY');
             break;
           case WEEK_TO_WEEK:
-            startDate = moment().weekday(-7).startOf('day');
+            startDate = moment().subtract(2, 'weeks');
             gap = encodeURIComponent('+7DAYS');
             break;
           case MONTH_TO_MONTH:
-            startDate = moment().month(moment().month() - 1).startOf('month');
+            startDate = moment().subtract(2, 'months');
             gap = encodeURIComponent('+1MONTH');
             break;
           case YEAR_TO_YEAR:
-            startDate = moment().year(moment().year() -1).startOf('year');
+            startDate = moment().subtract(2, 'years');
             gap = encodeURIComponent('+1YEAR');
             break;
           default:
             // DAY_TO_DAY
-            startDate = moment().subtract(1, 'days').startOf('day'); // Yesterday midnight
+            startDate = moment().subtract(2, 'days');
             gap = encodeURIComponent('+1DAY');
         }
 
@@ -309,7 +309,7 @@ define([
           '&facet.range.start=' + startDate.toISOString() +
           '&facet.range.end=' + new Date().toISOString() +
           '&facet.range.gap=' + gap +
-          '&facet.range.hardend=false';
+          '&facet.range.hardend=true';
         var id = 0; // This only works for the first query, if there are multiple queries in the dashboard.
         var solrQuery = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet_range;
 
