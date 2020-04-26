@@ -49,7 +49,7 @@ define([
       };
 
       _.defaults($scope.panel, _d);
-      var DEBUG = true;
+      var DEBUG = false;
 
       $scope.init = function () {
         $scope.$on('refresh', function () {
