@@ -264,7 +264,9 @@ define([
       }
 
       function getTrendData(interval) {
-        if (!interval) return;
+        if (!interval) {
+          return;
+        }
 
         var startDate, gap;
         switch (interval) {
