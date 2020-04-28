@@ -9,3 +9,13 @@
     <input type="number" class="input-medium" ng-model="panel.facet_limit" ng-change="set_refresh(true)">
   </div>
 </div>
+<div class="row-fluid">
+  <div class="span3">
+    <h6>Node Limit</h6>
+    <input class="input-medium" ng-model="panel.node_limit" ng-change="set_refresh(true)" type="number" min="2">
+  </div>
+  <div class="span3">
+    <h6>Label Limit</h6>
+    <input class="input-medium" ng-model="panel.label_limit" ng-change="set_refresh(true)" type="number" min="0">
+  </div>
+</div>

@@ -9,3 +9,24 @@
     <input type="number" class="input-medium" ng-model="panel.facet_limit" ng-change="set_refresh(true)">
   </div>
 </div>
+
+<div class="row-fluid">
+  <div class="span3"  >
+    <label>
+      <h6>Show labels</h6>
+      <input type="checkbox" ng-model="panel.labels" ng-checked="panel.labels">
+    </label>
+  </div>
+  <div class="span3"  >
+    <label>
+      <h6>Bold labels</h6>
+      <input type="checkbox" ng-model="panel.bold_labels" ng-checked="panel.bold_labels">
+    </label>
+  </div>
+  <div class="span3">
+    <label>
+      <h6>Label rings</h6>
+      <input type="number" class="input-medium" ng-model="panel.label_rings" ng-change="set_refresh(true)">
+    </label>
+  </div>
+</div>

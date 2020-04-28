@@ -174,7 +174,9 @@ define([
                     } else {
                         $scope.col_labels.push(d.value);
                         $scope.hccol.push($scope.col_labels.length);
-                        [$scope.axis_labels[0], $scope.axis_labels[1]] = [$scope.axis_labels[1], $scope.axis_labels[0]];
+                        var tmp = $scope.axis_labels[0];
+                        $scope.axis_labels[0] = $scope.axis_labels[1];
+                        $scope.axis_labels[1] = tmp;
                     }
 
                     _.each(d.pivot, function(p) {
@@ -279,13 +281,13 @@ define([
                         var parent_width = element.parent().width(),
                         row_height = parseInt(scope.row.height);
 
-                        const TICK_LENGTH = 10;
-                        const MARGIN = 15;
-                        const MAX_LABEL_LENGTH = 10;
+                        var TICK_LENGTH = 10;
+                        var MARGIN = 15;
+                        var MAX_LABEL_LENGTH = 10;
 
-                        const INTENSITY = 3;
+                        var INTENSITY = 3;
 
-                        const LEGEND = {
+                        var LEGEND = {
                             height: 20,
                             width: parent_width / 2,
                             margin: 10,
@@ -293,7 +295,7 @@ define([
                             text_height: 15
                         };
 
-                        const labels = {
+                        var labels = {
                             top: 90,
                             left: 120
                         };
@@ -336,7 +338,7 @@ define([
                             col_number = colLabel.length,
                             row_number = rowLabel.length;
 
-                        var colorScale = (shift) => { return d3.hsl(cell_color).darker(shift).toString(); };
+                        var colorScale = function(shift) { return d3.hsl(cell_color).darker(shift).toString(); };
 
                         var $tooltip = $('<div>');
 
@@ -484,7 +486,7 @@ define([
 
                                 $tooltip.detach();
                             })
-                            .on("click", (d) => {
+                            .on("click", function(d) {
                                 d3.select(this).classed("cell-hover", false);
                                 $tooltip.detach();
                                 scope.build_search(rowLabel[d.row - 1], colLabel[d.col - 1]);
@@ -496,11 +498,11 @@ define([
                             .data(d3.range(hccol.length + 1))
                             .enter()
                             .append("line")
-                            .attr("x1", (d) => {
+                            .attr("x1", function(d) {
                                 return d * cell_width;
                             })
                             .attr("y1", 0)
-                            .attr("x2", (d) => {
+                            .attr("x2", function(d) {
                                 return d * cell_width;
                             })
                             .attr("y2", hcrow.length * cell_height)
@@ -512,11 +514,11 @@ define([
                             .enter()
                             .append("line")
                             .attr("x1", 0)
-                            .attr("y1", (d) => {
+                            .attr("y1", function(d) {
                                 return d * cell_height;
                             })
                             .attr("x2", hccol.length * cell_width)
-                            .attr("y2", (d) => {
+                            .attr("y2", function(d) {
                                 return d * cell_height;
                             })
                             .attr("class", "grid");
@@ -531,7 +533,7 @@ define([
                             .attr("y1", 0)
                             .attr("x2", 0)
                             .attr("y2", TICK_LENGTH)
-                            .attr("transform", (d, i) => {
+                            .attr("transform", function(d, i) {
                                 return "translate(" + (hccol.indexOf(i + 1) * cell_width + cell_width / 2) + ", -5)";
                             })
                             .attr("class", "tick");
@@ -546,7 +548,7 @@ define([
                             .attr("y1", 0)
                             .attr("x2", 0)
                             .attr("y2", TICK_LENGTH)
-                            .attr("transform", (d, i) => {
+                            .attr("transform", function(d, i) {
                                 return "translate(5, " + (hcrow.indexOf(i + 1) * cell_height + cell_height / 2) + ") rotate (90)";
                             })
                             .attr("class", "tick");
@@ -581,11 +583,11 @@ define([
                             .data(d3.range(11))
                             .enter()
                             .append("line")
-                            .attr("x1", (d) => {
+                            .attr("x1", function(d) {
                                 return parseInt(d * LEGEND.width / 10);
                             })
                             .attr("y1", LEGEND.height - TICK_LENGTH)
-                            .attr("x2", (d) => {
+                            .attr("x2", function(d) {
                                 return parseInt(d * LEGEND.width / 10);
                             })
                             .attr("y2", LEGEND.height)
@@ -596,11 +598,11 @@ define([
                             .data(d3.range(11))
                             .enter()
                             .append("text")
-                            .attr("x", (d) => {
+                            .attr("x", function(d) {
                                 return parseInt(d * LEGEND.width / 10);
                             })
                             .attr("y", parseInt(LEGEND.height + 15))
-                            .text((d) => {
+                            .text(function(d) {
                                 return Math.round(scope.domain[0] + (scope.domain[1] - scope.domain[0]) / 10 * d);
                             })
                             .attr("text-anchor", "middle")
