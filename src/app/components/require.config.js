@@ -54,7 +54,8 @@ require.config({
     'd3-quadtree':            '../vendor/d3-quadtree',
     'd3-dispatch':            '../vendor/d3-dispatch',
     'd3-timer':               '../vendor/d3-timer',
-    'd3v5':                   '../vendor/d3v5'
+    'd3v5':                   '../vendor/d3v5',
+    'd3-box':                 '../vendor/d3-box'
   },
   shim: {
     underscore: {

@@ -127,7 +127,8 @@ function (Settings) {
       'sunburst',
       'docviewer',
       'sankey',
-      'force'
+      'force',
+      'boxplot'
     ]
   });
 });

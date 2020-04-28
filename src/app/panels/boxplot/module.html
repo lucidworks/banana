@@ -1,0 +1,45 @@
+<div ng-controller='boxplot' ng-init="init()" class="boxplot">
+  <style>
+
+    .boxplot .box {
+      font: 10px sans-serif;
+    }
+
+    .boxplot .box line,
+    .boxplot .box rect,
+    .boxplot .box circle {
+      fill: steelblue;
+      stroke: #000;
+      stroke-width: 1px;
+    }
+
+    .boxplot .box .center {
+      stroke-dasharray: 3,3;
+    }
+
+    .boxplot .box .outlier {
+      fill: none;
+      stroke: #000;
+    }
+
+    .boxplot .axis {
+      font: 12px sans-serif;
+    }
+
+    .boxplot .axis path,
+    .boxplot .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    .boxplot .x.axis path {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+  </style>
+
+  <div boxplot-chart style="overflow:hidden; position:relative"></div>
+  <div ng-show="panel.moreNodes" class="alert alert-primary alert-dismissible node-alert">The number of nodes exceeds the limit.</div>
+</div>
