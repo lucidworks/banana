@@ -5,6 +5,12 @@
       left: 20px;
       bottom: 0;
     }
+
+    .node-alert {
+      position: absolute;
+      right: 20px;
+      bottom: 0px;
+    }
   </style>
 
   <div force-chart style="overflow:hidden; position:relative"></div>
@@ -16,4 +22,6 @@
       <button type="button" class="btn btn-secondary" ng-click="clearSearchForNode()">Clear</button>
     </div>
   </form>
+
+  <div ng-show="panel.moreNodes" class="alert alert-primary alert-dismissible node-alert">The number of nodes exceeds the limit.</div>
 </div>

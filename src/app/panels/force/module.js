@@ -44,6 +44,7 @@ define([
           custom: ''
         },
         facet_limit: "10,20", // maximum number of rows returned from Solr
+        node_limit: 1000,
         node_size_weight: 0,
         link_width_weight: 0,
         link_strength_weight: 0,
@@ -51,14 +52,14 @@ define([
         strength: -400,
         colors: "#1f77b4, #ff7f0e, #2ca02c, #d62728, #9467bd, #8c564b, #e377c2, #7f7f7f, #bcbd22, #17becf",
         mute_category_1: false,
-        mute_category_2: true,
+        mute_remaining_categories: true,
         spheres: true,
         spyable: true,
         show_queries: true,
       };
 
       _.defaults($scope.panel, _d);
-      var DEBUG = false;
+      var DEBUG = true;
 
       $scope.init = function () {
         $scope.$on('refresh', function () {
@@ -81,8 +82,9 @@ define([
         var nodes = {};
         var links = [];
         var count = 0;
+        var nodeLimit = parseInt($scope.panel.node_limit || "1000", 10);
 
-        var addNode = function (key, category, cnt) {
+        var addNode = function(key, fcount, category) {
           var k = category + "-" + key;
           var existing = nodes[k];
           if (!!existing) {
@@ -92,30 +94,43 @@ define([
           var id = count++;
           nodes[k] = {
             node: id,
-            name: "" + key,
+            name: key,
             category: category,
-            count: cnt,
+            count: fcount
           };
 
           return id;
         };
 
-        for (var ob in data) {
-          var id1 = addNode(data[ob].value, 1, data[ob].count);
+        var cnt = 0;
 
-          for (var p in data[ob].pivot) {
-            var id2 = addNode(data[ob].pivot[p].value, 2, data[ob].pivot[p].count);
+        var processNodes = function(parent, parentCount, data, category) {
+          for (var ob in data) {
+            if (cnt === nodeLimit) {
+              $scope.panel.moreNodes = true;
+              break;
+            }
+            var id1 = addNode(data[ob].value, data[ob].count, category + 1);
 
-            links.push({
-              source: id1,
-              target: id2,
-              value: data[ob].pivot[p].count
-            });
+            if (parent !== null) {
+              links.push({
+                source: parent,
+                target: id1,
+                value: data[ob].count,
+                key: parent + "-" + id1
+              });
+            }
+
+            cnt += 1;
+            processNodes(id1, data[ob].count, data[ob].pivot, category + 1);
           }
-        }
+        };
+
+        $scope.panel.moreNodes = false;
+        processNodes(null, 0, data, 0);
 
         return {
-          nodes: _.map(_.keys(nodes), function (key) {
+          nodes: _.map(_.keys(nodes), function(key) {
             return nodes[key];
           }),
           links: links
@@ -167,7 +182,7 @@ define([
 
         var limits = $scope.panel.facet_limit.split(",");
         var facet_limits = '&' + $scope.panel.facet_pivot_strings.map(function (f, index) {
-          return "f." + f + ".facet.limit=" + parseInt(limits[index], 10);
+          return "f." + f + ".facet.limit=" + parseInt(limits[index] || 10, 10);
         }).join("&");
 
         // f.effective_date_fiscal_facet.facet.limit=3&f.institution_facet.facet.limit=10';
@@ -197,7 +212,7 @@ define([
           });
 
           $scope.data.nodes.forEach(function (d) {
-            if ((d.category === 1 && $scope.panel.mute_category_1) || (d.category === 2 && $scope.panel.mute_category_2)) {
+            if ((d.category === 1 && $scope.panel.mute_category_1) || (d.category > 1 && $scope.panel.mute_remaining_categories)) {
               $scope.selList["n" + d.node] = false;
             } else {
               $scope.selList["n" + d.node] = true;
