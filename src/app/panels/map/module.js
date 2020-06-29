@@ -151,7 +151,7 @@ function (angular, app, _, $, worldmap) {
       }
 
       // Set the panel's query
-      $scope.panel.queries.query = querySrv.getORquery() + wt_json + fq + rows_limit + facet;
+      $scope.panel.queries.query = querySrv.getOPQuery() + wt_json + fq + rows_limit + facet;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {

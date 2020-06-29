@@ -149,7 +149,7 @@ function (angular, app, _, $, kbn) {
         }
       }
 
-      return querySrv.getORquery() + wt_json + rows_limit + fq + exclude_filter + facet + ($scope.panel.queries.custom != null ? $scope.panel.queries.custom : '');
+      return querySrv.getOPQuery() + wt_json + rows_limit + fq + exclude_filter + facet + ($scope.panel.queries.custom != null ? $scope.panel.queries.custom : '');
     };
 
     $scope.exportfile = function(filetype) {

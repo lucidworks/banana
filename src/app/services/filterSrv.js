@@ -193,10 +193,12 @@ define([
     // Return fq string for constructing a query to send to Solr.
     // noTime param use only in ticker panel so the filter query will return without
     // time filter query
-    this.getSolrFq = function(noTime) {
+    this.getSolrFq = function(noTime, sep) {
       var start_time, end_time, time_field;
       var filter_fq = '';
       var filter_either = [];
+
+      if (sep) {} else { sep = '&' }
 
       // Loop through the list to find the time field, usually it should be in self.list[0]
       _.each(self.list, function(v, k) {
@@ -223,34 +225,34 @@ define([
             }
           } else if (v.type === 'terms') {
             if (v.mandate === 'must') {
-              filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
+              filter_fq = filter_fq + sep + 'fq=' + v.field + ':"' + v.value + '"';
             } else if (v.mandate === 'mustNot') {
-              filter_fq = filter_fq + '&fq=-' + v.field + ':"' + v.value + '"';
+              filter_fq = filter_fq + sep + 'fq=-' + v.field + ':"' + v.value + '"';
             } else if (v.mandate === 'either') {
               filter_either.push(v.field + ':"' + v.value + '"');
             }
           } else if (v.type === 'field') {
             // v.query contains double-quote around it.
             if (v.mandate === 'must') {
-              filter_fq = filter_fq + '&fq=' + v.field + ':' + v.query;
+              filter_fq = filter_fq + sep + 'fq=' + v.field + ':' + v.query;
             } else if (v.mandate === 'mustNot') {
-              filter_fq = filter_fq + '&fq=-' + v.field + ':' + v.query;
+              filter_fq = filter_fq + sep + 'fq=-' + v.field + ':' + v.query;
             } else if (v.mandate === 'either') {
               filter_either.push(v.field + ':' + v.query);
             }
           } else if (v.type === 'querystring') {
             if (v.mandate === 'must') {
-              filter_fq = filter_fq + '&fq=' + v.query;
+              filter_fq = filter_fq + sep + 'fq=' + v.query;
             } else if (v.mandate === 'mustNot') {
-              filter_fq = filter_fq + '&fq=-' + v.query;
+              filter_fq = filter_fq + sep + 'fq=-' + v.query;
             } else if (v.mandate === 'either') {
               filter_either.push(v.query);
             }
           } else if (v.type === 'range') {
             if (v.mandate === 'must') {
-              filter_fq = filter_fq + '&fq=' + v.field + ':[' + v.from + ' TO ' + v.to + ']';
+              filter_fq = filter_fq + sep + 'fq=' + v.field + ':[' + v.from + ' TO ' + v.to + ']';
             } else if (v.mandate === 'mustNot') {
-              filter_fq = filter_fq + '&fq=-' + v.field + ':[' + v.from + ' TO ' + v.to + ']';
+              filter_fq = filter_fq + sep + 'fq=-' + v.field + ':[' + v.from + ' TO ' + v.to + ']';
             } else if (v.mandate === 'either') {
               filter_either.push(v.field + ':[' + v.from + ' TO ' + v.to + ']');
             }
@@ -264,12 +266,15 @@ define([
       // For undefined time field, return filter_fq and strip-off the prefix '&'.
       // This will enable the dashboard without timepicker to function properly.
       if (!start_time || !end_time || !time_field) {
+        if (sep)
+          return filter_fq.replace(/^,/,'');
+      else
         return filter_fq.replace(/^&/,'');
       }
 
       // parse filter_either array values, if exists
       if (filter_either.length > 0) {
-        filter_fq = filter_fq + '&fq=(' + filter_either.join(' OR ') + ')';
+        filter_fq = filter_fq + sep + 'fq=(' + filter_either.join(' OR ') + ')';
       }
 
       if (noTime) {

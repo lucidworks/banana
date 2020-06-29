@@ -53,7 +53,7 @@ function (angular, _, config, moment) {
       } else {
         // Getting Solr collection names
         if (config.USE_ADMIN_CORES) {
-          collectionApi = solrServer + '/admin/cores?action=STATUS&wt=json&omitHeader=true';
+          collectionApi = solrServer + '/admin/collections?action=LIST&wt=json&omitHeader=true';
         } else {
           // admin API is disabled, then we cannot retrieve the collection list from Solr.
           // return an empty list
@@ -85,8 +85,8 @@ function (angular, _, config, moment) {
               collections.push(v.id);
             });
           } else {
-            _.each(p.data.status, function(v,k) {
-              collections.push(k);
+            _.each(p.data.collections, function(v,k) {
+              collections.push(v);
             });
           }
         }

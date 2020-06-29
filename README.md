@@ -1,5 +1,7 @@
 # Banana
 
+![](https://travis-ci.org/aadel/banana.svg?branch=develop)
+
 The Banana project was forked from [Kibana](https://github.com/elastic/kibana), and works with all kinds of time series
 (and non-time series) data stored in [Apache Solr](https://lucene.apache.org/solr/). It uses Kibana's powerful dashboard
 configuration capabilities, ports key panels to work with Solr, and provides significant additional capabilities,
@@ -17,22 +19,19 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.26
+## Banana 1.7.0
 
 This release includes the following bug fixes and improvement:
 
-1. Enhance heatmap
-    * Add axis and axis labels
-    * Add axis grid and ticks
-    * Add gradient legend and ranges
-    * Fix heatmap transpose icon
-    * Enhance positioning and padding of panel elements
-    * Fix bettermap tooltip and hint text
-1. Enhance hits panel
-    * Add panel horizontal and vertical direction option
-    * Fix metrics text and label overlap and margins
-1. Fix bettermap render issue when resized
-1. Fix jshint warnings
+1. Added new panels:
+    * Significant Terms panel
+    * Time Series panel
+    * Graph panel
+1. Adding multi-query operator with a default OR operator
+1. Added Travis CI integration
+1. Using collections API instead of cores API to populate collections list
+1. Allow users to change URL setting of banana-int collection
+1. Fixed bug when loading saved dashboards from a remote Solr server
 
 ## Older Release Notes
 

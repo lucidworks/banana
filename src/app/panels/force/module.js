@@ -171,7 +171,7 @@ define([
         }).join("&");
 
         // f.effective_date_fiscal_facet.facet.limit=3&f.institution_facet.facet.limit=10';
-        $scope.panel.queries.query = querySrv.getORquery() + fq + wt_json + facet + facet_pivot + facet_limits + rows;
+        $scope.panel.queries.query = querySrv.getOPQuery() + fq + wt_json + facet + facet_pivot + facet_limits + rows;
         if (DEBUG) {
           console.log($scope.panel.queries.query);
         }
