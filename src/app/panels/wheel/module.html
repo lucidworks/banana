@@ -1,0 +1,144 @@
+
+<div ng-controller='wheel' ng-init="init()">
+<style>
+
+text {
+   -webkit-touch-callout: none; 
+   -webkit-user-select: none; 
+   -khtml-user-select: none; 
+   -moz-user-select: none; 
+   -ms-user-select: none; 
+   user-select: none;
+   color:white;
+}
+
+#main {
+  width: 600px; 
+  margin-left: auto; 
+  margin-right: auto; 
+  margin-top:0px; 
+  font: 14px Helvetica Neue;
+  position:relative;  
+  color:white;
+}
+
+h1 {
+  font-size: 36px; 
+  font-weight: 300;  
+  color:white;
+}
+
+h2 {
+  font-size: 24px; 
+  font-weight: 300;  
+  color:white;
+}
+
+#chart path {
+  -webkit-transition-property: fill; 
+  -webkit-transition-duration: 0.2s;
+}
+
+svg text {
+  font-family: helvetica, sans-serif; 
+}
+
+#status {
+  cursor: pointer; 
+  text-anchor: middle;
+  
+}
+
+#status g.first text.time {
+  font-size: 13px; 
+  font-weight: bold;
+  color:white;
+  fill: #ffffff;
+}
+
+#status g.first text.value {
+  font-size: 40px; 
+  font-weight: bold;
+  color:white;
+  fill: #ffffff;
+}
+
+#status g.first text.units {
+  font-size: 12px;
+  color:white;
+  fill: #ffffff;
+}
+
+#status g.second text.time, #status g.third text.time {
+  font-size: 12px;
+	color:white;
+	fill: #ffffff;
+	}
+
+#status g.second text.value, #status g.third text.value {
+  font-size: 20px; 
+  fill: #ffffff;
+  
+}
+
+#status g.second text.units, #status g.third text.units {
+  font-size: 10px;
+  fill: #ffffff;
+  }
+
+svg text.day.label {
+    font-size: 10px; 
+    font-weight: bold; 
+    fill: #ffffff; 
+    pointer-events: none;
+	color:white;
+}
+
+svg text.time.label {
+  font-size: 12px; 
+  font-weight: bold; 
+  fill: #ffffff; 
+  pointer-events: none;
+  color:white;
+}
+
+.week_step {
+  font-size: 50px; 
+  fill: #ffffff; 
+  font-weight: bold; 
+  font-family: helvetica, sans-serif; 
+  cursor: pointer;
+  
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+</style>
+    <div wheel-chart style="overflow:hidden; position:relative" id="ch"></div>
+</div>
