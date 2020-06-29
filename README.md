@@ -31,6 +31,7 @@ This release includes the following bug fixes and improvement:
 1. Enhance hits panel
     * Add panel horizontal and vertical direction option
     * Fix metrics text and label overlap and margins
+1. Support Solr 8.4 CSP requirements
 1. Fix bettermap render issue when resized
 1. Fix jshint warnings
 
