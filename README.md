@@ -16,7 +16,12 @@ When you are ready to do a new release for Lucidworks Fusion. Do the following s
 1. Edit `package.json` by increasing the version number. 
 1. Edit `dasheditor.html` to use the new version number. (This is the version number in Dashboard Settings page)
 1. Update README 
-1. Run `grunt build`
+1. Make sure you are using Node v8.1.4, then run the following commands:
+    ```shell script
+    npm install -g grunt-cli
+    npm install
+    grunt build
+    ``` 
 1. Push your commit to Github.
 1. Run `npm publish`
  
@@ -29,9 +34,9 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.24
+## Banana 1.6.25
 
-This release includes the security fixes for Fusion 4.2
+This release includes the fix for `/api/apollo` API call issue in Fusion 5.2
 
 ## Older Release Notes
 
