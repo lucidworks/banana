@@ -606,7 +606,7 @@
     "save_as_public": false
   },
   "solr": {
-    "server": "/api/apollo/query-pipelines/_system/collections/",
+    "server": "/api/query-pipelines/_system/collections/",
     "core_name": "system_metrics",
     "core_list": [
       "system_messages",
