@@ -1,4 +1,4 @@
-{
+﻿{
   "title": "New Non-Time Series Dashboard",
   "services": {
     "query": {
@@ -195,7 +195,7 @@
     "dropdown_collections": false
   },
   "solr": {
-    "server": "/api/apollo/solr/",
+    "server": "/api/solr/",
     "core_name": "logs",
     "core_list": [],
     "global_params": ""
