@@ -376,7 +376,7 @@
           "counter_pos": "none",
           "spyable": true,
           "time_field": "timestamp_dt",
-          "title": "Apollo hostname",
+          "title": "Fusion hostname",
           "mode": "count",
           "stats_field": "value_d",
           "decimal_points": 0,
