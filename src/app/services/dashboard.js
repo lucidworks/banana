@@ -322,25 +322,6 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             });
         };
 
-        // NOTES: Fusion uses Blob Store API now. No need to create system collection.
-        // This function is only used for Fusion.
-        // this.create_system_collection = function () {
-        //   $http({
-        //     url: "/api/apollo/collections/" + config.banana_index,
-        //     method: "PUT",
-        //     data: {}
-        //     //TODO: handle params
-        //   }).error(function (data, status) {
-        //     console.log("Error creating system collection");
-        //     console.log(status); //check to see if the collection exists or some other error
-        //     console.log(data);
-        //     //if it exists, that is fine
-        //   }).success(function () {
-        //     //console.log("Success creating collection");
-        //     //console.log(data);
-        //   });
-        // };
-
         // Load a saved dashboard from Solr
         this.elasticsearch_load = function (type, id) {
           // For dashboard field, Fusion uses 'banana_dashboard_s', but Solr uses 'dashboard'

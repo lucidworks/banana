@@ -183,8 +183,8 @@
     <!-- Solr tab -->
     <div ng-show="editor.index == 3">
         <div class="row-fluid" style="margin-bottom: 10px;">
-            You can configure the dashboard to send queries directly to Solr (<em>e.g. /api/apollo/solr/</em>) or use Fusion
-            Query Pipeline (<em>e.g. /api/apollo/query-pipelines/&lt;pipeline&gt;/collections/</em>).
+            You can configure the dashboard to send queries directly to Solr (<em>e.g. /api/solr/</em>) or use Fusion
+            Query Pipeline (<em>e.g. /api/query-pipelines/&lt;pipeline&gt;/collections/</em>).
             To use Fusion, please select the checkbox below. In addition, you can use Global Query Parameters to append
             extra parameters to all dashboard queries. For example, if you want to set the default search field to a
             field named, <em>message</em>, then you can specify it like this: <em>&amp;df=message</em>.
@@ -199,7 +199,7 @@
                         <tip>Specify a Solr addresss or Fusion Query Pipeline, ending with /</tip>
                     </h6>
                     <input type="text" name="solrServer" ng-model="dashboard.current.solr.server" style="width: 100%;"
-                           placeholder="e.g. /api/apollo/query-pipelines/default/collections/" ng-pattern="/\/$/" required>
+                           placeholder="e.g. /api/query-pipelines/default/collections/" ng-pattern="/\/$/" required>
                 </div>
                 <div class="span5">
                     <h6>Collection Name</h6>
