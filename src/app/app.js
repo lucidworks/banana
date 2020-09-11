@@ -88,7 +88,7 @@ function (angular, $, _, appLevelRequire) {
   app.config(['$httpProvider', function($httpProvider) {
     $httpProvider.defaults.useXDomain = true;
     delete $httpProvider.defaults.headers.common["X-Requested-With"];
-    // If the backend (apollo) gives us a 401, redirect to the login page.
+    // If the backend (/api) gives us a 401, redirect to the login page.
     $httpProvider.responseInterceptors.push(function() {
         return function(p){
           return p.then(

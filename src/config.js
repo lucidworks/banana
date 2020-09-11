@@ -33,7 +33,7 @@ function (Settings) {
      */
 
     // Specify Solr server and core to store the data.
-    solr: "/api/apollo/query-pipelines/_system/collections/",
+    solr: "/api/query-pipelines/_system/collections/",
     solr_core: "system_logs",
     timefield: "timestamp_tdt",
 
@@ -64,20 +64,20 @@ function (Settings) {
      * This mainly affect the APIs used to get the list of collections and schemas (fields).
      */
     USE_FUSION: true,
-    apollo: "/api/apollo",
-    apollo_queryPipeline: "/api/apollo/query-pipelines/",
-    apollo_indexPipeline: "/api/apollo/index-pipelines/",
+    apollo: "/api",
+    apollo_queryPipeline: "/api/query-pipelines/",
+    apollo_indexPipeline: "/api/index-pipelines/",
     
     // Constants  
-    SYSTEM_BANANA_QUERY_PIPELINE: "/api/apollo/query-pipelines/default/collections/system_banana",
-    SYSTEM_BANANA_INDEX_PIPELINE: "/api/apollo/index-pipelines/_system/collections/system_banana",
-    SYSTEM_BANANA_BLOB_API: "/api/apollo/blobs",
+    SYSTEM_BANANA_QUERY_PIPELINE: "/api/query-pipelines/default/collections/system_banana",
+    SYSTEM_BANANA_INDEX_PIPELINE: "/api/index-pipelines/_system/collections/system_banana",
+    SYSTEM_BANANA_BLOB_API: "/api/blobs",
     SYSTEM_BANANA_BLOB_ID_SUBTYPE_PARAM: "resourceType=banana",  // for use when saving dashboards, to create metadata field resourceType=banana
     SYSTEM_BANANA_BLOB_ID_SUBTYPE_QUERY: "resourceType=banana",  // for use when searching dashboards in Blob Store
     
     FUSION_API_STATIC_FIELDS: "/schema/fields",
     FUSION_API_DYNAMIC_FIELDS: "/schema/dynamicfields",
-    FUSION_API_COLLECTIONS: "/api/apollo/collections",
+    FUSION_API_COLLECTIONS: "/api/collections",
 
     /**
      * The default settings will use /admin/luke API to retrieve all fields from Solr including

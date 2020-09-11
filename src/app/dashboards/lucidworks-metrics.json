@@ -376,7 +376,7 @@
           "counter_pos": "none",
           "spyable": true,
           "time_field": "timestamp_dt",
-          "title": "Apollo hostname",
+          "title": "Fusion hostname",
           "mode": "count",
           "stats_field": "value_d",
           "decimal_points": 0,
@@ -606,7 +606,7 @@
     "save_as_public": false
   },
   "solr": {
-    "server": "/api/apollo/query-pipelines/_system/collections/",
+    "server": "/api/query-pipelines/_system/collections/",
     "core_name": "system_metrics",
     "core_list": [
       "system_messages",
