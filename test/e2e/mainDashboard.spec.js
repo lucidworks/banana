@@ -155,11 +155,6 @@ describe('-- Banana: Dashboard Tests', function(){
       expect(dashboard.dashboardTitle.getText()).toEqual('Fusion Signals');
     });
 
-    it('Metrics Dashboard should load', function(){
-      browser.get('index.html#/dashboard/file/lucidworks-metrics.json');
-      expect(dashboard.dashboardTitle.getText()).toEqual('Fusion Metrics');
-    });
-
     it('Search Analytics dashboard should load', function(){
       browser.get('index.html#/dashboard/file/lucidworks-searchanalytics.json')
       expect(dashboard.dashboardTitle.getText()).toEqual('Search Analytics');
