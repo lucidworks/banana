@@ -34,9 +34,9 @@ Pull the repo from the `release` branch for production deployment; version x.y.z
 `fusion` branch is used for Lucidworks Fusion release. The code base and features are the same as `develop`. The main difference
 is in the configuration. 
 
-## Banana 1.6.29
+## Banana 1.6.30
 
-This release removes the Metrics dashboard JSON file (src/app/dashboards/lucidworks-metrics.json)
+This release removes the broken links to the Metrics dashboard that was deleted in the previous release.
 
 ## Older Release Notes
 
