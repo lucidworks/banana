@@ -18,7 +18,6 @@ When you are ready to do a new release for Lucidworks Fusion. Do the following s
 1. Update README 
 1. Make sure you are using Node v8.1.4, then run the following commands:
     ```shell script
-    npm install -g grunt-cli
     npm install
     grunt build
     ``` 
