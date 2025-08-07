@@ -39,7 +39,7 @@
     "requirejs": "^2.1.14",
     "rjs-build-analysis": "0.0.3",
     "shelljs": "^0.2.6",
-    "tmp": "0.0.23"
+    "tmp": "0.2.4"
   },
   "scripts": {
     "prestart": "npm install",
