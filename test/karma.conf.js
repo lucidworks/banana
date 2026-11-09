@@ -1,69 +1,70 @@
-module.exports = function(config) {
+'use strict';
+
+/*
+ * Unit tests run in headless Chromium under Karma, and the code under test is loaded through the same
+ * webpack configuration that builds the application (see test/webpack.test.config.js), so module ids,
+ * aliases, the vendored-script shims and the config.js bridge resolve exactly as in production.
+ *
+ *   npm test              one run, then exit (non-zero when a spec fails)
+ *   npm run test:watch    keep running, and run again when a file changes
+ *
+ * Which Chromium: CHROME_BIN if it is set, else the browser that Playwright installed
+ * (`npx playwright install chromium`; PLAYWRIGHT_BROWSERS_PATH chooses where it lives), else a Chrome or
+ * Chromium that karma-chrome-launcher finds on the machine.
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+function findChrome() {
+  if (process.env.CHROME_BIN) { return; }
+  try {
+    const exe = require('playwright').chromium.executablePath();
+    if (exe && fs.existsSync(exe)) { process.env.CHROME_BIN = exe; }
+  } catch (e) {
+    // Playwright is not installed: fall back to the browsers on the machine
+  }
+}
+
+module.exports = function (config) {
+  findChrome();
+  const entry = 'test/unit/index.js';
+
   config.set({
-
-    // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '../',
+    frameworks: ['jasmine', 'webpack'],
 
-    // frameworks to use
-    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    // frameworks: ['jasmine', 'requirejs'],
-    frameworks: ['jasmine'],
-
-    // list of files / patterns to load in the browser
     files: [
-      // 'test/test-main.js',
-      // {pattern: 'src/**/*.js', included: false},
-      // {pattern: 'bower_components/**/*.js', included: false},
+      // The same two scripts that index.html loads before the application: config.js is not bundled
+      'src/config-boot.js',
+      'src/config.js',
+      { pattern: entry, watched: false }
+    ],
+    preprocessors: { [entry]: ['webpack'] },
+    webpack: require(path.join(__dirname, 'webpack.test.config.js')),
 
-      // {pattern: 'test/**/*Spec.js', included: false}
-      // {pattern: 'test/unit/tableSpec.js', included: false}
-      'src/vendor/require/require.js',
-      'src/app/components/require.config.js',
-      'test/unit/dummySpec.js'
+    plugins: [
+      require('karma-jasmine'),
+      require('karma-webpack'),
+      require('karma-chrome-launcher')
     ],
 
-    // list of files to exclude
-    exclude: [
-      // 'src/app/components/require.config.js'
-    ],
-
-
-    // preprocess matching files before serving them to the browser
-    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: {
+    reporters: ['dots'],
+    browsers: ['ChromeHeadlessLocal'],
+    customLaunchers: {
+      ChromeHeadlessLocal: {
+        base: 'ChromeHeadless',
+        // Chromium's sandbox needs privileges that most containers do not grant, so CI turns it off
+        flags: process.env.CI ? ['--no-sandbox'] : []
+      }
     },
 
-
-    // test results reporter to use
-    // possible values: 'dots', 'progress'
-    // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
-
-
-    // web server port
     port: 9876,
-
-
-    // enable / disable colors in the output (reporters and logs)
     colors: true,
-
-
-    // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
-
-
-    // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
-
-
-    // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
-
-
-    // Continuous Integration mode
-    // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    logLevel: config.LOG_WARN,
+    autoWatch: false,
+    singleRun: true,
+    browserNoActivityTimeout: 60000,
+    captureTimeout: 120000
   });
 };

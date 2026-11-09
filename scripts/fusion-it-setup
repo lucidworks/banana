@@ -1,0 +1,541 @@
+#!/usr/bin/env node
+/*
+ * Prepare a Fusion test instance for Banana's live (integration) tests.
+ *
+ * What it does, in order:
+ *   1. Records an inventory of object names (apps, collections, jobs, pipelines,
+ *      profiles, Solr configsets, blobs).
+ *   2. Creates the "banana-it" app and the "banana-it-logs" collection, only if
+ *      they are missing, with relatedObjects=false. Fusion still adds the
+ *      signals collections, configsets and Spark jobs that belong to a new
+ *      collection; the inventory check below expects exactly those.
+ *   3. Indexes a synthetic log dataset into banana-it-logs through the existing
+ *      _system index pipeline. Document ids are deterministic, so a re-run
+ *      overwrites the same documents instead of adding new ones.
+ *   4. Checks the document count.
+ *   5. Records the inventory again and fails if any object was removed, or if
+ *      anything was added other than the objects listed in DERIVED (and blobs
+ *      whose names start with "banana-it"). Only names are compared, so a
+ *      change to an existing object is not detected.
+ *
+ * Any removal aborts the run by design, including one made by another test
+ * run deleting a blob it created itself while this script is running. Run the
+ * setup when no other live test is in progress.
+ *
+ * Safety properties (covered by test/node/fusion-it-setup.test.js):
+ *   - it never sends a DELETE (or PUT or PATCH);
+ *   - every write targets an object whose id starts with "banana-it";
+ *   - reading is unrestricted, so the _system pipeline is only ever read from
+ *     and used as the indexing route.
+ *
+ * Configuration comes from the environment and is never printed:
+ *   FUSION_URL       base URL of the Fusion gateway, for example https://host:6764
+ *   FUSION_API_KEY   an API key, sent in the x-api-key header (used when set)
+ *   FUSION_USER, FUSION_PASSWORD
+ *                    native-realm login, used when no API key is set
+ *
+ * Usage:
+ *   scripts/fusion-it-setup            run against FUSION_URL
+ *   scripts/fusion-it-setup --plan     print the planned requests, send nothing
+ */
+'use strict';
+
+var PREFIX = 'banana-it';
+var APP_ID = 'banana-it';
+var COLLECTION_ID = 'banana-it-logs';
+var INDEX_PIPELINE = '_system';
+var DOC_COUNT = 240;
+var BATCH_SIZE = 120;
+
+// ---------------------------------------------------------------------------
+// Synthetic dataset
+// ---------------------------------------------------------------------------
+
+// Fixed start so that every run produces byte-identical documents.
+var BASE_TIME = Date.UTC(2024, 0, 1, 0, 0, 0);
+var STEP_MS = 7 * 60 * 1000;
+
+var LEVELS = ['INFO', 'INFO', 'INFO', 'WARN', 'ERROR', 'DEBUG'];
+var SERVICES = ['gateway', 'query', 'indexing', 'scheduler'];
+var HOSTS = ['node-a.example.test', 'node-b.example.test', 'node-c.example.test'];
+var USER_AGENTS = [
+  'Mozilla/5.0 (X11; Linux x86_64) Example/1.0',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) Example/2.0',
+  'ExampleClient/3.1 (test)',
+  'curl/8.0.0'
+];
+var PATHS = ['/search', '/index', '/status', '/login', '/export', '/dashboard'];
+var USERS = ['user-001', 'user-002', 'user-003', 'user-004', 'user-005'];
+var CATEGORIES = ['alpha', 'beta', 'gamma', 'delta'];
+var TAGS = ['red', 'green', 'blue', 'amber', 'violet', 'teal'];
+// [lat, lon, 2-letter country code]. The coordinates feed the bettermap panel;
+// the code feeds the map panel, which shades regions by a code field.
+var PLACES = [
+  [40.0, -100.0, 'US'], [48.8, 2.3, 'FR'], [35.7, 139.7, 'JP'], [-33.9, 151.2, 'AU'],
+  [51.5, -0.1, 'GB'], [-23.5, -46.6, 'BR'], [28.6, 77.2, 'IN'], [55.7, 37.6, 'RU']
+];
+
+// Strings that look like markup or script. Panels that render document
+// content must escape these. They are inert data here.
+var HOSTILE_MESSAGES = [
+  'payload <img src=x onerror=alert(1)> in message',
+  'attribute break " onmouseover="x',
+  'link javascript:alert(1) in text',
+  '<script>alert(1)</script> script tag',
+  '<b>bold</b> & <i>italic</i> markup'
+];
+var HOSTILE_URLS = [
+  'javascript:alert(1)',
+  'http://example.test/?q=" onmouseover="x',
+  'http://example.test/<img src=x onerror=alert(1)>',
+  'data:text/html,<b>x</b>'
+];
+
+function pad(n, width) {
+  var s = String(n);
+  while (s.length < width) { s = '0' + s; }
+  return s;
+}
+
+function generateDocs(count) {
+  var docs = [];
+  var i;
+  for (i = 0; i < (count === undefined ? DOC_COUNT : count); i++) {
+    var place = PLACES[i % PLACES.length];
+    var level = LEVELS[i % LEVELS.length];
+    var path = PATHS[i % PATHS.length];
+    var host = HOSTS[i % HOSTS.length];
+    var message = 'request ' + path + ' handled on ' + host + ' with level ' + level;
+    var url = 'http://' + host + path + '?page=' + (i % 9);
+    // Every 12th document carries markup-like content.
+    if (i % 12 === 5) {
+      message = HOSTILE_MESSAGES[(i / 12 | 0) % HOSTILE_MESSAGES.length];
+    }
+    if (i % 12 === 9) {
+      url = HOSTILE_URLS[(i / 12 | 0) % HOSTILE_URLS.length];
+    }
+    docs.push({
+      id: PREFIX + '-log-' + pad(i, 5),
+      timestamp_tdt: new Date(BASE_TIME + i * STEP_MS).toISOString(),
+      level_s: level,
+      service_s: SERVICES[i % SERVICES.length],
+      category_s: CATEGORIES[(i * 7) % CATEGORIES.length],
+      message_t: message,
+      host_s: host,
+      user_agent_s: USER_AGENTS[i % USER_AGENTS.length],
+      url_s: url,
+      path_s: path,
+      user_s: USERS[(i * 3) % USERS.length],
+      tags_ss: [TAGS[i % TAGS.length], TAGS[(i + 2) % TAGS.length]],
+      geo_p: place[0] + ',' + place[1],
+      lat_d: place[0],
+      lon_d: place[1],
+      country_s: place[2],
+      status_i: [200, 200, 200, 301, 404, 500][i % 6],
+      bytes_l: 512 + (i * 337) % 20000,
+      response_time_d: Math.round((5 + (i * 13) % 480 + (i % 5) / 10) * 10) / 10,
+      cpu_d: Math.round((10 + (i * 7) % 85) * 10) / 10,
+      heap_mb_i: 256 + (i * 11) % 768
+    });
+  }
+  return docs;
+}
+
+// ---------------------------------------------------------------------------
+// Request guard
+// ---------------------------------------------------------------------------
+
+function startsWithPrefix(id) {
+  return typeof id === 'string' && id.indexOf(PREFIX) === 0;
+}
+
+// Decodes one path segment and rejects anything that could step out of it.
+function decodeSegment(segment) {
+  var decoded;
+  try { decoded = decodeURIComponent(segment); } catch (e) { return ''; }
+  if (decoded.indexOf('/') >= 0 || decoded.indexOf('\\') >= 0 || decoded.indexOf('..') >= 0) { return ''; }
+  return decoded;
+}
+
+// Throws unless the request may be sent. This is the single choke point every
+// request passes through, so the safety properties hold for the real run too.
+function assertAllowed(req) {
+  var method = String(req.method || 'GET').toUpperCase();
+  var path = String(req.path);
+  var qIndex = path.indexOf('?');
+  var query = qIndex < 0 ? '' : path.slice(qIndex + 1);
+  var bare = qIndex < 0 ? path : path.slice(0, qIndex);
+  var m;
+
+  if (method === 'GET' || method === 'HEAD') {
+    return;
+  }
+  if (method !== 'POST') {
+    throw new Error('refused ' + method + ' ' + bare + ': only GET, HEAD and POST are allowed');
+  }
+  if (bare === '/api/session') {
+    return; // login: creates a session, not an object
+  }
+  if (bare === '/api/apps') {
+    if (!req.body || !startsWithPrefix(req.body.id)) {
+      throw new Error('refused to create an app without the ' + PREFIX + ' prefix');
+    }
+    if (query.split('&').indexOf('relatedObjects=false') < 0) {
+      throw new Error('refused to create an app without relatedObjects=false');
+    }
+    return;
+  }
+  m = /^\/api\/apps\/([^/]+)\/collections$/.exec(bare);
+  if (m) {
+    if (!startsWithPrefix(decodeSegment(m[1])) || !req.body || !startsWithPrefix(req.body.id)) {
+      throw new Error('refused to create a collection without the ' + PREFIX + ' prefix');
+    }
+    if (query.split('&').indexOf('relatedObjects=false') < 0) {
+      throw new Error('refused to create a collection without relatedObjects=false');
+    }
+    return;
+  }
+  // The pipeline is only read from and used as a route; the write lands in the
+  // collection, which must carry the prefix.
+  m = /^\/api\/index-pipelines\/[^/]+\/collections\/([^/]+)\/index$/.exec(bare);
+  if (m) {
+    if (!startsWithPrefix(decodeSegment(m[1]))) {
+      throw new Error('refused to index into a collection without the ' + PREFIX + ' prefix');
+    }
+    return;
+  }
+  throw new Error('refused POST ' + bare + ': not a request this script may send');
+}
+
+// ---------------------------------------------------------------------------
+// Client
+// ---------------------------------------------------------------------------
+
+function makeClient(env, fetchImpl, record) {
+  var base = String(env.FUSION_URL).replace(/\/+$/, '');
+  var headers = {};
+  var loggedIn = false;
+  var cookie = '';
+
+  function send(method, path, body) {
+    var req = { method: method, path: path, body: body };
+    assertAllowed(req);
+    if (record) { record.push({ method: method, path: path }); }
+    var h = {};
+    Object.keys(headers).forEach(function (k) { h[k] = headers[k]; });
+    if (cookie) { h.cookie = cookie; }
+    var init = { method: method, headers: h };
+    if (body !== undefined) {
+      h['content-type'] = 'application/json';
+      init.body = JSON.stringify(body);
+    }
+    // No Origin header is set: the gateway rejects foreign origins.
+    return fetchImpl(base + path, init).then(function (res) {
+      return res.text().then(function (text) {
+        var data = text;
+        try { data = text ? JSON.parse(text) : null; } catch (e) { /* keep the raw text */ }
+        return { status: res.status, data: data, res: res };
+      });
+    });
+  }
+
+  function login() {
+    if (env.FUSION_API_KEY) {
+      headers['x-api-key'] = env.FUSION_API_KEY;
+      return Promise.resolve();
+    }
+    if (!env.FUSION_USER || !env.FUSION_PASSWORD) {
+      return Promise.reject(new Error('set FUSION_API_KEY, or FUSION_USER and FUSION_PASSWORD'));
+    }
+    return send('POST', '/api/session?realmName=native',
+      { username: env.FUSION_USER, password: env.FUSION_PASSWORD }).then(function (r) {
+      if (r.status >= 300) { throw new Error('login failed with HTTP ' + r.status); }
+      var setCookie = r.res.headers.getSetCookie ? r.res.headers.getSetCookie() : [];
+      cookie = setCookie.map(function (c) { return c.split(';')[0]; }).join('; ');
+      loggedIn = true;
+    });
+  }
+
+  return {
+    login: login,
+    send: send,
+    isLoggedIn: function () { return loggedIn; }
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Inventory
+// ---------------------------------------------------------------------------
+
+var INVENTORY = [
+  { kind: 'apps', path: '/api/apps', names: function (d) { return idsOf(d, 'id'); } },
+  { kind: 'collections', path: '/api/collections', names: function (d) { return idsOf(d, 'id'); } },
+  { kind: 'jobs', path: '/api/jobs', names: function (d) { return idsOf(d, 'resource'); } },
+  { kind: 'indexPipelines', path: '/api/index-pipelines', names: function (d) { return idsOf(d, 'id'); } },
+  { kind: 'queryPipelines', path: '/api/query-pipelines', names: function (d) { return idsOf(d, 'id'); } },
+  { kind: 'indexProfiles', path: '/api/index-profiles', names: function (d) { return idsOf(d, 'id'); } },
+  { kind: 'queryProfiles', path: '/api/query-profiles', names: function (d) { return idsOf(d, 'id'); } },
+  {
+    kind: 'solrConfigsets',
+    path: '/api/solrAdmin/default/admin/configs?action=LIST&wt=json',
+    names: function (d) { return (d && d.configSets) || []; }
+  },
+  { kind: 'blobs', path: '/api/blobs', names: function (d) { return idsOf(d, 'id'); } }
+];
+
+function idsOf(list, key) {
+  if (!Array.isArray(list)) { return []; }
+  return list.map(function (x) { return x && x[key]; }).filter(function (x) { return typeof x === 'string'; });
+}
+
+function takeInventory(client) {
+  var out = {};
+  return INVENTORY.reduce(function (p, item) {
+    return p.then(function () {
+      return client.send('GET', item.path).then(function (r) {
+        if (r.status !== 200) {
+          throw new Error('inventory of ' + item.kind + ' failed with HTTP ' + r.status);
+        }
+        out[item.kind] = item.names(r.data).slice().sort();
+      });
+    });
+  }, Promise.resolve()).then(function () { return out; });
+}
+
+// Creating a collection also makes Fusion add its signals collections, their
+// Solr configsets and three Spark jobs, all named after the collection. These
+// are the only additions besides the app and collection that a run may cause.
+var DERIVED = {
+  apps: [APP_ID],
+  collections: [COLLECTION_ID, COLLECTION_ID + '_signals', COLLECTION_ID + '_signals_aggr'],
+  jobs: [
+    'spark:' + COLLECTION_ID + '_click_signals_aggregation',
+    'spark:' + COLLECTION_ID + '_head_tail',
+    'spark:' + COLLECTION_ID + '_session_rollup'
+  ],
+  solrConfigsets: [COLLECTION_ID, COLLECTION_ID + '_signals', COLLECTION_ID + '_signals_aggr']
+};
+
+// True when an added "kind: name" entry is one this script expects.
+function isExpectedAddition(entry) {
+  var i = entry.indexOf(': ');
+  var kind = entry.slice(0, i);
+  var name = entry.slice(i + 2);
+  if (DERIVED[kind]) { return DERIVED[kind].indexOf(name) >= 0; }
+  return kind === 'blobs' && name.indexOf(PREFIX) === 0;
+}
+
+// Returns { added, removed } as lists of "kind: name".
+function diffInventory(before, after) {
+  var added = [];
+  var removed = [];
+  Object.keys(after).forEach(function (kind) {
+    var b = before[kind] || [];
+    var a = after[kind] || [];
+    a.forEach(function (n) { if (b.indexOf(n) < 0) { added.push(kind + ': ' + n); } });
+    b.forEach(function (n) { if (a.indexOf(n) < 0) { removed.push(kind + ': ' + n); } });
+  });
+  return { added: added, removed: removed };
+}
+
+// ---------------------------------------------------------------------------
+// Steps
+// ---------------------------------------------------------------------------
+
+function exists(client, path) {
+  return client.send('GET', path).then(function (r) {
+    if (r.status === 200) { return true; }
+    if (r.status === 404) { return false; }
+    throw new Error('GET ' + path.replace(/\?.*/, '') + ' returned HTTP ' + r.status);
+  });
+}
+
+function ensureApp(client, log) {
+  return exists(client, '/api/apps/' + APP_ID).then(function (found) {
+    if (found) { log('app ' + APP_ID + ': already present'); return; }
+    return client.send('POST', '/api/apps?relatedObjects=false', { id: APP_ID, name: APP_ID })
+      .then(function (r) {
+        if (r.status >= 300) { throw new Error('creating the app failed with HTTP ' + r.status); }
+        log('app ' + APP_ID + ': created');
+      });
+  });
+}
+
+function ensureCollection(client, log) {
+  return exists(client, '/api/collections/' + COLLECTION_ID).then(function (found) {
+    if (found) { log('collection ' + COLLECTION_ID + ': already present'); return; }
+    return client.send('POST', '/api/apps/' + APP_ID + '/collections?relatedObjects=false', { id: COLLECTION_ID })
+      .then(function (r) {
+        if (r.status >= 300) { throw new Error('creating the collection failed with HTTP ' + r.status); }
+        log('collection ' + COLLECTION_ID + ': created');
+      });
+  });
+}
+
+function indexDocs(client, docs, log) {
+  var batches = [];
+  var i;
+  for (i = 0; i < docs.length; i += BATCH_SIZE) { batches.push(docs.slice(i, i + BATCH_SIZE)); }
+  var path = '/api/index-pipelines/' + INDEX_PIPELINE + '/collections/' + COLLECTION_ID + '/index?commit=true';
+  return batches.reduce(function (p, batch, n) {
+    return p.then(function () {
+      return client.send('POST', path, batch).then(function (r) {
+        if (r.status >= 300) { throw new Error('indexing batch ' + (n + 1) + ' failed with HTTP ' + r.status); }
+      });
+    });
+  }, Promise.resolve()).then(function () {
+    log('indexed ' + docs.length + ' documents in ' + batches.length + ' batches');
+  });
+}
+
+function countDocs(client) {
+  var path = '/api/solr/' + COLLECTION_ID + '/select?q=*:*&rows=0&wt=json';
+  return client.send('GET', path).then(function (r) {
+    if (r.status !== 200 || !r.data || !r.data.response) {
+      throw new Error('document count query failed with HTTP ' + r.status);
+    }
+    return r.data.response.numFound;
+  });
+}
+
+function waitForCount(client, expected, attempts, delayMs) {
+  return countDocs(client).then(function (n) {
+    if (n === expected || attempts <= 1) { return n; }
+    return new Promise(function (resolve) { setTimeout(resolve, delayMs); })
+      .then(function () { return waitForCount(client, expected, attempts - 1, delayMs); });
+  });
+}
+
+// The requests a clean run would send, without sending any. Used by --plan and
+// by the unit test.
+function plan() {
+  var docs = generateDocs();
+  var steps = [];
+  INVENTORY.forEach(function (i) { steps.push({ method: 'GET', path: i.path }); });
+  steps.push({ method: 'GET', path: '/api/apps/' + APP_ID });
+  steps.push({ method: 'POST', path: '/api/apps?relatedObjects=false', body: { id: APP_ID, name: APP_ID } });
+  steps.push({ method: 'GET', path: '/api/collections/' + COLLECTION_ID });
+  steps.push({
+    method: 'POST',
+    path: '/api/apps/' + APP_ID + '/collections?relatedObjects=false',
+    body: { id: COLLECTION_ID }
+  });
+  var i;
+  for (i = 0; i < docs.length; i += BATCH_SIZE) {
+    steps.push({
+      method: 'POST',
+      path: '/api/index-pipelines/' + INDEX_PIPELINE + '/collections/' + COLLECTION_ID + '/index?commit=true',
+      body: docs.slice(i, i + BATCH_SIZE)
+    });
+  }
+  steps.push({ method: 'GET', path: '/api/solr/' + COLLECTION_ID + '/select?q=*:*&rows=0&wt=json' });
+  INVENTORY.forEach(function (it) { steps.push({ method: 'GET', path: it.path }); });
+  return steps;
+}
+
+// ---------------------------------------------------------------------------
+// Main
+// ---------------------------------------------------------------------------
+
+function run(options) {
+  var env = options.env;
+  var log = options.log || function () {};
+  var record = options.record;
+  var client = makeClient(env, options.fetch, record);
+  var docs = generateDocs();
+  var before;
+  var reported = {};
+
+  function summary(inv) {
+    return INVENTORY.map(function (i) { return i.kind + '=' + inv[i.kind].length; }).join(' ');
+  }
+
+  // Compares the current inventory with the first one. Anything that is not a
+  // prefixed addition stops the run before another object is created.
+  function checkInventory(label) {
+    return takeInventory(client).then(function (now) {
+      var d = diffInventory(before, now);
+      var foreign = d.added.filter(function (x) { return !isExpectedAddition(x); });
+      if (foreign.length || d.removed.length) {
+        throw new Error('inventory changed outside ' + PREFIX + ' objects ' + label + ': ' +
+          foreign.concat(d.removed).join(', '));
+      }
+      d.added.forEach(function (x) {
+        if (!reported[x]) { reported[x] = true; log('added   ' + x); }
+      });
+      return { inventory: now, diff: d };
+    });
+  }
+
+  if (!env.FUSION_URL) {
+    return Promise.reject(new Error('FUSION_URL is not set'));
+  }
+  log('target: <FUSION>');
+  return client.login()
+    .then(function () { return takeInventory(client); })
+    .then(function (inv) {
+      before = inv;
+      log('inventory before: ' + summary(inv));
+      return ensureApp(client, log);
+    })
+    .then(function () { return checkInventory('after the app step'); })
+    .then(function () { return ensureCollection(client, log); })
+    .then(function () { return checkInventory('after the collection step'); })
+    .then(function () { return indexDocs(client, docs, log); })
+    .then(function () { return waitForCount(client, docs.length, 10, options.retryDelayMs === undefined ? 1000 : options.retryDelayMs); })
+    .then(function (n) {
+      log('document count in ' + COLLECTION_ID + ': ' + n + ' (expected ' + docs.length + ')');
+      if (n !== docs.length) {
+        throw new Error('expected ' + docs.length + ' documents, found ' + n);
+      }
+      return checkInventory('after indexing');
+    })
+    .then(function (r) {
+      log('inventory after: ' + summary(r.inventory));
+      if (r.diff.added.length === 0) {
+        log('inventory change: none');
+      } else {
+        log('inventory change: ' + r.diff.added.length + ' added (listed above)');
+      }
+      return { before: before, after: r.inventory, added: r.diff.added, count: docs.length };
+    });
+}
+
+function main(argv, env) {
+  if (argv.indexOf('--plan') >= 0) {
+    plan().forEach(function (s) {
+      console.log(s.method + ' ' + s.path);
+    });
+    return Promise.resolve();
+  }
+  return run({
+    env: env,
+    fetch: fetch,
+    log: function (line) { console.log(line); }
+  }).then(function () { console.log('done'); });
+}
+
+module.exports = {
+  PREFIX: PREFIX,
+  APP_ID: APP_ID,
+  COLLECTION_ID: COLLECTION_ID,
+  generateDocs: generateDocs,
+  assertAllowed: assertAllowed,
+  diffInventory: diffInventory,
+  isExpectedAddition: isExpectedAddition,
+  plan: plan,
+  run: run
+};
+
+if (require.main === module) {
+  main(process.argv.slice(2), process.env).catch(function (err) {
+    var msg = String(err && err.message);
+    var url = process.env.FUSION_URL;
+    if (url) {
+      msg = msg.split(url).join('<FUSION>');
+      try { msg = msg.split(new URL(url).host).join('<FUSION>'); } catch (e) { /* not a URL */ }
+    }
+    console.error('error: ' + msg);
+    process.exit(1);
+  });
+}

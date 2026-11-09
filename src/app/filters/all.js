@@ -1,4 +1,4 @@
-define(['angular', 'jquery', 'underscore','showdown'], function(angular, $, _,Showdown) {
+define(['angular', 'jquery', 'underscore','showdown', 'kbn'], function(angular, $, _,Showdown, kbn) {
   'use strict';
 
   var module = angular.module('kibana.filters');
@@ -43,20 +43,44 @@ define(['angular', 'jquery', 'underscore','showdown'], function(angular, $, _,Sh
   });
 
   module.filter('noXml', function() {
+    var escape = function(text) {
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/'/g, '&#39;')
+        .replace(/"/g, '&quot;');
+    };
     var noXml = function(text) {
-      return _.isString(text)
-        ? text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/'/g, '&#39;')
-            .replace(/"/g, '&quot;')
-        : text;
+      // An object is written as JSON here, because the filters that follow turn it into text without
+      // escaping it.
+      if(_.isObject(text) && !_.isArray(text) && !_.isFunction(text)) {
+        return escape(angular.toJson(text));
+      }
+      return _.isString(text) ? escape(text) : text;
     };
     return function(text) {
       return _.isArray(text)
         ? _.map(text, noXml)
         : noXml(text);
+    };
+  });
+
+  // ng-bind-html only accepts a string. Joins an array without a separator, as the page did when it
+  // put an array of strings into an element.
+  module.filter('htmlString', function() {
+    return function(value) {
+      if(_.isUndefined(value) || _.isNull(value)) {
+        return '';
+      }
+      return _.isArray(value) ? value.join('') : String(value);
+    };
+  });
+
+  // Escapes a document value for ng-bind-html, except for the highlight tags the query asked Solr to add.
+  module.filter('highlightHtml', function() {
+    return function(text, pre, post) {
+      return kbn.highlightHtml(text, pre, post);
     };
   });
 

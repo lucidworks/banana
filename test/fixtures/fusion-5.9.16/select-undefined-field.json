@@ -1,0 +1,47 @@
+{
+  "source": "recorded",
+  "fusionVersion": "5.9.16",
+  "recordedRequest": {
+    "method": "POST",
+    "path": "/api/query-pipelines/_system/collections/banana-it-logs/select",
+    "contentType": "application/x-www-form-urlencoded",
+    "body": "q=*%3A*&wt=json&rows=0&omitHeader=true&facet=true&facet.range=event_timestamp&facet.range.start=NOW-10YEARS%2FDAY&facet.range.end=NOW&facet.range.gap=%2B1DAY"
+  },
+  "response": {
+    "status": 400,
+    "contentType": "application/json",
+    "body": {
+      "timestamp": "2026-11-07T02:22:17.858996",
+      "service": "query",
+      "error": "client",
+      "path": "/query-pipelines/_system/collections/banana-it-logs/select",
+      "message": "undefined field: \"event_timestamp\"",
+      "messages": [
+        "undefined field: \"event_timestamp\""
+      ],
+      "trace": [
+        {
+          "service": "solr",
+          "error": "client",
+          "path": "solr",
+          "messages": [
+            "undefined field: \"event_timestamp\""
+          ],
+          "payload": {
+            "error": {
+              "metadata": [
+                "error-class",
+                "org.apache.solr.common.SolrException",
+                "root-error-class",
+                "org.apache.solr.common.SolrException"
+              ],
+              "msg": "undefined field: \"event_timestamp\"",
+              "code": 400
+            }
+          }
+        }
+      ]
+    }
+  },
+  "note": "The request is the one kbnIndex sends; the collection has no event_timestamp field."
+}

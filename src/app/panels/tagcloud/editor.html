@@ -31,3 +31,18 @@
         <input class="input-small" ng-model="panel.ignoreStopWords" type="checkbox" ng-change="set_refresh(true)"></input>
     </div>
 </div>
+
+<div class="row-fluid">
+    <div class="span3">
+        <label class="small">Lowercase Custom Stop Words
+            <tip>Custom stop words are lowercased, because the words of the cloud are compared in lowercase.</tip>
+        </label>
+        <input class="input-small" ng-model="panel.customStopWordsLowercase" type="checkbox" ng-change="set_refresh(true)"></input>
+    </div>
+    <div class="span9">
+        <label class="small">Custom Stop Words
+            <tip>Comma separated. Ignored words only apply when Stop Words is checked.</tip>
+        </label>
+        <input type="text" class="input-xxlarge" placeholder="stopword1,stopword2,..." ng-model="panel.customStopWords" ng-change="set_refresh(true)">
+    </div>
+</div>

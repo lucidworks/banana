@@ -1,0 +1,18 @@
+{
+  "source": "derived",
+  "note": "The shape that the Solr Collections API documents for action=LIST (wt=json, omitHeader not applied). Not observed on a server.",
+  "response": {
+    "status": 200,
+    "contentType": "application/json",
+    "body": {
+      "responseHeader": {
+        "status": 0,
+        "QTime": 1
+      },
+      "collections": [
+        "banana-it-logs",
+        "banana-int"
+      ]
+    }
+  }
+}

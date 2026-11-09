@@ -1,0 +1,483 @@
+{
+  "description": "Third-party code that ships in dist/. \"libraries\" are files vendored in this repository as source files: webpack.config.js reads the list to keep their licence notices in the build output and to write THIRD-PARTY-LICENSES.txt, and tools/check-dist.js checks it against src/vendor and against the build. Add an entry here when you vendor a new library. A \"licenseText\" entry names the licence file (under licenses/) that is shipped for a library whose own file does not carry the full text; the build copies licenses/ into dist/licenses/ and tools/check-dist.js checks that those files are there and unchanged. \"embedded\" lists code that is inside another shipped file and whose notice is not kept in the build output (a prebuilt bundle, a compiled stylesheet): \"container\" is that file, \"marker\" is a text that must be in it (so a library that is dropped or replaced is noticed), and \"licenseText\" is the shipped licence text, which must contain the copyright holder.",
+  "libraries": [
+    {
+      "path": "src/vendor/angular/angular.js",
+      "name": "AngularJS",
+      "version": "1.0.8",
+      "license": "MIT",
+      "copyright": "Google, Inc."
+    },
+    {
+      "path": "src/vendor/angular/angular-sanitize.js",
+      "name": "AngularJS (ngSanitize)",
+      "version": "1.0.8",
+      "license": "MIT",
+      "copyright": "Google, Inc."
+    },
+    {
+      "path": "src/vendor/angular/angular-mocks.js",
+      "name": "AngularJS (ngMock)",
+      "version": "1.0.8",
+      "license": "MIT",
+      "copyright": "Google, Inc.",
+      "shipped": false
+    },
+    {
+      "path": "src/vendor/angular/angular-dragdrop.js",
+      "name": "angular-dragdrop (modified)",
+      "version": "",
+      "license": "MIT",
+      "copyright": "Amit Gharat (original); modified in this repository",
+      "marker": "This has been modified from the default angular-draganddrop",
+      "licenseText": "licenses/angular-dragdrop.txt"
+    },
+    {
+      "path": "src/vendor/angular/angular-strap.js",
+      "name": "AngularStrap",
+      "version": "0.7.5",
+      "license": "MIT",
+      "copyright": "Olivier Louvignes"
+    },
+    {
+      "path": "src/vendor/angular/datepicker.js",
+      "name": "bootstrap-datepicker",
+      "version": "",
+      "license": "Apache-2.0",
+      "copyright": "Stefan Petre; improvements by Andrew Rowls"
+    },
+    {
+      "path": "src/vendor/angular/timepicker.js",
+      "name": "Timepicker Component for Twitter Bootstrap",
+      "version": "",
+      "license": "MIT",
+      "copyright": "Joris de Wit",
+      "licenseText": "licenses/bootstrap-timepicker.txt"
+    },
+    {
+      "path": "src/vendor/bootstrap/bootstrap.js",
+      "name": "Bootstrap",
+      "version": "2.3.2",
+      "license": "Apache-2.0",
+      "copyright": "Twitter, Inc."
+    },
+    {
+      "path": "src/vendor/d3.js",
+      "name": "D3",
+      "version": "3.4.13",
+      "license": "BSD-3-Clause (the file has no header)",
+      "copyright": "Michael Bostock",
+      "headerless": true,
+      "licenseText": "licenses/d3-3.4.13.txt"
+    },
+    {
+      "path": "src/vendor/d3v5.js",
+      "name": "D3",
+      "version": "5.7.0",
+      "license": "BSD-3-Clause",
+      "copyright": "Mike Bostock",
+      "licenseText": "licenses/d3-5.x-modules.txt"
+    },
+    {
+      "path": "src/vendor/d3-array.js",
+      "name": "d3-array",
+      "version": "1.2.1",
+      "license": "BSD-3-Clause",
+      "copyright": "Mike Bostock",
+      "licenseText": "licenses/d3-5.x-modules.txt"
+    },
+    {
+      "path": "src/vendor/d3-collection.js",
+      "name": "d3-collection",
+      "version": "1.0.4",
+      "license": "BSD-3-Clause",
+      "copyright": "Mike Bostock",
+      "licenseText": "licenses/d3-5.x-modules.txt"
+    },
+    {
+      "path": "src/vendor/d3-dispatch.js",
+      "name": "d3-dispatch",
+      "version": "1.0.5",
+      "license": "BSD-3-Clause",
+      "copyright": "Mike Bostock",
+      "licenseText": "licenses/d3-5.x-modules.txt"
+    },
+    {
+      "path": "src/vendor/d3-force.js",
+      "name": "d3-force",
+      "version": "1.1.2",
+      "license": "BSD-3-Clause",
+      "copyright": "Mike Bostock",
+      "licenseText": "licenses/d3-5.x-modules.txt"
+    },
+    {
+      "path": "src/vendor/d3-path.js",
+      "name": "d3-path",
+      "version": "1.0.5",
+      "license": "BSD-3-Clause",
+      "copyright": "Mike Bostock",
+      "licenseText": "licenses/d3-5.x-modules.txt"
+    },
+    {
+      "path": "src/vendor/d3-quadtree.js",
+      "name": "d3-quadtree",
+      "version": "1.0.5",
+      "license": "BSD-3-Clause",
+      "copyright": "Mike Bostock",
+      "licenseText": "licenses/d3-5.x-modules.txt"
+    },
+    {
+      "path": "src/vendor/d3-sankey.js",
+      "name": "d3-sankey",
+      "version": "0.12.1",
+      "license": "BSD-3-Clause",
+      "copyright": "Mike Bostock",
+      "licenseText": "licenses/d3-5.x-modules.txt"
+    },
+    {
+      "path": "src/vendor/d3-shape.js",
+      "name": "d3-shape",
+      "version": "1.2.0",
+      "license": "BSD-3-Clause",
+      "copyright": "Mike Bostock",
+      "licenseText": "licenses/d3-5.x-modules.txt"
+    },
+    {
+      "path": "src/vendor/d3-timer.js",
+      "name": "d3-timer",
+      "version": "1.0.9",
+      "license": "BSD-3-Clause",
+      "copyright": "Mike Bostock",
+      "licenseText": "licenses/d3-5.x-modules.txt"
+    },
+    {
+      "path": "src/vendor/d3-drag.js",
+      "name": "d3-drag",
+      "version": "1.2.3",
+      "license": "BSD-3-Clause (per the upstream project)",
+      "copyright": "Mike Bostock",
+      "shipped": false
+    },
+    {
+      "path": "src/vendor/elasticjs/elastic.js",
+      "name": "elastic.js",
+      "version": "1.0.0",
+      "license": "MIT",
+      "copyright": "FullScale Labs, LLC"
+    },
+    {
+      "path": "src/vendor/elasticjs/elastic-angular-client.js",
+      "name": "elastic.js (AngularJS client)",
+      "version": "1.0.0",
+      "license": "MIT",
+      "copyright": "FullScale Labs, LLC"
+    },
+    {
+      "path": "src/vendor/solrjs/solr.js",
+      "name": "solr.js (derived from elastic.js)",
+      "version": "1.0.0",
+      "license": "MIT",
+      "copyright": "FullScale Labs, LLC"
+    },
+    {
+      "path": "src/vendor/solrjs/solr-angular-client.js",
+      "name": "solr.js (AngularJS client, derived from elastic.js)",
+      "version": "1.0.0",
+      "license": "MIT",
+      "copyright": "FullScale Labs, LLC"
+    },
+    {
+      "path": "src/vendor/filesaver.js",
+      "name": "FileSaver.js",
+      "version": "2015-05-07.2",
+      "license": "X11/MIT",
+      "copyright": "Eli Grey"
+    },
+    {
+      "path": "src/vendor/jquery/jquery-3.7.1.js",
+      "name": "jQuery",
+      "version": "3.7.1",
+      "license": "MIT",
+      "copyright": "OpenJS Foundation and other contributors"
+    },
+    {
+      "path": "src/vendor/jquery/jquery-ui-1.10.3.js",
+      "name": "jQuery UI",
+      "version": "1.10.3",
+      "license": "MIT",
+      "copyright": "jQuery Foundation and other contributors"
+    },
+    {
+      "path": "src/vendor/jquery/jquery.flot.js",
+      "name": "Flot",
+      "version": "0.8.1",
+      "license": "MIT",
+      "copyright": "IOLA and Ole Laursen"
+    },
+    {
+      "path": "src/vendor/jquery/jquery.flot.pie.js",
+      "name": "Flot plugin: pie",
+      "version": "0.8.1",
+      "license": "MIT",
+      "copyright": "IOLA and Ole Laursen"
+    },
+    {
+      "path": "src/vendor/jquery/jquery.flot.selection.js",
+      "name": "Flot plugin: selection",
+      "version": "0.8.1",
+      "license": "MIT",
+      "copyright": "IOLA and Ole Laursen"
+    },
+    {
+      "path": "src/vendor/jquery/jquery.flot.stack.js",
+      "name": "Flot plugin: stack",
+      "version": "0.8.1",
+      "license": "MIT",
+      "copyright": "IOLA and Ole Laursen"
+    },
+    {
+      "path": "src/vendor/jquery/jquery.flot.time.js",
+      "name": "Flot plugin: time",
+      "version": "0.8.1",
+      "license": "MIT",
+      "copyright": "IOLA and Ole Laursen"
+    },
+    {
+      "path": "src/vendor/jquery/jquery.flot.axislabels.js",
+      "name": "flot-axislabels",
+      "version": "",
+      "license": "MIT (re-released by the original author in 2012)",
+      "copyright": "Xuan Luo"
+    },
+    {
+      "path": "src/vendor/jquery/jquery.flot.stackpercent.js",
+      "name": "Flot plugin: stackpercent",
+      "version": "0.2",
+      "license": "Apache-2.0",
+      "copyright": "Lucidworks, Inc. and Banana contributors"
+    },
+    {
+      "path": "src/vendor/modernizr-2.6.1.js",
+      "name": "Modernizr (custom build)",
+      "version": "2.6.1",
+      "license": "MIT and BSD",
+      "copyright": ""
+    },
+    {
+      "path": "src/vendor/moment.js",
+      "name": "Moment.js",
+      "version": "2.31.0",
+      "license": "MIT",
+      "copyright": "OpenJS Foundation and other contributors"
+    },
+    {
+      "path": "src/vendor/showdown.js",
+      "name": "Showdown",
+      "version": "",
+      "license": "BSD-3-Clause",
+      "copyright": "John Fraser; Markdown is copyright John Gruber",
+      "licenseText": "licenses/showdown.txt"
+    },
+    {
+      "path": "src/vendor/timezone.js",
+      "name": "timezone-js",
+      "version": "",
+      "license": "Apache-2.0",
+      "copyright": "Matthew Eernisse and Open Source Applications Foundation",
+      "shipped": false
+    },
+    {
+      "path": "src/vendor/underscore.js",
+      "name": "Underscore.js",
+      "version": "1.13.8",
+      "license": "MIT",
+      "copyright": "Jeremy Ashkenas, Julian Gonggrijp, and DocumentCloud and Investigative Reporters & Editors"
+    },
+    {
+      "path": "src/vendor/xhr-xdr-adapter.js",
+      "name": "xhr-xdr-adapter",
+      "version": "",
+      "license": "MIT",
+      "copyright": "Intuit Inc."
+    },
+    {
+      "path": "src/app/panels/bar/d3.tip.js",
+      "name": "d3-tip",
+      "version": "",
+      "license": "MIT",
+      "copyright": "Justin Palmer",
+      "licenseText": "licenses/d3-tip.txt"
+    },
+    {
+      "path": "src/app/panels/tagcloud/d3.layout.cloud.js",
+      "name": "d3-cloud (word cloud layout)",
+      "version": "",
+      "license": "BSD-3-Clause",
+      "copyright": "Jason Davies",
+      "marker": "Word cloud layout by Jason Davies",
+      "licenseText": "licenses/d3-cloud.txt"
+    },
+    {
+      "path": "src/app/panels/bettermap/leaflet/leaflet-src.js",
+      "name": "Leaflet",
+      "version": "0.6-dev",
+      "license": "BSD-2-Clause",
+      "copyright": "Vladimir Agafonkin, CloudMade",
+      "licenseText": "licenses/leaflet.txt"
+    },
+    {
+      "path": "src/app/panels/bettermap/leaflet/leaflet.js",
+      "name": "Leaflet (minified)",
+      "version": "0.6-dev",
+      "license": "BSD-2-Clause",
+      "copyright": "Vladimir Agafonkin, CloudMade",
+      "shipped": false
+    },
+    {
+      "path": "src/app/panels/bettermap/leaflet/plugins.js",
+      "name": "Leaflet.markercluster and Leaflet.label",
+      "version": "",
+      "license": "MIT",
+      "copyright": "Dave Leaver, smartrak (markercluster); Jacob Toye, Smartrak (label)",
+      "licenseText": [
+        "licenses/leaflet-markercluster.txt",
+        "licenses/leaflet-label.txt"
+      ]
+    },
+    {
+      "path": "src/app/panels/map/lib/jquery.jvectormap.min.js",
+      "name": "jVectorMap",
+      "version": "1.2.2",
+      "license": "MIT",
+      "copyright": "Kirill Lebedev",
+      "licenseText": "licenses/jvectormap.txt"
+    },
+    {
+      "path": "src/app/panels/text/lib/showdown.js",
+      "name": "Showdown",
+      "version": "",
+      "license": "BSD-3-Clause",
+      "copyright": "John Fraser; Markdown is copyright John Gruber",
+      "licenseText": "licenses/showdown.txt"
+    },
+    {
+      "path": "src/app/panels/map/lib/map.world.js",
+      "name": "Kibana 3 map data: world",
+      "version": "",
+      "license": "Apache-2.0 (as part of Kibana 3; identical to Kibana 3.0.0)",
+      "copyright": "Copyright 2012-2013 Elasticsearch BV"
+    },
+    {
+      "path": "src/app/panels/map/lib/map.europe.js",
+      "name": "Kibana 3 map data: Europe",
+      "version": "",
+      "license": "Apache-2.0 (as part of Kibana 3; identical to Kibana 3.0.0)",
+      "copyright": "Copyright 2012-2013 Elasticsearch BV"
+    },
+    {
+      "path": "src/app/panels/map/lib/map.usa.js",
+      "name": "Kibana 3 map data: USA",
+      "version": "",
+      "license": "Apache-2.0 (as part of Kibana 3; identical to Kibana 3.0.0)",
+      "copyright": "Copyright 2012-2013 Elasticsearch BV"
+    },
+    {
+      "path": "src/app/panels/map/lib/map.japan.js",
+      "name": "Map data for Japan",
+      "version": "",
+      "license": "Public domain (Natural Earth 5.1.2)",
+      "copyright": "none claimed; the data is Natural Earth, https://www.naturalearthdata.com",
+      "licenseText": "licenses/natural-earth.txt"
+    },
+    {
+      "path": "src/app/panels/map/lib/map.world-antarctica.js",
+      "name": "Map data for the world with Antarctica",
+      "version": "",
+      "license": "Public domain (Natural Earth 5.1.2)",
+      "copyright": "none claimed; the data is Natural Earth, https://www.naturalearthdata.com",
+      "licenseText": "licenses/natural-earth.txt"
+    }
+  ],
+  "embedded": [
+    {
+      "name": "Bootswatch Slate 2.3.2 theme (compiled into css/bootstrap.dark.min.css)",
+      "container": "src/css/bootstrap.dark.min.css",
+      "marker": "#272B30",
+      "license": "Apache-2.0",
+      "copyright": "Thomas Park",
+      "licenseText": "licenses/bootswatch-slate.txt"
+    },
+    {
+      "name": "Hammer.JS 2.0.7 (in vis)",
+      "container": "node_modules/vis/dist/vis.js",
+      "marker": "Hammer.JS - v2.0.7",
+      "license": "MIT",
+      "copyright": "Jorik Tangelder",
+      "licenseText": "licenses/vis-bundled-code.txt"
+    },
+    {
+      "name": "Moment.js 2.19.1 (in vis)",
+      "container": "node_modules/vis/dist/vis.js",
+      "marker": "version : 2.19.1",
+      "license": "MIT",
+      "copyright": "JS Foundation and other contributors",
+      "licenseText": "licenses/vis-bundled-code.txt"
+    },
+    {
+      "name": "Levenshtein distance routine (in vis)",
+      "container": "node_modules/vis/dist/vis.js",
+      "marker": "Copyright (c) 2011 Andrei Mackenzie",
+      "license": "MIT",
+      "copyright": "Andrei Mackenzie",
+      "licenseText": "licenses/vis-bundled-code.txt"
+    },
+    {
+      "name": "uuid code (in vis)",
+      "container": "node_modules/vis/dist/vis.js",
+      "marker": "Copyright (c) 2010-2012 Robert Kieffer",
+      "license": "MIT",
+      "copyright": "Robert Kieffer",
+      "licenseText": "licenses/vis-bundled-code.txt"
+    },
+    {
+      "name": "core-js 2.5.1 (in vis)",
+      "container": "node_modules/vis/dist/vis.js",
+      "marker": "__core-js_shared__",
+      "license": "MIT",
+      "copyright": "Denis Pushkarev",
+      "licenseText": "licenses/vis-bundled-code.txt"
+    },
+    {
+      "name": "Babel runtime helpers (in vis)",
+      "container": "node_modules/vis/dist/vis.js",
+      "marker": "_interopRequireDefault",
+      "license": "MIT",
+      "copyright": "Sebastian McKenzie",
+      "licenseText": "licenses/vis-bundled-code.txt"
+    },
+    {
+      "name": "propagating-hammerjs (in vis)",
+      "container": "node_modules/vis/dist/vis.js",
+      "marker": "window.propagating = factory",
+      "license": "MIT",
+      "copyright": "Jos de Jong",
+      "licenseText": "licenses/vis-bundled-code.txt"
+    },
+    {
+      "name": "keycharm 0.2.0 (in vis)",
+      "container": "node_modules/vis/dist/vis.js",
+      "marker": "root.keycharm = factory",
+      "license": "MIT",
+      "copyright": "Almende B.V.",
+      "licenseText": "licenses/vis-bundled-code.txt"
+    },
+    {
+      "name": "emitter-component (in vis)",
+      "container": "node_modules/vis/dist/vis.js",
+      "marker": "Expose `Emitter`",
+      "license": "MIT",
+      "copyright": "Component contributors",
+      "licenseText": "licenses/vis-bundled-code.txt"
+    }
+  ]
+}

@@ -52,6 +52,8 @@ define([
         alignment: 'vertical and horizontal',
         fontScale: 1,
         ignoreStopWords: false,
+        customStopWords: '', // more words to leave out, separated by commas
+        customStopWordsLowercase: true, // lowercase the custom words, as the terms are compared in lowercase
         spyable: true,
         show_queries: true,
         error: '',
@@ -64,6 +66,17 @@ define([
           $scope.get_data();
         });
         $scope.get_data();
+      };
+
+      // The built-in stop words and the panel's own, which are written as "word1,word2,...".
+      $scope.stop_words = function() {
+        var custom = _.filter(_.map(String($scope.panel.customStopWords || '').split(','), function(word) {
+          word = $.trim(word);
+          return $scope.panel.customStopWordsLowercase ? word.toLowerCase() : word;
+        }), function(word) {
+          return word !== '';
+        });
+        return _.uniq(stopwords.concat(custom));
       };
 
       $scope.get_data = function() {
@@ -93,7 +106,7 @@ define([
         var facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size;
 
         // Set the panel's query
-        $scope.panel.queries.query = querySrv.getORquery() + wt_json + rows_limit + fq + facet;
+        $scope.panel.queries.query = querySrv.getOPQuery() + wt_json + rows_limit + fq + facet;
 
         // Set the additional custom query
         if ($scope.panel.queries.custom != null) {
@@ -103,6 +116,8 @@ define([
         }
 
         results = request.doSearch();
+
+        var finalStopWords = $scope.stop_words();
 
         // Populate scope when we have results
         results.then(function(results) {
@@ -130,7 +145,7 @@ define([
               sum += count;
 
               // if ignoreStopWords is enabled, skip this term.
-              if ($scope.panel.ignoreStopWords && stopwords.indexOf(term.toLowerCase()) > -1) {
+              if ($scope.panel.ignoreStopWords && finalStopWords.indexOf(term.toLowerCase()) > -1) {
                 continue;
               }
 
@@ -154,6 +169,9 @@ define([
             }
           });
           $scope.$emit('render');
+        }, function (response) {
+          $scope.panel.error = $scope.request_error(response);
+          $scope.panelMeta.loading = false;
         });
       };
 

@@ -2,9 +2,10 @@ define([
   'angular',
   'underscore',
   'config',
-  'moment'
+  'moment',
+  'kbn'
 ],
-function (angular, _, config, moment) {
+function (angular, _, config, moment, kbn) {
   'use strict';
 
   var DEBUG = false; // DEBUG mode
@@ -42,54 +43,58 @@ function (angular, _, config, moment) {
     };
 
     function all_collections(solrServer) {
-      var collectionApi;
-
       // Remove trailing slash in solrServer
       solrServer = solrServer.replace(/\/$/, '');
 
-      // Check if use Fusion or Solr
+      // Fusion lists its collections through its own API.
       if (config.USE_FUSION) {
-        collectionApi = config.FUSION_API_COLLECTIONS;
-      } else {
-        // Getting Solr collection names
-        if (config.USE_ADMIN_CORES) {
-          collectionApi = solrServer + '/admin/cores?action=STATUS&wt=json&omitHeader=true';
-        } else {
-          // admin API is disabled, then we cannot retrieve the collection list from Solr.
-          // return an empty list
-          return new Promise(function(resolve) {
-            resolve([]);
-          });
-        }
+        return list_collections(config.FUSION_API_COLLECTIONS, function (data) {
+          return _.map(data, function (v) { return v.id; });
+        }, true);
       }
 
+      if (!config.USE_ADMIN_CORES) {
+        // admin API is disabled, then we cannot retrieve the collection list from Solr.
+        // return an empty list
+        return new Promise(function(resolve) {
+          resolve([]);
+        });
+      }
+
+      // SolrCloud answers the Collections API. A standalone Solr does not have it, so the list falls
+      // back to the CoreAdmin API, which is the one Banana used before the Collections API was added.
+      // The error is shown only when that fails too.
+      return list_collections(solrServer + '/admin/collections?action=LIST&wt=json&omitHeader=true', function (data) {
+        return _.values(data.collections);
+      }, false).then(null, function () {
+        return list_collections(solrServer + '/admin/cores?action=STATUS&wt=json&omitHeader=true', function (data) {
+          return _.keys(data.status);
+        }, true);
+      });
+    }
+
+    // Requests one listing and returns a promise of the array of names that parse makes of the response
+    // body. When the request fails the promise is rejected, and the error is shown if showError is true.
+    function list_collections(url, parse, showError) {
       var promise = $http({
         // Use Solr Admin handler to get the list of all collections.
         // two hacks here: we're stripping the trailing "/" from the URL so the call is /solrAdmin/ instead of /solr/
         // And we're hard-coding the "default" search cluster ...that's the only one we'll get collections for, and it
         // is not yet configurable.
-        url: collectionApi,
+        url: url,
         method: "GET"
-      }).error(function(data, status) {
-        alertSrv.set('Error',"Could not retrieve collections from Solr (error status = "+status+")");
-        console.debug('kbnIndex: error data = ',data);
       });
 
-      return promise.then(function (p) {
-        // Parse Solr response to an array of collections
-        var collections = [];
+      if (showError) {
+        promise.error(function(data, status) {
+          alertSrv.set('Error',"Could not retrieve collections from Solr (error status = "+kbn.escapeHtml(status)+")");
+          console.debug('kbnIndex: error data = ',data);
+        });
+      }
 
-        if (p) {
-          if (config.USE_FUSION) {
-            _.each(p.data, function(v) {
-              collections.push(v.id);
-            });
-          } else {
-            _.each(p.data.status, function(v,k) {
-              collections.push(k);
-            });
-          }
-        }
+      return promise.then(function (p) {
+        // Parse the response to an array of collections
+        var collections = p ? parse(p.data) : [];
         if (DEBUG) { console.debug('kbnIndex: all_collections response p = ',p,'collections = ',collections); }
         return collections;
       });
@@ -122,10 +127,10 @@ function (angular, _, config, moment) {
         method: "GET"
       }).error(function(data, status) {
         if(status === 0) {
-          alertSrv.set('Error',"Could not contact Solr at "+config.solr+
+          alertSrv.set('Error',"Could not contact Solr at "+kbn.escapeHtml(config.solr)+
             ". Please ensure that Solr is reachable from your system." ,'error');
         } else {
-          alertSrv.set('Error',"Could not reach "+config.solr+". If you"+
+          alertSrv.set('Error',"Could not reach "+kbn.escapeHtml(config.solr)+". If you"+
           " are using a proxy, ensure it is configured correctly",'error');
         }
       });
@@ -181,19 +186,19 @@ function (angular, _, config, moment) {
           range.push(start.clone());
           switch (interval) {
           case 'hour':
-            start.add('hours',1);
+            start.add(1, 'hours');
             break;
           case 'day':
-            start.add('days',1);
+            start.add(1, 'days');
             break;
           case 'week':
-            start.add('weeks',1);
+            start.add(1, 'weeks');
             break;
           case 'month':
-            start.add('months',1);
+            start.add(1, 'months');
             break;
           case 'year':
-            start.add('years',1);
+            start.add(1, 'years');
             break;
           }
         }

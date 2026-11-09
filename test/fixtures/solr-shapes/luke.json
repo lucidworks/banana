@@ -1,0 +1,44 @@
+{
+  "source": "derived",
+  "note": "Derived from the recorded schema fields: the Luke handler documents this shape (fields keyed by name, each with a type and a schema string). The schema flags are a stand-in. Not observed on a server.",
+  "response": {
+    "status": 200,
+    "contentType": "application/json",
+    "body": {
+      "responseHeader": {
+        "status": 0,
+        "QTime": 1
+      },
+      "index": {
+        "numDocs": 240
+      },
+      "fields": {
+        "_nest_path_": {
+          "type": "_nest_path_",
+          "schema": "I-S-----------"
+        },
+        "_raw_content_": {
+          "type": "binary",
+          "schema": "I-S-----------"
+        },
+        "_root_": {
+          "type": "string",
+          "schema": "I-S-----------"
+        },
+        "_text_": {
+          "type": "text_general",
+          "schema": "I-S-----------"
+        },
+        "_version_": {
+          "type": "plong",
+          "schema": "I-S-----------"
+        },
+        "id": {
+          "type": "string",
+          "schema": "I-S-----------"
+        }
+      }
+    }
+  },
+  "derivedFrom": "solr-shapes/schema-fields (recorded through the Solr proxy)"
+}

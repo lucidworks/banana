@@ -397,6 +397,193 @@ function($, _) {
 
 
   /**
+   * Escape a value for use inside HTML text, for messages that are shown as HTML (alerts are).
+   * Use it on anything that comes from a request, the address bar or a dashboard file.
+   *
+   * @param  {*} value
+   * @return {String}
+   */
+  kbn.escapeHtml = function(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  };
+
+  /**
+   * Like escapeHtml for a label option that may be empty: a missing or empty value is passed through, so
+   * the label stays empty instead of showing "undefined".
+   */
+  kbn.escapeLabel = function(value) {
+    return value ? kbn.escapeHtml(value) : value;
+  };
+
+  /**
+   * Escape a text for display as HTML, except for the exact highlight tags that Solr was asked to wrap
+   * around matches. Everything else, including any other markup in the document, becomes plain text.
+   *
+   * The result is meant for a binding that sanitizes (ng-bind-html), which is a second line of defence in
+   * case the configured tags themselves hold something unwanted.
+   *
+   * @param  {*}      text  Text from a document or a highlighting response; an array is joined without a separator
+   * @param  {String} pre   The tag Solr puts before a match (hl.simple.pre)
+   * @param  {String} post  The tag Solr puts after a match (hl.simple.post)
+   * @return {String}
+   */
+  kbn.highlightHtml = function(text, pre, post) {
+    if (_.isUndefined(text) || _.isNull(text)) {
+      return '';
+    }
+    text = _.isArray(text) ? text.join('') : String(text);
+
+    // Longest first, so that a tag that starts with another tag is found whole.
+    var tags = _.sortBy(_.uniq(_.filter([pre, post], function(tag) {
+      return _.isString(tag) && tag.length > 0;
+    })), function(tag) {
+      return -tag.length;
+    });
+    if (tags.length === 0) {
+      return kbn.escapeHtml(text);
+    }
+
+    var pattern = new RegExp(_.map(tags, function(tag) {
+      return tag.replace(/[\-\[\]\/{}()*+?.\\^$|]/g, '\\$&');
+    }).join('|'), 'g');
+    var out = '';
+    var last = 0;
+    var match;
+    while ((match = pattern.exec(text)) !== null) {
+      out += kbn.escapeHtml(text.substring(last, match.index)) + match[0];
+      last = match.index + match[0].length;
+    }
+    return out + kbn.escapeHtml(text.substring(last));
+  };
+
+  /**
+   * Whether a URL from data may be written into a link or an image.
+   *
+   * A URL with a scheme must use one of the given schemes. A URL without a scheme (a relative address or a
+   * "#" anchor) cannot run script and is allowed. Control characters and spaces are removed before the
+   * scheme is read. Browsers drop less than that (only tabs and newlines inside a URL, and leading and
+   * trailing control characters and spaces), so the check errs on the safe side.
+   *
+   * @param  {*}      url
+   * @param  {Array}  schemes  Allowed schemes in lower case, for example ['http', 'https']
+   * @param  {Boolean} dataImages  Also allow a data: URL that holds an image
+   * @return {Boolean}
+   */
+  kbn.isSafeUrl = function(url, schemes, dataImages) {
+    var compact = String(url).replace(/[\u0000-\u0020\u007f-\u009f]/g, '');
+    var scheme = /^([a-z][a-z0-9+.\-]*):/i.exec(compact);
+    if (!scheme) {
+      return true;
+    }
+    scheme = scheme[1].toLowerCase();
+    if (_.contains(schemes, scheme)) {
+      return true;
+    }
+    return !!dataImages && /^data:image\/(png|jpe?g|gif|webp|bmp|x-icon|svg\+xml)[;,]/i.test(compact);
+  };
+
+  /**
+   * The label of a pie slice, as the HTML that flot's pie plugin appends to the page. The label is a
+   * term from the documents, so it is escaped.
+   *
+   * @param  {*}      label
+   * @param  {Object} series  The flot series; its percent is shown under the label
+   * @return {String}
+   */
+  kbn.pieLabelHtml = function(label, series) {
+    var text = kbn.escapeHtml(label);
+    return '<div ng-click="build_search(panel.field,\'' + text + '\')' +
+      ' "style="font-size:8pt;text-align:center;padding:2px;color:white;">' +
+      text + '<br/>' + Math.round(series.percent) + '%</div>';
+  };
+
+  // What the markdown converter produces, and nothing else. Anything outside this list is removed
+  // (script and similar with their content, other elements with their tags only).
+  var markdownTags = {
+    a: ['href', 'title'],
+    blockquote: [],
+    br: [],
+    code: ['class'],
+    em: [],
+    h1: ['id'], h2: ['id'], h3: ['id'], h4: ['id'], h5: ['id'], h6: ['id'],
+    hr: [],
+    img: ['src', 'alt', 'title'],
+    li: [],
+    ol: [],
+    p: [],
+    pre: [],
+    strong: [],
+    ul: []
+  };
+  var markdownDropWithContent = ['script', 'style', 'iframe', 'object', 'embed', 'applet', 'noscript', 'template', 'svg', 'math', 'title', 'head'];
+  var markdownTokenAttr = { id: true, 'class': true };
+
+  /**
+   * Make the HTML that the markdown converter produced safe to insert into the page.
+   *
+   * The converter writes a link or image address into its attribute without checking the scheme, and
+   * without escaping a double quote, so "[x](javascript:alert(1))" and "[x](a&quot; onmouseover=...)"
+   * would otherwise run script. The HTML is parsed in a document that never runs script or loads images,
+   * reduced to the elements and attributes above, and written out again. Links may use http, https and
+   * mailto, images http, https and data:image; an address without a scheme is kept.
+   *
+   * @param  {String} html
+   * @return {String}
+   */
+  kbn.safeMarkdownHtml = function(html) {
+    var doc = document.implementation.createHTMLDocument('');
+    var body = doc.body;
+    body.innerHTML = html;
+
+    var clean = function(node) {
+      _.each(_.toArray(node.childNodes), function(child) {
+        if (child.nodeType === 3) {
+          return;
+        }
+        if (child.nodeType !== 1) {
+          node.removeChild(child);
+          return;
+        }
+        var tag = child.nodeName.toLowerCase();
+        if (!markdownTags.hasOwnProperty(tag)) {
+          if (!_.contains(markdownDropWithContent, tag)) {
+            clean(child);
+            while (child.firstChild) {
+              node.insertBefore(child.firstChild, child);
+            }
+          }
+          node.removeChild(child);
+          return;
+        }
+        _.each(_.toArray(child.attributes), function(attr) {
+          var name = attr.name.toLowerCase();
+          var value = attr.value;
+          var keep = _.contains(markdownTags[tag], name);
+          if (keep && markdownTokenAttr[name]) {
+            keep = /^[A-Za-z0-9_:.\-]+$/.test(value);
+          }
+          if (keep && (name === 'href' || name === 'src')) {
+            keep = tag === 'a' ?
+              kbn.isSafeUrl(value, ['http', 'https', 'mailto'], false) :
+              kbn.isSafeUrl(value, ['http', 'https'], true);
+          }
+          if (!keep) {
+            child.removeAttribute(attr.name);
+          }
+        });
+        clean(child);
+      });
+    };
+    clean(body);
+    return body.innerHTML;
+  };
+
+  /**
    * Sanitize string for displaying in the document by replacing characters with appropriate values for  "<",">","&","<del>","</del>", & whitespace
    *
    * @param  {String} value
@@ -446,6 +633,33 @@ function($, _) {
   };
 
   /**
+   * A colour from a dashboard or a document, in a form that is safe to write into an attribute, or an empty
+   * string. The browser parses the value (so a comment is removed and "#7EB26D" becomes "rgb(126, 178, 109)"),
+   * and the result is kept only if it is a colour name, or rgb(), rgba(), hsl() or hsla() with plain numbers.
+   * Browsers keep a value that holds var() or env() exactly as written, strings and quotes included, so a value
+   * with those, a quote, a backslash or an angle bracket is refused before it is parsed, and nothing else the
+   * browser keeps verbatim (calc(), attr(), color-mix(), custom properties) matches the pattern. (A slash form such
+   * as "rgb(0 0 0 / 50%)" is read by the browser as rgba() and passes; the terms panels refuse it earlier.)
+   *
+   * @param  {*} value
+   * @return {String}
+   */
+  kbn.safeColor = function(value) {
+    if (!_.isString(value) && !_.isNumber(value)) {
+      return '';
+    }
+    var text = String(value);
+    if (/var\(|env\(|["'`\\<>]/i.test(text)) {
+      return '';
+    }
+    var probe = document.createElement('i');
+    probe.style.color = text;
+    var parsed = probe.style.color;
+    var plain = /^(#[0-9a-f]{3,8}|[a-z]+|(rgb|rgba|hsl|hsla)\(\s*[0-9.]+%?(deg)?(\s*,\s*[0-9.]+%?){2,3}\s*\))$/i;
+    return plain.test(parsed) ? parsed : '';
+  };
+
+  /**
    * Generate HTML markup for the colored bullet associated with a query term
    *
    * @param {String} color      CSS/HTML color declaration for the dot
@@ -455,8 +669,8 @@ function($, _) {
   kbn.query_color_dot = function (color, diameter) {
     return '<div class="icon-circle" style="' + [
         'display:inline-block',
-        'color:' + color,
-        'font-size:' + diameter + 'px',
+        'color:' + kbn.escapeHtml(kbn.safeColor(color)),
+        'font-size:' + (parseFloat(diameter) || 0) + 'px',
       ].join(';') + '"></div>';
   };
 

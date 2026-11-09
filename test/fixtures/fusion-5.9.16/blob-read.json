@@ -1,0 +1,22 @@
+{
+  "source": "recorded",
+  "fusionVersion": "5.9.16",
+  "recordedRequest": {
+    "method": "GET",
+    "path": "/api/blobs/banana-it-000000000000-1"
+  },
+  "response": {
+    "status": 200,
+    "contentType": "application/json;charset=utf-8",
+    "body": [
+      {
+        "id": "banana-it-000000000000-1",
+        "banana_user_s": "banana-it",
+        "banana_group_s": "none",
+        "banana_title_s": "banana-it-000000000000-1",
+        "banana_dashboard_s": "{\"title\":\"banana-it-000000000000-1\",\"style\":\"dark\",\"rows\":[],\"solr\":{\"server\":\"/api/query-pipelines/_system/collections/\",\"core_name\":\"banana-it-logs\"}}",
+        "is_public_b": false
+      }
+    ]
+  }
+}

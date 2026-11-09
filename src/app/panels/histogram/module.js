@@ -449,6 +449,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
             // Tell the histogram directive to render.
             $scope.$emit('render');
           // }
+        }, function (response) {
+          $scope.panel.error = $scope.request_error(response);
+          $scope.panelMeta.loading = false;
         });
       }
     };
@@ -582,7 +585,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 show: scope.panel['y-axis'],
                 min: null, // TODO - make this adjusted dynamicmally, and add it to configuration panel
                 max: scope.panel.percentage && scope.panel.stack ? 100 : null,
-                axisLabel: scope.panel.mode,
+                axisLabel: kbn.escapeLabel(scope.panel.mode),
               },
               xaxis: {
                 timezone: scope.panel.timezone,
@@ -592,7 +595,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
                 max: _.isUndefined(scope.range.to) ? null : scope.range.to.getTime(),
                 timeformat: time_format(scope.panel.interval),
                 label: "Datetime",
-                axisLabel: filterSrv.getTimeField(),
+                axisLabel: kbn.escapeLabel(filterSrv.getTimeField()),
               },
               grid: {
                 backgroundColor: null,
@@ -667,8 +670,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
           if (item) {
             if (item.series.info.alias || scope.panel.tooltip.query_as_alias) {
               group = '<small style="font-size:0.9em;">' +
-                '<i class="icon-circle" style="color:'+item.series.color+';"></i>' + ' ' +
-                (item.series.info.alias || item.series.info.query)+
+                '<i class="icon-circle" style="color:'+kbn.escapeHtml(kbn.safeColor(item.series.color))+';"></i>' + ' ' +
+                kbn.escapeHtml(item.series.info.alias || item.series.info.query)+
               '</small><br>';
             } else {
               group = kbn.query_color_dot(item.series.color, 15) + ' ';
@@ -735,8 +738,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
 
                   if (s.info.alias || scope.panel.tooltip.query_as_alias) {
                     group = '<small style="font-size:0.9em;">' +
-                        '<i class="icon-circle" style="color:'+s.color+';"></i>' + ' ' +
-                        (s.info.alias || s.info.query)+
+                        '<i class="icon-circle" style="color:'+kbn.escapeHtml(kbn.safeColor(s.color))+';"></i>' + ' ' +
+                        kbn.escapeHtml(s.info.alias || s.info.query)+
                         '</small><br>';
                   } else {
                     group = kbn.query_color_dot(s.color, 15) + ' ';

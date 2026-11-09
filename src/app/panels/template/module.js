@@ -7,9 +7,10 @@ define([
   'app',
   'underscore',
   'jquery',
-  'd3'
+  'd3',
+  'components/csv-rows'
 ],
-function (angular, app, _, $, d3) {
+function (angular, app, _, $, d3, csvRows) {
   'use strict';
 
   var module = angular.module('kibana.panels.bar', []);
@@ -107,13 +108,16 @@ function (angular, app, _, $, d3) {
       results.then(function(results) {
         $scope.data = {};
 
-        var parsedResults = d3.csv.parse(results, function(d) {
+        var parsedResults = csvRows.parse(results, function(d) {
           d[$scope.panel.field] = +d[$scope.panel.field]; // coerce to number
           return d;
         });
 
         $scope.data = _.pluck(parsedResults,$scope.panel.field);
         $scope.render();
+      }, function (response) {
+        $scope.panel.error = $scope.request_error(response);
+        $scope.panelMeta.loading = false;
       });
 
       // Hide the spinning wheel icon

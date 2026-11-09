@@ -9,9 +9,10 @@ define([
   'angular',
   'app',
   'underscore',
+  'kbn',
   'require'
 ],
-function (angular, app, _, require) {
+function (angular, app, _, kbn, require) {
   'use strict';
 
   var module = angular.module('kibana.panels.text', []);
@@ -53,7 +54,9 @@ function (angular, app, _, require) {
             var text = scope.panel.content.replace(/&/g, '&amp;')
               .replace(/>/g, '&gt;')
               .replace(/</g, '&lt;');
-            var htmlText = converter.makeHtml(text);
+            // The converter does not check the address of a link or image, so what it wrote is reduced
+            // to safe elements, attributes and address schemes.
+            var htmlText = kbn.safeMarkdownHtml(converter.makeHtml(text));
             element.html(htmlText);
             // For whatever reason, this fixes chrome. I don't like it, I think
             // it makes things slow?

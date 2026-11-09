@@ -1,0 +1,135 @@
+{
+  "note": "Titles of saved dashboards and the text encodeURIComponent makes of each: the path segment that names the dashboard in the Fusion blob store. The unit tests of the dashboard service and the tests of the live-test client both read this file, so the two cannot drift apart. 'refused' lists titles that the blob path cannot carry.",
+  "ids": [
+    {
+      "label": "plain",
+      "id": "banana-it-000000000000-1",
+      "encoded": "banana-it-000000000000-1"
+    },
+    {
+      "label": "slash",
+      "id": "a/b",
+      "encoded": "a%2Fb"
+    },
+    {
+      "label": "question mark",
+      "id": "q?x",
+      "encoded": "q%3Fx"
+    },
+    {
+      "label": "hash",
+      "id": "q#y",
+      "encoded": "q%23y"
+    },
+    {
+      "label": "space",
+      "id": "new title",
+      "encoded": "new%20title"
+    },
+    {
+      "label": "ampersand",
+      "id": "a&b",
+      "encoded": "a%26b"
+    },
+    {
+      "label": "double quote",
+      "id": "a\"b",
+      "encoded": "a%22b"
+    },
+    {
+      "label": "less than",
+      "id": "a<b",
+      "encoded": "a%3Cb"
+    },
+    {
+      "label": "greater than",
+      "id": "a>b",
+      "encoded": "a%3Eb"
+    },
+    {
+      "label": "apostrophe",
+      "id": "a'b",
+      "encoded": "a'b"
+    },
+    {
+      "label": "plus",
+      "id": "a+b",
+      "encoded": "a%2Bb"
+    },
+    {
+      "label": "non-ASCII",
+      "id": "caf\u00e9 \u4eea\u8868",
+      "encoded": "caf%C3%A9%20%E4%BB%AA%E8%A1%A8"
+    }
+  ],
+  "refused": [
+    {
+      "label": "percent sign",
+      "id": "a%b"
+    },
+    {
+      "label": "percent escape",
+      "id": "a%2Fb"
+    },
+    {
+      "label": "semicolon",
+      "id": "a;b"
+    },
+    {
+      "label": "backslash",
+      "id": "a\\b"
+    },
+    {
+      "label": "NUL",
+      "id": "a\u0000b"
+    },
+    {
+      "label": "control character",
+      "id": "a\u001fb"
+    },
+    {
+      "label": "DEL",
+      "id": "a\u007fb"
+    },
+    {
+      "label": "lone high surrogate",
+      "id": "a\ud800b"
+    },
+    {
+      "label": "lone low surrogate",
+      "id": "a\udc00b"
+    },
+    {
+      "label": "dot",
+      "id": "."
+    },
+    {
+      "label": "dot dot",
+      "id": ".."
+    },
+    {
+      "label": "dot dot segment",
+      "id": "a/../b"
+    },
+    {
+      "label": "dot segment",
+      "id": "a/./b"
+    },
+    {
+      "label": "double slash",
+      "id": "a//b"
+    },
+    {
+      "label": "leading slash",
+      "id": "/a"
+    },
+    {
+      "label": "trailing slash",
+      "id": "a/"
+    },
+    {
+      "label": "empty",
+      "id": ""
+    }
+  ]
+}

@@ -1,0 +1,417 @@
+#!/bin/sh
+# Container start-up: validates the environment, renders the runtime configuration into the
+# writable directory /run/banana, checks Fusion once, and runs nginx in the foreground.
+# Nothing here reads or stores a Fusion credential; the container has none.
+set -eu
+LIB=${BANANA_LIB_DIR:-/usr/local/lib/banana}
+RUN=/run/banana
+. "$LIB/common.sh"
+
+NL='
+'
+
+# ---------------------------------------------------------------- origins and lists
+
+# parse_origin NAME VALUE: splits scheme://host[:port] into PO_SCHEME, PO_HOST, PO_PORT (empty for the
+# default port), PO_DEFPORT, PO_HOSTHDR (host[:port], what a Host header carries) and PO_ORIGIN.
+# Scheme and host are lower-cased and a default port is dropped, so equal origins compare equal.
+parse_origin() {
+  _name=$1
+  _v=$(lower "$2")
+  case $_v in
+    https://*) PO_SCHEME=https PO_DEFPORT=443 _rest=${_v#https://} ;;
+    http://*) PO_SCHEME=http PO_DEFPORT=80 _rest=${_v#http://} ;;
+    *) die "$_name must start with http:// or https://" ;;
+  esac
+  printf '%s' "$_rest" | grep -Eq '^[a-z0-9._-]+(:[0-9]{1,5})?$' ||
+    die "$_name must be scheme://host[:port], with no path, query, user name or trailing slash, and a host name or IPv4 address"
+  PO_HOST=${_rest%%:*}
+  PO_PORT=
+  case $_rest in
+    *:*)
+      PO_PORT=$(printf '%s' "${_rest##*:}" | sed 's/^0*//')
+      [ -n "$PO_PORT" ] && [ "$PO_PORT" -le 65535 ] || die "$_name has a port outside 1 to 65535"
+      if [ "$PO_PORT" = "$PO_DEFPORT" ]; then
+        PO_PORT=
+      fi
+      ;;
+  esac
+  PO_HOSTHDR=$PO_HOST${PO_PORT:+:$PO_PORT}
+  PO_ORIGIN=$PO_SCHEME://$PO_HOSTHDR
+}
+
+re_escape() {
+  printf '%s' "$1" | sed 's/[.]/\\./g'
+}
+
+# host_regex HOST PORT DEFPORT: matches a Host header for HOST (a missing port means the default port).
+host_regex() {
+  if [ -n "$2" ]; then
+    printf '%s:%s' "$(re_escape "$1")" "$2"
+  else
+    printf '%s(:%s)?' "$(re_escape "$1")" "$3"
+  fi
+}
+
+# split_list VALUE: the comma-separated entries, trimmed, one per line, empty entries dropped.
+split_list() {
+  printf '%s' "$1" | tr ',' '\n' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' | sed '/^$/d'
+}
+
+# ---------------------------------------------------------------- the environment
+
+[ -n "${FUSION_URL:-}" ] || die "FUSION_URL is not set (the Fusion origin, for example https://fusion.example.com)"
+[ -n "${BANANA_PUBLIC_ORIGIN:-}" ] || die "BANANA_PUBLIC_ORIGIN is not set (the address people use to open Banana, for example https://banana.example.com)"
+
+preset=$(lower "${BANANA_PRESET:-fusion}")
+case $preset in
+  fusion) ;;
+  solr) die "BANANA_PRESET=solr is not supported by this image: it proxies one Fusion gateway. Use the Solr preset (config.solr.js) with a static host instead" ;;
+  *) die "BANANA_PRESET must be fusion" ;;
+esac
+
+insecure=$(on_off BANANA_INSECURE_COOKIES off)
+admin_mount=$(on_off BANANA_ADMIN_MOUNT off)
+admin_ui=$(on_off FUSION_PROXY_ADMIN_UI on)
+tls_verify=$(on_off FUSION_TLS_VERIFY on)
+hsts=$(on_off BANANA_HSTS off)
+health_upstream=$(on_off BANANA_HEALTH_UPSTREAM off)
+csp_mode=$(lower "${BANANA_CSP_MODE:-enforce}")
+case $csp_mode in enforce | report-only) ;; *) die "BANANA_CSP_MODE must be enforce or report-only" ;; esac
+preflight=$(lower "${BANANA_PREFLIGHT:-warn}")
+case $preflight in warn | strict) ;; *) die "BANANA_PREFLIGHT must be warn or strict" ;; esac
+
+parse_origin FUSION_URL "$FUSION_URL"
+FUSION_SCHEME=$PO_SCHEME FUSION_HOST=$PO_HOST FUSION_PORT=$PO_PORT FUSION_HOSTHDR=$PO_HOSTHDR FUSION_ORIGIN=$PO_ORIGIN
+if [ "$FUSION_SCHEME" = http ] && [ "$insecure" != on ]; then
+  die "FUSION_URL is http://. The gateway marks the session cookie Secure only for https, so people could not stay logged in. Use an https FUSION_URL, or set BANANA_INSECURE_COOKIES=on for local development only"
+fi
+
+if [ "$FUSION_SCHEME" = https ] && [ "$tls_verify" = on ] && printf '%s' "$FUSION_HOST" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'; then
+  die "FUSION_URL names an IP address over https with FUSION_TLS_VERIFY=on. The web server checks the certificate against host names only, so every proxied request would fail with 502 even though the start-up check could succeed. Use a DNS name that the certificate carries. The other way through is FUSION_TLS_VERIFY=off, which stops checking Fusion's certificate at all, so anyone who can intercept the connection can read the session cookies that pass through"
+fi
+
+parse_origin BANANA_PUBLIC_ORIGIN "$BANANA_PUBLIC_ORIGIN"
+PUBLIC_SCHEME=$PO_SCHEME PUBLIC_HOST=$PO_HOST PUBLIC_PORT=$PO_PORT PUBLIC_DEFPORT=$PO_DEFPORT PUBLIC_ORIGIN=$PO_ORIGIN
+
+# Origins accepted as this container's own: the public one and BANANA_ALLOWED_ORIGINS.
+origin_entries="  \"~*^$PUBLIC_SCHEME://$(host_regex "$PUBLIC_HOST" "$PUBLIC_PORT" "$PUBLIC_DEFPORT")\$\" 1;$NL"
+host_entries="  \"~*^$(host_regex "$PUBLIC_HOST" "$PUBLIC_PORT" "$PUBLIC_DEFPORT")\$\" public;$NL"
+for entry in $(split_list "${BANANA_ALLOWED_ORIGINS:-}"); do
+  parse_origin BANANA_ALLOWED_ORIGINS "$entry"
+  origin_entries="$origin_entries  \"~*^$PO_SCHEME://$(host_regex "$PO_HOST" "$PO_PORT" "$PO_DEFPORT")\$\" 1;$NL"
+  host_entries="$host_entries  \"~*^$(host_regex "$PO_HOST" "$PO_PORT" "$PO_DEFPORT")\$\" public;$NL"
+done
+# Host names that are known aliases of the public address: GET and HEAD are redirected to it.
+for entry in $(split_list "${BANANA_REDIRECT_HOSTS:-}"); do
+  entry=$(lower "$entry")
+  printf '%s' "$entry" | grep -Eq '^[a-z0-9._-]+(:[0-9]{1,5})?$' ||
+    die "BANANA_REDIRECT_HOSTS entries must be a host name or host:port"
+  rh_host=${entry%%:*}
+  rh_port=
+  case $entry in
+    *:*)
+      rh_port=$(printf '%s' "${entry##*:}" | sed 's/^0*//')
+      [ -n "$rh_port" ] && [ "$rh_port" -le 65535 ] || die "BANANA_REDIRECT_HOSTS has a port outside 1 to 65535"
+      [ "$rh_port" != "$PUBLIC_DEFPORT" ] || rh_port=
+      ;;
+  esac
+  host_entries="$host_entries  \"~*^$(host_regex "$rh_host" "$rh_port" "$PUBLIC_DEFPORT")\$\" redirect;$NL"
+done
+
+# ---------------------------------------------------------------- admin route, mount, login URL
+
+if [ "$admin_mount" = on ] && [ "$admin_ui" = off ]; then
+  die "BANANA_ADMIN_MOUNT=on needs the admin route: it reproduces Fusion's /admin/banana/ layout. Do not set FUSION_PROXY_ADMIN_UI=off with it"
+fi
+login_url=${FUSION_LOGIN_URL:-/auth/login}
+if [ "$admin_ui" = off ]; then
+  case $(lower "$login_url") in
+    /admin | /admin/*) die "FUSION_LOGIN_URL=$login_url is under /admin/, which FUSION_PROXY_ADMIN_UI=off turns off, so every expired session would loop to a 404" ;;
+  esac
+fi
+
+# ---------------------------------------------------------------- headers that are removed or added
+
+strip_names="X-Remote-User X-Forwarded-User Remote-User X-Remote-Groups X-Forwarded-Groups X-Auth-Request-User X-Auth-Request-Email X-Auth-Request-Groups"
+for name in $(split_list "${BANANA_STRIP_HEADERS:-}"); do
+  printf '%s' "$name" | grep -Eq '^[A-Za-z0-9_-]+$' ||
+    die "BANANA_STRIP_HEADERS has a name that is not a plain header name (letters, digits, - and _): $name"
+  strip_names="$strip_names $name"
+done
+
+# Sources an operator may add to the content policy (a keyword such as 'unsafe-eval' cannot be added).
+# csp_extra NAME: checks the sources in the variable NAME and leaves them, space separated, in CSP_EXTRA.
+csp_extra() {
+  CSP_EXTRA=''
+  for _src in $(printf '%s' "$(eval "printf '%s' \"\${$1:-}\"")" | tr ',' ' '); do
+    printf '%s' "$_src" | grep -Eq '^[A-Za-z0-9*:/._-]+$' ||
+      die "$1 has a source that is not a plain host or scheme source: $_src"
+    CSP_EXTRA="$CSP_EXTRA $_src"
+  done
+}
+csp_extra BANANA_CSP_SCRIPT_SRC; csp_script=$CSP_EXTRA
+csp_extra BANANA_CSP_STYLE_SRC; csp_style=$CSP_EXTRA
+csp_extra BANANA_CSP_IMG_SRC; csp_img=$CSP_EXTRA
+csp_extra BANANA_CSP_FONT_SRC; csp_font=$CSP_EXTRA
+csp_extra BANANA_CSP_CONNECT_SRC; csp_connect=$CSP_EXTRA
+csp="default-src 'self'; script-src 'self' https://api.github.com$csp_script; style-src 'self' 'unsafe-inline'$csp_style; img-src 'self' data: blob: https://*.tile.osm.org http://*.tile.osm.org$csp_img; font-src 'self' data:$csp_font; connect-src 'self' https://api.github.com$csp_connect; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+csp_header=Content-Security-Policy
+[ "$csp_mode" != report-only ] || csp_header=Content-Security-Policy-Report-Only
+
+# ---------------------------------------------------------------- TLS towards Fusion
+
+ca_file=${FUSION_CA_FILE:-}
+if [ -n "$ca_file" ]; then
+  printf '%s' "$ca_file" | grep -Eq '^/[A-Za-z0-9._/-]+$' || die "FUSION_CA_FILE must be an absolute path"
+  [ -r "$ca_file" ] || die "FUSION_CA_FILE ($ca_file) is not a readable file"
+fi
+trusted_ca=${ca_file:-/etc/ssl/certs/ca-certificates.crt}
+
+# ---------------------------------------------------------------- the live-test digest header
+
+digest_conf=''
+if [ -n "${BANANA_LIVE_DIGEST_KEY:-}" ]; then
+  printf '%s' "$BANANA_LIVE_DIGEST_KEY" | grep -Eq '^[0-9a-f]{64}$' || die "BANANA_LIVE_DIGEST_KEY is malformed"
+  digest=$(hmac_sha256 "$BANANA_LIVE_DIGEST_KEY" "$FUSION_ORIGIN")
+  digest_conf="add_header X-Banana-Upstream-Digest \"$digest\" always;"
+fi
+# The key is not needed again, and nothing started from here on should hold it.
+unset BANANA_LIVE_DIGEST_KEY
+
+# ---------------------------------------------------------------- name server for nginx
+
+nameservers=$(awk '$1 == "nameserver" { if ($2 ~ /:/) print "[" $2 "]"; else print $2 }' /etc/resolv.conf | tr '\n' ' ')
+[ -n "$nameservers" ] || die "no name server in /etc/resolv.conf, so the Fusion name cannot be resolved at run time"
+
+# ---------------------------------------------------------------- render
+
+mkdir -p "$RUN/tmp/client_body" "$RUN/tmp/proxy" "$RUN/tmp/fastcgi" "$RUN/tmp/uwsgi" "$RUN/tmp/scgi" "$RUN/cache" ||
+  die "$RUN is not writable. Mount a tmpfs there if the root file system is read-only"
+
+sh "$LIB/render-config.sh" root >"$RUN/config.root.js.new" || die "the configuration was not rendered"
+sh "$LIB/render-config.sh" mount >"$RUN/config.mount.js.new" || die "the configuration was not rendered"
+mv "$RUN/config.root.js.new" "$RUN/config.root.js"
+mv "$RUN/config.mount.js.new" "$RUN/config.mount.js"
+
+cat >"$RUN/maps.conf" <<MAPS
+# Generated at start-up. Origins accepted as this container's own.
+map \$http_origin \$banana_origin_ok {
+  default 0;
+  "" 1;
+$origin_entries}
+
+# Which name the request used: the public address (or an allowed origin), a listed alias, or another.
+map \$http_host \$banana_host_class {
+  default other;
+$host_entries}
+
+map "\$banana_host_class|\$request_method" \$banana_host_verdict {
+  default refuse;
+  "~^public\\|" ok;
+  "~^redirect\\|(GET|HEAD)\$" redirect;
+}
+MAPS
+
+cat >"$RUN/http-extra.conf" <<EXTRA
+resolver $nameservers valid=30s ipv6=off;
+EXTRA
+if [ "$health_upstream" = on ]; then
+  echo "fastcgi_cache_path $RUN/cache keys_zone=banana_health:1m max_size=1m inactive=1m;" >>"$RUN/http-extra.conf"
+fi
+
+cat >"$RUN/server.conf" <<SERVER
+set \$banana_upstream "$FUSION_ORIGIN";
+set \$banana_public_origin "$PUBLIC_ORIGIN";
+SERVER
+
+{
+  echo "add_header $csp_header \"$csp\" always;"
+  echo 'add_header X-Frame-Options SAMEORIGIN always;'
+  echo 'add_header X-Content-Type-Options nosniff always;'
+  echo 'add_header Referrer-Policy strict-origin-when-cross-origin always;'
+  echo 'add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;'
+} >"$RUN/baseline.conf"
+: >"$RUN/extra-headers.conf"
+if [ "$hsts" = on ]; then
+  echo 'add_header Strict-Transport-Security "max-age=31536000" always;' >>"$RUN/extra-headers.conf"
+fi
+if [ -n "$digest_conf" ]; then
+  echo "$digest_conf" >>"$RUN/extra-headers.conf"
+fi
+# Responses the container generates carry the baseline set; proxied ones keep Fusion's headers.
+cat "$RUN/baseline.conf" "$RUN/extra-headers.conf" >"$RUN/headers.conf"
+cp "$RUN/extra-headers.conf" "$RUN/proxy-headers.conf"
+
+{
+  echo "proxy_pass \$banana_upstream;"
+  echo "proxy_http_version 1.1;"
+  echo "proxy_set_header Host \"$FUSION_HOSTHDR\";"
+  echo "proxy_set_header Origin \"$FUSION_ORIGIN\";"
+  echo "proxy_set_header X-Forwarded-Proto \"$FUSION_SCHEME\";"
+  for name in X-Forwarded-For X-Real-IP Forwarded X-Forwarded-Host X-Forwarded-Port X-Forwarded-Prefix $strip_names; do
+    echo "proxy_set_header $name \"\";"
+  done
+  echo "proxy_ssl_server_name on;"
+  echo "proxy_ssl_name $FUSION_HOST;"
+  echo "proxy_ssl_protocols TLSv1.2 TLSv1.3;"
+  echo "proxy_ssl_verify $tls_verify;"
+  echo "proxy_ssl_trusted_certificate $trusted_ca;"
+  echo "proxy_ssl_verify_depth 5;"
+  echo "proxy_hide_header Strict-Transport-Security;"
+  fusion_re=$(printf '%s' "$FUSION_ORIGIN" | sed 's/[.]/\\./g')
+  # Fusion may write its own origin with the default port spelled out.
+  fusion_re_port="$fusion_re()"
+  if [ -z "$FUSION_PORT" ]; then
+    case $FUSION_SCHEME in
+      https) fusion_re_port="$fusion_re(:443)?" ;;
+      http) fusion_re_port="$fusion_re(:80)?" ;;
+    esac
+  fi
+  echo "proxy_redirect \"~*^$fusion_re_port(/.*)\$\" \$2;"
+  echo "proxy_redirect \"~*^$fusion_re_port\$\" /;"
+  if [ "$insecure" = on ]; then
+    echo "proxy_cookie_flags ~ nosecure;"
+  fi
+  echo "proxy_connect_timeout 10s;"
+  echo "proxy_read_timeout 60s;"
+} >"$RUN/proxy.conf"
+
+# Routes that depend on the switches.
+{
+  if [ "$admin_mount" = on ]; then
+    cat <<'MOUNT'
+location = /admin/banana {
+  include /usr/local/lib/banana/checks.conf;
+  include /usr/local/lib/banana/methods.conf;
+  include /run/banana/headers.conf;
+  return 308 /admin/banana/;
+}
+location = /admin/banana/config.js {
+  include /usr/local/lib/banana/checks.conf;
+  include /usr/local/lib/banana/methods.conf;
+  include /run/banana/headers.conf;
+  add_header Cache-Control "no-cache" always;
+  alias /run/banana/config.mount.js;
+}
+location /admin/banana/ {
+  include /usr/local/lib/banana/checks.conf;
+  include /run/banana/headers.conf;
+  add_header Cache-Control "no-cache" always;
+  alias /usr/share/banana/www/;
+  index index.html;
+  try_files $uri $uri/ =404;
+}
+MOUNT
+  else
+    cat <<'NOMOUNT'
+location = /admin/banana { include /usr/local/lib/banana/not-found.conf; }
+location /admin/banana/ { include /usr/local/lib/banana/not-found.conf; }
+NOMOUNT
+  fi
+  if [ "$admin_ui" = on ]; then
+    cat <<'ADMIN'
+location = /admin {
+  include /usr/local/lib/banana/checks.conf;
+  include /run/banana/proxy-headers.conf;
+  include /run/banana/proxy.conf;
+}
+location /admin/ {
+  include /usr/local/lib/banana/checks.conf;
+  include /run/banana/proxy-headers.conf;
+  include /run/banana/proxy.conf;
+}
+ADMIN
+  else
+    cat <<'NOADMIN'
+location = /admin { include /usr/local/lib/banana/not-found.conf; }
+location /admin/ { include /usr/local/lib/banana/not-found.conf; }
+NOADMIN
+  fi
+  if [ "$health_upstream" = on ]; then
+    cat <<'HEALTH'
+location = /healthz/upstream {
+  include /usr/local/lib/banana/checks.conf;
+  include /usr/local/lib/banana/methods.conf;
+  include /run/banana/headers.conf;
+  fastcgi_pass unix:/run/banana/fcgi.sock;
+  fastcgi_param REQUEST_METHOD GET;
+  fastcgi_param SCRIPT_FILENAME /usr/local/lib/banana/healthz-upstream.cgi;
+  fastcgi_param QUERY_STRING "";
+  fastcgi_cache banana_health;
+  fastcgi_cache_key banana-health;
+  fastcgi_cache_valid 200 503 10s;
+  fastcgi_cache_lock on;
+  fastcgi_ignore_headers Cache-Control Expires Set-Cookie;
+}
+HEALTH
+  else
+    echo 'location = /healthz/upstream { include /usr/local/lib/banana/not-found.conf; }'
+  fi
+} >"$RUN/locations.conf"
+
+# What the probe (here at start-up and behind /healthz/upstream) needs: no secret.
+cat >"$RUN/probe.env" <<PROBE
+FUSION_URL='$FUSION_ORIGIN'
+FUSION_TLS_VERIFY='$tls_verify'
+FUSION_CA_FILE='$ca_file'
+PROBE
+
+# ---------------------------------------------------------------- start-up log
+
+log "starting: Banana at $PUBLIC_ORIGIN, Fusion at $FUSION_ORIGIN, preset $preset"
+log "login page for expired sessions: $login_url"
+log "identity headers removed from every request: X-Forwarded-For X-Real-IP Forwarded X-Forwarded-Host X-Forwarded-Port X-Forwarded-Prefix $strip_names"
+log "admin UI route: $admin_ui; /admin/banana/ mount: $admin_mount; /healthz/upstream: $health_upstream; content policy: $csp_mode"
+[ "$PUBLIC_SCHEME" = https ] || warn "BANANA_PUBLIC_ORIGIN is not https. Browsers discard Fusion's Secure session cookie on plain http, so logins loop unless BANANA_INSECURE_COOKIES=on (development only)"
+if [ "$insecure" = on ]; then
+  if [ "$PUBLIC_SCHEME" = https ]; then
+    warn "BANANA_INSECURE_COOKIES=on with an https BANANA_PUBLIC_ORIGIN: the session cookie loses its Secure flag although browsers reach this container over https. This switch is for plain-http development only; set BANANA_INSECURE_COOKIES=off for a real deployment"
+  fi
+  if [ "$FUSION_SCHEME" = http ]; then
+    warn "BANANA_INSECURE_COOKIES=on: the session cookie loses its Secure flag, and the Fusion upstream ($FUSION_ORIGIN) is plain http. Development only"
+  else
+    warn "BANANA_INSECURE_COOKIES=on: the session cookie loses its Secure flag. Development only"
+  fi
+fi
+[ "$tls_verify" = on ] || warn "FUSION_TLS_VERIFY=off: the certificate of Fusion is not verified"
+[ -z "$digest_conf" ] || log "test-only upstream digest header is on"
+
+# ---------------------------------------------------------------- checks of Fusion
+
+result=$(sh "$LIB/probe.sh" "$RUN/probe.env") && probe_ok=yes || probe_ok=no
+if [ "$probe_ok" = yes ]; then
+  log "Fusion $(printf '%s' "$result" | jq -r '.version') answered at $FUSION_ORIGIN"
+else
+  reason=$(printf '%s' "$result" | jq -r '.reason // "no answer"')
+  if [ "$preflight" = strict ]; then
+    die "Fusion check failed: $reason (BANANA_PREFLIGHT=strict)"
+  fi
+  warn "Fusion check failed: $reason. Banana starts anyway, but its panels will stay empty until Fusion answers"
+fi
+if [ "$probe_ok" = yes ]; then
+  ack=$(split_list "${BANANA_ACK_TRUSTED_REALMS:-}")
+  printf '%s' "$result" | jq -r '.trustedHttpRealms[]' >"$RUN/realms.txt"
+  while IFS= read -r realm; do
+    warn "Fusion has an enabled Trusted-HTTP realm named \"$realm\". Its identity header and its groups header must be listed in BANANA_STRIP_HEADERS, or a visitor who sends that header acts as that user"
+  done <"$RUN/realms.txt"
+  if [ "$preflight" = strict ]; then
+    while IFS= read -r realm; do
+      case $realm in
+        *,*) die "the Trusted-HTTP realm \"$realm\" has a comma in its name, so it cannot be named in BANANA_ACK_TRUSTED_REALMS. Rename the realm or do not use BANANA_PREFLIGHT=strict" ;;
+      esac
+      printf '%s\n' "$ack" | grep -Fxq -- "$realm" ||
+        die "the Trusted-HTTP realm \"$realm\" is not acknowledged. Add its header names to BANANA_STRIP_HEADERS and its name to BANANA_ACK_TRUSTED_REALMS (BANANA_PREFLIGHT=strict)"
+    done <"$RUN/realms.txt"
+  fi
+fi
+
+if [ "$health_upstream" = on ]; then
+  fcgiwrap -s unix:/run/banana/fcgi.sock &
+fi
+
+nginx -t -c "$LIB/nginx.conf" >"$RUN/nginx-test.log" 2>&1 || {
+  cat "$RUN/nginx-test.log" >&2
+  die "the web server configuration did not pass its own test"
+}
+exec nginx -c "$LIB/nginx.conf"

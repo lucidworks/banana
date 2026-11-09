@@ -15,9 +15,10 @@ define([
   'app',
   'underscore',
   'jquery',
-  'kbn'
+  'kbn',
+  'components/lazy-require'
 ],
-function (angular, app, _, $, kbn) {
+function (angular, app, _, $, kbn, lazyRequire) {
   'use strict';
 
   var module = angular.module('kibana.panels.terms', []);
@@ -74,6 +75,7 @@ function (angular, app, _, $, kbn) {
       spyable     : true,
       show_queries:true,
       bar_chart_arrangement: 'vertical',
+      custom_query_filters: false, // when a term is selected, also add the filter queries of the custom query to the filters
       error : '',
       chartColors : querySrv.colors,
       refresh: {
@@ -149,7 +151,7 @@ function (angular, app, _, $, kbn) {
         }
       }
 
-      return querySrv.getORquery() + wt_json + rows_limit + fq + exclude_filter + facet + ($scope.panel.queries.custom != null ? $scope.panel.queries.custom : '');
+      return querySrv.getOPQuery() + wt_json + rows_limit + fq + exclude_filter + facet + ($scope.panel.queries.custom != null ? $scope.panel.queries.custom : '');
     };
 
     $scope.exportfile = function(filetype) {
@@ -168,6 +170,8 @@ function (angular, app, _, $, kbn) {
       // Populate scope when we have results
       response.then(function(response) {
         kbn.download_response(response, filetype, "terms");
+      }, function (response) {
+        $scope.panel.error = $scope.request_error(response);
       });
     };
 
@@ -235,6 +239,11 @@ function (angular, app, _, $, kbn) {
         // Function for validating HTML color by assign it to a dummy <div id="colorTest">
         // and let the browser do the work of validation.
         var isValidHTMLColor = function(color) {
+          // A colour is a name, a hex number or rgb(), hsl(): never a comment, a quote or a bracket. (The
+          // browser alone would accept "red/*...*/", and the value is later written into markup.)
+          if (!_.isString(color) || /[\/"'<>;{}\\]/.test(color)) {
+            return false;
+          }
           // clear attr first, before comparison
           $('#colorTest').removeAttr('style');
           var valid = $('#colorTest').css('color');
@@ -250,7 +259,8 @@ function (angular, app, _, $, kbn) {
         // Function for customizing chart color by using field values as colors.
         var addSliceColor = function(slice,color) {
           if ($scope.panel.useColorFromField && isValidHTMLColor(color)) {
-            slice.color = color;
+            // the colour as the browser reads it, which is what goes into the chart and its tooltip
+            slice.color = kbn.safeColor(color) || undefined;
           }
           return slice;
         };
@@ -324,20 +334,64 @@ function (angular, app, _, $, kbn) {
           data:[[k+1,$scope.hits-sum]],meta:"other",color:'#444'});
 
         $scope.$emit('render');
+      }, function (response) {
+        $scope.panel.error = $scope.request_error(response);
+        $scope.panelMeta.loading = false;
+        $scope.data = [];
+        $scope.$emit('render');
       });
     };
 
     $scope.build_search = function(term,negate) {
       if(_.isUndefined(term.meta)) {
+        addCustomQueryFilters();
         filterSrv.set({type:'terms',field:$scope.panel.field,value:term.label,
           mandate:(negate ? 'mustNot':'must')});
       } else if(term.meta === 'missing') {
+        addCustomQueryFilters();
         filterSrv.set({type:'exists',field:$scope.panel.field,
           mandate:(negate ? 'must':'mustNot')});
       } else {
         return;
       }
       dashboard.refresh();
+    };
+
+    // When the setting "custom_query_filters" is on and the panel has a custom query with filter queries
+    // ("&fq=cat:electronics"), the chart only shows documents that match them. Selecting a term then also adds
+    // each of them to the filters, so that the other panels show the same documents as the chart did. They are
+    // always added as required, also when the term is excluded: the exclusion applies to the term, not to the
+    // custom query. With the setting off (the default) nothing is added.
+    function addCustomQueryFilters() {
+      if (!$scope.panel.custom_query_filters) { return; }
+      _.each($scope.parseCustomQueryFilters($scope.panel.queries.custom), function(query) {
+        filterSrv.set({type:'querystring', query:query, mandate:'must'});
+      });
+    }
+
+    /**
+     * Pick the filter queries out of a custom query. For example, "&fq=cat:electronics&fq=inStock:true"
+     * gives ["cat:electronics", "inStock:true"]. Everything else in the custom query is left out.
+     *
+     * @param {string} custom - The custom query string.
+     * @return {Array} - The filter queries, URL-decoded, in their order.
+     */
+    $scope.parseCustomQueryFilters = function(custom) {
+      if (!_.isString(custom)) { return []; }
+
+      var queries = [];
+      _.each(custom.split('&'), function(part) {
+        if (part.indexOf('fq=') !== 0) { return; }
+        // The panel sends the custom query in a form-encoded body, where "+" is a space: decode it the same way.
+        var query = part.slice(3).replace(/\+/g, ' ');
+        try {
+          query = decodeURIComponent(query);
+        } catch (e) {
+          // not URL-encoded: use it as it is
+        }
+        if (query) { queries.push(query); }
+      });
+      return queries;
     };
 
     $scope.set_refresh = function (state) {
@@ -417,7 +471,7 @@ function (angular, app, _, $, kbn) {
             colors = scope.panel.chartColors;
           }
 
-          require(['jquery.flot.pie'], function(){
+          lazyRequire(['jquery.flot.pie'], function(){
             // Populate element
             try {
               // Add plot to scope so we can build out own legend
@@ -443,10 +497,10 @@ function (angular, app, _, $, kbn) {
                       } while (v < max);
                       return res;
                     },
-                    // transform: function (v) {
-                    //   return v === 0 ? 0 : Math.log(v); },
-                    // inverseTransform: function (v) {
-                    //   return v === 0 ? 0 : Math.exp(v); }
+                    transform: function (v) {
+                      return v === 0 ? 0 : Math.log(v); },
+                    inverseTransform: function (v) {
+                      return v === 0 ? 0 : Math.exp(v); }
                   });
                 }
 
@@ -487,11 +541,7 @@ function (angular, app, _, $, kbn) {
               }
               if(scope.panel.chart === 'pie') {
 
-                var labelFormat = function(label, series){
-                  return '<div ng-click="build_search(panel.field,\''+label+'\')'+
-                    ' "style="font-size:8pt;text-align:center;padding:2px;color:white;">'+
-                    label+'<br/>'+Math.round(series.percent)+'%</div>';
-                };
+                var labelFormat = kbn.pieLabelHtml;
                 // DEfulat style for labels that is implmented in jquery flot
                 // var position = "";
                 // if (scope.panel.counter_pos == "left")

@@ -48,6 +48,9 @@
     <label class="small" >Legend Format</label>
     <select class="input-small" ng-model="panel.arrangement" ng-options="f for f in ['horizontal','vertical']"></select></span>
   </div>
+  <div class="span3">
+    <label class="small">Add the custom query's filters when a term is clicked <tip placement="bottom">If the custom query has &amp;fq= parts, clicking a term also adds them to the filters.</tip></label><input type="checkbox" ng-model="panel.custom_query_filters" ng-checked="panel.custom_query_filters">
+  </div>
   <div class="span1">
     <label class="small">Missing</label><input type="checkbox" ng-model="panel.missing" ng-checked="panel.missing">
   </div>

@@ -713,7 +713,7 @@
         "save_as_public": false
     },
     "solr": {
-        "server": "/api/apollo/query-pipelines/_system/collections/",
+        "server": "/api/query-pipelines/_system/collections/",
         "core_name": "default_signals",
         "core_list": []
     },

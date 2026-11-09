@@ -9,7 +9,9 @@ define([
     'underscore',
     'jquery',
     'd3',
-], function (angular, app, _, $, d3) {
+    'kbn',
+    'components/csv-rows'
+], function (angular, app, _, $, d3, kbn, csvRows) {
     'use strict';
 
     var module = angular.module('kibana.panels.scatterplot', []);
@@ -134,7 +136,7 @@ define([
                 fl += ',' + $scope.panel.bubbleSizeField;
             }
 
-            $scope.panel.queries.query = querySrv.getORquery() + fq + fl + wt_json + rows_limit;
+            $scope.panel.queries.query = querySrv.getOPQuery() + fq + fl + wt_json + rows_limit;
 
             // Set the additional custom query
             if ($scope.panel.queries.custom != null) {
@@ -149,7 +151,7 @@ define([
             // Populate scope when we have results
             results.then(function (results) {
                 // build $scope.data array
-                $scope.data = d3.csv.parse(results, function (d) {
+                $scope.data = csvRows.parse(results, function (d) {
                     var value = {};
                     // Convert string to number
                     value[$scope.panel.xaxis] = +d[$scope.panel.xaxis];
@@ -171,6 +173,9 @@ define([
                 }
 
                 $scope.render();
+            }, function (response) {
+                $scope.panel.error = $scope.request_error(response);
+                $scope.panelMeta.loading = false;
             });
 
             // Hide the spinning wheel icon
@@ -296,7 +301,7 @@ define([
                             var colorField = d[scope.panel.colorField] ? d[scope.panel.colorField] : "";
                             $tooltip
                                 .html('<i class="icon-circle" style="color:' + color(d[scope.panel.colorField]) + ';"></i>' + ' ' +
-                                    colorField + " (" + d[scope.panel.xaxis] + ", " + d[scope.panel.yaxis] + ")<br>")
+                                    kbn.escapeHtml(colorField) + " (" + kbn.escapeHtml(d[scope.panel.xaxis]) + ", " + kbn.escapeHtml(d[scope.panel.yaxis]) + ")<br>")
                                 .place_tt(d3.event.pageX, d3.event.pageY);
                         })
                         .on("mouseout", function () {

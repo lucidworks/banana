@@ -1,0 +1,27 @@
+{
+  "source": "derived",
+  "note": "A select on the banana-int collection for the list of saved dashboards. Not observed on a server.",
+  "response": {
+    "status": 200,
+    "contentType": "application/json",
+    "body": {
+      "responseHeader": {
+        "status": 0,
+        "QTime": 1
+      },
+      "response": {
+        "numFound": 1,
+        "start": 0,
+        "docs": [
+          {
+            "id": "banana-it-000000000000-1",
+            "user": "guest",
+            "group": "none",
+            "title": "banana-it-000000000000-1",
+            "dashboard": "{\"title\":\"banana-it-000000000000-1\",\"style\":\"dark\",\"rows\":[],\"solr\":{\"server\":\"/api/query-pipelines/_system/collections/\",\"core_name\":\"banana-it-logs\"}}"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "source": "derived",
+  "note": "Derived from a recorded response: the facet is renamed from timestamp_tdt to event_timestamp (the field kbnIndex asks for) and the days with a count of 0 are dropped, which is what facet.mincount=1 does.",
+  "response": {
+    "status": 200,
+    "contentType": "application/json",
+    "body": {
+      "response": {
+        "docs": [],
+        "numFound": 240,
+        "start": 0,
+        "maxScore": 1,
+        "numFoundExact": true
+      },
+      "facet_counts": {
+        "facet_queries": {},
+        "facet_fields": {},
+        "facet_ranges": {
+          "event_timestamp": {
+            "counts": [
+              "2024-01-01T00:00:00Z",
+              206,
+              "2024-01-02T00:00:00Z",
+              34
+            ],
+            "gap": "+1DAY",
+            "start": "2016-11-07T00:00:00Z",
+            "end": "2026-11-08T00:00:00Z"
+          }
+        },
+        "facet_intervals": {},
+        "facet_heatmaps": {}
+      }
+    }
+  },
+  "fusionVersion": "5.9.16",
+  "derivedFrom": "the response to recordedRequest",
+  "recordedRequest": {
+    "method": "POST",
+    "path": "/api/query-pipelines/_system/collections/banana-it-logs/select",
+    "contentType": "application/x-www-form-urlencoded",
+    "body": "q=*%3A*&wt=json&rows=0&omitHeader=true&facet=true&facet.range=timestamp_tdt&facet.range.start=NOW-10YEARS%2FDAY&facet.range.end=NOW&facet.range.gap=%2B1DAY"
+  }
+}

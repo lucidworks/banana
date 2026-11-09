@@ -151,6 +151,9 @@ function (angular, app, kbn, _/*, $*/) {
         }
 
         $scope.render();
+      }, function (response) {
+        $scope.panel.error = $scope.request_error(response);
+        $scope.panelMeta.loading = false;
       });
 
       // Hide the spinning wheel icon

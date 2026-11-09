@@ -1,0 +1,1089 @@
+{
+  "source": "recorded",
+  "fusionVersion": "5.9.16",
+  "recordedRequest": {
+    "method": "GET",
+    "path": "/api/collections/banana-it-logs/schema/dynamicfields"
+  },
+  "response": {
+    "status": 200,
+    "contentType": "application/json",
+    "body": [
+      {
+        "name": "*_i",
+        "type": "pint",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": [
+          {
+            "name": "status_i",
+            "numDocs": 0
+          },
+          {
+            "name": "heap_mb_i",
+            "numDocs": 0
+          },
+          {
+            "name": "_lw_parser_parsing_depth_i",
+            "numDocs": 0
+          }
+        ]
+      },
+      {
+        "name": "*_is",
+        "type": "pints",
+        "indexed": true,
+        "stored": true,
+        "multiValued": true,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_s",
+        "type": "string",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": [
+          {
+            "name": "_lw_parser_id_s",
+            "numDocs": 243
+          },
+          {
+            "name": "service_s",
+            "numDocs": 243
+          },
+          {
+            "name": "url_s",
+            "numDocs": 243
+          },
+          {
+            "name": "level_s",
+            "numDocs": 243
+          },
+          {
+            "name": "_lw_parser_max_parsing_depth_s",
+            "numDocs": 243
+          },
+          {
+            "name": "user_s",
+            "numDocs": 243
+          },
+          {
+            "name": "country_s",
+            "numDocs": 240
+          },
+          {
+            "name": "host_s",
+            "numDocs": 243
+          },
+          {
+            "name": "_lw_parser_type_s",
+            "numDocs": 243
+          },
+          {
+            "name": "_lw_chunk_doctype_s",
+            "numDocs": 243
+          },
+          {
+            "name": "_lw_parser_absolute_resource_name_s",
+            "numDocs": 243
+          },
+          {
+            "name": "path_s",
+            "numDocs": 243
+          },
+          {
+            "name": "category_s",
+            "numDocs": 243
+          },
+          {
+            "name": "user_agent_s",
+            "numDocs": 243
+          },
+          {
+            "name": "_lw_parser_resource_name_s",
+            "numDocs": 243
+          },
+          {
+            "name": "_lw_parser_diagnostic_id_s",
+            "numDocs": 243
+          },
+          {
+            "name": "_lw_parser_content_type_s",
+            "numDocs": 243
+          }
+        ]
+      },
+      {
+        "name": "*_ss",
+        "type": "strings",
+        "indexed": true,
+        "stored": true,
+        "multiValued": true,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": [
+          {
+            "name": "_lw_pipeline_ss",
+            "numDocs": 243
+          },
+          {
+            "name": "tags_ss",
+            "numDocs": 243
+          }
+        ]
+      },
+      {
+        "name": "*_l",
+        "type": "plong",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": [
+          {
+            "name": "_lw_parser_record_number_l",
+            "numDocs": 0
+          },
+          {
+            "name": "_lw_parser_parsing_time_l",
+            "numDocs": 0
+          },
+          {
+            "name": "bytes_l",
+            "numDocs": 0
+          }
+        ]
+      },
+      {
+        "name": "*_ls",
+        "type": "plongs",
+        "indexed": true,
+        "stored": true,
+        "multiValued": true,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_t",
+        "type": "text_general",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": [
+          {
+            "name": "message_t",
+            "numDocs": 243
+          }
+        ]
+      },
+      {
+        "name": "*_txt",
+        "type": "text_general",
+        "indexed": true,
+        "stored": true,
+        "multiValued": true,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_b",
+        "type": "boolean",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_bs",
+        "type": "booleans",
+        "indexed": true,
+        "stored": true,
+        "multiValued": true,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_f",
+        "type": "pfloat",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_fs",
+        "type": "pfloats",
+        "indexed": true,
+        "stored": true,
+        "multiValued": true,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_d",
+        "type": "pdouble",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": [
+          {
+            "name": "response_time_d",
+            "numDocs": 0
+          },
+          {
+            "name": "lon_d",
+            "numDocs": 0
+          },
+          {
+            "name": "lat_d",
+            "numDocs": 0
+          },
+          {
+            "name": "cpu_d",
+            "numDocs": 0
+          }
+        ]
+      },
+      {
+        "name": "*_ds",
+        "type": "pdoubles",
+        "indexed": true,
+        "stored": true,
+        "multiValued": true,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "random_*",
+        "type": "random",
+        "indexed": true,
+        "stored": false,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "ignored_*",
+        "type": "ignored",
+        "indexed": false,
+        "stored": false,
+        "multiValued": true,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_str",
+        "type": "strings",
+        "indexed": false,
+        "stored": false,
+        "multiValued": true,
+        "required": false,
+        "docValues": true,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_dt",
+        "type": "pdate",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_dts",
+        "type": "pdate",
+        "indexed": true,
+        "stored": true,
+        "multiValued": true,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_tdt",
+        "type": "pdate",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": [
+          {
+            "name": "timestamp_tdt",
+            "numDocs": 0
+          }
+        ]
+      },
+      {
+        "name": "*_p",
+        "type": "location",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": [
+          {
+            "name": "geo_p",
+            "numDocs": 0
+          }
+        ]
+      },
+      {
+        "name": "*_srpt",
+        "type": "location_rpt",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_dpf",
+        "type": "delimited_payloads_float",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_dpi",
+        "type": "delimited_payloads_int",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_dps",
+        "type": "delimited_payloads_string",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "attr_*",
+        "type": "text_general",
+        "indexed": true,
+        "stored": true,
+        "multiValued": true,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_64v",
+        "type": "knn_64_vector",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "docValues": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_128v",
+        "type": "knn_128_vector",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "docValues": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_256v",
+        "type": "knn_256_vector",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "docValues": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_384v",
+        "type": "knn_384_vector",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "docValues": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_512v",
+        "type": "knn_512_vector",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "docValues": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_768v",
+        "type": "knn_768_vector",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "docValues": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_1024v",
+        "type": "knn_1024_vector",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "docValues": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_64bv",
+        "type": "knn_64_byte_vector",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "docValues": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_128bv",
+        "type": "knn_128_byte_vector",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "docValues": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_256bv",
+        "type": "knn_256_byte_vector",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "docValues": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_384bv",
+        "type": "knn_384_byte_vector",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "docValues": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_512bv",
+        "type": "knn_512_byte_vector",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "docValues": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_768bv",
+        "type": "knn_768_byte_vector",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "docValues": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_1024bv",
+        "type": "knn_1024_byte_vector",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "docValues": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_ws",
+        "type": "text_ws",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_t_sort",
+        "type": "text_gen_sort",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_sort",
+        "type": "text_gen_sort",
+        "indexed": true,
+        "stored": true,
+        "multiValued": true,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_en",
+        "type": "text_en",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_en_split",
+        "type": "text_en_splitting",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_en_split_tight",
+        "type": "text_en_splitting_tight",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_rev",
+        "type": "text_general_rev",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_phon_en",
+        "type": "phonetic_en",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_s_lower",
+        "type": "lowercase",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_descendent_path",
+        "type": "descendent_path",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_ancestor_path",
+        "type": "ancestor_path",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_point",
+        "type": "point",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_ar",
+        "type": "text_ar",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_bg",
+        "type": "text_bg",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_ca",
+        "type": "text_ca",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_cjk",
+        "type": "text_cjk",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_cz",
+        "type": "text_cz",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_da",
+        "type": "text_da",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_de",
+        "type": "text_de",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_el",
+        "type": "text_el",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_es",
+        "type": "text_es",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_et",
+        "type": "text_et",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_eu",
+        "type": "text_eu",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_fa",
+        "type": "text_fa",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_fi",
+        "type": "text_fi",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_fr",
+        "type": "text_fr",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_ga",
+        "type": "text_ga",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_gl",
+        "type": "text_gl",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_hi",
+        "type": "text_hi",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_hu",
+        "type": "text_hu",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_hy",
+        "type": "text_hy",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_id",
+        "type": "text_id",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_it",
+        "type": "text_it",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_ja",
+        "type": "text_ja",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_ko",
+        "type": "text_ko",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_lv",
+        "type": "text_lv",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_nl",
+        "type": "text_nl",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_no",
+        "type": "text_no",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_pt",
+        "type": "text_pt",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_ro",
+        "type": "text_ro",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_ru",
+        "type": "text_ru",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_sv",
+        "type": "text_sv",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_th",
+        "type": "text_th",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      },
+      {
+        "name": "*_txt_tr",
+        "type": "text_tr",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "indexFields": []
+      }
+    ]
+  }
+}

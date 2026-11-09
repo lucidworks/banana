@@ -1,0 +1,69 @@
+{
+  "source": "recorded-solr",
+  "fusionVersion": "5.9.16",
+  "recordedRequest": {
+    "method": "POST",
+    "path": "/api/solr/banana-it-logs/select",
+    "contentType": "application/x-www-form-urlencoded",
+    "body": "q=*%3A*&wt=json&rows=0&facet=true&facet.limit=10&facet.field=level_s&facet.field=service_s"
+  },
+  "response": {
+    "status": 200,
+    "contentType": "text/plain;charset=utf-8",
+    "body": {
+      "responseHeader": {
+        "zkConnected": true,
+        "status": 0,
+        "QTime": 1,
+        "params": {
+          "q": "*:*",
+          "facet.limit": "10",
+          "facet.field": [
+            "level_s",
+            "service_s"
+          ],
+          "_forwardedCount": "1",
+          "rows": "0",
+          "wt": "json",
+          "facet": "true"
+        }
+      },
+      "response": {
+        "numFound": 240,
+        "start": 0,
+        "maxScore": 1,
+        "numFoundExact": true,
+        "docs": []
+      },
+      "facet_counts": {
+        "facet_queries": {},
+        "facet_fields": {
+          "level_s": [
+            "INFO",
+            120,
+            "DEBUG",
+            40,
+            "ERROR",
+            40,
+            "WARN",
+            40
+          ],
+          "service_s": [
+            "gateway",
+            60,
+            "indexing",
+            60,
+            "query",
+            60,
+            "scheduler",
+            60
+          ]
+        },
+        "facet_ranges": {},
+        "facet_intervals": {},
+        "facet_heatmaps": {}
+      }
+    }
+  },
+  "note": "The Solr select shape, as Fusion's Solr proxy returns it, for a request that Banana sends as a GET. It is not the answer of a standalone Solr."
+}

@@ -1,0 +1,22 @@
+{
+  "source": "derived",
+  "note": "The shape of a Solr error response, with the status and message of a request that names a collection that does not exist. Not observed on a server.",
+  "response": {
+    "status": 404,
+    "contentType": "application/json",
+    "body": {
+      "responseHeader": {
+        "status": 404,
+        "QTime": 1
+      },
+      "error": {
+        "metadata": [
+          "error-class",
+          "org.apache.solr.common.SolrException"
+        ],
+        "msg": "Collection not found: banana-int",
+        "code": 404
+      }
+    }
+  }
+}

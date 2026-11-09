@@ -18,9 +18,10 @@ define([
   'underscore',
   'jquery',
   './lib/map.world.codes',
-  './lib/jquery.jvectormap.min'
+  './lib/jquery.jvectormap.min',
+  'components/lazy-require'
 ],
-function (angular, app, _, $, worldmap) {
+function (angular, app, _, $, worldmap, jvectormap, lazyRequire) {
   'use strict';
 
   var module = angular.module('kibana.panels.map', []);
@@ -151,7 +152,7 @@ function (angular, app, _, $, worldmap) {
       }
 
       // Set the panel's query
-      $scope.panel.queries.query = querySrv.getORquery() + wt_json + fq + rows_limit + facet;
+      $scope.panel.queries.query = querySrv.getOPQuery() + wt_json + fq + rows_limit + facet;
 
       // Set the additional custom query
       if ($scope.panel.queries.custom != null) {
@@ -219,6 +220,9 @@ function (angular, app, _, $, worldmap) {
         }
 
         $scope.$emit('render');
+      }, function (response) {
+        $scope.panel.error = $scope.request_error(response);
+        $scope.panelMeta.loading = false;
       });
     };
 
@@ -260,7 +264,7 @@ function (angular, app, _, $, worldmap) {
         function render_panel() {
           elem.text('');
           $('.jvectormap-zoomin,.jvectormap-zoomout,.jvectormap-label').remove();
-          require(['./panels/map/lib/map.'+scope.panel.map], function () {
+          lazyRequire(['panels/map/lib/map.'+scope.panel.map], function () {
             elem.vectorMap({
               map: scope.panel.map,
               regionStyle: {initial: {fill: '#8c8c8c'}},

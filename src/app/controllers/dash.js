@@ -85,6 +85,29 @@ function (angular, config, _) {
             return _.isNull(_error) ? data : _error[1];
         };
 
+        // Describe a failed request for a panel's error message. `response` is what the request
+        // was rejected with: an HTTP response (status, data), or an Error thrown while handling one.
+        $scope.request_error = function (response) {
+            var data = response && response.data;
+            if (_.isString(data) && /^\s*\{/.test(data)) {
+                try {
+                    data = angular.fromJson(data);
+                } catch (e) {
+                    // not JSON: describe it by its status below
+                }
+            }
+            if (data && data.error && _.isString(data.error.msg)) {
+                return $scope.parse_error(data.error.msg);
+            }
+            if (response && response.status === 0) {
+                return 'Could not contact the server. Please ensure that it is reachable from your system.';
+            }
+            if (response && response.status) {
+                return 'The request failed (HTTP status ' + response.status + ')';
+            }
+            return 'The request failed';
+        };
+
         $scope.init();
     });
 });

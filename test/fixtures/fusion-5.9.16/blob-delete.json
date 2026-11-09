@@ -1,0 +1,13 @@
+{
+  "source": "recorded",
+  "fusionVersion": "5.9.16",
+  "recordedRequest": {
+    "method": "DELETE",
+    "path": "/api/blobs/banana-it-000000000000-1"
+  },
+  "response": {
+    "status": 204,
+    "contentType": null,
+    "body": ""
+  }
+}

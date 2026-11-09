@@ -12,15 +12,15 @@ define([
   'angular',
   'app',
   'underscore',
+  'kbn',
   './leaflet/leaflet-src',
-  'require',
   // './leaflet/plugins', // moving it here causing error in the app, fallback to the old Kibana way.
 
   'css!./module.css',
   'css!./leaflet/leaflet.css',
   'css!./leaflet/plugins.css'
 ],
-function (angular, app, _, L, localRequire) {
+function (angular, app, _, kbn, L) {
   'use strict';
 
   var DEBUG = false; // DEBUG mode
@@ -72,10 +72,6 @@ function (angular, app, _, L, localRequire) {
     };
 
     _.defaults($scope.panel, _d);
-    $scope.requireContext = localRequire;
-
-    // inorder to use relative paths in require calls, require needs a context to run. Without
-    // setting this property the paths would be relative to the app not this context/file.
 
     $scope.init = function() {
       $scope.$on('refresh',function() {
@@ -168,7 +164,7 @@ function (angular, app, _, L, localRequire) {
         }
 
         // Set the panel's query
-        $scope.panel.queries.query = querySrv.getORquery() + wt_json + rows_limit + fq + sorting;
+        $scope.panel.queries.query = querySrv.getOPQuery() + wt_json + rows_limit + fq + sorting;
 
         // Set the additional custom query
         if ($scope.panel.queries.custom != null) {
@@ -220,6 +216,9 @@ function (angular, app, _, L, localRequire) {
           if($scope.data.length < $scope.panel.size && _segment+1 < dashboard.indices.length) {
             $scope.get_data(_segment+1, $scope.query_id);
           }
+        }, function (response) {
+          $scope.panel.error = $scope.request_error(response);
+          $scope.panelMeta.loading = false;
         });
       });
     };
@@ -279,7 +278,7 @@ function (angular, app, _, L, localRequire) {
 
             _.each(scope.data, function(p) {
               if(!_.isUndefined(p.tooltip) && p.tooltip !== '') {
-                layerGroup.addLayer(L.marker(p.coordinates).bindLabel(p.tooltip));
+                layerGroup.addLayer(L.marker(p.coordinates).bindLabel(_.isString(p.tooltip) ? kbn.escapeHtml(p.tooltip) : p.tooltip));
               } else {
                 layerGroup.addLayer(L.marker(p.coordinates));
               }

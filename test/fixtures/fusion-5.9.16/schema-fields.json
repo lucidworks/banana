@@ -1,0 +1,81 @@
+{
+  "source": "recorded",
+  "fusionVersion": "5.9.16",
+  "recordedRequest": {
+    "method": "GET",
+    "path": "/api/collections/banana-it-logs/schema/fields"
+  },
+  "response": {
+    "status": 200,
+    "contentType": "application/json",
+    "body": [
+      {
+        "name": "id",
+        "type": "string",
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": true,
+        "copyDests": [],
+        "copySources": [],
+        "numDocs": 243
+      },
+      {
+        "name": "_version_",
+        "type": "plong",
+        "indexed": false,
+        "stored": false,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": [],
+        "numDocs": 0
+      },
+      {
+        "name": "_root_",
+        "type": "string",
+        "indexed": true,
+        "stored": false,
+        "multiValued": false,
+        "required": false,
+        "docValues": false,
+        "copyDests": [],
+        "copySources": [],
+        "numDocs": 243
+      },
+      {
+        "name": "_nest_path_",
+        "type": "_nest_path_",
+        "indexed": false,
+        "stored": false,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": []
+      },
+      {
+        "name": "_text_",
+        "type": "text_general",
+        "indexed": true,
+        "stored": false,
+        "multiValued": true,
+        "required": false,
+        "copyDests": [],
+        "copySources": [
+          "*"
+        ],
+        "numDocs": 243
+      },
+      {
+        "name": "_raw_content_",
+        "type": "binary",
+        "indexed": false,
+        "stored": true,
+        "multiValued": false,
+        "required": false,
+        "copyDests": [],
+        "copySources": []
+      }
+    ]
+  }
+}

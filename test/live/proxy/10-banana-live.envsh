@@ -1,0 +1,54 @@
+# Sourced by the nginx image's entrypoint before the template is rendered.
+#
+# It derives the upstream host from the one upstream variable and, only when
+# BANANA_LIVE_DIGEST_KEY is set, adds a response header that carries the keyed
+# digest of the upstream origin: HMAC-SHA-256 of the origin under the key (the
+# key is 64 hexadecimal characters, 32 bytes). Live tests use it to check that
+# the browser and the Node client talk to the same instance.
+#
+# Test-only contract: no image may emit this header unless the key variable is
+# set, and the variable is unset by default. Whatever runs this file refuses to
+# start without the upstream variable.
+
+if [ -z "${BANANA_LIVE_FUSION_URL:-}" ]; then
+  echo "BANANA_LIVE_FUSION_URL is not set" >&2
+  exit 1
+fi
+BANANA_LIVE_FUSION_HOST="${BANANA_LIVE_FUSION_URL#*://}"
+export BANANA_LIVE_FUSION_HOST
+
+# HMAC-SHA-256 (RFC 2104) with a 32-byte key, built from sha256sum and xxd.
+banana_live_hmac() {
+  key_hex=$1
+  message=$2
+  padded="${key_hex}$(printf '%064d' 0)"
+  padded=$(printf '%s' "$padded" | cut -c1-128)
+  ipad=''
+  opad=''
+  i=0
+  while [ "$i" -lt 64 ]; do
+    byte=$(printf '%s' "$padded" | cut -c$((i * 2 + 1))-$((i * 2 + 2)))
+    ipad="${ipad}$(printf '%02x' $((0x$byte ^ 0x36)))"
+    opad="${opad}$(printf '%02x' $((0x$byte ^ 0x5c)))"
+    i=$((i + 1))
+  done
+  inner=$({ printf '%s' "$ipad" | xxd -r -p; printf '%s' "$message"; } | sha256sum | cut -d' ' -f1)
+  { printf '%s' "$opad" | xxd -r -p; printf '%s' "$inner" | xxd -r -p; } | sha256sum | cut -d' ' -f1
+}
+
+BANANA_LIVE_DIGEST_DIRECTIVE=''
+if [ -n "${BANANA_LIVE_DIGEST_KEY:-}" ]; then
+  case "$BANANA_LIVE_DIGEST_KEY" in
+    *[!0-9a-f]*)
+      echo "BANANA_LIVE_DIGEST_KEY is malformed" >&2
+      exit 1
+      ;;
+  esac
+  if [ "${#BANANA_LIVE_DIGEST_KEY}" -ne 64 ]; then
+    echo "BANANA_LIVE_DIGEST_KEY is malformed" >&2
+    exit 1
+  fi
+  digest=$(banana_live_hmac "$BANANA_LIVE_DIGEST_KEY" "$BANANA_LIVE_FUSION_URL")
+  BANANA_LIVE_DIGEST_DIRECTIVE="add_header X-Banana-Upstream-Digest \"${digest}\" always;"
+fi
+export BANANA_LIVE_DIGEST_DIRECTIVE

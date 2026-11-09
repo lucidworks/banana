@@ -1,0 +1,64 @@
+{
+  "source": "recorded",
+  "fusionVersion": "5.9.16",
+  "recordedRequest": {
+    "method": "POST",
+    "path": "/api/query-pipelines/_system/collections/banana-it-logs/select",
+    "contentType": "application/x-www-form-urlencoded",
+    "body": "q=*%3A*&fq=level_s%3AERROR&wt=json&rows=0&facet=true&facet.limit=10&facet.field=level_s"
+  },
+  "response": {
+    "status": 200,
+    "contentType": "application/json",
+    "body": {
+      "response": {
+        "docs": [],
+        "numFound": 40,
+        "start": 0,
+        "maxScore": 1,
+        "numFoundExact": true
+      },
+      "responseHeader": {
+        "zkConnected": true,
+        "QTime": 1,
+        "totalTime": 6,
+        "params": {
+          "facet.field": "level_s",
+          "_stateVer_": "banana-it-logs:4",
+          "lw.pipelineId": "_system",
+          "isFusionQuery": "true",
+          "fq": "level_s:ERROR",
+          "rows": "0",
+          "version": "2.2",
+          "fusionQueryId": "TrhNX3t2aj",
+          "q": "*:*",
+          "facet.limit": "10",
+          "timeAllowed": "13500",
+          "shards.preference": "replica.type:PULL",
+          "wt": "json",
+          "facet": "true"
+        },
+        "status": 0
+      },
+      "facet_counts": {
+        "facet_queries": {},
+        "facet_fields": {
+          "level_s": [
+            "ERROR",
+            40,
+            "DEBUG",
+            0,
+            "INFO",
+            0,
+            "WARN",
+            0
+          ]
+        },
+        "facet_ranges": {},
+        "facet_intervals": {},
+        "facet_heatmaps": {}
+      }
+    }
+  },
+  "note": "Banana sends this as a GET with the same parameters; the guarded client has no GET select, so it was recorded as the form POST."
+}

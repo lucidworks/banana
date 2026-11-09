@@ -4,8 +4,8 @@
 
 /**
  @namespace
- @name ejs
- @desc All elastic.js modules are organized under the ejs namespace.
+ @name sjs
+ @desc All solr.js modules are organized under the sjs namespace.
  */
 (function () {
   'use strict';
@@ -18,7 +18,7 @@
     // `exports` on server
     root = this,
     
-    // save the previous version of ejs
+    // save the previous version of sjs
     _sjs = root && root.sjs,
 
     // from underscore.js, used in utils
@@ -233,7 +233,7 @@
         </p>
     </div>
 
-    @name ejs.DateHistogramFacet
+    @name sjs.DateHistogramFacet
 
     @desc
     <p>A facet which returns the N most frequent terms within a collection
@@ -249,7 +249,7 @@
 
     /**
         The internal facet object.
-        @member ejs.DateHistogramFacet
+        @member sjs.DateHistogramFacet
         @property {Object} facet
         */
     var facet = {};
@@ -263,7 +263,7 @@
       /**
             Sets the field to be used to construct the this facet.
 
-            @member ejs.DateHistogramFacet
+            @member sjs.DateHistogramFacet
             @param {String} fieldName The field name whose data will be used to construct the facet.
             @returns {Object} returns <code>this</code> so that calls can be chained.
             */
@@ -279,7 +279,7 @@
       /**
             Allows you to specify a different key field to be used to group intervals.
 
-            @member ejs.DateHistogramFacet
+            @member sjs.DateHistogramFacet
             @param {String} fieldName The name of the field to be used.
             @returns {Object} returns <code>this</code> so that calls can be chained.
             */
@@ -9023,17 +9023,19 @@
           // ]);
           // return sjs.client.postDel(url, data, successcb, errorcb);
 
-          // Fusion uses Blob Store API
-          var url = '/' + id;
+          // Fusion uses Blob Store API. The id is encoded with the same codec as the other requests that name
+          // a saved dashboard (see components/dashboard-ids.js), and the URL has no query and no body.
+          var url = '/' + encodeURIComponent(id);
           var data = {};
           return sjs.client.del(url, data, successcb, errorcb);
         } else {
-          // Starting with Solr 7, stream.body is disable by default, so we need to do POST /update with xml commands
-          // in order to delete saved dashboards.
+          // A delete by id with the id as a JSON string: it is never part of a query, so a title such as
+          // `*` or `x" OR title:"*` can delete only the document whose id is exactly that text.
+          // (Solr 7 and later disable stream.body, so the old GET with the delete in the URL does nothing there.)
           var url = '/update';
-          var data = '<delete><query>id:"' + id + '"</query></delete>';
+          var data = JSON.stringify({ 'delete': { id: id } });
           var config = {
-            headers: {'Content-type':'text/xml'},
+            headers: {'Content-type':'application/json'},
             params: {
               wt: 'json',
               commit: true
@@ -18500,6 +18502,19 @@
 
         query.solrquery = q;
         return this;
+      },
+
+      /** Stream expression **/
+
+      streamExpression: function(custom_handler, successcb, errorcb) {
+        if (DEBUG) { console.debug('streamExpression()'); }
+        
+        // make sure the user has set a client
+        if (sjs.client == null) {
+          throw new Error("No Client Set");
+        }
+
+        return sjs.client.get(getRestPath(custom_handler? custom_handler: 'stream'), query.solrquery, successcb, errorcb);
       },
 
       /**

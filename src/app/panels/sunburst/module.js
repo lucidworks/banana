@@ -6,8 +6,9 @@ define([
     'app',
     'underscore',
     'jquery',
-    'd3'
-], function (angular, app, _, $, d3) {
+    'd3',
+    'kbn'
+], function (angular, app, _, $, d3, kbn) {
     'use strict';
 
     var module = angular.module('kibana.panels.sunburst', []);
@@ -38,6 +39,9 @@ define([
                 custom: ''
             },
             facet_limit: 1000, // maximum number of rows returned from Solr
+            labels: false, // write the name of a slice on it
+            bold_labels: true,
+            label_rings: 2, // how many rings, counted from the centre, get labels
             spyable: true,
             show_queries: true
         };
@@ -102,7 +106,7 @@ define([
             var facet_limits = '&facet.limit=' + $scope.panel.facet_limit;
 
             // Set the panel's query
-            $scope.panel.queries.query = querySrv.getORquery() + fq + wt_json + facet + facet_pivot + facet_limits + rows;
+            $scope.panel.queries.query = querySrv.getOPQuery() + fq + wt_json + facet + facet_pivot + facet_limits + rows;
 
             // Set the additional custom query
             if ($scope.panel.queries.custom != null) {
@@ -116,6 +120,9 @@ define([
             results.then(function (results) {
                 $scope.data = $scope.parse_facet_pivot(results.facet_counts.facet_pivot[$scope.panel.facet_pivot_strings.join().replace(/ /g, '')]);
                 $scope.render();
+            }, function (response) {
+                $scope.panel.error = $scope.request_error(response);
+                $scope.panelMeta.loading = false;
             });
         };
 
@@ -189,6 +196,10 @@ define([
 
                     function mouseover(d) {
                         var parents = getAncestors(d);
+                        svg.selectAll("text.sunburst-label")
+                            .style("opacity", function (node) {
+                                return parents.indexOf(node) >= 0 ? 1 : 0.3;
+                            });
                         d3.selectAll("path")
                             .style("opacity", 0.3);
                         d3.selectAll("path")
@@ -197,12 +208,14 @@ define([
                             })
                             .style("opacity", 1);
                         $tooltip
-                            .html(d['name'] + ' (' + scope.dash.numberWithCommas(d['size']) + ')')
+                            .html(kbn.escapeHtml(d['name']) + ' (' + scope.dash.numberWithCommas(d['size']) + ')')
                             .place_tt(d3.event.pageX, d3.event.pageY);
                     }
 
                     // Restore everything to full opacity when moving off the visualization.
                     function mouseleave() {
+                        svg.selectAll("text.sunburst-label")
+                            .style("opacity", 1);
                         d3.selectAll("path")
                             .style("opacity", 1);
                         $tooltip.detach();
@@ -286,6 +299,32 @@ define([
                         .on("click", click);
 
                     svg.selectAll("text.label").data(partition(scope.data));
+
+                    if (scope.panel.labels) {
+                        // The layout above has given every node its angles, so the labels are placed from them.
+                        var labelRings = parseInt(scope.panel.label_rings, 10);
+                        svg.append("g").selectAll("text")
+                            .data(partition.nodes(scope.data).filter(function (node) {
+                                return node.depth > 0 && node.depth <= labelRings;
+                            }))
+                            .enter().append("text")
+                            .attr("class", "sunburst-label")
+                            .style("font", "11px sans-serif")
+                            .style("font-weight", scope.panel.bold_labels ? "bold" : "normal")
+                            .style("text-anchor", "middle")
+                            .style("cursor", "pointer")
+                            .attr("fill", "#000")
+                            .attr("dy", ".35em")
+                            .attr("transform", function (d) {
+                                return "translate(" + arc.centroid(d) + ")";
+                            })
+                            .text(function (d) {
+                                return d.name;
+                            })
+                            .on("mouseover", mouseover)
+                            .on("mouseleave", mouseleave)
+                            .on("click", click);
+                    }
 
                     // Hide the spinning wheel icon
                     scope.panelMeta.loading = false;

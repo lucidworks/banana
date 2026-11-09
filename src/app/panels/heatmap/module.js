@@ -7,10 +7,10 @@ define([
     'underscore',
     'jquery',
     'd3',
-    'require',
+    'kbn',
     'css!./module.css'
 ],
-    function (angular, app, _, $, d3, localRequire) {
+    function (angular, app, _, $, d3, kbn) {
         'use strict';
 
         var module = angular.module('kibana.panels.heatmap', []);
@@ -51,7 +51,7 @@ define([
                 size: 0,
                 row_field: '',
                 col_field: '',
-                row_size: 5,
+                row_size: 300,
                 color:'gray',
                 spyable: true,
                 transpose_show: true,
@@ -61,7 +61,6 @@ define([
 
             // Set panel's default values
             _.defaults($scope.panel, _d);
-            $scope.requireContext = localRequire;
 
             $scope.init = function () {
                 $scope.generated_id = $scope.randomNumberRange(1, 1000000);
@@ -115,7 +114,7 @@ define([
                 var facet_limit = '&facet.limit=' + $scope.panel.row_size;
                 var facet_pivot_mincount = '&facet.pivot.mincount=0';
 
-                $scope.panel.queries.query = querySrv.getORquery() + fq + wt_json + rows_limit + facet + facet_pivot + facet_limit + facet_pivot_mincount;
+                $scope.panel.queries.query = querySrv.getOPQuery() + fq + wt_json + rows_limit + facet + facet_pivot + facet_limit + facet_pivot_mincount;
 
                 // Set the additional custom query
                 if ($scope.panel.queries.custom != null) {
@@ -132,6 +131,7 @@ define([
                     // Check for error and abort if found
                       if(!(_.isUndefined(results.error))) {
                         $scope.panel.error = $scope.parse_error(results.error.msg);
+                        $scope.panelMeta.loading = false;
                         $scope.init_arrays();
                         $scope.render();
                         return;
@@ -145,10 +145,13 @@ define([
                     $scope.init_arrays();
                     $scope.formatData($scope.facets, $scope.panel.transposed);
 
+                    // Hide the spinning wheel icon
+                    $scope.panelMeta.loading = false;
                     $scope.render();
+                }, function (response) {
+                    $scope.panel.error = $scope.request_error(response);
+                    $scope.panelMeta.loading = false;
                 });
-                // Hide the spinning wheel icon
-                $scope.panelMeta.loading = false;
             };
 
             $scope.init_arrays = function() {
@@ -165,6 +168,13 @@ define([
             $scope.formatData = function(facets, flipped) {
                 $scope.init_arrays();
 
+                // When the view is transposed the rows show the column field and the columns the row
+                // field, so the two axis labels trade places (once, not once per row).
+                $scope.shown_transposed = !!flipped;
+                if (flipped) {
+                    $scope.axis_labels = [$scope.panel.row_field, $scope.panel.col_field];
+                }
+
                 _.each(facets, function(d, i) {
                     // build the arrays to be used
 
@@ -174,7 +184,6 @@ define([
                     } else {
                         $scope.col_labels.push(d.value);
                         $scope.hccol.push($scope.col_labels.length);
-                        [$scope.axis_labels[0], $scope.axis_labels[1]] = [$scope.axis_labels[1], $scope.axis_labels[0]];
                     }
 
                     _.each(d.pivot, function(p) {
@@ -249,10 +258,14 @@ define([
                 $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
             };
 
+            // x is the value on the displayed row and y the value on the displayed column. When the view
+            // shown is transposed the rows show the values of the column field, so the fields trade places.
             $scope.build_search = function(x, y) {
                 if (x && y) {
-                  filterSrv.set({type: 'terms', field: $scope.panel.row_field, value: x, mandate: 'must'});
-                  filterSrv.set({type: 'terms', field: $scope.panel.col_field, value: y, mandate: 'must'});
+                  var xField = $scope.shown_transposed ? $scope.panel.col_field : $scope.panel.row_field;
+                  var yField = $scope.shown_transposed ? $scope.panel.row_field : $scope.panel.col_field;
+                  filterSrv.set({type: 'terms', field: xField, value: x, mandate: 'must'});
+                  filterSrv.set({type: 'terms', field: yField, value: y, mandate: 'must'});
                 } else {
                   return;
                 }
@@ -369,7 +382,7 @@ define([
                             })
                             .on("mouseover", function (d) {
                                 d3.select(this).classed("text-hover", true);
-                                $tooltip.html(d).place_tt(d3.event.pageX, d3.event.pageY);
+                                $tooltip.html(kbn.escapeHtml(d)).place_tt(d3.event.pageX, d3.event.pageY);
                             })
                             .on("mouseout", function () {
                                 d3.select(this).classed("text-hover", false);
@@ -418,7 +431,7 @@ define([
                             .on("mouseover", function (d) {
                                 d3.select(this).classed("text-hover", true);
 
-                                $tooltip.html(d).place_tt(d3.event.pageX, d3.event.pageY);
+                                $tooltip.html(kbn.escapeHtml(d)).place_tt(d3.event.pageX, d3.event.pageY);
                             })
                             .on("mouseout", function () {
                                 d3.select(this).classed("text-hover", false);
@@ -475,7 +488,7 @@ define([
                                     return ci === (d.col - 1);
                                 });
 
-                                $tooltip.html(rowLabel[d.row - 1] + ", " + colLabel[d.col - 1] + " (" + scope.data[i].value + ")").place_tt(d3.event.pageX, d3.event.pageY);
+                                $tooltip.html(kbn.escapeHtml(rowLabel[d.row - 1]) + ", " + kbn.escapeHtml(colLabel[d.col - 1]) + " (" + kbn.escapeHtml(scope.data[i].value) + ")").place_tt(d3.event.pageX, d3.event.pageY);
                             })
                             .on("mouseout", function () {
                                 d3.select(this).classed("cell-hover", false);

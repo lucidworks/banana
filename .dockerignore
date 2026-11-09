@@ -1,0 +1,32 @@
+# An allowlist: nothing reaches the build unless it is listed here, so local files
+# (editor settings, version control, temporary and generated files) cannot end up in the image.
+*
+
+# What the build reads.
+!package.json
+!package-lock.json
+!.npmrc
+!webpack.config.js
+!src
+!LICENSE
+!NOTICE
+!licenses
+!tools/check-dist.js
+!tools/vendor-licenses.json
+!tools/lib
+!tools/webpack
+
+# What the image copies besides the build output.
+!docker
+
+# Dot-files and local leftovers inside the folders above, at any depth.
+# (.npmrc at the root was re-included above and is the only dot-file the build reads.)
+**/.*
+!/.npmrc
+**/node_modules
+**/*.iml
+**/*.log
+**/*.orig
+**/*.swp
+**/*~
+**/tmp

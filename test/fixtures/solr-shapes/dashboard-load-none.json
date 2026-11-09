@@ -1,0 +1,19 @@
+{
+  "source": "derived",
+  "note": "A select on the banana-int collection that finds no dashboard. Not observed on a server.",
+  "response": {
+    "status": 200,
+    "contentType": "application/json",
+    "body": {
+      "responseHeader": {
+        "status": 0,
+        "QTime": 1
+      },
+      "response": {
+        "numFound": 0,
+        "start": 0,
+        "docs": []
+      }
+    }
+  }
+}
