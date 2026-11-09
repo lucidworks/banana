@@ -1,0 +1,40 @@
+# Banana in a container, in front of one Fusion instance. Every person logs in with their own Fusion
+# account; the container holds no Fusion credential. See docs/adr/0003-standalone-hosting-same-origin-proxy.md.
+#
+# Try it on your own machine (plain http on localhost, so the development switch is on):
+#
+#   FUSION_URL=https://fusion.example.com docker compose up --build
+#   open http://localhost:8080
+#
+# For a real deployment, put a TLS-terminating proxy or load balancer in front of port 8080 (it must pass
+# the Host header on unchanged), set BANANA_PUBLIC_ORIGIN to the https address people use, and set
+# BANANA_INSECURE_COOKIES=off (this file defaults it to on, for the localhost trial).
+services:
+  banana:
+    build: .
+    image: banana-hosting:local
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      # The Fusion origin: scheme, host and optional port, no path. https is required unless the
+      # development switch is on.
+      FUSION_URL: ${FUSION_URL:?set FUSION_URL to the Fusion origin, for example https://fusion.example.com}
+      # The address people open Banana at. Requests for any other host name are refused.
+      BANANA_PUBLIC_ORIGIN: ${BANANA_PUBLIC_ORIGIN:-http://localhost:8080}
+      BANANA_PRESET: fusion
+      # Where an expired session is sent to log in again (a path on the same address).
+      FUSION_LOGIN_URL: ${FUSION_LOGIN_URL:-/auth/login}
+      # Development only: lets a plain-http address keep Fusion's session cookie.
+      BANANA_INSECURE_COOKIES: ${BANANA_INSECURE_COOKIES:-on}
+      # Fusion's certificate is verified. Mount a CA bundle and name it here for a private authority:
+      # FUSION_CA_FILE: /certs/ca.pem
+      FUSION_TLS_VERIFY: ${FUSION_TLS_VERIFY:-on}
+    # Nothing is written outside /run/banana, which is a small in-memory file system.
+    read_only: true
+    tmpfs:
+      - /run/banana:uid=101,gid=101,mode=0700,size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped

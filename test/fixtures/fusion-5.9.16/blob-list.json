@@ -1,0 +1,127 @@
+{
+  "source": "recorded",
+  "fusionVersion": "5.9.16",
+  "recordedRequest": {
+    "method": "GET",
+    "path": "/api/blobs?q=id:banana-it*&resourceType=banana"
+  },
+  "response": {
+    "status": 200,
+    "contentType": "application/json",
+    "body": [
+      {
+        "id": "banana-it-a0-plain-1",
+        "path": "/banana-it-a0-plain-1",
+        "dir": "/",
+        "filename": "banana-it-a0-plain-1",
+        "contentType": "application/json",
+        "size": 127,
+        "modifiedTime": "2026-11-06T05:33:09.866Z",
+        "version": 1881085774257979400,
+        "md5": "ab4007f93a69f798a9be11f27110dc16",
+        "metadata": {
+          "resourceType": "banana"
+        }
+      },
+      {
+        "id": "banana-it-a0-s1/x",
+        "path": "/banana-it-a0-s1/x",
+        "dir": "/banana-it-a0-s1",
+        "filename": "x",
+        "contentType": "application/json",
+        "size": 115,
+        "modifiedTime": "2026-11-06T05:33:25.141Z",
+        "version": 1881085790274977800,
+        "md5": "25cbfe567f272382c41bf490854e4ee1",
+        "metadata": {
+          "resourceType": "banana"
+        }
+      },
+      {
+        "id": "banana-it-a0-q1?x",
+        "path": "/banana-it-a0-q1?x",
+        "dir": "/",
+        "filename": "banana-it-a0-q1?x",
+        "contentType": "application/json",
+        "size": 115,
+        "modifiedTime": "2026-11-06T05:33:21.984Z",
+        "version": 1881085786964623400,
+        "md5": "96b41f3f9741f9f738faf98ec92596af",
+        "metadata": {
+          "resourceType": "banana"
+        }
+      },
+      {
+        "id": "banana-it-a0-h1#x",
+        "path": "/banana-it-a0-h1#x",
+        "dir": "/",
+        "filename": "banana-it-a0-h1#x",
+        "contentType": "application/json",
+        "size": 115,
+        "modifiedTime": "2026-11-06T05:33:23.468Z",
+        "version": 1881085788520710100,
+        "md5": "29f48b0e99adb22e15485166f2884eb4",
+        "metadata": {
+          "resourceType": "banana"
+        }
+      },
+      {
+        "id": "banana-it-a0-sp 1",
+        "path": "/banana-it-a0-sp 1",
+        "dir": "/",
+        "filename": "banana-it-a0-sp 1",
+        "contentType": "application/json",
+        "size": 118,
+        "modifiedTime": "2026-11-06T05:33:31.402Z",
+        "version": 1881085796840112000,
+        "md5": "e4575be0c45bf147bc7844815c1c0c7d",
+        "metadata": {
+          "resourceType": "banana"
+        }
+      },
+      {
+        "id": "banana-it-a0-legacy",
+        "path": "/banana-it-a0-legacy",
+        "dir": "/",
+        "filename": "banana-it-a0-legacy",
+        "contentType": "application/json;charset=UTF-8",
+        "size": 13403,
+        "modifiedTime": "2026-11-06T05:48:51.399Z",
+        "version": 1881086761526886400,
+        "md5": "07540ed78b8ddfabed62b94142b239ba",
+        "metadata": {
+          "resourceType": "banana"
+        }
+      },
+      {
+        "id": "banana-it-a0-ow-1",
+        "path": "/banana-it-a0-ow-1",
+        "dir": "/",
+        "filename": "banana-it-a0-ow-1",
+        "contentType": "application/json",
+        "size": 135,
+        "modifiedTime": "2026-11-06T05:33:53.304Z",
+        "version": 1881085819806023700,
+        "md5": "a34cded367e4e9c42f33676e4ee5e4f4",
+        "metadata": {
+          "resourceType": "banana"
+        }
+      },
+      {
+        "id": "banana-it-000000000000-1",
+        "path": "/banana-it-000000000000-1",
+        "dir": "/",
+        "filename": "banana-it-000000000000-1",
+        "contentType": "application/json;charset=UTF-8",
+        "size": 347,
+        "modifiedTime": "2026-11-07T02:22:18.385Z",
+        "version": 1881164363476238300,
+        "md5": "9a866ad8bd3a49f9546ade938177847a",
+        "metadata": {
+          "resourceType": "banana"
+        }
+      }
+    ]
+  },
+  "note": "Only the blobs whose ids start with banana-it are kept; the instance is shared."
+}

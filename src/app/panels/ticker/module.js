@@ -6,14 +6,18 @@
   * style :: A hash of css styles
   * arrangement :: How should I arrange the query results? 'horizontal' or 'vertical'
   * ago :: Date math formatted time to look back
+  * ignore_time_picker :: Compare the last day, week, month or year with the one before it, not the time picker's range
+  * trend_interval :: What to compare when ignore_time_picker is on
 */
 define([
     'angular',
     'app',
     'underscore',
-    'kbn'
+    'kbn',
+    'moment',
+    'config'
   ],
-  function(angular, app, _, kbn) {
+  function(angular, app, _, kbn, moment, config) {
     'use strict';
 
     var module = angular.module('kibana.panels.ticker', []);
@@ -36,8 +40,17 @@ define([
         description: "A stock-ticker style representation of how queries are moving over time. " +
           "For example, if the time is 1:10pm, your time picker was set to \"Last 10m\", and the \"Time " +
           "Ago\" parameter was set to '1h', the panel would show how much the query results have changed" +
-          " since 12:00-12:10pm"
+          " since 12:00-12:10pm. With \"Ignore Time Picker\" checked, the panel instead compares the last " +
+          "day, week, month or year with the one before it, whatever the time picker says."
       };
+
+      // What "Ignore Time Picker" can compare. Each is a number of Solr date math units: the panel asks
+      // Solr for two ranges of that size that end now.
+      var DAY_TO_DAY = 'Day to Day';
+      var WEEK_TO_WEEK = 'Week to Week';
+      var MONTH_TO_MONTH = 'Month to Month';
+      var YEAR_TO_YEAR = 'Year to Year';
+      $scope.trendIntervals = [DAY_TO_DAY, WEEK_TO_WEEK, MONTH_TO_MONTH, YEAR_TO_YEAR];
 
       // Set and populate defaults
       var _d = {
@@ -49,6 +62,8 @@ define([
           "font-size": '14pt'
         },
         ago: '1d',
+        ignore_time_picker: false, // when true, compare the last trend_interval with the one before it
+        trend_interval: DAY_TO_DAY,
         arrangement: 'vertical',
         spyable: true,
         show_queries: true,
@@ -78,6 +93,13 @@ define([
 
         $scope.sjs.client.server(dashboard.current.solr.server + dashboard.current.solr.core_name);
         $scope.panel.queries.ids = querySrv.idsByMode($scope.panel.queries);
+
+        // With "Ignore Time Picker" the time picker's range plays no part, and neither does a time filter:
+        // the panel needs only a time field to ask Solr about, which the dashboard's settings provide.
+        if ($scope.panel.ignore_time_picker) {
+          getTrendData();
+          return;
+        }
 
         // Determine a time field
         var timeField = _.uniq(_.pluck(filterSrv.getByType('time'), 'field'));
@@ -215,15 +237,20 @@ define([
                 $scope.panel.error = $scope.parse_error(results[index].error.msg);
                 return;
               }
-              processSolrResults(results[index * 2], results[index * 2 + 1], id,index);
+              processSolrResults(results[index * 2], results[index * 2 + 1], id, index, time_field);
             });
+            // What the panel draws is this refresh's counts only: a query whose response had none is left out.
+            $scope.trends = _.compact($scope.data);
+          }, function (response) {
+            $scope.panel.error = $scope.request_error(response);
+            $scope.panelMeta.loading = false;
           });
         }
 
       };
 
 
-      function processSolrResults(results_new, results_old, id,i) {
+      function processSolrResults(results_new, results_old, id, i, time_field) {
         $scope.panelMeta.loading = false;
 
         // Check for error and abort if found
@@ -239,9 +266,16 @@ define([
 
         $scope.hits = {};
 
+        // Read the field that was requested, not the dashboard's current one, which may have changed since.
+        // A response without that field's counts leaves the panel without counts.
+        var newCount = betweenCount(results_new, time_field);
+        var oldCount = betweenCount(results_old, time_field);
+        if (_.isUndefined(newCount) || _.isUndefined(oldCount)) {
+          return;
+        }
         var hits = {
-          new: results_new.facet_counts.facet_ranges[filterSrv.getTimeField()]['between'],
-          old: results_old.facet_counts.facet_ranges[filterSrv.getTimeField()]['between']
+          new: newCount,
+          old: oldCount
         };
         $scope.hits = hits;
 
@@ -259,6 +293,113 @@ define([
         $scope.trends = $scope.data;
       }
 
+      function betweenCount(results, field) {
+        var ranges = results && results.facet_counts && results.facet_counts.facet_ranges;
+        var range = ranges && ranges[field];
+        return range ? range['between'] : undefined;
+      }
+
+      // The two ranges that "Ignore Time Picker" compares: [start, start + gap) and [start + gap, now].
+      // Solr adds the gap itself, so the ranges do not depend on the browser's time zone or week start.
+      function trendWindow(interval) {
+        var now = moment();
+        switch (interval) {
+          case WEEK_TO_WEEK:
+            return { start: now.clone().subtract(2, 'weeks'), end: now, gap: '+7DAYS' };
+          case MONTH_TO_MONTH:
+            return { start: now.clone().subtract(2, 'months'), end: now, gap: '+1MONTH' };
+          case YEAR_TO_YEAR:
+            return { start: now.clone().subtract(2, 'years'), end: now, gap: '+1YEAR' };
+          default: // DAY_TO_DAY, and a panel whose saved interval is not one of the four
+            return { start: now.clone().subtract(2, 'days'), end: now, gap: '+1DAY' };
+        }
+      }
+
+      // The field the trend counts on: the dashboard's time filter field, or the configured time field when the
+      // dashboard has no time filter (the panel does not need one with "Ignore Time Picker").
+      function trendTimeField() {
+        return filterSrv.getTimeField() || config.timefield;
+      }
+
+      function getTrendData() {
+        var ids = $scope.panel.queries.ids;
+        var range = trendWindow($scope.panel.trend_interval);
+        var request = $scope.sjs.Request().indices(dashboard.indices);
+        var time_field = trendTimeField();
+
+        // Populate the inspector panel
+        $scope.inspector = angular.toJson(JSON.parse(request.toString()), true);
+
+        // The time filter is left out on purpose: the range is the one chosen above.
+        var fq = '';
+        if (filterSrv.getSolrFq(true)) {
+          fq = '&' + filterSrv.getSolrFq(true);
+        }
+        var wt_json = '&wt=json';
+        var rows_limit = '&rows=0'; // only the counts are needed
+        var facet_range = '&facet=true' +
+          '&facet.range=' + time_field +
+          '&facet.range.start=' + range.start.toISOString() +
+          '&facet.range.end=' + range.end.toISOString() +
+          '&facet.range.gap=' + encodeURIComponent(range.gap) +
+          '&facet.range.hardend=true';
+
+        var promises = [];
+        $scope.panel.queries.query = '';
+        _.each(ids, function(id) {
+          var solrQuery = querySrv.getQuery(id) + wt_json + rows_limit + fq + facet_range;
+          $scope.panel.queries.query += solrQuery + "\n\n";
+          if ($scope.panel.queries.custom != null) {
+            solrQuery += $scope.panel.queries.custom;
+          }
+          promises.push(request.setQuery(solrQuery).doSearch());
+        });
+
+        $scope.data = [];
+        if (ids.length === 0) {
+          $scope.panelMeta.loading = false;
+          $scope.trends = $scope.data;
+          return;
+        }
+        $q.all(promises).then(function(results) {
+          $scope.panelMeta.loading = false;
+          _.each(ids, function(id, index) {
+            plotTrendData(results[index], id, index, time_field);
+          });
+          // As on the main path: draw this refresh's trends only, leaving out a query whose response had none.
+          $scope.trends = _.compact($scope.data);
+        }, function(response) {
+          $scope.panel.error = $scope.request_error(response);
+          $scope.panelMeta.loading = false;
+        });
+      }
+
+      function plotTrendData(results, id, i, time_field) {
+        if (!(_.isUndefined(results.error))) {
+          $scope.panel.error = $scope.parse_error(results.error.msg);
+          return;
+        }
+
+        var ranges = results.facet_counts && results.facet_counts.facet_ranges &&
+          results.facet_counts.facet_ranges[time_field];
+        // counts is [start of the first range, its count, start of the second range, its count, ...]
+        var counts = ranges && ranges.counts;
+        if (!counts || counts.length < 4) {
+          $scope.panel.error = 'Cannot show the trend: Solr did not return two ranges.';
+          return;
+        }
+
+        var hits = { old: counts[1], new: counts[3] };
+        var percent = percentage(hits.old, hits.new) == null ?
+          '?' : Math.round(percentage(hits.old, hits.new) * 100) / 100;
+        $scope.data[i] = {
+          info: querySrv.list[id],
+          hits: hits,
+          percent: percent
+        };
+        $scope.trends = $scope.data;
+      }
+
       function diffDays(date1, date2) {
         // calculate the number of days between two dates
         var oneDay = 24 * 60 * 60 * 1000;
@@ -271,6 +412,15 @@ define([
 
       $scope.set_refresh = function(state) {
         $scope.refresh = state;
+      };
+
+      $scope.comparing = function(interval) {
+        switch (interval) {
+          case WEEK_TO_WEEK: return 'Last week to this week';
+          case MONTH_TO_MONTH: return 'Last month to this month';
+          case YEAR_TO_YEAR: return 'Last year to this year';
+          default: return 'Yesterday to today';
+        }
       };
 
       $scope.close_edit = function() {

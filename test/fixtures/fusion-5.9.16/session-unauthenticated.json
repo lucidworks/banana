@@ -1,0 +1,19 @@
+{
+  "source": "recorded",
+  "fusionVersion": "5.9.16",
+  "recordedRequest": {
+    "method": "GET",
+    "path": "/api/session"
+  },
+  "response": {
+    "status": 401,
+    "contentType": "application/json",
+    "body": {
+      "traceId": "fixture-traceId",
+      "service": "proxy",
+      "error": "unauthorized",
+      "path": "/api/session",
+      "timestamp": "2026-11-07T02:22:16.123877561"
+    }
+  }
+}

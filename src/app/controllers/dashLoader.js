@@ -1,14 +1,16 @@
 define([
     'angular',
     'underscore',
-    'config'
+    'config',
+    'kbn',
+    'components/dashboard-ids'
 ],
-function (angular, _, config) {
+function (angular, _, config, kbn, ids) {
     'use strict';
 
     var module = angular.module('kibana.controllers');
 
-    module.controller('dashLoader', function ($scope, $http, timer, dashboard, alertSrv) {
+    module.controller('dashLoader', function ($scope, $http, timer, dashboard, alertSrv, $window) {
         var self = this;
         // Solr and Fusion uses different field names for their schema.
         // Solr uses banana-int collection, and Fusion uses system_banana collection.
@@ -122,7 +124,7 @@ function (angular, _, config) {
 
         $scope.set_default = function () {
             if (dashboard.set_default()) {
-                alertSrv.set('Local Default Set', dashboard.current.title + ' has been set as your local default', 'success', 5000);
+                alertSrv.set('Local Default Set', kbn.escapeHtml(dashboard.current.title) + ' has been set as your local default', 'success', 5000);
             } else {
                 alertSrv.set('Incompatible Browser', 'Sorry, your browser is too old for this feature', 'error', 5000);
             }
@@ -136,20 +138,36 @@ function (angular, _, config) {
             }
         };
 
+        // Asked when a save would replace a stored dashboard: shows who saved it and lets the user decide.
+        var confirmOverwrite = function (existing) {
+            return $window.confirm(dashboard.overwriteQuestion(existing));
+        };
+
         $scope.elasticsearch_save = function (type, ttl) {
+            var title = $scope.elasticsearch.title || dashboard.current.title;
             dashboard.elasticsearch_save(
                 type,
-                ($scope.elasticsearch.title || dashboard.current.title),
-                ($scope.loader.save_temp_ttl_enable ? ttl : false)
+                title,
+                ($scope.loader.save_temp_ttl_enable ? ttl : false),
+                confirmOverwrite
             ).then(function (result) {
                 alertSrv.set('Dashboard Saved', 'This dashboard has been saved to Solr as "' +
-                    ($scope.elasticsearch.title || dashboard.current.title) + '"', 'success', 5000);
+                    kbn.escapeHtml(title) + '"', 'success', 5000);
                 if (type === 'temp') {
                     $scope.share = dashboard.share_link(dashboard.current.title, 'temp', result.response.docs[0].id);
                 }
                 $scope.elasticsearch.title = '';
             }, function (error) {
-                console.log('ERROR: ' + error);
+                // A refusal wrote nothing: say so, and leave the title box as it is.
+                if (error && error.reason) {
+                    if (error.reason === 'declined') {
+                        alertSrv.set('Not saved', 'The existing dashboard was left as it was.', 'info', 5000);
+                    } else {
+                        alertSrv.set('Not saved', kbn.escapeHtml(error.message), 'error', 5000);
+                    }
+                    return;
+                }
+                console.log('ERROR: dashboard could not be saved, status = ' + (error && error.status));
                 alertSrv.set('Save failed', 'Dashboard could not be saved to Solr', 'error', 5000);
             });
         };
@@ -159,24 +177,29 @@ function (angular, _, config) {
                 function (result) {
                     if (config.USE_FUSION) {
                         // The result returned from Blob Store API (DELETE request) will be an empty string.
-                        // Need to return the result in Solr json format.
+                        // Need to return the result in Solr json format. (The service rejects every case in
+                        // which nothing was deleted, so a resolved delete is a deleted dashboard.)
                         result = {
                           responseHeader: {status: 0}
                         };
                     }
 
                     if (!_.isUndefined(result)) {
-                        if (result.responseHeader.status === 0) {
-                            alertSrv.set('Dashboard Deleted', id + ' has been deleted', 'success', 5000);
+                        if (result.responseHeader && result.responseHeader.status === 0) {
+                            alertSrv.set('Dashboard Deleted', kbn.escapeHtml(id) + ' has been deleted', 'success', 5000);
                             // Find the deleted dashboard in the cached list and remove it
                             var toDelete = _.where($scope.elasticsearch.dashboards, {id: id})[0];
                             $scope.elasticsearch.dashboards = _.without($scope.elasticsearch.dashboards, toDelete);
                         } else {
-                            alertSrv.set('Dashboard Not Found', 'Could not find ' + id + ' in Solr', 'warning', 5000);
+                            alertSrv.set('Dashboard Not Found', 'Could not find ' + kbn.escapeHtml(id) + ' in Solr', 'warning', 5000);
                         }
                     } else {
                         alertSrv.set('Dashboard Not Deleted', 'An error occurred deleting the dashboard', 'error', 5000);
                     }
+                },
+                function () {
+                    // The dashboard stays in the list: it was not deleted.
+                    alertSrv.set('Dashboard Not Deleted', 'An error occurred deleting the dashboard', 'error', 5000);
                 }
             );
         };
@@ -212,6 +235,9 @@ function (angular, _, config) {
                             $scope.loadMenu.backwardButtonState = 'disabled';
                         }
                     }
+                },
+                function () {
+                    alertSrv.set('Error', 'Could not load the list of saved dashboards', 'error', 5000);
                 });
         };
 
@@ -238,6 +264,9 @@ function (angular, _, config) {
                         var endIndex = offset + dashboard.current.loader.load_elasticsearch_size;
                         $scope.elasticsearch.dashboards = parseDashboardList(result.response.docs).slice(startIndex, endIndex);
                     }
+                },
+                function () {
+                    alertSrv.set('Error', 'Could not load the list of saved dashboards', 'error', 5000);
                 }
             );
 
@@ -292,10 +321,10 @@ function (angular, _, config) {
         $scope.save_gist = function () {
             dashboard.save_gist($scope.gist.title).then(
                 function (link) {
-                    if (!_.isUndefined(link)) {
+                    if (link) {
                         $scope.gist.last = link;
                         alertSrv.set('Gist saved', 'You will be able to access your exported dashboard file at ' +
-                            '<a href="' + link + '">' + link + '</a> in a moment', 'success');
+                            '<a href="' + kbn.escapeHtml(link) + '">' + kbn.escapeHtml(link) + '</a> in a moment', 'success');
                     } else {
                         alertSrv.set('Save failed', 'Gist could not be saved', 'error', 5000);
                     }
@@ -318,8 +347,9 @@ function (angular, _, config) {
             for (var i=0; i < dashboardList.length; i++) {
                 var doc = {};
                 if (config.USE_FUSION) {
-                  // strip out the '/' prefix
-                  if (dashboardList[i].id.indexOf('/') !== -1) {
+                  // Listings that name an id with a leading '/' (a path) lose it. The 5.9 listing does not
+                  // have one, and an id such as 'a/b' must keep its first character.
+                  if (dashboardList[i].id.charAt(0) === '/') {
                     doc.id = dashboardList[i].id.substring(1);
                   } else {
                     doc.id = dashboardList[i].id;
@@ -335,6 +365,8 @@ function (angular, _, config) {
                     doc.server = angular.fromJson(dashboardList[i][self.DASHBOARD_FIELD]).solr.server;
                   }
                 }
+                // The id as it is written in the link that opens the dashboard
+                doc.link = ids.linkId(doc.id);
                 docs.push(doc);
             }
 

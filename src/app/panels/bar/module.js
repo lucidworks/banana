@@ -87,7 +87,7 @@ define([
         var facet = '&facet=true&facet.field=' + $scope.panel.field + '&facet.limit=' + $scope.panel.size;
 
         // Set the panel's query
-        $scope.panel.queries.query = querySrv.getORquery() + wt_json + rows_limit + fq + facet;
+        $scope.panel.queries.query = querySrv.getOPQuery() + wt_json + rows_limit + fq + facet;
 
         // Set the additional custom query
         if ($scope.panel.queries.custom != null) {
@@ -139,6 +139,9 @@ define([
             }
           });
           $scope.$emit('render');
+        }, function (response) {
+          $scope.panel.error = $scope.request_error(response);
+          $scope.panelMeta.loading = false;
         });
       };
 

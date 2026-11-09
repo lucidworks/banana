@@ -1,13 +1,14 @@
 define([
     'angular',
     'underscore',
-    'config'
+    'config',
+    'kbn'
 ],
-function (angular, _, config) {
+function (angular, _, config, kbn) {
     'use strict';
 
     var module = angular.module('kibana.services');
-    module.service('fields', function (dashboard, $rootScope, $http, alertSrv, lucidworksSrv) {
+    module.service('fields', function (dashboard, $rootScope, $http, $q, alertSrv, lucidworksSrv) {
         // Save a reference to this
         var self = this;
 
@@ -23,7 +24,7 @@ function (angular, _, config) {
                 var indices = _.difference(n, _.keys(self.mapping));
                 // Only get the mapping if there are indices
                 if (indices.length > 0) {
-                    self.map(indices).then(function (result) {
+                    self.map().then(function (result) {
                         self.mapping = _.extend(self.mapping, result);
                         self.list = mapFields(self.mapping);
                     });
@@ -46,7 +47,7 @@ function (angular, _, config) {
         };
 
         // This function is for getting the list of fields from a collection.
-        this.map = function () {
+        this.map = function (collection_name) {
             // Check USE_ADMIN_LUKE flag in config.js
             // And also check USE_FUSION flag, if true, use Fusion Collection API instead of Solr.
             var fieldApi = '';
@@ -63,14 +64,15 @@ function (angular, _, config) {
             if (!config.USE_FUSION) {
                 request = $http({
                     // Get all fields in Solr core
-                    url: dashboard.current.solr.server + dashboard.current.solr.core_name + fieldApi,
+                    url: dashboard.current.solr.server + 
+                        (collection_name? collection_name : dashboard.current.solr.core_name) + fieldApi,
                     method: "GET"
                 }).error(function (data, status) {
                     if (status === 0) {
-                        alertSrv.set('Error', "Could not contact Solr at " + dashboard.current.solr.server +
+                        alertSrv.set('Error', "Could not contact Solr at " + kbn.escapeHtml(dashboard.current.solr.server) +
                             ". Please ensure that Solr is reachable from your system.", 'error');
                     } else {
-                        alertSrv.set('Error', "Collection not found at " + dashboard.current.solr.server + dashboard.current.solr.core_name +
+                        alertSrv.set('Error', "Collection not found at " + kbn.escapeHtml(dashboard.current.solr.server + dashboard.current.solr.core_name) +
                             ". Please check your configuration or create the collection. If you're using a proxy ensure it is configured correctly.", 'error');
                     }
                 });
@@ -101,8 +103,10 @@ function (angular, _, config) {
 
                 return mapping;
             }, function(error) {
-                alertSrv.set('Error', error);
-                console.log(error);
+                // The user was already told why, by the .error() alert above (Solr), or the field
+                // lists are optional (Fusion). Do not raise a second alert: only the last one is shown.
+                console.log('fields: could not get the field list, status = ' + (error && error.status));
+                return $q.reject(error);
             });
         };
 

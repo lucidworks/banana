@@ -1,0 +1,29 @@
+{
+  "source": "derived",
+  "note": "The same, for a banana-int collection whose dashboard field is multi-valued: Solr then returns the value in an array. Not observed on a server.",
+  "response": {
+    "status": 200,
+    "contentType": "application/json",
+    "body": {
+      "responseHeader": {
+        "status": 0,
+        "QTime": 1
+      },
+      "response": {
+        "numFound": 1,
+        "start": 0,
+        "docs": [
+          {
+            "id": "banana-it-000000000000-1",
+            "user": "guest",
+            "group": "none",
+            "title": "banana-it-000000000000-1",
+            "dashboard": [
+              "{\"title\":\"banana-it-000000000000-1\",\"style\":\"dark\",\"rows\":[],\"solr\":{\"server\":\"/api/query-pipelines/_system/collections/\",\"core_name\":\"banana-it-logs\"}}"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

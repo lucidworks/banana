@@ -12,7 +12,7 @@ Angular.js service wrapping the elastic.js API. This module can simply
 be injected into your angular controllers. 
 */
 angular.module('solrjs.service', [])
-  .factory('sjsResource', ['$http', function ($http) {
+  .factory('sjsResource', ['$http', '$q', function ($http, $q) {
 
   return function (url) {
 
@@ -24,14 +24,14 @@ angular.module('solrjs.service', [])
       // use existing sjs object if it exists
       sjs = window.sjs || {},
 
-      /* results are returned as a promise */
+      /* results are returned as a promise; a failed request rejects it with the HTTP response */
       promiseThen = function (httpPromise, successcb, errorcb) {
         return httpPromise.then(function (response) {
           (successcb || angular.noop)(response.data);
           return response.data;
         }, function (response) {
-          (errorcb || angular.noop)(response.data);
-          return response.data;
+          (errorcb || angular.noop)(response && response.data);
+          return $q.reject(response);
         });
       };
 

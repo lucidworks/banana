@@ -1,0 +1,687 @@
+{
+  "title": "banana-it smoke",
+  "services": {
+    "query": {
+      "idQueue": [
+        1
+      ],
+      "list": {
+        "0": {
+          "query": "*:*",
+          "alias": "",
+          "color": "#7EB26D",
+          "id": 0,
+          "pin": false,
+          "type": "lucene"
+        }
+      },
+      "ids": [
+        0
+      ]
+    },
+    "filter": {
+      "idQueue": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "list": {
+        "0": {
+          "from": "2023-12-30T00:00:00.000Z",
+          "to": "2024-01-05T00:00:00.000Z",
+          "field": "timestamp_tdt",
+          "type": "time",
+          "fromDateObj": "2023-12-30T00:00:00.000Z",
+          "toDateObj": "2024-01-05T00:00:00.000Z",
+          "mandate": "must",
+          "active": true,
+          "alias": "",
+          "id": 0
+        }
+      },
+      "ids": [
+        0
+      ]
+    }
+  },
+  "editable": true,
+  "failover": false,
+  "index": {
+    "interval": "none",
+    "pattern": "[logstash-]YYYY.MM.DD",
+    "default": "NO_TIME_FILTER_OR_INDEX_PATTERN_NOT_MATCHED"
+  },
+  "style": "light",
+  "panel_hints": true,
+  "loader": {
+    "save_gist": false,
+    "save_elasticsearch": true,
+    "save_local": true,
+    "save_default": true,
+    "save_temp": true,
+    "save_temp_ttl_enable": true,
+    "save_temp_ttl": "30d",
+    "load_gist": false,
+    "load_elasticsearch": true,
+    "load_elasticsearch_size": 20,
+    "load_local": true,
+    "hide": false,
+    "dropdown_collections": false,
+    "save_as_public": false
+  },
+  "solr": {
+    "server": "/api/solr/",
+    "core_name": "banana-it-logs",
+    "core_list": [],
+    "global_params": ""
+  },
+  "rows": [
+    {
+      "title": "Controls",
+      "height": "130px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "type": "column",
+          "span": 6,
+          "title": "column",
+          "editable": true,
+          "error": false,
+          "panels": [
+            {
+              "type": "timepicker",
+              "title": "timepicker",
+              "mode": "absolute",
+              "time": {
+                "from": "12/30/2023 00:00:00",
+                "to": "01/05/2024 00:00:00"
+              },
+              "timespan": "30d",
+              "timefield": "timestamp_tdt",
+              "timeformat": "",
+              "time_options": [
+                "1h",
+                "24h",
+                "7d",
+                "30d",
+                "1y"
+              ],
+              "spyable": true,
+              "refresh": {
+                "enable": false,
+                "interval": 30,
+                "min": 3
+              },
+              "status": "Stable"
+            },
+            {
+              "type": "query",
+              "title": "query",
+              "query": "*:*",
+              "pinned": true,
+              "history": [],
+              "remember": 10,
+              "spyable": true,
+              "height": "50px",
+              "span": 12
+            }
+          ]
+        },
+        {
+          "type": "filtering",
+          "span": 3,
+          "title": "filtering",
+          "editable": true,
+          "error": false
+        },
+        {
+          "type": "text",
+          "span": 3,
+          "title": "text",
+          "editable": true,
+          "error": false,
+          "mode": "markdown",
+          "content": "Fixture dashboard for the live smoke test. Data: the banana-it-logs collection.",
+          "status": "Stable",
+          "style": {}
+        }
+      ]
+    },
+    {
+      "title": "Counts and time",
+      "height": "250px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "type": "hits",
+          "span": 3,
+          "title": "hits",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "chart": "total",
+          "counter_pos": "above",
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "horizontal",
+          "style": {
+            "font-size": "10pt"
+          },
+          "metrics": [
+            {
+              "type": "mean",
+              "field": "response_time_d",
+              "decimalDigits": 2,
+              "label": "mean response",
+              "value": 0
+            },
+            {
+              "type": "max",
+              "field": "cpu_d",
+              "decimalDigits": 1,
+              "label": "max cpu",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "type": "ticker",
+          "span": 3,
+          "title": "ticker",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": []
+          },
+          "ago": "1d",
+          "arrangement": "vertical",
+          "style": {
+            "font-size": "14pt"
+          }
+        },
+        {
+          "type": "histogram",
+          "span": 6,
+          "title": "histogram",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "mode": "count",
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "1h",
+          "bars": true,
+          "stack": true,
+          "legend": true,
+          "timezone": "utc"
+        }
+      ]
+    },
+    {
+      "title": "Terms",
+      "height": "250px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "type": "bar",
+          "span": 4,
+          "title": "bar",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "field": "level_s",
+          "size": 10
+        },
+        {
+          "type": "terms",
+          "span": 4,
+          "title": "terms",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "field": "service_s",
+          "size": 10,
+          "chart": "bar",
+          "mode": "count",
+          "exclude": []
+        },
+        {
+          "type": "tagcloud",
+          "span": 4,
+          "title": "tagcloud",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "field": "category_s",
+          "size": 10
+        }
+      ]
+    },
+    {
+      "title": "Maps",
+      "height": "350px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "type": "map",
+          "span": 6,
+          "title": "map",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "field": "country_s",
+          "map": "world",
+          "mode": "count",
+          "size": 100,
+          "exclude": [],
+          "colors": [
+            "#A0E2E2",
+            "#265656"
+          ],
+          "useNames": false
+        },
+        {
+          "type": "bettermap",
+          "span": 6,
+          "title": "bettermap",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "field": "geo_p",
+          "size": 240,
+          "fitBoundsAuto": true
+        }
+      ]
+    },
+    {
+      "title": "Numeric",
+      "height": "300px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "type": "heatmap",
+          "span": 4,
+          "title": "heatmap",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "row_field": "level_s",
+          "col_field": "service_s",
+          "row_size": 5,
+          "size": 0,
+          "color": "gray"
+        },
+        {
+          "type": "rangeFacet",
+          "span": 4,
+          "title": "rangeFacet",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "range_field": "bytes_l",
+          "mode": "count",
+          "interval": "2000",
+          "minimum": 0,
+          "maximum": 21000,
+          "auto_int": false,
+          "resolution": 10
+        },
+        {
+          "type": "scatterplot",
+          "span": 4,
+          "title": "scatterplot",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "xaxis": "response_time_d",
+          "yaxis": "cpu_d",
+          "colorField": "level_s",
+          "bubbleSizeField": "heap_mb_i",
+          "max_rows": 240
+        }
+      ]
+    },
+    {
+      "title": "Documents",
+      "height": "300px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "type": "table",
+          "span": 12,
+          "title": "table",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "fields": [
+            "timestamp_tdt",
+            "level_s",
+            "service_s",
+            "message_t",
+            "url_s"
+          ],
+          "size": 10,
+          "pages": 5,
+          "sortable": false,
+          "calcTopFieldValuesFromAllData": false
+        }
+      ]
+    },
+    {
+      "title": "Search and facets",
+      "height": "300px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "type": "fullTextSearch",
+          "span": 6,
+          "title": "fullTextSearch",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "fields": [
+            "timestamp_tdt",
+            "level_s",
+            "message_t"
+          ],
+          "size": 10,
+          "pages": 5
+        },
+        {
+          "type": "facet",
+          "span": 6,
+          "title": "facet",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "fields": [
+            "level_s",
+            "service_s",
+            "country_s"
+          ],
+          "facet_limit": 10
+        }
+      ]
+    },
+    {
+      "title": "Documents and series",
+      "height": "300px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "type": "docviewer",
+          "span": 6,
+          "title": "docviewer",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "query": "*:*",
+            "custom": ""
+          },
+          "titleField": "service_s",
+          "contentField": "message_t",
+          "uniqueKey": "id",
+          "max_rows": 20
+        },
+        {
+          "type": "multiseries",
+          "span": 6,
+          "title": "multiseries",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "field": "timestamp_tdt",
+          "fl": "cpu_d,heap_mb_i",
+          "yAxis": "CPU",
+          "size": 240,
+          "max_rows": 240
+        }
+      ]
+    },
+    {
+      "title": "Pivots",
+      "height": "400px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "type": "sunburst",
+          "span": 4,
+          "title": "sunburst",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "facet_pivot_strings": [
+            "level_s",
+            "service_s",
+            "category_s"
+          ],
+          "facet_limit": 100
+        },
+        {
+          "type": "sankey",
+          "span": 4,
+          "title": "sankey",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "facet_pivot_strings": [
+            "level_s",
+            "service_s"
+          ],
+          "facet_limit": 100
+        },
+        {
+          "type": "force",
+          "span": 4,
+          "title": "force",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "facet_pivot_strings": [
+            "level_s",
+            "service_s"
+          ],
+          "facet_limit": "10,20"
+        }
+      ]
+    },
+    {
+      "title": "Distribution",
+      "height": "350px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "type": "boxplot",
+          "span": 12,
+          "title": "boxplot",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "facet_pivot_strings": [
+            "service_s",
+            "heap_mb_i"
+          ],
+          "facet_limit": 100
+        }
+      ]
+    },
+    {
+      "title": "Stream expressions",
+      "height": "350px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "type": "timeseries",
+          "span": 4,
+          "title": "timeseries",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "metric": "avg",
+          "field": "response_time_d",
+          "auto_int": false,
+          "interval": "1h",
+          "resolution": 100
+        },
+        {
+          "type": "significantTerms",
+          "span": 4,
+          "title": "significantTerms",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "field": "message_t",
+          "size": 10,
+          "chart": "bar"
+        },
+        {
+          "type": "graph",
+          "span": 4,
+          "title": "graph",
+          "editable": true,
+          "error": false,
+          "queries": {
+            "mode": "all",
+            "ids": [],
+            "query": "*:*",
+            "custom": ""
+          },
+          "graph_collection": "banana-it-logs",
+          "join_field": "host_s",
+          "from_field": "host_s",
+          "to_field": "level_s",
+          "label_field": "host_s",
+          "root_node": "node-a.example.test",
+          "root_nodes": 10
+        }
+      ]
+    }
+  ],
+  "username": "banana-it"
+}

@@ -1,8 +1,9 @@
 define([
   'angular',
-  'underscore'
+  'underscore',
+  'kbn'
 ],
-function (angular, _) {
+function (angular, _, kbn) {
   'use strict';
 
   var module = angular.module('kibana.services');
@@ -31,7 +32,7 @@ function (angular, _) {
       }
       var wt = '&wt=json';
       var facet = '&rows=0&facet=true&facet.limit=10&facet.field=' + fields.join('&facet.field=');
-      var query = '/select?' + querySrv.getORquery() + fq + wt + facet;
+      var query = '/select?' + querySrv.getOPQuery() + fq + wt + facet;
 
       // loop through each field to send facet query to Solr
       // _.each(fields, function(field) {
@@ -41,10 +42,10 @@ function (angular, _) {
           url: dashboard.current.solr.server + dashboard.current.solr.core_name + query,
         }).error(function(data, status) {
           if(status === 0) {
-            alertSrv.set('Error', 'Could not contact Solr at '+dashboard.current.solr.server+
+            alertSrv.set('Error', 'Could not contact Solr at '+kbn.escapeHtml(dashboard.current.solr.server)+
               '. Please ensure that Solr is reachable from your system.' ,'error');
           } else {
-            alertSrv.set('Error','Could not retrieve facet data from Solr (Error status = '+status+')','error');
+            alertSrv.set('Error','Could not retrieve facet data from Solr (Error status = '+kbn.escapeHtml(status)+')','error');
           }
         });
 

@@ -194,7 +194,7 @@ function (angular, app, _, moment, kbn, $) {
         var timeShorthand = $scope.panel.timespan.substr(-1);
         var timeNumber = $scope.panel.timespan.substr(0, $scope.panel.timespan.length-1);
 
-        from = $scope.panel.mode === 'relative' ? moment().subtract(timeShorthand,timeNumber) :
+        from = $scope.panel.mode === 'relative' ? moment().subtract(Number(timeNumber), timeShorthand) :
           moment(moment($scope.timepicker.from.date).format('MM/DD/YYYY') + " " + $scope.timepicker.from.time,'MM/DD/YYYY HH:mm:ss');
         // from = $scope.panel.mode === 'relative' ? moment(kbn.time_ago($scope.panel.timespan)) :
         //   moment(moment.utc($scope.timepicker.from.date).format('MM/DD/YYYY') + " " + $scope.timepicker.from.time,'MM/DD/YYYY HH:mm:ss');
@@ -301,15 +301,20 @@ function (angular, app, _, moment, kbn, $) {
             timeNumber = timeNumber * 7;
             timeUnit = 'DAY';
             break;
+          case 'M':
+            timeUnit = 'MONTH';
+            break;
           case 'y':
             timeUnit = 'YEAR';
             break;
         }
-        filterTime.from = 'NOW-' + timeNumber + timeUnit;
-        filterTime.to   = 'NOW%2B1' + timeUnit;
+        // Round to the unit (NOW/HOUR) so that the filter is the same for the whole unit and Solr
+        // can reuse its cached result.
+        filterTime.from = 'NOW/' + timeUnit + '-' + timeNumber + timeUnit;
+        filterTime.to   = 'NOW/' + timeUnit + '%2B1' + timeUnit;
         // Add Date objects representation of from and to, for use with histogram panel
         // where it needs Date objects for plotting x-axis on a chart.
-        filterTime.fromDateObj = moment().subtract(timeShorthand,timeNumber).toDate();
+        filterTime.fromDateObj = moment().subtract(Number(timeNumber), timeShorthand).toDate();
         filterTime.toDateObj = new Date();
       } else if ($scope.panel.mode === 'since') {
         // Add Date objects representation of from and to, for use with histogram panel

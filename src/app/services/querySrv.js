@@ -48,6 +48,10 @@ function (angular, _, config) {
       self.list = dashboard.current.services.query.list;
       self.ids = dashboard.current.services.query.ids;
 
+      // The operator belongs to the query panel of the dashboard being loaded. Forget the one a
+      // previous dashboard set; a query panel on this dashboard sets it again when it starts.
+      self.operator = undefined;
+
       // Check each query object, populate its defaults
       _.each(self.list,function(query,id) {
         _.defaults(query,_query);
@@ -121,17 +125,30 @@ function (angular, _, config) {
       return  solr_q;
     };
 
-    // used in multiquery case only:  it return the query in form "query1 OR query2 OR ..."
-    this.getORquery = function() {
-      var solr_q = 'q=';
-      for (var key in self.list) {
-        solr_q += encodeURIComponent(self.list[key].query) + " OR ";
-      }
-      solr_q = solr_q.substring(0, solr_q.length - 4);
+    // Used in the multiquery case: returns the query in the form "query1 OP query2 OP ...".
+    // The operator comes from the query panel of the current dashboard. Without a query panel
+    // none is set (init clears it on every dashboard load) and the queries are joined with OR.
+    // With no queries it returns only the global parameters, or an empty string.
+    this.getOPQuery = function() {
+      var operator = self.operator || 'OR';
+      var queries = _.map(self.list, function(item) {
+        return encodeURIComponent(item.query);
+      });
+      var solr_q = queries.length ? 'q=' + queries.join(' ' + operator + ' ') : '';
       if (dashboard.current.solr.global_params) {
         solr_q += dashboard.current.solr.global_params;
       }
       return solr_q;
+    };
+
+    // The same queries as getOPQuery, as plain text: no 'q=', no URL-encoding and no global
+    // parameters. Used by the panels that build streaming expressions, which must quote the text
+    // themselves. With no queries it is '*:*'.
+    this.getOPQueryText = function() {
+      var operator = self.operator || 'OR';
+      var queries = _.pluck(_.values(self.list), 'query');
+      var text = queries.join(' ' + operator + ' ');
+      return text.trim() === '' ? '*:*' : text;
     };
 
     this.findQuery = function(queryString) {

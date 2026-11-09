@@ -30,6 +30,64 @@ define([
     // Save a reference to this
     var self = this;
 
+    // Turns a stored time bound into a Date: an ISO date (with or without a trailing rounding such as
+    // "/SECOND"), "*" or "NOW" for now, or Solr date math such as NOW/HOUR-6HOUR or NOW/DAY%2B1DAY.
+    // Returns an invalid Date for anything else.
+    function parseTime(text) {
+      var now = new Date();
+      var value = text;
+      try { value = decodeURIComponent(text); } catch (e) { /* keep the text as it is */ }
+      value = value.replace(/\s+/g, '');
+      if (value === '*') {
+        return now;
+      }
+      var math = /^NOW((?:\/[A-Z]+|[+-]\d+[A-Z]+)*)$/.exec(value);
+      var base, rest;
+      if (math) {
+        base = now;
+        rest = math[1];
+      } else {
+        var iso = /^(\d{4}-\d\d-\d\dT[\d:.]+Z?)((?:\/[A-Z]+|[+-]\d+[A-Z]+)*)$/.exec(value);
+        if (!iso) {
+          return new Date(NaN);
+        }
+        base = new Date(iso[1]);
+        rest = iso[2];
+      }
+      var t = new Date(base.getTime());
+      var ops = rest.match(/\/[A-Z]+|[+-]\d+[A-Z]+/g) || [];
+      for (var i = 0; i < ops.length && !isNaN(t.getTime()); i++) {
+        var m = /^(?:\/([A-Z]+?)S?|([+-]\d+)([A-Z]+?)S?)$/.exec(ops[i]);
+        var unit = m[1] || m[3];
+        var y = t.getUTCFullYear(), mo = t.getUTCMonth(), d = t.getUTCDate(), h = t.getUTCHours(),
+          mi = t.getUTCMinutes(), sec = t.getUTCSeconds();
+        if (m[1]) {
+          switch (unit) {
+          case 'YEAR': t = new Date(Date.UTC(y, 0, 1)); break;
+          case 'MONTH': t = new Date(Date.UTC(y, mo, 1)); break;
+          case 'DAY': case 'DATE': t = new Date(Date.UTC(y, mo, d)); break;
+          case 'HOUR': t = new Date(Date.UTC(y, mo, d, h)); break;
+          case 'MINUTE': t = new Date(Date.UTC(y, mo, d, h, mi)); break;
+          case 'SECOND': t = new Date(Date.UTC(y, mo, d, h, mi, sec)); break;
+          default: t = new Date(NaN);
+          }
+        } else {
+          var n = parseInt(m[2], 10);
+          switch (unit) {
+          case 'YEAR': t = new Date(Date.UTC(y + n, mo, d, h, mi, sec)); break;
+          case 'MONTH': t = new Date(Date.UTC(y, mo + n, d, h, mi, sec)); break;
+          case 'DAY': case 'DATE': t = new Date(t.getTime() + n * 86400000); break;
+          case 'HOUR': t = new Date(t.getTime() + n * 3600000); break;
+          case 'MINUTE': t = new Date(t.getTime() + n * 60000); break;
+          case 'SECOND': t = new Date(t.getTime() + n * 1000); break;
+          case 'MILLI': t = new Date(t.getTime() + n); break;
+          default: t = new Date(NaN);
+          }
+        }
+      }
+      return t;
+    }
+
     // Call this whenever we need to reload the important stuff
     this.init = function() {
       // Populate defaults
@@ -40,13 +98,37 @@ define([
       self.ids = dashboard.current.services.filter.ids;
       _f = dashboard.current.services.filter;
 
+      // A dashboard saved with an absolute time range stores the range as ISO strings and has no date
+      // objects (only the time picker's relative and since modes save those), and a dashboard file can hold a
+      // relative range such as NOW/HOUR-1HOUR without them. Work the date objects out from the strings then,
+      // so that the panels that ask for the range (timeRange) never get an invalid date.
+      var toDate = function(dateObj, value) {
+        var date = _.isUndefined(dateObj) || dateObj === null ? new Date(NaN) : new Date(dateObj);
+        if (isNaN(date.getTime()) && _.isString(value)) {
+          date = parseTime(value);
+        }
+        return date;
+      };
+
       _.each(self.getByType('time',true),function(time) {
         self.list[time.id].from = time.from;
         self.list[time.id].to = time.to;
-        self.list[time.id].fromDateObj = new Date(time.fromDateObj);
-        self.list[time.id].toDateObj = new Date(time.toDateObj);
+        self.list[time.id].fromDateObj = toDate(time.fromDateObj, time.from);
+        self.list[time.id].toDateObj = toDate(time.toDateObj, time.to);
       });
     };
+
+    // set() stores a filter's query or value URL-encoded, so a filter that is about to be added has to be
+    // compared with the stored ones in either form: the text as given, or the same text encoded.
+    function sameText(stored, incoming) {
+      if (stored === incoming) {
+        return true;
+      }
+      if (_.isUndefined(incoming) || incoming === null) {
+        return false;
+      }
+      return stored === encodeURIComponent(incoming);
+    }
 
     /**
      * Check if the specified filter is already exist in the filter service.
@@ -57,9 +139,12 @@ define([
       var foundDup = _.find(self.list, function(f) {
         if (f.editing === filter.editing &&
             f.type === filter.type &&
-            f.query === filter.query &&
+            sameText(f.query, filter.query) &&
             f.field === filter.field &&
-            f.value === filter.value) {
+            sameText(f.value, filter.value) &&
+            // two ranges on the same field are different filters when their bounds differ
+            f.from === filter.from &&
+            f.to === filter.to) {
           // This filter is a duplicate.
           return true;
         }
@@ -190,12 +275,21 @@ define([
       }
     };
 
-    // Return fq string for constructing a query to send to Solr.
-    // noTime param use only in ticker panel so the filter query will return without
-    // time filter query
-    this.getSolrFq = function(noTime) {
+    // Filter values and queries are stored URL-encoded (see set()), because getSolrFq puts them in a
+    // URL as they are. Undo that for the code that needs the text itself.
+    var decodeValue = function(value) {
+      try {
+        return decodeURIComponent(value);
+      } catch (e) {
+        return value;
+      }
+    };
+
+    // Gather the active filters as plain (not URL-encoded) filter query strings, and the time range.
+    var collectFilters = function(decode) {
+      var val = decode ? decodeValue : _.identity;
       var start_time, end_time, time_field;
-      var filter_fq = '';
+      var filters = [];
       var filter_either = [];
 
       // Loop through the list to find the time field, usually it should be in self.list[0]
@@ -223,34 +317,34 @@ define([
             }
           } else if (v.type === 'terms') {
             if (v.mandate === 'must') {
-              filter_fq = filter_fq + '&fq=' + v.field + ':"' + v.value + '"';
+              filters.push(v.field + ':"' + val(v.value) + '"');
             } else if (v.mandate === 'mustNot') {
-              filter_fq = filter_fq + '&fq=-' + v.field + ':"' + v.value + '"';
+              filters.push('-' + v.field + ':"' + val(v.value) + '"');
             } else if (v.mandate === 'either') {
-              filter_either.push(v.field + ':"' + v.value + '"');
+              filter_either.push(v.field + ':"' + val(v.value) + '"');
             }
           } else if (v.type === 'field') {
             // v.query contains double-quote around it.
             if (v.mandate === 'must') {
-              filter_fq = filter_fq + '&fq=' + v.field + ':' + v.query;
+              filters.push(v.field + ':' + val(v.query));
             } else if (v.mandate === 'mustNot') {
-              filter_fq = filter_fq + '&fq=-' + v.field + ':' + v.query;
+              filters.push('-' + v.field + ':' + val(v.query));
             } else if (v.mandate === 'either') {
-              filter_either.push(v.field + ':' + v.query);
+              filter_either.push(v.field + ':' + val(v.query));
             }
           } else if (v.type === 'querystring') {
             if (v.mandate === 'must') {
-              filter_fq = filter_fq + '&fq=' + v.query;
+              filters.push(val(v.query));
             } else if (v.mandate === 'mustNot') {
-              filter_fq = filter_fq + '&fq=-' + v.query;
+              filters.push('-' + val(v.query));
             } else if (v.mandate === 'either') {
-              filter_either.push(v.query);
+              filter_either.push(val(v.query));
             }
           } else if (v.type === 'range') {
             if (v.mandate === 'must') {
-              filter_fq = filter_fq + '&fq=' + v.field + ':[' + v.from + ' TO ' + v.to + ']';
+              filters.push(v.field + ':[' + v.from + ' TO ' + v.to + ']');
             } else if (v.mandate === 'mustNot') {
-              filter_fq = filter_fq + '&fq=-' + v.field + ':[' + v.from + ' TO ' + v.to + ']';
+              filters.push('-' + v.field + ':[' + v.from + ' TO ' + v.to + ']');
             } else if (v.mandate === 'either') {
               filter_either.push(v.field + ':[' + v.from + ' TO ' + v.to + ']');
             }
@@ -261,22 +355,59 @@ define([
         }
       });
 
-      // For undefined time field, return filter_fq and strip-off the prefix '&'.
-      // This will enable the dashboard without timepicker to function properly.
-      if (!start_time || !end_time || !time_field) {
-        return filter_fq.replace(/^&/,'');
+      // parse filter_either array values, if exists. This happens before the
+      // time check so that dashboards without a time filter keep these filters.
+      if (filter_either.length > 0) {
+        filters.push('(' + filter_either.join(' OR ') + ')');
       }
 
-      // parse filter_either array values, if exists
-      if (filter_either.length > 0) {
-        filter_fq = filter_fq + '&fq=(' + filter_either.join(' OR ') + ')';
+      return {
+        filters: filters,
+        time: (start_time && end_time && time_field) ?
+          { field: time_field, from: start_time, to: end_time } : undefined
+      };
+    };
+
+    // Return fq string for constructing a query to send to Solr.
+    // noTime param use only in ticker panel so the filter query will return without
+    // time filter query
+    this.getSolrFq = function(noTime, sep) {
+      var collected = collectFilters();
+      var filter_fq = '';
+
+      if (sep) {} else { sep = '&' }
+
+      _.each(collected.filters, function(f) {
+        filter_fq = filter_fq + sep + 'fq=' + f;
+      });
+
+      // For undefined time field, return filter_fq and strip-off the leading separator.
+      // This will enable the dashboard without timepicker to function properly.
+      if (!collected.time) {
+        if (filter_fq.indexOf(sep) === 0) {
+          filter_fq = filter_fq.substring(sep.length);
+        }
+        return filter_fq;
       }
 
       if (noTime) {
         return filter_fq;
       } else {
-        return 'fq=' + time_field + ':[' + start_time + '%20TO%20' + end_time + ']' + filter_fq;
+        return 'fq=' + collected.time.field + ':[' + collected.time.from + '%20TO%20' +
+          collected.time.to + ']' + filter_fq;
       }
+    };
+
+    // The same filters as getSolrFq, as an array of filter queries that are neither prefixed with
+    // 'fq=' nor URL-encoded (values are decoded). The time range, when there is one, comes first. Used by the panels that
+    // build streaming expressions, which must quote the values themselves.
+    this.getSolrFqList = function(noTime) {
+      var collected = collectFilters(true);
+      var list = [];
+      if (collected.time && !noTime) {
+        list.push(collected.time.field + ':[' + collected.time.from + ' TO ' + collected.time.to + ']');
+      }
+      return list.concat(collected.filters);
     };
 
     // Get time field for Solr query

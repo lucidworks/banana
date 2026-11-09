@@ -1,0 +1,23 @@
+{
+  "source": "recorded",
+  "fusionVersion": "5.9.16",
+  "recordedRequest": {
+    "method": "GET",
+    "path": "/api/blobs/banana-it-000000000000-1"
+  },
+  "response": {
+    "status": 404,
+    "contentType": "application/json",
+    "body": {
+      "type": "RESTError",
+      "httpStatusCode": 404,
+      "error": "BLOB-0001",
+      "message": "Blob does not exist",
+      "details": "No blob with path 'banana-it-000000000000-1' was found",
+      "localizedMessage": "No blob with path 'banana-it-000000000000-1' was found",
+      "suppressed": [],
+      "httpStatusMessage": "Not Found",
+      "requestId": "fixture-requestId"
+    }
+  }
+}

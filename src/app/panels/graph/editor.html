@@ -1,0 +1,46 @@
+<div class="row-fluid">
+	<div class="span4">
+		<label class="small">Label field <tip>Label field</tip></label>
+		<input type="text" name="label_field" ng-model="panel.label_field" bs-typeahead="fields.list" />
+	</div>
+	<div class="span4">
+		<label class="small">Join field <tip>Join field between the base collection and the graph collection</tip></label>
+		<input type="text" name="join_field" ng-model="panel.join_field" bs-typeahead="fields.list" />
+	</div>
+</div>
+<div class="row-fluid">
+  <div class="span4">
+<!--     <label class="small">Root node</label>
+    <input type="text" name="root_node" ng-model="panel.root_node" ng-change="set_refresh(true)" /> -->
+    <label class="small">Root nodes <tip>Number of root nodes</tip></label>
+    <input type="text" name="root_nodes" ng-model="panel.root_nodes" ng-change="set_refresh(true)" />
+	</div>
+	<div calss="span4">
+	    <label class="small">Sort <tip>Field to sort root nodes by</tip></label>
+	    <input type="text" name="root_nodes_sort" bs-typeahead="fields.list"
+	    	ng-model="panel.root_nodes_sort" ng-change="set_refresh(true)" />
+	</div>
+	<div calss="span4">
+	    <label class="small">Order <tip>Sorting order required if sort field is specified</tip></label>
+	    <select name="root_nodes_sort_order" 
+	    	ng-options='key as value for (key , value) in {"desc": "descending", "asc": "ascending"}'
+	    	ng-model="panel.root_nodes_sort_order" ng-change="set_refresh(true)" />
+	</div>
+</div>
+<div class="row-fluid">
+	<div class="span4">
+		<label class="small">Graph collection <tip>The collection that contains the graph nodes</tip></label>
+		<input type="text" name="graph_collection" bs-typeahead="dashboard.current.solr.core_list"
+			ng-model="panel.graph_collection" />
+	</div>
+  <div class="span4">
+	    <label class="small">From field</label>
+	    <input type="text" name="from_field" bs-typeahead="fields.aux_list" ng-model="panel.from_field" ng-change="set_refresh(true)" />
+  </div>
+  <div class="span4">
+    <label class="small">To field</label>
+    <input type="text" name="to_field" bs-typeahead="fields.aux_list" ng-model="panel.to_field" ng-change="set_refresh(true)" />
+  </div>
+<!--     <label class="small">Custom expression <tip>Graph expression</tip></label>
+    <textarea class="input-xxlarge" style="height:100px;" ng-model="panel.expression" ng-change="set_refresh(true)" /> -->
+</div>

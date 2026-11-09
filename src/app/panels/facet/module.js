@@ -149,7 +149,7 @@ define([
         }
 
         // Set the panel's query
-        $scope.panel.queries.basic_query = querySrv.getORquery() + fq + facet + facet_fields;
+        $scope.panel.queries.basic_query = querySrv.getOPQuery() + fq + facet + facet_fields;
         $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json;
 
         // Set the additional custom query
@@ -230,6 +230,9 @@ define([
             $scope.get_data(_segment + 1, $scope.query_id);
           }
 
+        }, function (response) {
+          $scope.panel.error = $scope.request_error(response);
+          $scope.panelMeta.loading = false;
         });
       };
 

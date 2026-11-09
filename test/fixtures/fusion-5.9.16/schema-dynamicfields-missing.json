@@ -1,0 +1,23 @@
+{
+  "source": "recorded",
+  "fusionVersion": "5.9.16",
+  "recordedRequest": {
+    "method": "GET",
+    "path": "/api/collections/banana-it-no-such-collection/schema/dynamicfields"
+  },
+  "response": {
+    "status": 404,
+    "contentType": "application/json",
+    "body": {
+      "type": "RESTError",
+      "httpStatusCode": 404,
+      "error": "COL-0002",
+      "message": "Collection does not exist",
+      "details": "The Collection with id 'banana-it-no-such-collection' does not exist",
+      "localizedMessage": "The Collection with id 'banana-it-no-such-collection' does not exist",
+      "suppressed": [],
+      "httpStatusMessage": "Not Found",
+      "requestId": "fixture-requestId"
+    }
+  }
+}

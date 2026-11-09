@@ -1,0 +1,14 @@
+{
+  "source": "derived",
+  "note": "The acknowledgement that Solr gives to an update request. Not observed on a server.",
+  "response": {
+    "status": 200,
+    "contentType": "application/json",
+    "body": {
+      "responseHeader": {
+        "status": 0,
+        "QTime": 5
+      }
+    }
+  }
+}

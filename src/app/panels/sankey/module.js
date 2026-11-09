@@ -41,6 +41,8 @@ define([
           custom: ''
         },
         facet_limit: 1000, // maximum number of rows returned from Solr
+        node_limit: 0, // maximum number of nodes drawn; 0 means no limit
+        label_limit: 0, // longest node label, in characters; longer ones are cut short with "..."; 0 means no limit
         spyable: true,
         show_queries: true,
       };
@@ -60,6 +62,8 @@ define([
         var nodes = {};
         var links = [];
         var count = 0;
+        var nodeLimit = parseInt($scope.panel.node_limit, 10) || 0;
+        var visited = 0;
 
         var addNode = function(key, fcount, category) {
           var k = category + "-" + key;
@@ -80,6 +84,12 @@ define([
 
         var processNodes = function(parent, parentCount, data, category) {
           for (var ob in data) {
+            if (nodeLimit > 0 && visited >= nodeLimit) {
+              $scope.moreNodes = true;
+              return;
+            }
+            visited++;
+
             var id1 = addNode(data[ob].value, data[ob].count, category + 1);
 
             if (parent !== null) {
@@ -95,6 +105,7 @@ define([
           }
         };
 
+        $scope.moreNodes = false;
         processNodes(null, 0, data, 0);
 
         return {
@@ -103,6 +114,20 @@ define([
           }),
           links: links
         };
+      };
+
+      // Cuts a label to at most `limit` characters, the last three of which are "...". A limit of 0 (or
+      // none) keeps the label as it is.
+      $scope.shorten_label = function (label, limit) {
+        label = "" + label;
+        limit = parseInt(limit, 10);
+        if (!limit || limit < 1 || label.length <= limit) {
+          return label;
+        }
+        if (limit <= 3) {
+          return label.slice(0, limit);
+        }
+        return label.slice(0, limit - 3) + "...";
       };
 
       $scope.parse_item = function (doc) {
@@ -147,7 +172,7 @@ define([
         var facet = '&facet=true';
         var facet_pivot = '&facet.pivot=' + $scope.panel.facet_pivot_strings.join().replace(/ /g, '');
         var facet_limits = '&facet.limit=' + $scope.panel.facet_limit;
-        $scope.panel.queries.query = querySrv.getORquery() + fq + wt_json + facet + facet_pivot + facet_limits + rows;
+        $scope.panel.queries.query = querySrv.getOPQuery() + fq + wt_json + facet + facet_pivot + facet_limits + rows;
         if (DEBUG) {
           console.log($scope.panel.queries.query);
         }
@@ -163,6 +188,9 @@ define([
         results.then(function (results) {
           $scope.data = $scope.parse_facet_pivot(results.facet_counts.facet_pivot[$scope.panel.facet_pivot_strings.join().replace(/ /g, '')]);
           $scope.render();
+        }, function (response) {
+          $scope.panel.error = $scope.request_error(response);
+          $scope.panelMeta.loading = false;
         });
 
 
@@ -276,7 +304,7 @@ define([
             }).attr("dy", "0.35em").attr("text-anchor", function (d) {
               return d.x0 < width / 2 ? "start" : "end";
             }).text(function (d) {
-              return d.name;
+              return scope.shorten_label(d.name, scope.panel.label_limit);
             });
 
             var link = svg.append("g")

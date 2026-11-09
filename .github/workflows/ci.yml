@@ -1,0 +1,155 @@
+# Build and test on every pull request and every push to the release branch.
+#
+# Only suites that need no Fusion, no credentials and no secrets run here. The live suites against a real
+# Fusion (npm run test:live, npm run test:live:orphans) are never run in CI; `npm run test:live:check` only
+# checks their source and needs no network. See docs/adr/0022-github-actions-ci.md.
+#
+# The hostile-content check (npm run test:hostile, from about 10 minutes to an hour depending on the machine) runs
+# only when a change touches the paths listed in the "changes" job, and whenever that job cannot decide. The decision is made inside jobs, not with a workflow-level `paths` filter, so
+# that this workflow always runs on every pull request and a skipped hostile job reports as skipped (which
+# GitHub treats as passing) instead of leaving the pull request waiting for a check that never starts.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [release]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        # package.json "engines" is ^22.18.0 || ^24.11.0 || >=26.0.0; the newest release of each line satisfies it.
+        node: ['22.x', '24.x', '26.x']
+    env:
+      # Makes test/karma.conf.js start Chromium with --no-sandbox
+      CI: 'true'
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Check that the lockfile uses the public registry
+        run: npm run check:lockfile
+
+      - name: Build
+        run: npm run build
+
+      - name: Unit tests (Karma, headless Chromium)
+        run: npm test
+
+      - name: Tooling and configuration tests
+        run: npm run test:node
+
+      - name: Check the live test sources
+        run: npm run test:live:check
+
+      - name: Local live-test harness tests (no Fusion)
+        run: npm run test:live-local
+
+      - name: Browser smoke check of dist/
+        run: npm run smoke
+
+      # Placeholder: a check that recorded Fusion fixtures carry no host names, cookies, tokens or user ids.
+      # No fixtures are recorded yet and no such script exists, so there is nothing to run. Once it exists it is
+      # expected to run inside `npm test` or `npm run test:node`, which this workflow already runs, so no step
+      # needs to be added here unless it is a separate command.
+
+  changes:
+    name: Detect rendering changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      hostile: ${{ steps.detect.outputs.hostile }}
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          # The whole history, so the pull request base can be compared with its head.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Decide whether the hostile-content check is needed
+        id: detect
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          run=true
+          if [ "$EVENT_NAME" = "pull_request" ] && [ -n "$BASE_SHA" ] && [ -n "$HEAD_SHA" ] \
+             && git cat-file -e "$BASE_SHA^{commit}" && git cat-file -e "$HEAD_SHA^{commit}" \
+             && files=$(git -c core.quotePath=false diff --no-renames --name-only "$BASE_SHA...$HEAD_SHA"); then
+            echo "Changed files:"
+            echo "$files"
+            if echo "$files" | grep -Eq '^(src/|tools/hostile\.js$|tools/lib/|tools/webpack/|webpack\.config\.js$|package(-lock)?\.json$|\.github/workflows/ci\.yml$)'; then
+              run=true
+            else
+              run=false
+            fi
+          else
+            echo "Not a pull request, or the base cannot be determined: running the check."
+          fi
+          echo "hostile=$run" >> "$GITHUB_OUTPUT"
+          echo "Hostile-content check needed: $run"
+
+  hostile:
+    name: Hostile-content check
+    needs: changes
+    # Run unless the detection job decided "false": if it fails or gives no answer, the check still runs, so a
+    # broken detection step cannot turn into a skipped (and therefore passing) check.
+    if: ${{ !cancelled() && needs.changes.outputs.hostile != 'false' }}
+    runs-on: ubuntu-latest
+    # From about 10 minutes on a quiet machine to about an hour on a busy one; record the first runs' duration
+    # and revisit this limit if they come close to it.
+    timeout-minutes: 90
+    env:
+      CI: 'true'
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npm run build
+
+      - name: Hostile-content check
+        run: npm run test:hostile

@@ -14,9 +14,9 @@
     </div>
     <div class="span10">
       <h4>Title</h4>
-      <p ng-bind-html-unsafe="panel.docTitle"></p>
+      <p ng-bind-html="panel.docTitle | highlightHtml:panel.simplePre:panel.simplePost"></p>
       <h4>Content</h4>
-      <p ng-bind-html-unsafe="panel.docContent"></p>
+      <p ng-bind-html="panel.docContent | highlightHtml:panel.simplePre:panel.simplePost"></p>
     </div>
     <div class="span1">
       <i class="icon-arrow-right icon-2x pointer" ng-show="docIndex < data.length-1" ng-click="nextDoc()"></i>

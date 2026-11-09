@@ -424,11 +424,9 @@ define([
       c.fillStyle = c.strokeStyle = "red";
       c.textAlign = "center";
 
-      if (typeof module === "object" && module.exports) { module.exports = cloud; }
-//      else (d3.layout || (d3.layout = {})).cloud = cloud;
-      else {
-      	(d3.layout || (d3.layout = {})).cloud = cloud;
-      }
+      // Always attach to d3. A bundler defines `module` for AMD modules, so the CommonJS branch
+      // that used to be here would have exported the layout instead of adding it to d3.
+      (d3.layout || (d3.layout = {})).cloud = cloud;
 
     })();
   });

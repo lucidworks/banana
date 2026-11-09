@@ -1,0 +1,124 @@
+{
+  "source": "recorded",
+  "fusionVersion": "5.9.16",
+  "recordedRequest": {
+    "method": "POST",
+    "path": "/api/query-pipelines/_system/collections/banana-it-logs/select",
+    "contentType": "application/x-www-form-urlencoded",
+    "body": "q=*%3A*&wt=json&rows=2&sort=id%20asc"
+  },
+  "response": {
+    "status": 200,
+    "contentType": "application/json",
+    "body": {
+      "response": {
+        "docs": [
+          {
+            "response_time_d": 5,
+            "_lw_parser_id_s": "00000000-0000-0000-0000-000000000000",
+            "service_s": "gateway",
+            "url_s": "http://localhost/search?page=0",
+            "level_s": "INFO",
+            "_lw_parser_max_parsing_depth_s": "16",
+            "user_s": "user-001",
+            "country_s": "US",
+            "host_s": "localhost",
+            "lon_d": -100,
+            "message_t": "request /search handled on localhost with level INFO",
+            "geo_p": "40,-100",
+            "_lw_pipeline_ss": [
+              "_system"
+            ],
+            "lat_d": 40,
+            "_lw_parser_type_s": "json",
+            "cpu_d": 10,
+            "path_s": "/search",
+            "_lw_parser_absolute_resource_name_s": "unknown#0",
+            "category_s": "alpha",
+            "user_agent_s": "Mozilla/5.0 (X11; Linux x86_64) Example/1.0",
+            "_lw_parser_resource_name_s": "unknown",
+            "_lw_parser_diagnostic_id_s": "00000000-0000-0000-0000-000000000000",
+            "tags_ss": [
+              "red",
+              "blue"
+            ],
+            "_lw_parser_content_type_s": "application/json",
+            "id": "banana-it-log-00000",
+            "status_i": 200,
+            "_lw_parser_record_number_l": 0,
+            "heap_mb_i": 256,
+            "_lw_parser_parsing_time_l": 0,
+            "_lw_parser_parsing_depth_i": 1,
+            "timestamp_tdt": "2024-01-01T00:00:00Z",
+            "bytes_l": 512,
+            "_lw_chunk_doctype_s": "_lw_chunk_root",
+            "_version_": 1881139749999083500
+          },
+          {
+            "response_time_d": 18.1,
+            "_lw_parser_id_s": "00000000-0000-0000-0000-000000000000",
+            "service_s": "query",
+            "url_s": "http://localhost/index?page=1",
+            "level_s": "INFO",
+            "_lw_parser_max_parsing_depth_s": "16",
+            "user_s": "user-004",
+            "country_s": "FR",
+            "host_s": "localhost",
+            "lon_d": 2.3,
+            "message_t": "request /index handled on localhost with level INFO",
+            "geo_p": "48.8,2.3",
+            "_lw_pipeline_ss": [
+              "_system"
+            ],
+            "lat_d": 48.8,
+            "_lw_parser_type_s": "json",
+            "cpu_d": 17,
+            "path_s": "/index",
+            "_lw_parser_absolute_resource_name_s": "unknown#1",
+            "category_s": "delta",
+            "user_agent_s": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) Example/2.0",
+            "_lw_parser_resource_name_s": "unknown",
+            "_lw_parser_diagnostic_id_s": "00000000-0000-0000-0000-000000000000",
+            "tags_ss": [
+              "green",
+              "amber"
+            ],
+            "_lw_parser_content_type_s": "application/json",
+            "id": "banana-it-log-00001",
+            "status_i": 200,
+            "_lw_parser_record_number_l": 1,
+            "heap_mb_i": 267,
+            "_lw_parser_parsing_time_l": 0,
+            "_lw_parser_parsing_depth_i": 1,
+            "timestamp_tdt": "2024-01-01T00:07:00Z",
+            "bytes_l": 849,
+            "_lw_chunk_doctype_s": "_lw_chunk_root",
+            "_version_": 1881139750054658000
+          }
+        ],
+        "numFound": 240,
+        "start": 0,
+        "numFoundExact": true
+      },
+      "responseHeader": {
+        "zkConnected": true,
+        "QTime": 2,
+        "totalTime": 6,
+        "params": {
+          "q": "*:*",
+          "_stateVer_": "banana-it-logs:4",
+          "lw.pipelineId": "_system",
+          "isFusionQuery": "true",
+          "sort": "id asc",
+          "timeAllowed": "13500",
+          "shards.preference": "replica.type:PULL",
+          "rows": "2",
+          "wt": "json",
+          "version": "2.2",
+          "fusionQueryId": "nkOgMTE0Gj"
+        },
+        "status": 0
+      }
+    }
+  }
+}

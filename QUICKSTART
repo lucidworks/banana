@@ -1,3 +1,31 @@
-Copy Banana folder to $SOLR_HOME/example/solr-webapp/webapp/
+Banana quick start
 
-Browse to http://localhost:8983/solr/banana/src/index.html#/dashboard
+Requirements: Node.js from the 22 line (22.18 or later; the reference), the 24 line (24.11 or later), or 26 and later, and npm.
+Banana is built from source; it is not published to npm. It targets Lucidworks Fusion 5.9.x.
+
+1. Build:
+
+       npm ci
+       npm run build
+
+   This writes the application to dist/. The shipped config.js in dist/ has the Fusion defaults. To run the tests:
+   npx playwright install chromium, then npm test (unit tests against src/) and npm run test:node.
+
+2. Pick how to run it:
+
+   a. In Docker, in front of Fusion (people log in with their Fusion accounts):
+
+          docker build -t banana-hosting .
+          docker run --rm -p 127.0.0.1:8080:8080 \
+            -e FUSION_URL=https://fusion.example.com \
+            -e BANANA_PUBLIC_ORIGIN=http://localhost:8080 -e BANANA_INSECURE_COOKIES=on \
+            banana-hosting
+
+      Then open http://localhost:8080. BANANA_INSECURE_COOKIES=on is for trying it on localhost only.
+      See docs/hosting-docker.md, and read docs/security.md before real use.
+
+   b. Against a plain Solr server (the Solr preset): copy dist/config.solr.js over dist/config.js, serve dist/ from a web
+      server that also forwards /solr/ to Solr on the same origin (npm start serves dist/ on port 8000 but does not
+      forward), and open index.html. Banana needs a banana-int core on that Solr to store dashboards.
+
+README.md has the details, including what the Solr preset was tested against, and CHANGELOG.md lists what changed.

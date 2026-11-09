@@ -1,0 +1,130 @@
+Banana
+Copyright 2013-2026 Lucidworks, Inc. and Banana contributors
+
+Licensed under the Apache License, Version 2.0 (see LICENSE). Project home and issue tracker:
+https://github.com/lucidworks/banana
+
+This product includes code derived from Kibana 3.
+Copyright 2012-2013 Elasticsearch BV, https://github.com/elastic/kibana/tree/3.0
+Kibana 3 is licensed under the Apache License, Version 2.0. Banana started as a fork of Kibana 3 in January 2013.
+The files in this product that are derived from Kibana 3 (among them the application core, many panels, the
+partials and the stylesheets) have been modified by Lucidworks, Inc. and Banana
+contributors: they were changed to query Apache Solr instead of Elasticsearch, and extended and revised since.
+Kibana 3 itself did not ship a NOTICE file.
+
+Third-party components
+----------------------
+This product includes the components listed below. Their licence texts, or the notices in their own files, are kept
+in the distribution: the build keeps the licence comments of scripts, writes THIRD-PARTY-LICENSES.txt, and copies
+this NOTICE, the LICENSE and the texts in licenses/ into dist/. Where a library does not carry its licence text in
+its own file, the text is in licenses/ and THIRD-PARTY-LICENSES.txt names that file.
+
+The paths named in this file (src/..., tools/...) are paths in the source repository, https://github.com/lucidworks/banana;
+they are not present in a built distribution, where the same code is in the bundled scripts under app/.
+
+JavaScript libraries kept as source files in this repository (src/vendor and the panel directories; the exact
+files are listed in tools/vendor-licenses.json):
+
+  AngularJS 1.0.8 - MIT - Copyright Google, Inc.
+  AngularJS (ngSanitize) 1.0.8 - MIT - Copyright Google, Inc.
+  angular-dragdrop (modified) - MIT - Copyright Amit Gharat (original); modified in this repository
+  AngularStrap 0.7.5 - MIT - Copyright Olivier Louvignes
+  bootstrap-datepicker - Apache-2.0 - Copyright Stefan Petre; improvements by Andrew Rowls
+  Timepicker Component for Twitter Bootstrap - MIT - Copyright Joris de Wit
+  Bootstrap 2.3.2 - Apache-2.0 - Copyright Twitter, Inc.
+  D3 3.4.13 - BSD-3-Clause - Copyright Michael Bostock
+  D3 5.7.0 - BSD-3-Clause - Copyright Mike Bostock
+  d3-array 1.2.1 - BSD-3-Clause - Copyright Mike Bostock
+  d3-collection 1.0.4 - BSD-3-Clause - Copyright Mike Bostock
+  d3-dispatch 1.0.5 - BSD-3-Clause - Copyright Mike Bostock
+  d3-force 1.1.2 - BSD-3-Clause - Copyright Mike Bostock
+  d3-path 1.0.5 - BSD-3-Clause - Copyright Mike Bostock
+  d3-quadtree 1.0.5 - BSD-3-Clause - Copyright Mike Bostock
+  d3-sankey 0.12.1 - BSD-3-Clause - Copyright Mike Bostock
+  d3-shape 1.2.0 - BSD-3-Clause - Copyright Mike Bostock
+  d3-timer 1.0.9 - BSD-3-Clause - Copyright Mike Bostock
+  elastic.js 1.0.0 - MIT - Copyright FullScale Labs, LLC
+  elastic.js (AngularJS client) 1.0.0 - MIT - Copyright FullScale Labs, LLC
+  solr.js (derived from elastic.js) 1.0.0 - MIT - Copyright FullScale Labs, LLC
+  solr.js (AngularJS client, derived from elastic.js) 1.0.0 - MIT - Copyright FullScale Labs, LLC
+  FileSaver.js 2015-05-07.2 - X11/MIT - Copyright Eli Grey
+  jQuery 3.7.1 - MIT - Copyright OpenJS Foundation and other contributors
+  jQuery UI 1.10.3 - MIT - Copyright jQuery Foundation and other contributors
+  Flot 0.8.1 - MIT - Copyright IOLA and Ole Laursen
+  Flot plugin: pie 0.8.1 - MIT - Copyright IOLA and Ole Laursen
+  Flot plugin: selection 0.8.1 - MIT - Copyright IOLA and Ole Laursen
+  Flot plugin: stack 0.8.1 - MIT - Copyright IOLA and Ole Laursen
+  Flot plugin: time 0.8.1 - MIT - Copyright IOLA and Ole Laursen
+  flot-axislabels - MIT - Copyright Xuan Luo
+  Flot plugin: stackpercent 0.2 - Apache-2.0 - Copyright 2013-2026 Lucidworks, Inc. and Banana contributors; written for
+    Banana (src/vendor/jquery/jquery.flot.stackpercent.js), replacing a plugin of the same name whose licence was not stated
+  Modernizr (custom build) 2.6.1 - MIT and BSD
+  Moment.js 2.31.0 - MIT - Copyright OpenJS Foundation and other contributors
+  Underscore.js 1.13.8 - MIT - Copyright Jeremy Ashkenas, Julian Gonggrijp, and DocumentCloud and Investigative Reporters & Editors
+  xhr-xdr-adapter - MIT - Copyright Intuit Inc.
+  d3-tip - MIT - Copyright Justin Palmer
+  d3-cloud (word cloud layout) - BSD-3-Clause - Copyright Jason Davies
+  Leaflet 0.6-dev - BSD-2-Clause - Copyright Vladimir Agafonkin, CloudMade
+  Leaflet.markercluster and Leaflet.label - MIT - Copyright Dave Leaver, smartrak (markercluster); Jacob Toye, Smartrak (label)
+  jVectorMap 1.2.2 - MIT - Copyright Kirill Lebedev
+  Showdown (src/vendor/showdown.js and src/app/panels/text/lib/showdown.js) - BSD-3-Clause - Copyright John Fraser;
+    Markdown is copyright John Gruber
+  Kibana 3 map data: world, Kibana 3 map data: Europe and Kibana 3 map data: USA
+    (src/app/panels/map/lib/map.world.js, map.europe.js and map.usa.js) - Apache-2.0 - Copyright 2012-2013 Elasticsearch BV;
+    these files are identical to the ones in Kibana 3.0.0 and are distributed here under its Apache License 2.0
+  Map data for Japan and Map data for the world with Antarctica
+    (src/app/panels/map/lib/map.japan.js and map.world-antarctica.js) - generated for Banana from Natural Earth 5.1.2
+    (https://www.naturalearthdata.com), which is in the public domain (licenses/natural-earth.txt); the script that
+    generates them is tools/maps/build-maps.js. Made with Natural Earth.
+
+npm packages that the build bundles into the application (licence texts in THIRD-PARTY-LICENSES.txt):
+
+  vis 4.21.0 - Apache-2.0 OR MIT - Copyright Almende B.V. and contributors (vis.js)
+  x2js 3.4.5 - Apache-2.0 - Copyright Axinom
+  style-loader 4.0.0 and css-loader 7.1.5 - MIT - Copyright JS Foundation and other contributors
+    (small runtime helpers that webpack adds to the bundle)
+
+Code that is bundled inside vis (the prebuilt vis.js contains these; their notices do not survive minification, so
+the texts are in licenses/vis-bundled-code.txt):
+
+  Hammer.JS 2.0.7 - MIT - Copyright Jorik Tangelder
+  Moment.js 2.19.1 - MIT - Copyright JS Foundation and other contributors
+  A Levenshtein distance routine - MIT - Copyright 2011 Andrei Mackenzie
+  uuid code - MIT - Copyright 2010-2012 Robert Kieffer
+  core-js 2.5.1 - MIT - Copyright 2014-2017 Denis Pushkarev
+  Babel runtime helpers - MIT - Copyright 2014-2017 Sebastian McKenzie
+  propagating-hammerjs - MIT - Copyright Jos de Jong
+  keycharm 0.2.0 - MIT or Apache-2.0 - Copyright 2014 Almende B.V.
+  emitter-component (component-emitter) - MIT - Copyright Component contributors
+
+Stylesheets, fonts, images and data that the distribution contains:
+
+  Font Awesome 3.2.1 by Dave Gandy, http://fontawesome.io (css/font-awesome.min.css, font/)
+    (3.2.1 is the version of the CSS and of the release; the font files themselves say "Version 3.2.0 2013" in their
+    metadata)
+    The font files are licensed under the SIL Open Font License 1.1 (licenses/fontawesome-OFL.txt; the build also
+    places a copy at font/OFL.txt). The CSS is licensed under the MIT License (licenses/mit-fontawesome-css.txt).
+  Bootstrap 2.3.2 and Bootstrap Responsive 2.2.1 stylesheets (css/bootstrap*.css) - Apache-2.0 - Copyright Twitter, Inc.
+  Bootswatch Slate 2.3.2 theme, compiled into css/bootstrap.dark.min.css - Apache-2.0 - Copyright 2012 Thomas Park
+    (licenses/bootswatch-slate.txt)
+  Glyphicons Halflings (img/glyphicons-halflings.png and img/glyphicons-halflings-white.png), http://glyphicons.com
+    Included with Bootstrap by an arrangement between the Bootstrap and Glyphicons authors, who ask for an
+    optional link back to Glyphicons.
+  Animate.css - MIT - Copyright 2013 Daniel Eden (css/animate.min.css)
+  normalize.css 1.0.1 - MIT - Copyright Nicolas Gallagher and Jonathan Neal (css/normalize.min.css)
+  css/timepicker.css contains two stylesheets:
+    bootstrap-datepicker stylesheet - Apache-2.0 - Copyright 2012 Stefan Petre; improvements by Andrew Rowls
+    bootstrap-timepicker stylesheet - MIT - Copyright 2013 Joris de Wit (licenses/bootstrap-timepicker.txt)
+  css/vis.css - Apache-2.0 OR MIT - the stylesheet of vis (see vis above) and Banana's additions to it
+  css/rotate.css: written for Banana by a contributor (2014, with a later change by another); it has no other source.
+  img/rotate.svg (the icon that css/rotate.css uses): added by a Banana contributor in 2014. The history records no
+    other source and the file carries no notice, so it is treated as contributed under this project's licence; if you
+    know that it came from elsewhere, please open an issue.
+  Leaflet stylesheets and marker images (src/app/panels/bettermap/leaflet) - BSD-2-Clause - see Leaflet above
+  jVectorMap map data (src/app/panels/map/lib/map.*.js) - see Kibana 3 map data and Natural Earth map data above.
+
+Components that are in the repository but are not distributed in dist/ (AngularJS mocks, the minified copy of
+Leaflet, timezone-js, d3-drag, build and test tools such as webpack, Karma, Protractor and mapshaper) are not listed here.
+
+Every component that is distributed has a stated licence: the build fails when a shipped entry of tools/vendor-licenses.json
+has none.

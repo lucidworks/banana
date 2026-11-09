@@ -1,0 +1,27 @@
+{
+  "source": "derived",
+  "note": "A select on the banana-int collection that returns the saved dashboard document. The shape follows the documented Solr select response; the document is the dashboard of the recording, stored under the field names Banana uses with a plain Solr. Not observed on a server.",
+  "response": {
+    "status": 200,
+    "contentType": "application/json",
+    "body": {
+      "responseHeader": {
+        "status": 0,
+        "QTime": 1
+      },
+      "response": {
+        "numFound": 1,
+        "start": 0,
+        "docs": [
+          {
+            "id": "banana-it-000000000000-1",
+            "user": "guest",
+            "group": "none",
+            "title": "banana-it-000000000000-1",
+            "dashboard": "{\"title\":\"banana-it-000000000000-1\",\"style\":\"dark\",\"rows\":[],\"solr\":{\"server\":\"/api/query-pipelines/_system/collections/\",\"core_name\":\"banana-it-logs\"}}"
+          }
+        ]
+      }
+    }
+  }
+}

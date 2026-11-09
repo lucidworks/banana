@@ -284,7 +284,7 @@ define([
         // Set the panel's query
 
         //var query = $scope.panel.searchQuery == null ? querySrv.getQuery(0) : 'q=' + $scope.panel.searchQuery
-        $scope.panel.queries.basic_query = querySrv.getORquery() + fq + facet + facet_fields + sorting;
+        $scope.panel.queries.basic_query = querySrv.getOPQuery() + fq + facet + facet_fields + sorting;
         $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json + rows_limit + highlight;
 
         // Set the additional custom query
@@ -369,6 +369,9 @@ define([
             $scope.get_data(_segment + 1, $scope.query_id);
           }
 
+        }, function (response) {
+          $scope.panel.error = $scope.request_error(response);
+          $scope.panelMeta.loading = false;
         });
       };
 
@@ -394,6 +397,8 @@ define([
 
         response.then(function(response) {
           kbn.download_response(response, filetype, 'fulltextsearch');
+        }, function (response) {
+          $scope.panel.error = $scope.request_error(response);
         });
       };
 
@@ -469,11 +474,12 @@ define([
 
 
 
-    // This also escapes some xml sequences
+    // Solr wraps the matches in <em></em> (its default highlight tags). Those two tags are kept, as the
+    // styled span below; everything else in the text, including any markup of the document, is escaped.
     module.filter('tableHighlight', function() {
       return function(text) {
         if (!_.isUndefined(text) && !_.isNull(text) && text.toString().length > 0) {
-          var ret = text.toString().
+          var ret = kbn.highlightHtml(text.toString(), '<em>', '</em>').
           replace(/^\s*\n/gm, '<br>').
           replace(/<em>/g, '<span class="highlight-code"><b>').
           replace(/<\/em>/g, '</b></span>');

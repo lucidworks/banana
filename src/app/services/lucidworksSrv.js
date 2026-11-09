@@ -11,17 +11,14 @@ define([
     module.service('lucidworksSrv', function ($http, $q) {
       var self = this;
 
-      self.fusionHost = window.location.protocol + '//' + window.location.host;
-      self.fusionSessionApi = self.fusionHost + '/api/session';
+      // The default is a root-relative path, which resolves to the host that serves Banana, as before.
+      self.fusionSessionApi = config.FUSION_SESSION_API;
 
       self.getFusionUsername = function() {
         return $http.get(self.fusionSessionApi).then(function (sessionResponse) {
-          if (sessionResponse) {
-            return sessionResponse.data.user.username;
-          } else {
-            // default username is 'guest'
-            return 'guest';
-          }
+          var user = sessionResponse && sessionResponse.data && sessionResponse.data.user;
+          // A session that has no user name (the session of an API key has none) is the default user, 'guest'.
+          return (user && user.username) || 'guest';
         }, function (error) {
           console.log('ERROR: Cannot get response from Fusion Session API.', error);
           // In case of errors or using Solr, return the default username 'guest'
@@ -39,6 +36,7 @@ define([
           return results.data;
         }, function (error) {
           console.log(error);
+          return [];
         }));
 
         promises.push($http.get(dynamicFieldsUrl)
@@ -57,6 +55,7 @@ define([
           }));
         }, function (error) {
           console.log(error);
+          return [];
         }));
 
         return $q.all(promises).then(function (results) {
@@ -70,14 +69,16 @@ define([
       // Need to return the result list in Solr response format, so it'll render correctly.
       self.getDashboardList = function(query) {        
         // Validate query
-        query = encodeURIComponent(query) || '';
+        // no query lists every dashboard (encoding undefined would search for the id "undefined")
+        query = _.isUndefined(query) || query === null ? '' : encodeURIComponent(query);
         var url = config.SYSTEM_BANANA_BLOB_API + '?q=id:' + query + '*&' + config.SYSTEM_BANANA_BLOB_ID_SUBTYPE_QUERY;
         
         return $http.get(url).then(function(resp) {
           var solrResp = {
             response: {
               numFound: 0,
-              docs: _.sortBy(resp.data, 'name')
+              // The blob entries have no 'name'; they are ordered by 'id' in the browser.
+              docs: _.sortBy(resp.data, 'id')
             }
           };
           solrResp.response.numFound = solrResp.response.docs.length;

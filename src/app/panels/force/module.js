@@ -44,6 +44,7 @@ define([
           custom: ''
         },
         facet_limit: "10,20", // maximum number of rows returned from Solr
+        node_limit: 0, // maximum number of nodes drawn; 0 means no limit
         node_size_weight: 0,
         link_width_weight: 0,
         link_strength_weight: 0,
@@ -51,11 +52,17 @@ define([
         strength: -400,
         colors: "#1f77b4, #ff7f0e, #2ca02c, #d62728, #9467bd, #8c564b, #e377c2, #7f7f7f, #bcbd22, #17becf",
         mute_category_1: false,
-        mute_category_2: true,
+        mute_remaining_categories: true, // the second category and every one after it
         spheres: true,
         spyable: true,
         show_queries: true,
       };
+
+      // A dashboard saved with the old "Mute Category 2" setting keeps its choice.
+      if (_.isUndefined($scope.panel.mute_remaining_categories) && !_.isUndefined($scope.panel.mute_category_2)) {
+        $scope.panel.mute_remaining_categories = $scope.panel.mute_category_2;
+      }
+      delete $scope.panel.mute_category_2;
 
       _.defaults($scope.panel, _d);
       var DEBUG = false;
@@ -77,10 +84,26 @@ define([
         $rootScope.$emit(FORCE_SEARCH_FOR_NODE_EVENT, $scope.searchQuery);
       };
 
+      // Turns the facet pivot result into nodes and links. Every pivot level is a category (1, 2, 3 ...),
+      // and each node is linked to its parent. When the panel has a node limit, nodes past it are left
+      // out and $scope.moreNodes says so.
+      // The colours in the panel settings, with the spaces taken out. d3's colour parser (d3-color 1.x inside d3 5.7.0)
+      // takes quadratic time on a very long run of digits that follows `rgb(` or `hsl(`, so an entry longer than any
+      // real colour (the longest is about 40 characters) is replaced by grey instead of being parsed.
+      var MAX_COLOR_LENGTH = 64;
+      $scope.palette = function () {
+        return String($scope.panel.colors || '').split(',').map(function (color) {
+          color = color.replace(/\s/g, '');
+          return color.length > MAX_COLOR_LENGTH ? '#7f7f7f' : color;
+        });
+      };
+
       $scope.parse_facet_pivot = function (data) {
         var nodes = {};
         var links = [];
         var count = 0;
+        var nodeLimit = parseInt($scope.panel.node_limit, 10) || 0;
+        var visited = 0;
 
         var addNode = function (key, category, cnt) {
           var k = category + "-" + key;
@@ -100,19 +123,29 @@ define([
           return id;
         };
 
-        for (var ob in data) {
-          var id1 = addNode(data[ob].value, 1, data[ob].count);
+        var processNodes = function (parent, rows, category) {
+          for (var ob in rows) {
+            if (nodeLimit > 0 && visited >= nodeLimit) {
+              $scope.moreNodes = true;
+              return;
+            }
+            visited++;
 
-          for (var p in data[ob].pivot) {
-            var id2 = addNode(data[ob].pivot[p].value, 2, data[ob].pivot[p].count);
+            var id = addNode(rows[ob].value, category, rows[ob].count);
+            if (parent !== null) {
+              links.push({
+                source: parent,
+                target: id,
+                value: rows[ob].count
+              });
+            }
 
-            links.push({
-              source: id1,
-              target: id2,
-              value: data[ob].pivot[p].count
-            });
+            processNodes(id, rows[ob].pivot, category + 1);
           }
-        }
+        };
+
+        $scope.moreNodes = false;
+        processNodes(null, data, 1);
 
         return {
           nodes: _.map(_.keys(nodes), function (key) {
@@ -167,11 +200,13 @@ define([
 
         var limits = $scope.panel.facet_limit.split(",");
         var facet_limits = '&' + $scope.panel.facet_pivot_strings.map(function (f, index) {
-          return "f." + f + ".facet.limit=" + parseInt(limits[index], 10);
+          var limit = parseInt(limits[index], 10);
+          // a level that has no limit of its own (fewer limits than pivot fields) gets 10
+          return "f." + f + ".facet.limit=" + (isNaN(limit) ? 10 : limit);
         }).join("&");
 
         // f.effective_date_fiscal_facet.facet.limit=3&f.institution_facet.facet.limit=10';
-        $scope.panel.queries.query = querySrv.getORquery() + fq + wt_json + facet + facet_pivot + facet_limits + rows;
+        $scope.panel.queries.query = querySrv.getOPQuery() + fq + wt_json + facet + facet_pivot + facet_limits + rows;
         if (DEBUG) {
           console.log($scope.panel.queries.query);
         }
@@ -197,7 +232,7 @@ define([
           });
 
           $scope.data.nodes.forEach(function (d) {
-            if ((d.category === 1 && $scope.panel.mute_category_1) || (d.category === 2 && $scope.panel.mute_category_2)) {
+            if ((d.category === 1 && $scope.panel.mute_category_1) || (d.category > 1 && $scope.panel.mute_remaining_categories)) {
               $scope.selList["n" + d.node] = false;
             } else {
               $scope.selList["n" + d.node] = true;
@@ -214,8 +249,9 @@ define([
           });
 
           $scope.render();
-        }, function (error) {
-          console.log(error);
+        }, function (response) {
+          $scope.panel.error = $scope.request_error(response);
+          $scope.panelMeta.loading = false;
         });
 
 
@@ -291,9 +327,7 @@ define([
             width = width - margin.left - margin.right;
             height = height - margin.top - margin.bottom;
 
-            var color = d3.scaleOrdinal(scope.panel.colors.split(",").map(function (color) {
-              return color.replace(/\s/g, '');
-            }));
+            var color = d3.scaleOrdinal(scope.palette());
 
             var svg = d3.select(element[0]).append("svg")
               .attr("width", width + margin.left + margin.right)

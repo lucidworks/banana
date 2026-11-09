@@ -1,0 +1,32 @@
+# Test proxy for live tests. It serves Banana's files itself under
+# /admin/banana/ and forwards only /api, /auth/ and /admin/ (the login
+# application and the admin UI the login lands on) to the Fusion instance
+# named by BANANA_LIVE_FUSION_URL. The upstream comes from that one variable.
+# Fusion answers 403 to any Origin other than its own, so Origin is rewritten.
+# The session cookie is Secure on the instance and the proxy speaks plain HTTP
+# on localhost, so the Secure flag is dropped.
+server {
+  listen 8080;
+  server_name _;
+  proxy_ssl_server_name on;
+  proxy_http_version 1.1;
+  proxy_set_header Host ${BANANA_LIVE_FUSION_HOST};
+  proxy_set_header Accept-Encoding "";
+  proxy_set_header Origin ${BANANA_LIVE_FUSION_URL};
+  proxy_cookie_flags ~ nosecure;
+  proxy_redirect ${BANANA_LIVE_FUSION_URL}/ /;
+  proxy_read_timeout 30s;
+  absolute_redirect off;
+  ${BANANA_LIVE_DIGEST_DIRECTIVE}
+
+  location = /admin/banana { return 302 /admin/banana/; }
+  location /admin/banana/ {
+    alias /usr/share/banana/;
+    index index.html;
+    try_files $uri $uri/ =404;
+  }
+  location = /api { proxy_pass ${BANANA_LIVE_FUSION_URL}; }
+  location /api/ { proxy_pass ${BANANA_LIVE_FUSION_URL}; }
+  location /admin/ { proxy_pass ${BANANA_LIVE_FUSION_URL}; }
+  location /auth/ { proxy_pass ${BANANA_LIVE_FUSION_URL}; }
+}

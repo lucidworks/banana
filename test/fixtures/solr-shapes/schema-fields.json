@@ -1,0 +1,61 @@
+{
+  "source": "recorded-solr",
+  "fusionVersion": "5.9.16",
+  "recordedRequest": {
+    "method": "GET",
+    "path": "/api/solr/banana-it-logs/schema/fields"
+  },
+  "response": {
+    "status": 200,
+    "contentType": "text/plain;charset=utf-8",
+    "body": {
+      "responseHeader": {
+        "status": 0,
+        "QTime": 0
+      },
+      "fields": [
+        {
+          "name": "_nest_path_",
+          "type": "_nest_path_"
+        },
+        {
+          "name": "_raw_content_",
+          "type": "binary",
+          "multiValued": false,
+          "indexed": false,
+          "required": false,
+          "stored": true
+        },
+        {
+          "name": "_root_",
+          "type": "string",
+          "docValues": false,
+          "indexed": true,
+          "stored": false
+        },
+        {
+          "name": "_text_",
+          "type": "text_general",
+          "multiValued": true,
+          "indexed": true,
+          "stored": false
+        },
+        {
+          "name": "_version_",
+          "type": "plong",
+          "indexed": false,
+          "stored": false
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "multiValued": false,
+          "indexed": true,
+          "required": true,
+          "stored": true
+        }
+      ]
+    }
+  },
+  "note": "The Solr schema API shape, as Fusion's Solr proxy returns it. It is not the answer of a standalone Solr."
+}

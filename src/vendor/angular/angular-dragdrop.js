@@ -15,7 +15,7 @@ var jqyoui = angular.module('ngDragDrop', []).service('ngDragDropService', ['$ti
       var match = callbackName.match(/^(.+)\((.+)\)$/);
       if (match !== null) {
         callbackName = match[1];
-        var values = eval('[' + match[0].replace(/^(.+)\(/, '').replace(/\)/, '') + ']');
+        var values = [ match[0].replace(/^(.+)\(/, '').replace(/\)/, '') ];
         args.push.apply(args, values);
       }
       if(scope[callbackName]) {

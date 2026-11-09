@@ -310,7 +310,7 @@ function (angular, app, _, kbn, moment) {
             }
 
             // Set the panel's query
-            $scope.panel.queries.basic_query = querySrv.getORquery() + fq + sorting;
+            $scope.panel.queries.basic_query = querySrv.getOPQuery() + fq + sorting;
             $scope.panel.queries.query = $scope.panel.queries.basic_query + wt_json + rows_limit;
 
             // Set the additional custom query
@@ -378,6 +378,9 @@ function (angular, app, _, kbn, moment) {
                     _segment + 1 < dashboard.indices.length) {
                     $scope.get_data(_segment + 1, $scope.query_id);
                 }
+            }, function (response) {
+                $scope.panel.error = $scope.request_error(response);
+                $scope.panelMeta.loading = false;
             });
         };
 
@@ -404,6 +407,8 @@ function (angular, app, _, kbn, moment) {
 
             response.then(function (response) {
                 kbn.download_response(response, filetype, "table");
+            }, function (response) {
+                $scope.panel.error = $scope.request_error(response);
             });
         };
 
@@ -538,11 +543,24 @@ function (angular, app, _, kbn, moment) {
         };
     });
 
-    // This filter will check the input field to see if it should be displayed as <img src="data">
+    // This filter will check the input field to see if it should be displayed as <img src="data">.
+    // The text it receives has been through tableHighlight, so it is escaped for use as HTML text and may
+    // hold the highlight tags. The address is recovered from that text, checked, and escaped again for
+    // use inside an attribute. An address with a scheme other than http, https or data:image is shown
+    // as text instead of becoming an image.
     module.filter('tableDisplayImageField', function () {
         return function (data, field, imageFields, width, height) {
             if (typeof field !== 'undefined' && imageFields.length > 0 && _.contains(imageFields, field)) {
-                return '<img style="width:' + width + '; height:' + height + ';" src="' + data + '">';
+                var url = String(data)
+                    .replace(/<\/?code[^>]*>|<br\/>/g, '')
+                    .replace(/&lt;/g, '<')
+                    .replace(/&gt;/g, '>')
+                    .replace(/&amp;/g, '&');
+                if (!kbn.isSafeUrl(url, ['http', 'https'], true)) {
+                    return data;
+                }
+                return '<img style="width:' + kbn.escapeHtml(width) + '; height:' + kbn.escapeHtml(height) +
+                    ';" src="' + kbn.escapeHtml(url) + '">';
             }
             return data;
         };

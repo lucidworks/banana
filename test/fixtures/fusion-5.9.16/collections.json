@@ -1,0 +1,73 @@
+{
+  "source": "recorded",
+  "fusionVersion": "5.9.16",
+  "recordedRequest": {
+    "method": "GET",
+    "path": "/api/collections"
+  },
+  "response": {
+    "status": 200,
+    "contentType": "application/json",
+    "body": [
+      {
+        "id": "banana-it-logs",
+        "createdAt": "2026-11-06T06:51:04.131Z",
+        "searchClusterId": "default",
+        "solrParams": {
+          "name": "banana-it-logs",
+          "numShards": 2,
+          "replicationFactor": 1
+        },
+        "type": "DATA",
+        "metadata": {},
+        "updates": [
+          {
+            "userId": "",
+            "timestamp": "2026-11-06T06:51:05.493Z"
+          }
+        ]
+      },
+      {
+        "id": "banana-it-logs_signals_aggr",
+        "createdAt": "2026-11-06T06:51:08.069Z",
+        "searchClusterId": "default",
+        "solrParams": {
+          "name": "banana-it-logs_signals_aggr",
+          "numShards": 1,
+          "replicationFactor": 2
+        },
+        "type": "SIGNALS_AGGREGATION",
+        "relatedCollectionId": "banana-it-logs",
+        "metadata": {},
+        "minReplicationFactor": 1,
+        "updates": [
+          {
+            "userId": "",
+            "timestamp": "2026-11-06T06:51:10.431Z"
+          }
+        ]
+      },
+      {
+        "id": "banana-it-logs_signals",
+        "createdAt": "2026-11-06T06:51:05.611Z",
+        "searchClusterId": "default",
+        "solrParams": {
+          "name": "banana-it-logs_signals",
+          "numShards": 2,
+          "replicationFactor": 2
+        },
+        "type": "SIGNALS",
+        "relatedCollectionId": "banana-it-logs",
+        "metadata": {},
+        "minReplicationFactor": 1,
+        "updates": [
+          {
+            "userId": "",
+            "timestamp": "2026-11-06T06:51:08.004Z"
+          }
+        ]
+      }
+    ]
+  },
+  "note": "Only the collections whose names start with banana-it are kept; the instance is shared."
+}

@@ -759,17 +759,8 @@
     "dropdown_collections": false
   },
   "solr": {
-    "server": "/api/apollo/solr/",
+    "server": "/api/solr/",
     "core_name": "logs",
-    "core_list": [
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-    ]
+    "core_list": []
   }
 }

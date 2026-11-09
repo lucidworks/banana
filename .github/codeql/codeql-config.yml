@@ -1,0 +1,10 @@
+# Third-party code that is copied into the repository is not analysed: findings in it are not ours to fix here.
+# The list matches the vendored files named in tools/vendor-licenses.json.
+name: Banana CodeQL configuration
+paths-ignore:
+  - src/vendor
+  - src/app/panels/bar/d3.tip.js
+  - src/app/panels/tagcloud/d3.layout.cloud.js
+  - src/app/panels/bettermap/leaflet
+  - src/app/panels/map/lib
+  - src/app/panels/text/lib

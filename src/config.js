@@ -17,74 +17,83 @@ function (Settings) {
      * visualized. Each dashboard that you create can (and typically will) override this 
      * setting.
      *
-     * Note that the solr server address you specify must be resolvable from the browser
-     * i.e., from your users' machine. You probably want to set it to the FQDN and port 
-     * number of your Solr host or the proxy that controls access to your Solr host. 
-     * By default it is set to localhost:8983, which frequently 
-     * works for development and testing, when you are running Solr, Banana and the 
-     * browser on one development/testing machine.
+     * Note that the server address you specify must be resolvable from the browser
+     * i.e., from your users' machine. The default is a relative path, so it is resolved
+     * against the host that serves Banana: the Fusion API gateway when Banana is served by
+     * Fusion. For a standalone Solr, use the Solr preset instead (see below).
      *
-     * After configuring this file, we also suggest you edit the solr server and collection 
-     * in the default dashboard (app/dashboards/default.json), which is a guided 
-     * self-starter for building dashboards. You can later replace the pre-defined 
-     * default.json with the dashboard you want your users to see when they first access 
-     * your banana web application.
+     * This file ships with the Lucidworks Fusion defaults. To run against a plain Solr,
+     * copy config.solr.js over config.js (no rebuild is needed). It sets the Solr values
+     * below and selects the Solr default dashboard through default_dashboard.
      * @type {String}
      */
 
-    // Specify Solr server and core to store the data.
-    solr: "/solr/",
-    solr_core: "logs",
+    // Specify the server and collection (Fusion: query pipelines API and the system_logs collection).
+    solr: "/api/query-pipelines/_system/collections/",
+    solr_core: "system_logs",
     timefield: "timestamp_tdt",
 
     /**
-     * The default Solr index to use for storing objects internal to Banana, such as 
-     * stored dashboards. If you have been using a collection named kibana-int 
-     * to save your dashboards (the default provided in Banana 1.2 and earlier), then you
-     * simply need to replace the string "banana-int" with "kibana-int" and your old 
-     * dashboards will be accessible. 
-     *
-     * This banana-int (or equivalent) collection must be created and available in the 
-     * default solr server specified above, which serves as the persistence store for data 
-     * internal to banana.
+     * The default index (collection) to use for storing objects internal to Banana, such as
+     * stored dashboards, when talking to Solr. When USE_FUSION is true, saved dashboards live
+     * in the Fusion blob store and Banana uses "system_banana". With a plain Solr, the Solr
+     * preset sets this to "banana-int" (the name used since Banana 1.3; "kibana-int" in
+     * Banana 1.2 and earlier), and that collection must exist on the Solr server.
      * @type {String}
      */
-    banana_index: "banana-int",
-    // Uncomment the following line to specify the URL of Solr server that will be used to store and load saved dashboards.
-    // If you specify a remote Solr server, then you need to enable CORS on it in order to allow dashboards to be saved or loaded.
-    // Also, you need to uncomment this same line in src/app/components/settings.js to enable banana_server config.
-    // Reference: https://github.com/lucidworks/banana/tree/fusion/resources/enable-cors
+    banana_index: "system_banana",
+
+    /**
+     * Name of the dashboard file under app/dashboards that is loaded when no dashboard is
+     * given in the URL and none is stored in the browser.
+     * @type {String}
+     */
+    default_dashboard: "default.json",
+
+    // Uncomment the following line to specify the URL of the server that will be used to store and load saved dashboards.
+    // It only matters when USE_FUSION is false; with Fusion, dashboards are saved and loaded through the blob API.
+    // If you specify a remote server, then you need to enable CORS on it in order to allow dashboards to be saved or loaded.
+    // Reference: https://github.com/lucidworks/banana/tree/release/resources/enable-cors
     //
     // banana_server: "http://localhost:8983/solr/",
+
+    // Servers that a shared link may name, in its "server" URL parameter, as the place to load
+    // a dashboard from. The server in banana_server (or solr when that is not set) and relative paths
+    // such as "/solr/" are always accepted. A link that names any other server, including a
+    // dashboard's own absolute data server, is ignored unless that server is listed here exactly as
+    // it appears in the link (or set as banana_server), for example
+    // ["http://solr.example.com:8983/solr/"]. It only matters when USE_FUSION is false.
+    allowed_dashboard_servers: [],
 
     /**
      * Lucidworks Fusion settings
      *
-     * USE_FUSION = true, mean that Banana will talk to Lucidworks Fusion APIs, instead of Solr.
-     * This mainly affect the APIs used to get the list of collections and schemas (fields).
+     * USE_FUSION = true means that Banana talks to the Lucidworks Fusion APIs instead of Solr.
+     * This mainly affects the APIs used to get the list of collections and schemas (fields),
+     * and where saved dashboards are stored (the Fusion blob store).
      */
-    USE_FUSION: false,
-    apollo: "/api/apollo",
-    apollo_queryPipeline: "/api/apollo/query-pipelines/",
-    apollo_indexPipeline: "/api/apollo/index-pipelines/",
+    USE_FUSION: true,
+    apollo: "/api",
+    apollo_queryPipeline: "/api/query-pipelines/",
+    apollo_indexPipeline: "/api/index-pipelines/",
     
     // Constants  
-    SYSTEM_BANANA_QUERY_PIPELINE: "/api/apollo/query-pipelines/default/collections/system_banana",
-    SYSTEM_BANANA_INDEX_PIPELINE: "/api/apollo/index-pipelines/_system/collections/system_banana",
-    SYSTEM_BANANA_BLOB_API: "/api/apollo/blobs",
+    SYSTEM_BANANA_QUERY_PIPELINE: "/api/query-pipelines/default/collections/system_banana",
+    SYSTEM_BANANA_INDEX_PIPELINE: "/api/index-pipelines/_system/collections/system_banana",
+    SYSTEM_BANANA_BLOB_API: "/api/blobs",
     SYSTEM_BANANA_BLOB_ID_SUBTYPE_PARAM: "resourceType=banana",  // for use when saving dashboards, to create metadata field resourceType=banana
     SYSTEM_BANANA_BLOB_ID_SUBTYPE_QUERY: "resourceType=banana",  // for use when searching dashboards in Blob Store
     
     FUSION_API_STATIC_FIELDS: "/schema/fields",
     FUSION_API_DYNAMIC_FIELDS: "/schema/dynamicfields",
-    FUSION_API_COLLECTIONS: "/api/apollo/collections",
+    FUSION_API_COLLECTIONS: "/api/collections",
 
     /**
-     * The default settings will use /admin/luke API to retrieve all fields from Solr including
-     * dynamic fields (e.g. *_s, *_t, and etc). And also, it will use /admin/cores API to retrieve
-     * all cores/collections from Solr to populate the drop-down collection picker.
+     * With a plain Solr (USE_FUSION false), the default settings use the /admin/luke API to
+     * retrieve all fields including dynamic fields (e.g. *_s, *_t, and etc), and the Solr
+     * collections API to retrieve all collections for the drop-down collection picker.
      * 
-     * You can disable the /admin APIs by setting USE_ADMIN_LUKE and USE_ADMIN_CORES flags to false.
+     * You can disable these admin APIs by setting USE_ADMIN_LUKE and USE_ADMIN_CORES flags to false.
      * The effects are that the field list in Table panel will not be able to show the dynamic fields,
      * and the drop-down collection picker will not work.
      * 
@@ -113,9 +122,11 @@ function (Settings) {
       'text',
       'hits',
       'column',
+      'graph',
       'ticker',
       'bettermap',
       'query',
+      'significantTerms',
       'terms',
       'rangeFacet',
       'heatmap',
@@ -123,11 +134,13 @@ function (Settings) {
       'fullTextSearch',
       'facet',
       'tagcloud',
+      'timeseries',
       'multiseries',
       'sunburst',
       'docviewer',
       'sankey',
-      'force'
+      'force',
+      'boxplot'
     ]
   });
 });

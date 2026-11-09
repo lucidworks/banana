@@ -1,0 +1,10 @@
+{
+  "name": "banana-map-tools",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Tools that regenerate the map data files of the map panel. Not part of the build and never shipped: install with `npm ci --prefix tools/maps` only when running tools/maps/build-maps.js.",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "mapshaper": "0.7.101"
+  }
+}

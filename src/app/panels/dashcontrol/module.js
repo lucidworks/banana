@@ -19,9 +19,10 @@
 define([
   'angular',
   'app',
-  'underscore'
+  'underscore',
+  'kbn'
 ],
-function(angular, app, _) {
+function(angular, app, _, kbn) {
   'use strict';
 
   var DEBUG = false; // DEBUG mode
@@ -65,7 +66,7 @@ function(angular, app, _) {
 
     $scope.set_default = function() {
       if(dashboard.set_default()) {
-        alertSrv.set('Local Default Set',dashboard.current.title+' has been set as your local default','success',5000);
+        alertSrv.set('Local Default Set',kbn.escapeHtml(dashboard.current.title)+' has been set as your local default','success',5000);
       } else {
         alertSrv.set('Incompatible Browser','Sorry, your browser is too old for this feature','error',5000);
       }
@@ -94,13 +95,15 @@ function(angular, app, _) {
         // Solr
         if(!_.isUndefined(result.id)) {
           alertSrv.set('Dashboard Saved','This dashboard has been saved to Solr as "' +
-            result.id + '"','success',5000);
+            kbn.escapeHtml(result.id) + '"','success',5000);
           if(type === 'temp') {
             $scope.share = dashboard.share_link(dashboard.current.title,'temp',result.id);
           }
         } else {
           alertSrv.set('Save failed','Dashboard could not be saved to Solr','error',5000);
         }
+      }, function() {
+        alertSrv.set('Save failed','Dashboard could not be saved to Solr','error',5000);
       });
     };
 
@@ -109,16 +112,19 @@ function(angular, app, _) {
         function(result) {
           if(!_.isUndefined(result)) {
             if(result.found) {
-              alertSrv.set('Dashboard Deleted',id+' has been deleted','success',5000);
+              alertSrv.set('Dashboard Deleted',kbn.escapeHtml(id)+' has been deleted','success',5000);
               // Find the deleted dashboard in the cached list and remove it
               var toDelete = _.where($scope.elasticsearch.dashboards,{_id:id})[0];
               $scope.elasticsearch.dashboards = _.without($scope.elasticsearch.dashboards,toDelete);
             } else {
-              alertSrv.set('Dashboard Not Found','Could not find '+id+' in Solr','warning',5000);
+              alertSrv.set('Dashboard Not Found','Could not find '+kbn.escapeHtml(id)+' in Solr','warning',5000);
             }
           } else {
             alertSrv.set('Dashboard Not Deleted','An error occurred deleting the dashboard','error',5000);
           }
+        },
+        function() {
+          alertSrv.set('Dashboard Not Deleted','An error occurred deleting the dashboard','error',5000);
         }
       );
     };
@@ -139,16 +145,18 @@ function(angular, app, _) {
           $scope.hits = result.response.numFound;
           $scope.elasticsearch.dashboards = result.response.docs;
         }
+      }, function() {
+        alertSrv.set('Error','Could not load the list of saved dashboards','error',5000);
       });
     };
 
     $scope.save_gist = function() {
       dashboard.save_gist($scope.gist.title).then(
         function(link) {
-        if(!_.isUndefined(link)) {
+        if(link) {
           $scope.gist.last = link;
           alertSrv.set('Gist saved','You will be able to access your exported dashboard file at '+
-            '<a href="'+link+'">'+link+'</a> in a moment','success');
+            '<a href="'+kbn.escapeHtml(link)+'">'+kbn.escapeHtml(link)+'</a> in a moment','success');
         } else {
           alertSrv.set('Save failed','Gist could not be saved','error',5000);
         }

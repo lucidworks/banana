@@ -1,0 +1,58 @@
+{
+  "source": "recorded",
+  "fusionVersion": "5.9.16",
+  "recordedRequest": {
+    "method": "GET",
+    "path": "/api/session"
+  },
+  "response": {
+    "status": 200,
+    "contentType": "application/json",
+    "body": {
+      "user": {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "username": "fixture-user",
+        "realmName": "native",
+        "createdAt": "2026-11-06T01:24:53Z",
+        "roleNames": [
+          "admin"
+        ],
+        "permissions": []
+      },
+      "roles": [
+        {
+          "id": "00000000-0000-0000-0000-000000000000",
+          "name": "admin",
+          "createdAt": "2026-10-29T20:35:50Z",
+          "desc": "Full access to every service. This is the super-admin role.",
+          "permissions": [
+            {
+              "methods": [
+                "PUT",
+                "HEAD",
+                "POST",
+                "DELETE",
+                "GET",
+                "PATCH"
+              ],
+              "path": "/**"
+            },
+            {
+              "methods": [
+                "PUT",
+                "HEAD",
+                "POST",
+                "DELETE",
+                "GET"
+              ],
+              "path": "/solrAdmin/**"
+            }
+          ],
+          "uiPermissions": [
+            "*"
+          ]
+        }
+      ]
+    }
+  }
+}

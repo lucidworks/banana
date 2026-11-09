@@ -1,46 +1,48 @@
+/* Every rule is scoped to the heatmap panel (the `heatmap-panel` class in module.html): this file is added to the
+   page when the first heatmap loads, and it must not restyle the other panels' charts. */
 /* disable text selection */
-svg *::selection {
+.heatmap-panel svg *::selection {
     background: transparent;
 }
-svg *::-moz-selection {
+.heatmap-panel svg *::-moz-selection {
     background: transparent;
 }
-svg *::-webkit-selection {
+.heatmap-panel svg *::-webkit-selection {
     background: transparent;
 }
-rect.selection {
+.heatmap-panel rect.selection {
     stroke: #333;
     stroke-dasharray: 4px;
     stroke-opacity: 0.5;
     fill: transparent;
 }
-rect.cell-border {
+.heatmap-panel rect.cell-border {
     stroke: #eee;
     stroke-width: 0.3px;
 }
-rect.cell-selected {
+.heatmap-panel rect.cell-selected {
     stroke: rgb(51, 102, 153);
     stroke-width: 0.5px;
 }
-rect.cell-hover {
+.heatmap-panel rect.cell-hover {
     stroke: #F00;
     stroke-width: 0.3px;
 }
-text.text-selected {
+.heatmap-panel text.text-selected {
     fill: #000;
 }
-text.text-highlight {
+.heatmap-panel text.text-highlight {
     fill: #c00;
 }
-text.text-hover {
+.heatmap-panel text.text-hover {
     fill: #00C;
 }
 
-g > text {
+.heatmap-panel g > text {
     font-size: 12px;
 }
 
-.popup {
+.heatmap-panel .popup {
     position: absolute;
     width: 200px;
     height: auto;
@@ -55,19 +57,19 @@ g > text {
     pointer-events: none;
     z-index: 10000;
 }
-.popup.hidden {
+.heatmap-panel .popup.hidden {
     display: none;
 }
-.popup p {
+.heatmap-panel .popup p {
     margin: 0;
     font-family: sans-serif;
     font-size: 12px;
     line-height: 20px;
 }
-.tick {
+.heatmap-panel .tick {
     stroke: #C8C8C8;
 }
-.grid {
+.heatmap-panel .grid {
     stroke: #C8C8C8;
     stroke-dasharray: 1, 1;
 }
