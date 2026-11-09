@@ -188,7 +188,7 @@ function (angular, app, _, moment, kbn, $) {
       // If time picker is defined (usually is) TOFIX: Horrible parsing
       if(!(_.isUndefined($scope.timepicker))) {
 
-        // Fix for SILK-4 and SILK-29 bugs: by using moment.utc() instead of just moment()
+        // Avoids the timepicker skip-back-one-day bugs by using moment.utc() instead of just moment()
         // Need to account for leap year by using moment.subtract()
         // Get the time suffix (ie.s/m/h/d/w/M/y)
         var timeShorthand = $scope.panel.timespan.substr(-1);
@@ -213,7 +213,7 @@ function (angular, app, _, moment, kbn, $) {
         from = moment(to.valueOf() - 1000);
       }
 
-      // Fix for SILK-4 and SILK-29 bugs
+      // Avoids the timepicker skip-back-one-day bugs.
       // This $timeout function causes the timepicker skip-back-one-day bugs.
       // Because it will set the timepicker values to $scope.time.from and $scope.time.to, which
       // are the calculated UTC time values, and depending on your browser timezone, these values
@@ -239,7 +239,7 @@ function (angular, app, _, moment, kbn, $) {
       // Remove all other time filters
       filterSrv.removeByType('time');
 
-      // Fix SILK-345 Timepicker skip-back-one-day issue if browser time is behind UTC.
+      // Avoids the timepicker skip-back-one-day issue if browser time is behind UTC.
       // This is caused by the timepicker component set Date obj that skip-back-one-day automatically.
       // It happens when we manually select date in Absolute or Since mode. Timepicker will return Date obj,
       // not string, which already skip-back-one-day and this will mess up the time filter.

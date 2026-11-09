@@ -159,8 +159,9 @@ The default configuration is still the Lucidworks Fusion one (`USE_FUSION: true`
 * The ticker panel reads its counts from the time field it requested. Before, a change to or removal of the dashboard's
   time filter while a request was running made the panel look under the wrong field and throw an error in the console.
   A response that has no counts for the requested field, or a Solr error in the response, now leaves the panel without
-  counts for that refresh instead of keeping the previous refresh's counts, with no console error; with "Ignore Time
-  Picker" on, the panel also shows that Solr did not return two ranges. A query whose response has no counts is left out
+  counts for that refresh instead of keeping the previous refresh's counts, with no console error. When the response
+  has no counts (or fewer than two ranges) and "Ignore Time Picker" is on, the panel also shows that Solr did not return
+  two ranges; for a Solr error body it shows Solr's message instead. A query whose response has no counts is left out
   of the panel. When the request itself fails, the panel still shows the error next to the previous counts.
 * The saved-dashboard list no longer drops the first character of an id that contains `/` (the Delete button on such a
   row used to name a different dashboard), and the Solr-mode load query still puts the id into the query text,
