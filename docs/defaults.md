@@ -243,8 +243,9 @@ are presentation and export differences.
     (`justify-content: space-between`), the values are bold, and the font size is set on the container; 1.6.30 placed
     inline blocks side by side. The editor shows "List Format" for every style, and for `total` it sets the direction
     (Horizontal by default, Vertical stacks the metrics); opening the panel writes a `flex-direction` entry into its
-    `style` setting. The line height follows the font size instead of the theme's fixed 20px, so at the default 10pt
-    the metrics sit closer together.
+    `style` setting. The line height follows the font size instead of the theme's fixed line height, so at the default 10pt
+    the metrics sit closer together (about a fifth closer in the light theme, where lines were 20px and a block 40px; about
+    a quarter closer in the dark theme, where lines were 21px and a block 42px).
 
 The comparison for the first five was made key by key against 1.6.30, and for the rest file by file. Section 6 and the
 list above come from the decision records and the changelog, and from comparing the panel defaults and the dashboard

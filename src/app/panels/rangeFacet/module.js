@@ -596,7 +596,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
               scope.data[i].data = scope.data[i].numeric_series.getFlotPairs(required_times);
             }
 
-            // ISSUE: SOL-76
+            // Zero-filled points would make a smoothed line chart look jagged, so they are removed below.
             // If 'lines_smooth' is enabled, loop through $scope.data[] and remove zero filled entries.
             // Without zero values, the line chart will appear smooth as SiLK ;-)
             if (scope.panel.lines_smooth) {

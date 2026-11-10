@@ -72,6 +72,8 @@ only appears if someone chooses it.
   both fields empty, where 1.6.30 filled them with `start_station_name` and `gender`, the field names of a bicycle-share
   sample data set. A new heatmap therefore has no fields set and shows no cells until the user chooses them, instead of
   querying two fields that most collections do not have. Only new heatmaps are affected.
+- In the heatmap editor, the "Transposed" label is now a small label (`<label class="small">`) where 1.6.30 showed it as
+  a heading (`<h6>`). The setting itself is unchanged.
 - The panel no longer has the internal `editor_size` setting, and the "invalid rows number" alert is gone. Both belonged
   to a check of the row count that was removed; a saved dashboard that still has `editor_size` loads without effect.
   The row count itself is unchanged (300 by default, see [ADR 0030](0030-panel-and-service-regressions.md)).
@@ -186,10 +188,11 @@ them `#333`, and `#fff` in the dark theme where 1.6.30 drew them `#c8c8c8`. The 
 colour. The row icons carry the `small` class: on an expanded row they lose the rule `.row-open i { font-size: 10pt }`
 and are about 14.7px where 1.6.30 drew them at 13.3px; on a collapsed row (Configure Row and Expand row) they are about
 11.9px where 1.6.30 drew them at 14px. The heatmap's transpose button uses the `icon-repeat` icon where 1.6.30 drew a
-`rotate-icon` span, so its glyph differs, and its show condition is written differently (`panel.transpose_show !=
-undefined && !transpose_show` instead of `panel.transpose_show`). For the values the interface sets, the button appears
-in the same circumstances: the heatmap is the only panel that defines `transpose_show`, and it sets `true` in both
-versions. A dashboard edited by hand to `transpose_show: false` now shows the button.
+`rotate-icon` span, so its glyph differs (the 1.6.30 control was a background image set by the `rotate-icon` style, not
+a coloured glyph, so it did not take the theme's link colour), and its show condition is written differently
+(`panel.transpose_show != undefined && !transpose_show` instead of `panel.transpose_show`). For the values the interface
+sets, the button appears in the same circumstances: the heatmap is the only panel that defines `transpose_show`, and it
+sets `true` in both versions. A dashboard edited by hand to `transpose_show: false` now shows the button.
 
 *Why it is kept.* The links give most controls a keyboard focus and a title, and the tooltips still work. The colour and
 size differences are small and affect only how the icons look.
@@ -286,10 +289,11 @@ under the other. The default is Horizontal. Opening the panel writes a `flex-dir
 setting, so a saved dashboard gains one extra key. The values, the labels and the font size are unchanged; the line
 height changed: 1.6.30's lines inherited the theme's fixed height (20px in the light theme, 21px in the dark), while the
 container now sets `line-height: normal`, so the lines follow the font size. At the default 10pt each line is about 16px
-high instead of 20px, so a default panel's metrics sit about a fifth closer together (a block of value and label is
-about 32px high instead of 40px); above about 13pt the value lines are taller than in 1.6.30 (about 39px at 24pt), while
-the label line stays about 16px. The bar,
-pie and list styles are described in [ADR 0030](0030-panel-and-service-regressions.md).
+high instead of 20px in the light theme, so a default panel's metrics sit about a fifth closer together (a block of
+value and label is about 32px high instead of 40px); in the dark theme the lines were 21px and the block 42px, so the
+metrics sit about a quarter closer together; above about 13pt the value lines are taller than in 1.6.30 (about 39px at
+24pt), while the label line stays about 16px. The bar, pie and list styles are described in [ADR
+0030](0030-panel-and-service-regressions.md).
 
 *Why it is kept.* The layout is only a matter of presentation. Putting the blocks back as inline blocks would remove
 the Vertical layout that the new setting offers, and the extra `style` key is ignored by 1.6.30 if a dashboard is

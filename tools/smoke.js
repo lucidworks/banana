@@ -12,7 +12,8 @@
  *   - every panel type listed in config.js loads and renders, and
  *   - the charting panels draw (including the ones that load extra scripts on demand), and the text and table panels show their content,
  *   - the histogram, timeseries and rangeFacet charts, set to percent stacking, were stacked by the plugin (every column adds up to 100).
- *   - the heatmap's stylesheet reaches only the heatmap: the axes of the bar, scatterplot, multiseries and box plot panels are styled as on a dashboard with no heatmap.
+ *   - the heatmap's stylesheet reaches only the heatmap: the axes of the bar, scatterplot, multiseries and box plot
+ *     panels are styled as on a dashboard with no heatmap.
  * The server answers 404 for anything outside the base path, so a pass also shows that every asset URL is relative.
  *
  * With --csp the server also sends `Content-Security-Policy: script-src 'self'; object-src 'none'; frame-ancestors 'self'`
@@ -303,13 +304,20 @@ async function checkBase(chromium, args, base, panels) {
         // the same dashboard without the heatmap, in a page of its own, so that the heatmap's stylesheet is not loaded
         const bareDashboard = buildDashboard(panels.filter((p) => p !== 'heatmap'));
         const bare = await browser.newPage({ viewport: { width: 1400, height: 1000 } });
-        await bare.route((u) => /^\/(api|solr)\//.test(u.pathname) || /banana-smoke\.json$/.test(u.pathname), (route) => stubRoute(route, bareDashboard));
-        await bare.goto('http://127.0.0.1:' + port + base + 'index.html#/dashboard/file/banana-smoke.json', { waitUntil: 'load' });
-        await bare.waitForFunction((list) => list.every((t) => {
-          const panel = Array.from(document.querySelectorAll('kibana-panel')).filter((e) => window.angular.element(e).scope().panel.type === t)[0];
-          return !!panel && !!panel.parentElement.querySelector('.tick text');
-        }), types, { timeout: 30000 });
-        const without = await bare.evaluate(readPanelStyles, types);
+        let without;
+        let hasHeatmapRules;
+        try {
+          await bare.route((u) => /^\/(api|solr)\//.test(u.pathname) || /banana-smoke\.json$/.test(u.pathname), (route) => stubRoute(route, bareDashboard));
+          await bare.goto('http://127.0.0.1:' + port + base + 'index.html#/dashboard/file/banana-smoke.json', { waitUntil: 'load' });
+          await bare.waitForFunction((list) => list.every((t) => {
+            const panel = Array.from(document.querySelectorAll('kibana-panel')).filter((e) => window.angular.element(e).scope().panel.type === t)[0];
+            return !!panel && !!panel.parentElement.querySelector('.tick text');
+          }), types, { timeout: 30000 });
+          without = await bare.evaluate(readPanelStyles, types);
+          hasHeatmapRules = await bare.evaluate(() => Array.from(document.querySelectorAll('style')).some((s) => /cell-border/.test(s.textContent)));
+        } finally {
+          await bare.close();
+        }
         // every rule of the heatmap's stylesheet must name the heatmap panel
         const unscoped = await page.evaluate(() => {
           const sheet = Array.from(document.styleSheets).filter((ss) => ss.ownerNode && ss.ownerNode.tagName === 'STYLE' &&
@@ -317,11 +325,7 @@ async function checkBase(chromium, args, base, panels) {
           if (!sheet) { return ['the heatmap stylesheet was not found']; }
           return Array.from(sheet.cssRules).map((r) => r.selectorText).filter((sel) => sel && sel.split(',').some((one) => !/^\s*\.heatmap-panel[\s.:\[]/.test(one)));
         });
-        unscoped.forEach((sel) => { differences.push('the heatmap stylesheet has a rule that is not inside the heatmap panel: ' + sel); });
-        const hasHeatmapRules = await bare.evaluate(() => Array.from(document.querySelectorAll('style')).some((s) => /cell-border/.test(s.textContent)));
-        await bare.close();
         result.styles = { withHeatmap, without };
-        if (hasHeatmapRules) { differences.push('the dashboard without a heatmap still loaded the heatmap stylesheet'); }
         types.forEach((t) => {
           if (!withHeatmap.axis[t]) { differences.push(t + ': no axis was drawn, so its styles were not checked'); return; }
           if (!without.axis[t]) { differences.push(t + ': no axis was drawn on the dashboard without a heatmap'); return; }
@@ -340,7 +344,11 @@ async function checkBase(chromium, args, base, panels) {
             });
           });
         });
-        // the heatmap keeps its look: its drawn labels, ticks and grid, and what each of its rules gives an element inside it
+        // the static findings come after the axis and probe differences, which say what actually changed on screen
+        unscoped.forEach((sel) => { differences.push('the heatmap stylesheet has a rule that is not inside the heatmap panel: ' + sel); });
+        if (hasHeatmapRules) { differences.push('the dashboard without a heatmap still loaded the heatmap stylesheet'); }
+        // the heatmap keeps its look: its drawn labels, ticks and grid,
+        // and what each of its rules gives an element inside it
         const own = { heatmap: withHeatmap.heatmap, probes: withHeatmap.probes.heatmap };
         const expected = HEATMAP_LOOK;
         const compare = (path, want, got) => {
