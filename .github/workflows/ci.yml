@@ -41,7 +41,7 @@ jobs:
       CI: 'true'
     steps:
       - name: Check out
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
 
@@ -89,7 +89,7 @@ jobs:
       hostile: ${{ steps.detect.outputs.hostile }}
     steps:
       - name: Check out
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           # The whole history, so the pull request base can be compared with its head.
           fetch-depth: 0
@@ -133,7 +133,7 @@ jobs:
       CI: 'true'
     steps:
       - name: Check out
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
 
@@ -169,7 +169,7 @@ jobs:
       CI: 'true'
     steps:
       - name: Check out
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
 
