@@ -43,7 +43,7 @@
     "karma-jasmine": "^5.1.0",
     "karma-webpack": "5.0.0",
     "license-webpack-plugin": "^4.0.2",
-    "playwright": "1.65.0",
+    "playwright": "1.65.1",
     "style-loader": "^4.0.0",
     "vis": "4.21.0",
     "webpack": "^5.112.2",
